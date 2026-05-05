@@ -136,6 +136,17 @@ export default function VenueFinderPage() {
                       <span className="text-muted">Rating</span>
                       <span className="text-heading">{v.rating.toFixed(1)}</span>
                     </div>
+                    <div className="mt-3 grid gap-1 border-t border-border pt-3 text-xs text-muted">
+                      <div>
+                        <span className="font-semibold text-heading">Verification:</span> {v.verification}
+                      </div>
+                      <div>
+                        <span className="font-semibold text-heading">Last updated:</span> {v.lastUpdated}
+                      </div>
+                      <div>
+                        <span className="font-semibold text-heading">Confidence:</span> {v.confidence}
+                      </div>
+                    </div>
                   </div>
                 </Card>
               </Link>

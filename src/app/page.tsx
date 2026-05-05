@@ -101,21 +101,26 @@ export default function HomePage() {
           <div className="mx-auto max-w-[700px] text-center">
             <FadeIn>
               <span className="inline-flex items-center rounded-full bg-amber-pale px-4 py-1 text-[11px] font-semibold tracking-[0.18em] uppercase text-[color:var(--amber-light)]">
-                UK Accessibility Platform
+                UK accessibility platform
               </span>
             </FadeIn>
 
             <FadeIn delayMs={120}>
               <h1 className="mt-5 font-[var(--font-heading)] text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.02] tracking-[-0.025em] text-[#e8e2d8]">
-                Find venues that{" "}
-                <span className="italic text-amber">actually work</span> for your access needs
+                Find places that actually work for your access needs
               </h1>
             </FadeIn>
 
             <FadeIn delayMs={240}>
               <p className="mx-auto mt-5 max-w-[560px] text-[17px] leading-[1.7] text-[#a0998f]">
-                Detailed accessibility search, equipment guidance, your rights explained, and an AI assistant, all built
-                from lived experience.
+                Search practical access details before you go - including step-free entry, toilets, parking, door
+                width, turning space, seating and quiet-space information.
+              </p>
+            </FadeIn>
+
+            <FadeIn delayMs={300}>
+              <p className="mx-auto mt-4 max-w-[700px] text-sm font-medium text-[#c8b38a]">
+                Built from lived experience · Practical UK guidance · Real access detail, not vague labels
               </p>
             </FadeIn>
           </div>
@@ -306,6 +311,17 @@ export default function HomePage() {
                             {t}
                           </span>
                         ))}
+                      </div>
+                      <div className="mt-4 grid gap-1 border-t border-border pt-3 text-xs text-muted">
+                        <div>
+                          <span className="font-semibold text-heading">Verification:</span> {v!.verification}
+                        </div>
+                        <div>
+                          <span className="font-semibold text-heading">Last updated:</span> {v!.lastUpdated}
+                        </div>
+                        <div>
+                          <span className="font-semibold text-heading">Confidence:</span> {v!.confidence}
+                        </div>
                       </div>
                     </div>
                   </Card>
@@ -938,18 +954,23 @@ export default function HomePage() {
               <div className="text-2xl" aria-hidden>
                 📬
               </div>
-              <div className="mt-3 font-[var(--font-heading)] text-[24px] text-heading">Stay updated</div>
+              <div className="mt-3 font-[var(--font-heading)] text-[24px] text-heading">Join the Access Stamp waitlist</div>
               <p className="mx-auto mt-2 max-w-[520px] text-[15px] leading-[1.7] text-text">
-                Practical accessibility updates, new guides, platform news. No spam.
+                Get practical accessibility updates, new guides, and early access to venue search features.
               </p>
               <div className="mx-auto mt-5 flex w-full max-w-[400px] gap-2">
                 <input
                   className="h-11 flex-1 rounded-[var(--radius-ui)] border border-border bg-background px-3 text-sm text-heading"
                   placeholder="Your email address"
                 />
-                <Button variant="secondary">Subscribe</Button>
+                <button
+                  type="button"
+                  aria-label="Join waitlist coming soon"
+                  className="inline-flex items-center justify-center rounded-[var(--radius-ui)] bg-amber px-4 py-2 text-sm font-semibold text-navy opacity-80"
+                >
+                  Join the waitlist (Coming soon)
+                </button>
               </div>
-              <div className="mt-3 text-xs text-muted">Signup wiring comes next (once you choose an email provider).</div>
             </Card>
           </FadeIn>
         </Container>

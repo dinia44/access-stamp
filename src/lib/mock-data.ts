@@ -17,6 +17,9 @@ export type Venue = {
   rating: number;
   summary: string;
   tags: string[];
+  verification: "Community reported" | "Access Stamp checked" | "Not yet verified";
+  lastUpdated: string;
+  confidence: "High" | "Medium" | "Low";
   features: Record<string, "yes" | "no" | "unknown">;
 };
 
@@ -30,6 +33,9 @@ export const SAMPLE_VENUES: Venue[] = [
     summary:
       "Step-free entrance with wide doors. Spacious layout and an accessible toilet on the ground floor.",
     tags: ["Step-free", "Accessible toilet", "Spacious"],
+    verification: "Community reported",
+    lastUpdated: "May 2026",
+    confidence: "Medium",
     features: {
       "Step-free entrance": "yes",
       "Ramp access": "unknown",
@@ -53,6 +59,9 @@ export const SAMPLE_VENUES: Venue[] = [
     summary:
       "Level access via side entrance. Tight turning space near the counter, accessible toilet not confirmed.",
     tags: ["Step-free", "Tight turning", "Ask staff"],
+    verification: "Not yet verified",
+    lastUpdated: "May 2026",
+    confidence: "Low",
     features: {
       "Step-free entrance": "yes",
       "Ramp access": "unknown",
@@ -76,6 +85,9 @@ export const SAMPLE_VENUES: Venue[] = [
     summary:
       "Step-free entry, lift to all screens, transfer-friendly seating options, and hearing loop available.",
     tags: ["Lift", "Seating", "Hearing loop"],
+    verification: "Access Stamp checked",
+    lastUpdated: "May 2026",
+    confidence: "High",
     features: {
       "Step-free entrance": "yes",
       "Ramp access": "unknown",
@@ -99,6 +111,9 @@ export const SAMPLE_VENUES: Venue[] = [
     summary:
       "Step-free entrance, good turning space, and nearby parking. Practical details are confirmed in the listing.",
     tags: ["Step-free", "Parking", "Spacious"],
+    verification: "Community reported",
+    lastUpdated: "May 2026",
+    confidence: "Medium",
     features: {
       "Step-free entrance": "yes",
       "Ramp access": "unknown",
@@ -122,6 +137,9 @@ export const SAMPLE_VENUES: Venue[] = [
     summary:
       "Lift access to key areas and a Changing Places toilet. Clear approach routes and helpful staff.",
     tags: ["Lift access", "Changing Places", "Clear routes"],
+    verification: "Access Stamp checked",
+    lastUpdated: "May 2026",
+    confidence: "High",
     features: {
       "Step-free entrance": "yes",
       "Ramp access": "unknown",
@@ -145,6 +163,9 @@ export const SAMPLE_VENUES: Venue[] = [
     summary:
       "Powered chair friendly, rest areas available, and staff are trained. Good internal circulation space.",
     tags: ["Power chair OK", "Staff trained", "Rest areas"],
+    verification: "Community reported",
+    lastUpdated: "May 2026",
+    confidence: "Medium",
     features: {
       "Step-free entrance": "yes",
       "Ramp access": "unknown",

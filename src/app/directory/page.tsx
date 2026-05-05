@@ -21,19 +21,19 @@ const ENTRIES: Entry[] = [
     area: "North West",
     phone: "Coming soon",
     website: "Coming soon",
-    notes: "We’ll populate this from the directory database and make it filterable by region.",
+    notes: "Regional directory entry preview. Full provider list and filters are being added.",
   },
   {
     name: "PA Payroll (Example)",
     category: "PA payroll",
     area: "UK",
-    notes: "Placeholder listing.",
+    notes: "Directory entry preview.",
   },
   {
     name: "Legal Advice (Example)",
     category: "Legal advice",
     area: "UK",
-    notes: "Placeholder listing.",
+    notes: "Directory entry preview.",
   },
 ];
 

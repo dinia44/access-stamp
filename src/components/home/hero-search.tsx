@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Button, Card } from "@/components/ui";
 
 const FILTERS = [
@@ -39,7 +40,7 @@ export function HeroSearchCard() {
       <div className="p-7 sm:p-8">
         <div className="grid gap-4">
           {/* Row 1 */}
-          <div className="grid gap-3 lg:grid-cols-[1fr_190px_160px]">
+          <div className="grid gap-3 lg:grid-cols-[1fr_180px_260px]">
             <label className="text-sm font-semibold text-muted">
               <span className="sr-only">Location</span>
               <input
@@ -59,7 +60,15 @@ export function HeroSearchCard() {
               </select>
             </label>
             <div className="flex items-end">
-              <Button className="w-full justify-center">Search</Button>
+              <Button className="w-full justify-center">Search venues</Button>
+            </div>
+            <div className="flex items-end gap-2">
+              <Link
+                href="/ai"
+                className="inline-flex h-11 w-full items-center justify-center rounded-[var(--radius-ui)] border border-border bg-white px-4 text-sm font-semibold text-heading hover:bg-background-2"
+              >
+                Ask Access Stamp AI
+              </Link>
             </div>
           </div>
 

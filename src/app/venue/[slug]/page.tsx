@@ -76,6 +76,17 @@ export default function VenueDetailPage({
           <Card className="p-5">
             <div className="text-sm font-semibold text-heading">Practical summary</div>
             <p className="mt-2 text-sm text-muted">{v.summary}</p>
+            <div className="mt-4 grid gap-1 border-t border-border pt-3 text-xs text-muted sm:grid-cols-3">
+              <div>
+                <span className="font-semibold text-heading">Verification:</span> {v.verification}
+              </div>
+              <div>
+                <span className="font-semibold text-heading">Last updated:</span> {v.lastUpdated}
+              </div>
+              <div>
+                <span className="font-semibold text-heading">Confidence:</span> {v.confidence}
+              </div>
+            </div>
           </Card>
 
           <div className="grid gap-4 lg:grid-cols-[1.2fr_.8fr]">
@@ -106,7 +117,8 @@ export default function VenueDetailPage({
                   Map placeholder
                 </div>
                 <div className="mt-3 text-xs text-muted">
-                  We’ll connect this to a real map provider and show nearby parking and public transport.
+                  Location mapping will be expanded over time. For now, check the practical access details listed on
+                  this page before visiting.
                 </div>
               </Card>
 

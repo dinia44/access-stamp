@@ -31,16 +31,16 @@ export default function AiPage() {
             <Card className="p-5">
               <div className="text-sm font-semibold text-heading">Trained on real detail</div>
               <p className="mt-2 text-sm text-muted">
-                We’ll connect it to the Advice Hub and Venue Finder data (RAG) so answers are grounded in the platform.
+                Grounded in Access Stamp venue data and practical guidance so answers stay useful and specific.
               </p>
             </Card>
           </div>
 
           <Card className="p-6">
-            <div className="text-sm font-semibold text-heading">Next step</div>
+            <div className="text-sm font-semibold text-heading">What this helps with</div>
             <p className="mt-2 text-sm text-muted">
-              When you share the full AI system prompt and the venue/advice data sources, I’ll wire the widget to a
-              real API route and add contextual awareness per page.
+              Ask questions in plain language to get practical next steps for venues, rights, equipment, transport,
+              care support, and common UK accessibility processes.
             </p>
           </Card>
         </div>

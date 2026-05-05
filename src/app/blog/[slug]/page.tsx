@@ -9,7 +9,7 @@ const POSTS = [
     title: "What I wish I'd known in my first year as a wheelchair user",
     date: "March 2026",
     body:
-      "The things nobody tells you, from choosing the right cushion to dealing with people's reactions. This is a starter post, we’ll expand it into a structured guide with links to equipment, care, and rights resources.",
+      "The things nobody tells you, from choosing the right cushion to dealing with people's reactions. This guide links practical equipment, care, and rights steps you can use immediately.",
   },
   {
     slug: "wheelchair-basics-daily-transfers",
