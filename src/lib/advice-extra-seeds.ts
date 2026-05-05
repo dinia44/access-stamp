@@ -348,6 +348,62 @@ export const ADVICE_EXTRA_SEEDS = [
       "Keep timelines — delayed care can become urgent quickly.",
     ],
   },
+  {
+    slug: "respite-carer-breaks-and-funded-support",
+    title: "Respite and carer breaks: funded routes, family guilt, and realistic planning",
+    categorySlug: "care" as const,
+    tags: ["Respite", "Carers", "Council"],
+    intro:
+      "Breaks are not optional extras when someone’s safety depends on unpaid support. Councils may fund replacement care; charities sometimes bridge gaps — but clarity on hours, eligibility, and paperwork reduces last-minute panic.",
+    steps: [
+      "Separate emergency cover from planned respite — they use different conversations.",
+      "Ask what funded respite exists in your area and how waiting lists work.",
+      "Write down what ‘break’ means in hours, tasks, and backup contacts.",
+      "If guilt blocks breaks, name the risk of burnout honestly — including hospital admission costs.",
+    ],
+  },
+  {
+    slug: "advocacy-social-care-complaints-and-ombudsman",
+    title: "Advocacy and complaints: councils, LGSCO, and keeping escalation sane",
+    categorySlug: "care" as const,
+    tags: ["Advocacy", "Complaints", "Council"],
+    intro:
+      "Social care complaints often need staged escalation: provider first, then council, then Local Government and Social Care Ombudsman for eligible cases. Independent advocates can take notes and challenge unfair processes.",
+    steps: [
+      "Ask for an advocate early if communication, trauma, or complexity blocks fair participation.",
+      "Keep a complaint chronology and copies of care plans.",
+      "Meet council deadlines — missed dates weaken cases.",
+      "Ask explicitly what remedy you want: hours restored, reimbursement, reassessment, apology.",
+    ],
+  },
+  {
+    slug: "continuity-when-agency-or-worker-changes",
+    title: "Continuity when your agency or worker changes",
+    categorySlug: "care" as const,
+    tags: ["Continuity", "Agencies", "Risk"],
+    intro:
+      "High turnover breaks trust and creates clinical-style risk at home. Good planning transfers medication routines, hoist plans, behaviour triggers, and communication preferences — not just a generic handover sheet.",
+    steps: [
+      "Keep a single-page profile of essentials: allergies, transfers, hoists, baseline behaviour, escalation contacts.",
+      "Photograph medication charts where appropriate and lawful.",
+      "Refuse unsafe ‘shadowing’ shifts without adequate overlap.",
+      "Escalate when repeated churn suggests contract or commissioning failure.",
+    ],
+  },
+  {
+    slug: "informal-carers-assessment-and-support",
+    title: "Informal carers: assessments, breaks, and when to ask for a carer’s assessment",
+    categorySlug: "care" as const,
+    tags: ["Carers", "Assessment", "Rights"],
+    intro:
+      "If you support someone unpaid, you may have rights to assessment and support regardless of whether you call yourself a carer. Burnout shows up as crisis — earlier asks reduce harm.",
+    steps: [
+      "Request a carer’s assessment from the council supporting the cared-for person.",
+      "List tasks, sleep loss, work impacts, and mental health strain plainly.",
+      "Ask what breaks, training, or equipment could reduce risk.",
+      "Cross-check Carer’s Allowance rules if earnings matter.",
+    ],
+  },
 
   // --- Emergency & quick help ---
   {
