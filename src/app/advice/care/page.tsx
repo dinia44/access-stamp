@@ -110,6 +110,9 @@ const PAPERWORK_HABITS = [
   "Photograph unsafe conditions only where lawful and safe — evidence wins disputes.",
 ];
 
+/** Avoid stale CDN/HTML cache hiding fresh deploys of this hub. */
+export const dynamic = "force-dynamic";
+
 export default function CarePage() {
   const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === "care").sort((a, b) =>
     a.title.localeCompare(b.title),
