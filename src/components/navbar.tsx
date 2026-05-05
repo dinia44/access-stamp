@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -8,6 +7,7 @@ import { Container } from "@/components/container";
 import { GlobalSearch } from "@/components/global-search";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import { SiteLogo } from "@/components/site-logo";
 import { NAV_ITEMS } from "@/lib/site";
 
 export function Navbar() {
@@ -21,7 +21,7 @@ export function Navbar() {
       <Container>
         <div className="flex h-16 items-center justify-between gap-3">
           <Link href="/" className="flex shrink-0 items-center gap-3">
-            <Image src="/logo.svg" alt="Access Stamp" width={140} height={36} priority />
+            <SiteLogo priority className="h-auto w-auto max-h-[48px] object-contain" />
           </Link>
 
           <nav className="hidden min-w-0 items-center gap-1 lg:flex" aria-label="Primary">

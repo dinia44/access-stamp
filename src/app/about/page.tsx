@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { Container } from "@/components/container";
+import { SiteLogo } from "@/components/site-logo";
 import { Badge, Card } from "@/components/ui";
 
 export default function AboutPage() {
@@ -17,8 +17,8 @@ export default function AboutPage() {
           </div>
 
           <Card className="p-6">
-            <div className="grid gap-6 md:grid-cols-[140px_1fr] md:items-start">
-              <Image src="/logo.svg" alt="Access Stamp" width={140} height={36} />
+            <div className="grid gap-6 md:grid-cols-[200px_1fr] md:items-start">
+              <SiteLogo className="h-auto w-full max-w-[190px] object-contain" />
               <div className="space-y-3">
                 <div className="text-sm font-semibold text-heading">What we are</div>
                 <p className="text-sm leading-7 text-text">

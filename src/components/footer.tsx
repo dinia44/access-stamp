@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/container";
+import { SiteLogo } from "@/components/site-logo";
 
 export function Footer() {
   return (
@@ -8,7 +8,7 @@ export function Footer() {
       <Container className="py-10">
         <div className="grid gap-8 md:grid-cols-4">
           <div className="space-y-3">
-            <Image src="/logo.svg" alt="Access Stamp" width={140} height={36} />
+            <SiteLogo className="h-auto max-h-10 w-auto object-contain brightness-0 invert" />
             <p className="text-sm text-[#a0998f]">
               Practical access information for disabled people, wheelchair users,
               carers, older people, and families in the UK.

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { SiteLogo } from "@/components/site-logo";
 import { SetChatContext } from "@/components/chat/set-context";
 import { Container } from "@/components/container";
 import { FadeIn } from "@/components/fade-in";
@@ -981,8 +981,8 @@ export default function HomePage() {
         <Container>
           <FadeIn>
             <div className="mx-auto max-w-[640px] text-center">
-              <div className="mx-auto mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-white shadow-[var(--shadow-soft)]">
-                <Image src="/logo.svg" alt="Access Stamp" width={56} height={56} />
+              <div className="mx-auto mb-6 inline-flex max-w-full justify-center rounded-2xl bg-white px-5 py-4 shadow-[var(--shadow-soft)]">
+                <SiteLogo className="h-auto max-h-12 w-auto max-w-full object-contain" />
               </div>
               <h2 className="font-[var(--font-heading)] text-[30px] tracking-[-0.025em] text-heading">
                 Built from real experience
