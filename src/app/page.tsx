@@ -197,7 +197,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 3: Platform Pillars */}
-      <section className="bg-background-2 py-24">
+      <section className="section-pillars-band py-24">
         <Container>
           <div className="mx-auto max-w-[560px] text-center">
             <FadeIn>

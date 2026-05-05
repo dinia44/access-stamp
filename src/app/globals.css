@@ -2,8 +2,8 @@
 
 :root {
   /* Homepage spec palette (ink/sage/gold) — slightly richer, still calm */
-  --background: #f7f4ee; /* warm cream */
-  --background-2: #ebe6dc; /* deeper warm band for sections */
+  --background: #faf7f1; /* lighter warm cream — less “grey” */
+  --background-2: #efe9df; /* almond band — warmer than flat grey */
   --card: #ffffff;
   --heading: #0f1a2b; /* ink */
   --text: #3d3a36; /* txt */
@@ -24,6 +24,38 @@
   --radius-ui: 12px;
   --page-sage-glow: rgba(109, 143, 127, 0.09);
   --page-gold-glow: rgba(184, 146, 79, 0.07);
+}
+
+/* Homepage “pillars” band: layered sage + gold wash — not flat grey */
+.section-pillars-band {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(
+    168deg,
+    #fcf9f4 0%,
+    #eef4ef 38%,
+    #f4ece0 72%,
+    #e9e2d5 100%
+  );
+}
+
+.section-pillars-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+      ellipse 130% 85% at 12% 18%,
+      rgba(109, 143, 127, 0.16),
+      transparent 52%
+    ),
+    radial-gradient(ellipse 110% 70% at 88% 82%, rgba(184, 146, 79, 0.13), transparent 48%);
+}
+
+.section-pillars-band > * {
+  position: relative;
+  z-index: 1;
 }
 
 @theme inline {
@@ -52,7 +84,13 @@ body {
       transparent 55%
     ),
     radial-gradient(900px 480px at 95% 5%, var(--page-gold-glow), transparent 52%),
-    linear-gradient(180deg, #faf8f5 0%, var(--background) 28%, #f3efe6 72%, var(--background-2) 100%);
+    linear-gradient(
+      180deg,
+      #fefdfb 0%,
+      var(--background) 32%,
+      #f6f1e8 68%,
+      #ebe4d8 100%
+    );
   color: var(--text);
   font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system,
     Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
