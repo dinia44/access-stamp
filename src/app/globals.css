@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  /* Homepage spec palette (ink/sage/gold) */
-  --background: #faf8f5; /* warm */
-  --background-2: #f4f1ec; /* warmAlt */
+  /* Homepage spec palette (ink/sage/gold) — slightly richer, still calm */
+  --background: #f7f4ee; /* warm cream */
+  --background-2: #ebe6dc; /* deeper warm band for sections */
   --card: #ffffff;
   --heading: #0f1a2b; /* ink */
   --text: #3d3a36; /* txt */
@@ -11,17 +11,19 @@
 
   /* Keep existing semantic tokens used in components */
   --navy: #0f1a2b; /* ink */
-  --blue: #7a9b8a; /* sage (primary action) */
-  --amber: #c4a265; /* gold (secondary accent) */
-  --amber-light: #9a7d42; /* goldDk */
-  --amber-pale: #f5edd8; /* goldPale */
-  --blue-pale: #e8f0ec; /* sagePale */
-  --border: #ddd6cb; /* border */
-  --ring: rgba(122, 155, 138, 0.35);
-  --shadow: 0 12px 36px -8px rgba(15, 26, 43, 0.1);
-  --shadow-soft: 0 1px 3px rgba(15, 26, 43, 0.03);
+  --blue: #6d8f7f; /* sage — a touch deeper for contrast on cream */
+  --amber: #b8924f; /* gold — slightly richer */
+  --amber-light: #8a6d38; /* goldDk */
+  --amber-pale: #f0e4c8; /* goldPale */
+  --blue-pale: #dce8e0; /* sagePale */
+  --border: #cfc6b8; /* border — clearer separation */
+  --ring: rgba(109, 143, 127, 0.45);
+  --shadow: 0 14px 40px -10px rgba(15, 26, 43, 0.12);
+  --shadow-soft: 0 2px 8px rgba(15, 26, 43, 0.05);
   --radius-card: 16px;
   --radius-ui: 12px;
+  --page-sage-glow: rgba(109, 143, 127, 0.09);
+  --page-gold-glow: rgba(184, 146, 79, 0.07);
 }
 
 @theme inline {
@@ -43,7 +45,14 @@
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image: radial-gradient(
+      1200px 520px at 10% -5%,
+      var(--page-sage-glow),
+      transparent 55%
+    ),
+    radial-gradient(900px 480px at 95% 5%, var(--page-gold-glow), transparent 52%),
+    linear-gradient(180deg, #faf8f5 0%, var(--background) 28%, #f3efe6 72%, var(--background-2) 100%);
   color: var(--text);
   font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system,
     Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";

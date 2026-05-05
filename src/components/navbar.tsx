@@ -17,7 +17,7 @@ export function Navbar() {
   const allMobile = useMemo(() => [...NAV_ITEMS], []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/95 shadow-[0_1px_0_rgba(15,26,43,0.06)] backdrop-blur-md supports-[backdrop-filter]:bg-background/88">
       <Container>
         <div className="flex h-16 items-center justify-between gap-3">
           <Link href="/" className="flex shrink-0 items-center gap-3">
@@ -57,8 +57,25 @@ export function Navbar() {
           </button>
         </div>
 
-        <div className="border-t border-border/60 pb-3 pt-3">
-          <GlobalSearch onSelect={() => setMobileOpen(false)} />
+        <div
+          role="search"
+          aria-labelledby="site-search-label"
+          className="relative z-[70] -mx-4 border-t border-border px-4 py-3 sm:-mx-6 sm:px-6"
+          style={{
+            background: "linear-gradient(105deg, var(--blue-pale) 0%, var(--background-2) 45%, var(--amber-pale) 100%)",
+          }}
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+            <p
+              id="site-search-label"
+              className="shrink-0 text-sm font-semibold tracking-tight text-navy"
+            >
+              Search the site
+            </p>
+            <div className="min-w-0 flex-1" data-access-stamp="site-search">
+              <GlobalSearch ariaLabelledBy="site-search-label" onSelect={() => setMobileOpen(false)} />
+            </div>
+          </div>
         </div>
 
         {mobileOpen ? (

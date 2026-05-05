@@ -10,12 +10,14 @@ type GlobalSearchProps = {
   className?: string;
   inputClassName?: string;
   onSelect?: () => void;
+  /** When set, associates the field with a visible page label (preferred for sighted users + SR). */
+  ariaLabelledBy?: string;
 };
 
 const EMPTY_STATE =
   "No results found. Try searching for venues, toilets, parking, rights, equipment or transport.";
 
-export function GlobalSearch({ className, inputClassName, onSelect }: GlobalSearchProps) {
+export function GlobalSearch({ className, inputClassName, onSelect, ariaLabelledBy }: GlobalSearchProps) {
   const inputId = useId();
   const listboxId = `${inputId}-results`;
   const [query, setQuery] = useState("");
@@ -66,9 +68,11 @@ export function GlobalSearch({ className, inputClassName, onSelect }: GlobalSear
 
   return (
     <div className={cn("relative w-full min-w-0", className)} ref={rootRef}>
-      <label htmlFor={inputId} className="sr-only">
-        Search Access Stamp content
-      </label>
+      {ariaLabelledBy ? null : (
+        <label htmlFor={inputId} className="sr-only">
+          Search Access Stamp content
+        </label>
+      )}
       <input
         id={inputId}
         type="search"
@@ -80,11 +84,13 @@ export function GlobalSearch({ className, inputClassName, onSelect }: GlobalSear
         }}
         onKeyDown={onKeyDown}
         placeholder="Search venues, rights, equipment, transport or care support…"
-        aria-label="Search across venues, guides, rights, equipment, and blog"
+        aria-labelledby={ariaLabelledBy}
+        aria-label={ariaLabelledBy ? undefined : "Search across venues, guides, rights, equipment, and blog"}
         aria-expanded={open}
         aria-controls={listboxId}
+        autoComplete="off"
         className={cn(
-          "h-10 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-sm text-heading placeholder:text-muted",
+          "box-border min-h-12 w-full appearance-none rounded-[var(--radius-ui)] border-2 border-blue/30 bg-white px-4 py-3 text-base text-heading shadow-sm outline-none placeholder:text-muted placeholder:text-[0.95rem] focus-visible:border-blue md:min-h-11 md:text-sm",
           inputClassName,
         )}
       />
@@ -94,7 +100,7 @@ export function GlobalSearch({ className, inputClassName, onSelect }: GlobalSear
           id={listboxId}
           role="listbox"
           aria-label="Search results"
-          className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 rounded-[var(--radius-card)] border border-border bg-card p-2 shadow-[var(--shadow)]"
+          className="absolute left-0 right-0 top-[calc(100%+8px)] z-[100] rounded-[var(--radius-card)] border border-border bg-card p-2 shadow-[var(--shadow)]"
         >
           {results.length ? (
             <div className="grid gap-1">
