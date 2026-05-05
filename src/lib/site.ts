@@ -1,5 +1,18 @@
 export type NavItem = { label: string; href: string };
 
+/** Optional override (e.g. another Cloudinary asset). Otherwise uses the hosted logo below. */
+const CLOUDINARY_LOGO_URL =
+  "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778020323/hf_20260316_194533_646e53ea-1b19-46ee-a852-28090cc321e7_1_w1vnzs.png";
+
+export const SITE_LOGO_SRC =
+  typeof process.env.NEXT_PUBLIC_LOGO_URL === "string" && process.env.NEXT_PUBLIC_LOGO_URL.trim().length > 0
+    ? process.env.NEXT_PUBLIC_LOGO_URL.trim()
+    : CLOUDINARY_LOGO_URL;
+
+/** Layout size for next/image; adjust if your hosted asset has different proportions. */
+export const SITE_LOGO_WIDTH = 190;
+export const SITE_LOGO_HEIGHT = 48;
+
 export const NAV_ITEMS: NavItem[] = [
   { label: "Find venues", href: "/venue-finder" },
   { label: "Advice hub", href: "/advice" },
