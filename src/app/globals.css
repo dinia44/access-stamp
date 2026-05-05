@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  /* Homepage spec palette (ink/sage/gold) */
+  --background: #faf8f5; /* warm */
+  --background-2: #f4f1ec; /* warmAlt */
+  --card: #ffffff;
+  --heading: #0f1a2b; /* ink */
+  --text: #3d3a36; /* txt */
+  --muted: #6b6560; /* txtLt */
+
+  /* Keep existing semantic tokens used in components */
+  --navy: #0f1a2b; /* ink */
+  --blue: #7a9b8a; /* sage (primary action) */
+  --amber: #c4a265; /* gold (secondary accent) */
+  --amber-light: #9a7d42; /* goldDk */
+  --amber-pale: #f5edd8; /* goldPale */
+  --blue-pale: #e8f0ec; /* sagePale */
+  --border: #ddd6cb; /* border */
+  --ring: rgba(122, 155, 138, 0.35);
+  --shadow: 0 12px 36px -8px rgba(15, 26, 43, 0.1);
+  --shadow-soft: 0 1px 3px rgba(15, 26, 43, 0.03);
+  --radius-card: 16px;
+  --radius-ui: 12px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-2: var(--background-2);
+  --color-card: var(--card);
+  --color-heading: var(--heading);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-navy: var(--navy);
+  --color-blue: var(--blue);
+  --color-amber: var(--amber);
+  --color-amber-light: var(--amber-light);
+  --color-amber-pale: var(--amber-pale);
+  --color-blue-pale: var(--blue-pale);
+  --color-border: var(--border);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
+}
+
+body {
+  background: var(--background);
+  color: var(--text);
+  font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system,
+    Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+::selection {
+  background: rgba(212, 149, 42, 0.35);
+}
+
+/* Accessible focus ring */
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 10px;
+}

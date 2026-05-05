@@ -1,0 +1,8 @@
+<svg width="140" height="36" viewBox="0 0 140 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Access Stamp</title>
+  <rect x="0" y="0" width="36" height="36" rx="12" fill="#0c1d34"/>
+  <path d="M18 7.5L27 28.5H22.9L20.9 23.7H15.05L13.05 28.5H9L18 7.5ZM16.3 20.0H19.65L18.0 15.9L16.3 20.0Z" fill="#f0c86a"/>
+  <circle cx="28" cy="9" r="4" fill="#2478d0"/>
+  <text x="46" y="24" font-family="ui-sans-serif, system-ui" font-size="16" font-weight="700" fill="#0c1d34">Access Stamp</text>
+</svg>
+
