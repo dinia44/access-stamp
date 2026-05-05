@@ -292,6 +292,8 @@ export const ADVICE_EXTRA_SEEDS = [
   },
 
   // --- Care & support ---
+  // Add new guides below. Required fields: slug, title, categorySlug "care", tags, intro, steps[].
+  // Wired into ADVICE_ARTICLES via mock-data.ts — appears in search + /advice/care “All guides” grid.
   {
     slug: "personal-budgets-and-direct-payments",
     title: "Personal budgets and direct payments: control, paperwork, and risk",

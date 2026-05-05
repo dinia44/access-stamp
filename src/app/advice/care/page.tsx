@@ -1,3 +1,12 @@
+/**
+ * Care & Support hub — URL: /advice/care
+ *
+ * Edit article text (intro/steps) in `src/lib/advice-extra-seeds.ts` under `// --- Care & support ---`
+ * using `categorySlug: "care"`. Each `slug` becomes `/advice/[slug]`.
+ *
+ * Edit this file for hub layout only: quick actions, featured slugs, pathways, scenarios, related links.
+ * Slugs here must match seeds (run `npm run build` after adding articles).
+ */
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
