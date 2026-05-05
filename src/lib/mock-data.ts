@@ -1,3 +1,5 @@
+import { ADVICE_EXTRA_SEEDS } from "@/lib/advice-extra-seeds";
+
 export type Venue = {
   slug: string;
   name: string;
@@ -671,6 +673,31 @@ export const ADVICE_ARTICLES: AdviceArticle[] = [
       },
     ] as const
   ).map(({ slug, title, categorySlug, tags, intro, steps }) => ({
+    slug,
+    title,
+    categorySlug,
+    updated: "2026-05-05",
+    tags: [...tags],
+    sections: [
+      { type: "h2" as const, text: "What this covers" },
+      { type: "p" as const, text: intro },
+      { type: "h2" as const, text: "Practical next steps" },
+      { type: "ul" as const, items: [...steps] },
+      {
+        type: "callout" as const,
+        tone: "tip" as const,
+        title: "Access Stamp tip",
+        body: "Write the barrier down in plain language: what happens, when it happens, what support helps, and what risk or cost appears if nothing changes.",
+      },
+      {
+        type: "callout" as const,
+        tone: "warning" as const,
+        title: "Important",
+        body: "This guide is general information, not medical or legal advice. For safety-critical equipment, transfers, skin issues, or legal deadlines, get specialist support.",
+      },
+    ],
+  })),
+  ...ADVICE_EXTRA_SEEDS.map(({ slug, title, categorySlug, tags, intro, steps }) => ({
     slug,
     title,
     categorySlug,
