@@ -196,9 +196,33 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Section 3: Platform Pillars */}
-      <section className="section-pillars-band py-24">
-        <Container>
+      {/* Section 3: Platform Pillars — backgrounds inline so production always picks them up (Tailwind v4 + globals ordering) */}
+      <section className="relative isolate overflow-hidden py-24">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{
+            background:
+              "linear-gradient(168deg, #fcf9f4 0%, #eef4ef 38%, #f4ece0 72%, #e9e2d5 100%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{
+            background:
+              "radial-gradient(ellipse 130% 85% at 12% 18%, rgba(109, 143, 127, 0.16), transparent 52%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{
+            background:
+              "radial-gradient(ellipse 110% 70% at 88% 82%, rgba(184, 146, 79, 0.13), transparent 48%)",
+          }}
+        />
+        <Container className="relative z-10">
           <div className="mx-auto max-w-[560px] text-center">
             <FadeIn>
               <SectionLabel>What you’ll find here</SectionLabel>

@@ -26,38 +26,6 @@
   --page-gold-glow: rgba(184, 146, 79, 0.07);
 }
 
-/* Homepage “pillars” band: layered sage + gold wash — not flat grey */
-.section-pillars-band {
-  position: relative;
-  isolation: isolate;
-  background: linear-gradient(
-    168deg,
-    #fcf9f4 0%,
-    #eef4ef 38%,
-    #f4ece0 72%,
-    #e9e2d5 100%
-  );
-}
-
-.section-pillars-band::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: radial-gradient(
-      ellipse 130% 85% at 12% 18%,
-      rgba(109, 143, 127, 0.16),
-      transparent 52%
-    ),
-    radial-gradient(ellipse 110% 70% at 88% 82%, rgba(184, 146, 79, 0.13), transparent 48%);
-}
-
-.section-pillars-band > * {
-  position: relative;
-  z-index: 1;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-background-2: var(--background-2);
