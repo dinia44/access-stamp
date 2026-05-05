@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import { SEARCH_INDEX } from "@/data/searchIndex";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,8 @@ const EMPTY_STATE =
   "No results found. Try searching for venues, toilets, parking, rights, equipment or transport.";
 
 export function GlobalSearch({ className, inputClassName, onSelect }: GlobalSearchProps) {
+  const inputId = useId();
+  const listboxId = `${inputId}-results`;
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -63,12 +65,12 @@ export function GlobalSearch({ className, inputClassName, onSelect }: GlobalSear
   }
 
   return (
-    <div className={cn("relative w-full", className)} ref={rootRef}>
-      <label htmlFor="global-search" className="sr-only">
+    <div className={cn("relative w-full min-w-0", className)} ref={rootRef}>
+      <label htmlFor={inputId} className="sr-only">
         Search Access Stamp content
       </label>
       <input
-        id="global-search"
+        id={inputId}
         type="search"
         value={query}
         onFocus={() => setOpen(true)}
@@ -80,7 +82,7 @@ export function GlobalSearch({ className, inputClassName, onSelect }: GlobalSear
         placeholder="Search venues, rights, equipment, transport or care support…"
         aria-label="Search across venues, guides, rights, equipment, and blog"
         aria-expanded={open}
-        aria-controls="global-search-results"
+        aria-controls={listboxId}
         className={cn(
           "h-10 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-sm text-heading placeholder:text-muted",
           inputClassName,
@@ -89,7 +91,7 @@ export function GlobalSearch({ className, inputClassName, onSelect }: GlobalSear
 
       {open && query.trim() ? (
         <div
-          id="global-search-results"
+          id={listboxId}
           role="listbox"
           aria-label="Search results"
           className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 rounded-[var(--radius-card)] border border-border bg-card p-2 shadow-[var(--shadow)]"

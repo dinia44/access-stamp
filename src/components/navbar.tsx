@@ -20,15 +20,11 @@ export function Navbar() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
       <Container>
         <div className="flex h-16 items-center justify-between gap-3">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex shrink-0 items-center gap-3">
             <Image src="/logo.svg" alt="Access Stamp" width={140} height={36} priority />
           </Link>
 
-          <div className="hidden max-w-md flex-1 md:block">
-            <GlobalSearch />
-          </div>
-
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
+          <nav className="hidden min-w-0 items-center gap-1 lg:flex" aria-label="Primary">
             {NAV_ITEMS.map((item) => {
               const active = item.href === "/" ? path === "/" : path.startsWith(item.href);
               return (
@@ -46,13 +42,13 @@ export function Navbar() {
             })}
           </nav>
 
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="hidden shrink-0 items-center gap-3 md:flex">
             <Button href="/venue-finder">Search venues</Button>
           </div>
 
           <button
             type="button"
-            className="md:hidden rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2"
+            className="shrink-0 lg:hidden rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
@@ -61,7 +57,7 @@ export function Navbar() {
           </button>
         </div>
 
-        <div className="pb-3 md:hidden">
+        <div className="border-t border-border/60 pb-3 pt-3">
           <GlobalSearch onSelect={() => setMobileOpen(false)} />
         </div>
 
