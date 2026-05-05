@@ -59,6 +59,8 @@ export function ChatWidget() {
   const defaultQuick = useMemo(() => {
     if (page.kind === "venue-finder")
       return ["Help me search", "What does step-free mean?", "Venues near me"];
+    if (page.kind === "submit-venue")
+      return ["Help me describe access features", "What should I include?", "Is this venue suitable?"];
     if (page.kind === "advice-article")
       return ["Summarise this article", "What should I do next?", "Related topics"];
     return ["Find accessible venues", "Explain PIP", "Wheelchair services near me", "I’m new to disability"];
@@ -163,7 +165,7 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-[60]">
+    <div className="fixed bottom-5 right-5 z-[60] print:hidden">
       {!open ? (
         <button
           type="button"

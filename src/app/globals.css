@@ -1,29 +1,28 @@
 @import "tailwindcss";
 
+/* Access Stamp — tokens aligned with access-stamp-build-prompt.md */
 :root {
-  /* Homepage spec palette (ink/sage/gold) — slightly richer, still calm */
-  --background: #faf7f1; /* lighter warm cream — less “grey” */
-  --background-2: #efe9df; /* almond band — warmer than flat grey */
+  --background: #f6f4f1;
+  --background-2: #f0ede8;
   --card: #ffffff;
-  --heading: #0f1a2b; /* ink */
-  --text: #3d3a36; /* txt */
-  --muted: #6b6560; /* txtLt */
+  --heading: #0c1d34;
+  --text: #2c3e54;
+  --muted: #5a6e82;
 
-  /* Keep existing semantic tokens used in components */
-  --navy: #0f1a2b; /* ink */
-  --blue: #6d8f7f; /* sage — a touch deeper for contrast on cream */
-  --amber: #b8924f; /* gold — slightly richer */
-  --amber-light: #8a6d38; /* goldDk */
-  --amber-pale: #f0e4c8; /* goldPale */
-  --blue-pale: #dce8e0; /* sagePale */
-  --border: #cfc6b8; /* border — clearer separation */
-  --ring: rgba(109, 143, 127, 0.45);
-  --shadow: 0 14px 40px -10px rgba(15, 26, 43, 0.12);
-  --shadow-soft: 0 2px 8px rgba(15, 26, 43, 0.05);
+  --navy: #0c1d34;
+  --blue: #2478d0;
+  --amber: #d4952a;
+  --amber-light: #f0c86a;
+  --amber-pale: #fdf4e3;
+  --blue-pale: #e6f0fb;
+  --border: #ddd8d0;
+  --ring: rgba(36, 120, 208, 0.35);
+  --shadow: 0 14px 40px -10px rgba(12, 29, 52, 0.12);
+  --shadow-soft: 0 2px 8px rgba(12, 29, 52, 0.06);
   --radius-card: 16px;
   --radius-ui: 12px;
-  --page-sage-glow: rgba(109, 143, 127, 0.09);
-  --page-gold-glow: rgba(184, 146, 79, 0.07);
+  --page-sage-glow: rgba(36, 120, 208, 0.06);
+  --page-gold-glow: rgba(212, 149, 42, 0.06);
 }
 
 @theme inline {
@@ -52,20 +51,14 @@ body {
       transparent 55%
     ),
     radial-gradient(900px 480px at 95% 5%, var(--page-gold-glow), transparent 52%),
-    linear-gradient(
-      180deg,
-      #fefdfb 0%,
-      var(--background) 32%,
-      #f6f1e8 68%,
-      #ebe4d8 100%
-    );
+    linear-gradient(180deg, #faf9f7 0%, var(--background) 35%, var(--background-2) 100%);
   color: var(--text);
   font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system,
     Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
 ::selection {
-  background: rgba(212, 149, 42, 0.35);
+  background: rgba(212, 149, 42, 0.28);
 }
 
 /* Accessible focus ring */
@@ -73,4 +66,22 @@ body {
   outline: 3px solid var(--ring);
   outline-offset: 2px;
   border-radius: 10px;
+}
+
+@media print {
+  header,
+  footer,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: #000 !important;
+  }
+
+  .advice-article-print {
+    box-shadow: none !important;
+    border: none !important;
+  }
 }

@@ -6,6 +6,7 @@ export type PageContext =
   | { kind: "none" }
   | { kind: "home" }
   | { kind: "venue-finder" }
+  | { kind: "submit-venue" }
   | { kind: "venue"; slug: string; name: string }
   | { kind: "advice" }
   | { kind: "advice-article"; slug: string; title: string; category?: string }

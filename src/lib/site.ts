@@ -16,11 +16,23 @@ export const SITE_LOGO_SRC =
 export const SITE_LOGO_WIDTH = 190;
 export const SITE_LOGO_HEIGHT = 48;
 
+/** Primary nav — matches website build prompt */
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Find venues", href: "/venue-finder" },
-  { label: "Advice hub", href: "/advice" },
-  { label: "Ask AI", href: "/ai" },
+  { label: "Home", href: "/" },
+  { label: "Venue Finder", href: "/venue-finder" },
+  { label: "Advice Hub", href: "/advice" },
+  { label: "AI Assistant", href: "/ai" },
   { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
+];
+
+/** “More” dropdown — Education through Glossary */
+export const MORE_ITEMS: NavItem[] = [
+  { label: "Education", href: "/advice/education" },
+  { label: "Transport", href: "/advice/transport" },
+  { label: "Workplace", href: "/advice/workplace" },
+  { label: "Travel", href: "/advice/travel" },
+  { label: "Directory", href: "/directory" },
+  { label: "Glossary", href: "/glossary" },
 ];
 

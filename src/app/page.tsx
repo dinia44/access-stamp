@@ -69,7 +69,7 @@ const PILLARS: Pillar[] = [
   },
   {
     emoji: "📰",
-    title: "Blog & Videos",
+    title: "Blog",
     desc: "Firsthand stories, tutorials, honest takes.",
     href: "/blog",
   },

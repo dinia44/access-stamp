@@ -2,9 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
-import { Badge, Button, Card } from "@/components/ui";
+import { Button, Card } from "@/components/ui";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
+import { VenueDetailActions } from "@/components/venue-detail-actions";
 
 export default function VenueDetailPage({
   params,
@@ -62,15 +63,13 @@ export default function VenueDetailPage({
               <h1 className="font-[var(--font-heading)] text-4xl text-heading">{v.name}</h1>
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <span className="text-sm font-semibold text-muted">{v.location}</span>
-                <Badge tone="blue">{v.type}</Badge>
-                <Badge tone="amber">Rating {v.rating.toFixed(1)}</Badge>
+                <span className="rounded-full bg-blue-pale px-3 py-1 text-xs font-semibold text-blue">{v.type}</span>
+                <span className="rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-amber">
+                  Rating {v.rating.toFixed(1)}
+                </span>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Button href="/ai">Ask the AI about this venue</Button>
-              <Button variant="secondary">Save</Button>
-              <Button variant="ghost">Report an issue</Button>
-            </div>
+            <VenueDetailActions slug={v.slug} venueName={v.name} />
           </div>
 
           <Card className="p-5">
@@ -139,7 +138,9 @@ export default function VenueDetailPage({
                   </div>
                 </div>
                 <div className="mt-4">
-                  <Button variant="secondary">Suggest an update</Button>
+                  <Button href={`/submit-venue?suggested=${encodeURIComponent(v.slug)}`} variant="secondary">
+                    Suggest an update
+                  </Button>
                 </div>
               </Card>
             </div>

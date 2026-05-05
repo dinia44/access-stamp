@@ -2,19 +2,34 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Container } from "@/components/container";
 import { GlobalSearch } from "@/components/global-search";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { SiteLogo } from "@/components/site-logo";
-import { NAV_ITEMS } from "@/lib/site";
+import { MORE_ITEMS, NAV_ITEMS } from "@/lib/site";
+
+function linkActive(path: string, href: string) {
+  if (href === "/") return path === "/";
+  return path === href || path.startsWith(`${href}/`);
+}
 
 export function Navbar() {
   const path = usePathname() || "/";
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement | null>(null);
 
-  const allMobile = useMemo(() => [...NAV_ITEMS], []);
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (!moreRef.current?.contains(e.target as Node)) setMoreOpen(false);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, []);
+
+  const allMobile = useMemo(() => [...NAV_ITEMS, ...MORE_ITEMS], []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 shadow-[0_1px_0_rgba(15,26,43,0.06)] backdrop-blur-md supports-[backdrop-filter]:bg-background/88">
@@ -24,15 +39,15 @@ export function Navbar() {
             <SiteLogo priority className="h-auto w-auto max-h-[48px] object-contain" />
           </Link>
 
-          <nav className="hidden min-w-0 items-center gap-1 lg:flex" aria-label="Primary">
+          <nav className="hidden min-w-0 flex-wrap items-center justify-end gap-0.5 lg:flex" aria-label="Primary">
             {NAV_ITEMS.map((item) => {
-              const active = item.href === "/" ? path === "/" : path.startsWith(item.href);
+              const active = linkActive(path, item.href);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2",
+                    "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-heading hover:bg-background-2 lg:px-3",
                     active && "bg-blue-pale text-blue",
                   )}
                 >
@@ -40,10 +55,44 @@ export function Navbar() {
                 </Link>
               );
             })}
+
+            <div className="relative" ref={moreRef}>
+              <button
+                type="button"
+                className={cn(
+                  "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-heading hover:bg-background-2 lg:px-3",
+                  moreOpen && "bg-background-2",
+                )}
+                aria-haspopup="menu"
+                aria-expanded={moreOpen}
+                onClick={() => setMoreOpen((v) => !v)}
+              >
+                More
+              </button>
+              {moreOpen ? (
+                <div
+                  role="menu"
+                  aria-label="More"
+                  className="absolute right-0 mt-2 w-56 rounded-[var(--radius-card)] border border-border bg-card p-2 shadow-[var(--shadow)]"
+                >
+                  {MORE_ITEMS.map((item) => (
+                    <Link
+                      key={item.href}
+                      role="menuitem"
+                      href={item.href}
+                      className="block rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2"
+                      onClick={() => setMoreOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+            </div>
           </nav>
 
           <div className="hidden shrink-0 items-center gap-3 md:flex">
-            <Button href="/venue-finder">Search venues</Button>
+            <Button href="/venue-finder">Start Searching</Button>
           </div>
 
           <button
@@ -82,10 +131,10 @@ export function Navbar() {
           <nav className="pb-4 md:hidden" aria-label="Mobile">
             <div className="grid gap-2 rounded-[var(--radius-card)] border border-border bg-card p-3 shadow-[var(--shadow-soft)]">
               {allMobile.map((item) => {
-                const active = item.href === "/" ? path === "/" : path.startsWith(item.href);
+                const active = linkActive(path, item.href);
                 return (
                   <Link
-                    key={item.href}
+                    key={`${item.href}-${item.label}`}
                     href={item.href}
                     className={cn(
                       "rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2",
@@ -97,22 +146,8 @@ export function Navbar() {
                   </Link>
                 );
               })}
-              <Link
-                href="/directory"
-                className="rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2"
-                onClick={() => setMobileOpen(false)}
-              >
-                Directory
-              </Link>
-              <Link
-                href="/glossary"
-                className="rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2"
-                onClick={() => setMobileOpen(false)}
-              >
-                Glossary
-              </Link>
               <Button href="/venue-finder" className="w-full justify-center">
-                Search venues
+                Start Searching
               </Button>
             </div>
           </nav>

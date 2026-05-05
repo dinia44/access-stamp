@@ -53,25 +53,29 @@ export function Button({
   children,
   variant = "primary",
   className,
+  onClick,
+  type = "button",
 }: {
   href?: string;
   children: React.ReactNode;
   variant?: "primary" | "secondary" | "ghost";
   className?: string;
+  onClick?: () => void | Promise<void>;
+  type?: "button" | "submit";
 }) {
   const base =
     "inline-flex items-center justify-center rounded-[var(--radius-ui)] px-4 py-2 text-sm font-semibold transition-colors";
   const v =
     variant === "primary"
-      ? "bg-blue text-white hover:bg-[#6b8c7c]"
+      ? "bg-blue text-white hover:bg-[#1a62ad]"
       : variant === "secondary"
-        ? "bg-amber text-navy hover:bg-[#b39258]"
+        ? "bg-amber text-navy hover:bg-[#b88323]"
         : "bg-transparent text-blue hover:bg-blue-pale";
 
   const cls = cn(base, v, className);
   if (href) return <Link className={cls} href={href}>{children}</Link>;
   return (
-    <button className={cls} type="button">
+    <button className={cls} type={type} onClick={onClick}>
       {children}
     </button>
   );

@@ -3,8 +3,18 @@
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
-import { SEARCH_INDEX } from "@/data/searchIndex";
+import { SEARCH_INDEX, type SearchItem } from "@/data/searchIndex";
 import { cn } from "@/lib/utils";
+
+function filterSearchIndex(term: string): SearchItem[] {
+  const t = term.trim().toLowerCase();
+  if (!t) return [];
+  return SEARCH_INDEX.filter((item) =>
+    [item.title, item.description, item.category, ...item.tags].some((field) =>
+      field.toLowerCase().includes(t),
+    ),
+  ).slice(0, 8);
+}
 
 type GlobalSearchProps = {
   className?: string;
@@ -25,19 +35,7 @@ export function GlobalSearch({ className, inputClassName, onSelect, ariaLabelled
   const [activeIndex, setActiveIndex] = useState(-1);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
-  const results = useMemo(() => {
-    const term = query.trim().toLowerCase();
-    if (!term) return [] as typeof SEARCH_INDEX;
-    return SEARCH_INDEX.filter((item) =>
-      [item.title, item.description, item.category, ...item.tags].some((field) =>
-        field.toLowerCase().includes(term),
-      ),
-    ).slice(0, 8);
-  }, [query]);
-
-  useEffect(() => {
-    setActiveIndex(results.length ? 0 : -1);
-  }, [results.length]);
+  const results = useMemo(() => filterSearchIndex(query), [query]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -76,11 +74,15 @@ export function GlobalSearch({ className, inputClassName, onSelect, ariaLabelled
       <input
         id={inputId}
         type="search"
+        role="combobox"
         value={query}
         onFocus={() => setOpen(true)}
         onChange={(e) => {
-          setQuery(e.target.value);
+          const v = e.target.value;
+          setQuery(v);
           setOpen(true);
+          const next = filterSearchIndex(v);
+          setActiveIndex(next.length ? 0 : -1);
         }}
         onKeyDown={onKeyDown}
         placeholder="Search venues, rights, equipment, transport or care support…"

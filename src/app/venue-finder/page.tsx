@@ -3,23 +3,7 @@ import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
-
-const FILTERS = [
-  "Step-free entrance",
-  "Ramp access",
-  "Accessible toilet",
-  "Changing Places toilet",
-  "Automatic doors",
-  "Wide doorways (80cm+)",
-  "Turning space (150cm+)",
-  "Nearby Blue Badge parking",
-  "Lift access",
-  "Transfer-friendly seating",
-  "Space for carers",
-  "Powered wheelchair suitable",
-  "Quiet environment",
-  "Staff disability awareness",
-] as const;
+import { VenueFinderFilters } from "@/components/venue-finder-filters";
 
 export default function VenueFinderPage() {
   return (
@@ -35,6 +19,13 @@ export default function VenueFinderPage() {
             <p className="max-w-[75ch] text-muted">
               Filter venues by real details, like door width, turning space, toilets, and parking. If you’re not sure
               what a feature means, ask the AI.
+            </p>
+            <p className="text-sm text-muted">
+              Know a place we should list?{" "}
+              <Link href="/submit-venue" className="font-semibold text-blue hover:underline">
+                Suggest a venue
+              </Link>
+              .
             </p>
           </div>
 
@@ -84,20 +75,7 @@ export default function VenueFinderPage() {
               </div>
             </div>
 
-            <div className="mt-5">
-              <div className="text-sm font-semibold text-heading">Access filters</div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {FILTERS.map((t) => (
-                  <button
-                    key={t}
-                    type="button"
-                    className="rounded-full border border-border bg-background px-3 py-2 text-xs font-semibold text-heading hover:bg-background-2"
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <VenueFinderFilters />
           </Card>
 
           <div className="flex items-center justify-between gap-3">
@@ -156,7 +134,12 @@ export default function VenueFinderPage() {
           <Card className="p-5">
             <div className="text-sm font-semibold text-heading">No results?</div>
             <p className="mt-1 text-sm text-muted">
-              Try removing a filter, searching a wider area, or using the AI search bar to describe what you need.
+              Try removing a filter, searching a wider area, or using the AI search bar to describe what you need. Still
+              stuck?{" "}
+              <Link href="/submit-venue" className="font-semibold text-blue hover:underline">
+                Suggest a venue
+              </Link>{" "}
+              for the directory.
             </p>
           </Card>
         </div>

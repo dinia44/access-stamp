@@ -1,10 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AdviceArticleJsonLd } from "@/components/advice-article-jsonld";
+import { ArticleActions } from "@/components/article-actions";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { ADVICE_ARTICLES, ADVICE_CATEGORIES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
+
+function relatedFor(slug: string, categorySlug: string, limit = 4) {
+  return ADVICE_ARTICLES.filter((x) => x.slug !== slug && x.categorySlug === categorySlug).slice(0, limit);
+}
 
 function slugToCategoryLabel(categorySlug: string) {
   const match = ADVICE_CATEGORIES.find((c) => c.href === `/advice/${categorySlug}`);
@@ -28,6 +34,7 @@ export default function AdviceArticlePage({
   if (!a) return notFound();
 
   const categoryLabel = slugToCategoryLabel(a.categorySlug);
+  const related = relatedFor(a.slug, a.categorySlug);
   const toc = a.sections
     .filter((s) => s.type === "h2")
     .map((s) => ({
@@ -37,6 +44,7 @@ export default function AdviceArticlePage({
 
   return (
     <div className="bg-background">
+      <AdviceArticleJsonLd article={a} />
       <SetChatContext
         page={{
           kind: "advice-article",
@@ -74,7 +82,7 @@ export default function AdviceArticlePage({
           </div>
 
           <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-            <Card className="p-6">
+            <Card className="advice-article-print p-6 print:border-0 print:shadow-none">
               <article className="prose max-w-none">
                 {a.sections.map((s, idx) => {
                   if (s.type === "h2") {
@@ -139,12 +147,11 @@ export default function AdviceArticlePage({
                 })}
               </article>
 
-              <div className="mt-8 grid gap-3 border-t border-border pt-6">
+              <div className="mt-8 grid gap-3 border-t border-border pt-6 print:hidden">
                 <div className="flex flex-wrap gap-2">
                   <Button href="/ai">Ask the AI about this topic</Button>
                   <Button variant="secondary">Was this helpful?</Button>
-                  <Button variant="ghost">Share</Button>
-                  <Button variant="ghost">Print / Download</Button>
+                  <ArticleActions title={a.title} />
                 </div>
                 <div className="text-xs text-muted">
                   This is informational content. It’s not medical advice or legal advice.
@@ -152,7 +159,7 @@ export default function AdviceArticlePage({
               </div>
             </Card>
 
-            <div className="grid gap-4">
+            <div className="grid gap-4 print:hidden">
               <Card className="p-5">
                 <div className="text-sm font-semibold text-heading">Table of contents</div>
                 <ol className="mt-3 grid gap-2 text-sm">
@@ -168,11 +175,21 @@ export default function AdviceArticlePage({
 
               <Card className="p-5">
                 <div className="text-sm font-semibold text-heading">Related</div>
-                <div className="mt-2 text-sm text-muted">
-                  Related articles will be shown here (by tags/category) once the CMS is connected.
-                </div>
-                <div className="mt-3">
-                  <Link className="text-sm font-semibold text-blue" href={`/advice/${a.categorySlug}`}>
+                {related.length ? (
+                  <ul className="mt-3 grid gap-2 text-sm">
+                    {related.map((r) => (
+                      <li key={r.slug}>
+                        <Link className="font-semibold text-blue hover:underline" href={`/advice/${r.slug}`}>
+                          {r.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-2 text-sm text-muted">More guides in this section are coming soon.</p>
+                )}
+                <div className="mt-4">
+                  <Link className="text-sm font-semibold text-blue hover:underline" href={`/advice/${a.categorySlug}`}>
                     Back to {categoryLabel} →
                   </Link>
                 </div>

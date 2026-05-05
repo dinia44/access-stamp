@@ -4,7 +4,7 @@ import { SiteLogo } from "@/components/site-logo";
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-[#060e1a] text-white">
+    <footer className="border-t border-white/10 bg-navy text-white">
       <Container className="py-10">
         <div className="grid gap-8 md:grid-cols-4">
           <div className="space-y-3">
@@ -22,6 +22,7 @@ export function Footer() {
             <div className="text-sm font-semibold">Platform</div>
             <ul className="mt-3 space-y-2 text-sm text-[#a0998f]">
               <li><Link href="/venue-finder">Venue Finder</Link></li>
+              <li><Link href="/submit-venue">Suggest a venue</Link></li>
               <li><Link href="/advice">Advice Hub</Link></li>
               <li><Link href="/ai">AI Assistant</Link></li>
             </ul>
@@ -54,7 +55,7 @@ export function Footer() {
             <Link href="/legal/privacy">Privacy</Link>
             <Link href="/legal/terms">Terms</Link>
           </div>
-          <div>Built with care from lived experience.</div>
+          <div>Built with ❤️ from lived experience</div>
         </div>
       </Container>
     </footer>

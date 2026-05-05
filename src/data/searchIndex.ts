@@ -18,6 +18,13 @@ const corePages: SearchItem[] = [
     url: "/venue-finder",
   },
   {
+    title: "Suggest a venue",
+    description: "Tell us about a place to help grow the directory.",
+    category: "Venue",
+    tags: ["submit", "suggest", "community", "directory"],
+    url: "/submit-venue",
+  },
+  {
     title: "Advice Hub",
     description: "Plain-language UK accessibility guides across daily life.",
     category: "Guide",
