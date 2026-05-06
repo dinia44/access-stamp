@@ -108,7 +108,7 @@ export function HeroSearchCard() {
     <Card className="overflow-hidden border border-[#d8dfea] bg-[#f7f7f8] shadow-[0_28px_64px_-20px_rgba(0,0,0,0.35)]">
       <div className="p-4 sm:p-5">
         <div className="grid gap-3">
-          <div className="grid gap-2 lg:grid-cols-[1fr_220px]">
+          <div className="grid gap-2 lg:grid-cols-[1.2fr_.9fr_240px]">
             <label
               htmlFor="hero-search"
               className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[10px] border border-[#d8dfea] bg-white px-3"
@@ -118,13 +118,33 @@ export function HeroSearchCard() {
                 <div className="text-sm font-semibold text-heading">Search for a venue, place, or access need</div>
                 <input
                   id="hero-search"
-                  className="w-full border-0 bg-transparent p-0 text-xs text-muted outline-none"
+                  className="w-full border-0 bg-transparent p-0 text-sm text-heading outline-none placeholder:text-xs placeholder:text-muted"
                   placeholder="e.g. Step-free restaurant in Leeds with parking"
                   aria-label="Search for a venue or place"
                   value={mainQuery}
                   onChange={(e) => setMainQuery(e.target.value)}
                   list="hero-main-suggestions"
                   autoComplete="on"
+                />
+              </div>
+            </label>
+
+            <label
+              htmlFor="hero-location-main"
+              className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[10px] border border-[#d8dfea] bg-white px-3"
+            >
+              <span aria-hidden className="text-lg text-[#184080]">⌖</span>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold text-heading">Location</div>
+                <input
+                  id="hero-location-main"
+                  className="w-full border-0 bg-transparent p-0 text-sm text-heading outline-none placeholder:text-xs placeholder:text-muted"
+                  placeholder="Enter city, town or postcode"
+                  autoComplete="postal-code"
+                  inputMode="search"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  list="hero-location-suggestions"
                 />
               </div>
             </label>
@@ -207,7 +227,7 @@ export function HeroSearchCard() {
                   <div className="text-sm font-semibold text-heading">Location</div>
                   <input
                     id="hero-location"
-                    className="w-full border-0 bg-transparent p-0 text-xs text-muted outline-none"
+                    className="w-full border-0 bg-transparent p-0 text-sm text-heading outline-none placeholder:text-xs placeholder:text-muted"
                     placeholder="Enter city, town or postcode"
                     autoComplete="postal-code"
                     inputMode="numeric"
