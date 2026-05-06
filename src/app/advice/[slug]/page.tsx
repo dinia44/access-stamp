@@ -25,12 +25,13 @@ function slugifyHeading(s: string) {
     .replace(/\s+/g, "-");
 }
 
-export default function AdviceArticlePage({
+export default async function AdviceArticlePage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }> | { slug: string };
 }) {
-  const a = ADVICE_ARTICLES.find((x) => x.slug === params.slug);
+  const resolved = await Promise.resolve(params);
+  const a = ADVICE_ARTICLES.find((x) => x.slug === resolved.slug);
   if (!a) return notFound();
 
   const categoryLabel = slugToCategoryLabel(a.categorySlug);
