@@ -41,11 +41,17 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="relative block w-full overflow-hidden rounded-[var(--radius-card)] border border-border bg-background-2 text-left"
+          className="group relative block w-full cursor-pointer overflow-hidden rounded-[var(--radius-card)] border border-border bg-background-2 text-left transition-shadow hover:shadow-[var(--shadow-soft)]"
           aria-label={`Expand photo: ${current.label}`}
         >
           <div className="relative h-[280px] sm:h-[360px]">
-            <Image src={current.src} alt={current.alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 840px" />
+            <Image
+              src={current.src}
+              alt={current.alt}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+              sizes="(max-width: 768px) 100vw, 840px"
+            />
           </div>
           <div className="absolute right-3 top-3 rounded-full bg-card/95 px-3 py-1 text-xs font-semibold text-heading shadow-[var(--shadow-soft)]">
             Expand
@@ -67,13 +73,19 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
               type="button"
               onClick={() => setActive(idx)}
               className={cn(
-                "relative overflow-hidden rounded-[var(--radius-ui)] border bg-background-2 text-left",
+              "group relative cursor-pointer overflow-hidden rounded-[var(--radius-ui)] border bg-background-2 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]",
                 idx === active ? "border-blue ring-2 ring-blue/25" : "border-border",
               )}
               aria-label={`Open photo: ${photo.label}`}
             >
               <div className="relative h-20">
-                <Image src={photo.src} alt={photo.alt} fill className="object-cover" sizes="140px" />
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="140px"
+              />
               </div>
               <div className="truncate px-2 py-1 text-[11px] font-semibold text-heading">{photo.label}</div>
             </button>
@@ -85,7 +97,7 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
         <div className="fixed inset-0 z-[120] bg-black/85 p-4 sm:p-8" role="dialog" aria-modal="true">
           <button
             type="button"
-            className="absolute right-4 top-4 rounded-full bg-white/15 px-3 py-2 text-sm font-semibold text-white"
+            className="absolute right-4 top-4 cursor-pointer rounded-full bg-white/15 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/25"
             onClick={() => setExpanded(false)}
           >
             Close
@@ -96,7 +108,7 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
               type="button"
               aria-label="Previous image"
               onClick={goPrev}
-              className="mr-3 rounded-full bg-white/15 p-3 text-2xl font-bold text-white"
+              className="mr-3 cursor-pointer rounded-full bg-white/15 p-3 text-2xl font-bold text-white transition-colors hover:bg-white/25"
             >
               ←
             </button>
@@ -119,7 +131,7 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
               type="button"
               aria-label="Next image"
               onClick={goNext}
-              className="ml-3 rounded-full bg-white/15 p-3 text-2xl font-bold text-white"
+              className="ml-3 cursor-pointer rounded-full bg-white/15 p-3 text-2xl font-bold text-white transition-colors hover:bg-white/25"
             >
               →
             </button>
