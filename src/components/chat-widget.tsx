@@ -62,6 +62,7 @@ export function ChatWidget() {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [listening, setListening] = useState(false);
   const [typing, setTyping] = useState(false);
+  const [hoverReadEnabled, setHoverReadEnabled] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState<string>(() => {
     if (typeof window === "undefined") return VOICES[0]?.id ?? "browser-default";
     const cached = window.localStorage.getItem("access-stamp-voice-id");
@@ -75,6 +76,9 @@ export function ChatWidget() {
   ]);
   const scroller = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lastHoverSpeechAtRef = useRef(0);
+  const lastHoverTextRef = useRef("");
+  const liveTranscriptRef = useRef("");
 
   useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight });
@@ -99,8 +103,26 @@ export function ChatWidget() {
       ? quickOverride.actions
       : defaultQuick;
 
+  function normalizeForSpeech(text: string) {
+    return text
+      .replace(/\n+/g, ". ")
+      .replace(/\s+/g, " ")
+      .replace(/([a-zA-Z0-9])\s*([.?!])(?!\s)/g, "$1$2 ")
+      .trim();
+  }
+
+  function stopAllSpeech() {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+  }
+
   async function speakReply(reply: string) {
-    const text = reply.trim();
+    const text = normalizeForSpeech(reply);
     if (!voiceEnabled || !text) return;
     const selected = VOICES.find((v) => v.id === selectedVoice);
 
@@ -128,7 +150,7 @@ export function ChatWidget() {
 
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       try {
-        window.speechSynthesis.cancel();
+        stopAllSpeech();
         const u = new SpeechSynthesisUtterance(text);
         u.rate = 1;
         window.speechSynthesis.speak(u);
@@ -197,6 +219,7 @@ export function ChatWidget() {
     rec.interimResults = true;
     rec.lang = "en-GB";
     setListening(true);
+    liveTranscriptRef.current = "";
 
     rec.onresult = (e: unknown) => {
       const ev = e as {
@@ -211,12 +234,47 @@ export function ChatWidget() {
       for (let i = start; i < results.length; i++) {
         transcript += results[i]?.[0]?.transcript ?? "";
       }
-      setDraft(transcript.trim());
+      const cleaned = transcript.trim();
+      liveTranscriptRef.current = cleaned;
+      setDraft(cleaned);
     };
     rec.onerror = () => setListening(false);
-    rec.onend = () => setListening(false);
+    rec.onend = () => {
+      setListening(false);
+      const finalText = liveTranscriptRef.current.trim();
+      if (finalText) {
+        setDraft(finalText);
+        void send(finalText);
+        liveTranscriptRef.current = "";
+      }
+    };
     rec.start();
   }
+
+  useEffect(() => {
+    if (!hoverReadEnabled || typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      const now = Date.now();
+      if (now - lastHoverSpeechAtRef.current < 700) return;
+      const raw =
+        target.getAttribute("aria-label") ??
+        target.getAttribute("title") ??
+        target.textContent ??
+        "";
+      const text = raw.replace(/\s+/g, " ").trim().slice(0, 120);
+      if (!text || text === lastHoverTextRef.current) return;
+      lastHoverSpeechAtRef.current = now;
+      lastHoverTextRef.current = text;
+      stopAllSpeech();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1;
+      window.speechSynthesis.speak(utterance);
+    };
+    window.addEventListener("mouseover", handler);
+    return () => window.removeEventListener("mouseover", handler);
+  }, [hoverReadEnabled]);
 
   return (
     <div className="fixed bottom-5 right-5 z-[60] print:hidden">
@@ -233,7 +291,7 @@ export function ChatWidget() {
           <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-amber shadow" aria-hidden />
         </button>
       ) : (
-        <div className="h-[500px] w-[min(370px,calc(100vw-32px))] overflow-hidden rounded-[20px] border border-border bg-card shadow-[var(--shadow)]">
+        <div className="flex h-[min(560px,calc(100vh-32px))] w-[min(390px,calc(100vw-20px))] flex-col overflow-hidden rounded-[20px] border border-border bg-card shadow-[var(--shadow)]">
           <div
             className="flex items-center justify-between gap-3 px-4 py-3 text-white"
             style={{
@@ -250,6 +308,18 @@ export function ChatWidget() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className={cn(
+                  "rounded-[var(--radius-ui)] px-2 py-1 text-xs font-semibold",
+                  hoverReadEnabled ? "bg-white/20" : "bg-white/5 text-[#c0d0e2]",
+                )}
+                onClick={() => setHoverReadEnabled((v) => !v)}
+                aria-pressed={hoverReadEnabled}
+                title="Read labels when hovering over elements"
+              >
+                {hoverReadEnabled ? "Hover read: on" : "Hover read: off"}
+              </button>
               <select
                 className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white"
                 value={selectedVoice}
@@ -288,7 +358,7 @@ export function ChatWidget() {
             </div>
           </div>
 
-          <div ref={scroller} className="h-[360px] overflow-auto bg-background p-4">
+          <div ref={scroller} className="min-h-0 flex-1 overflow-auto bg-background p-4">
             <div className="grid gap-2">
               {msgs.map((m, i) => (
                 <div
@@ -313,9 +383,9 @@ export function ChatWidget() {
             </div>
           </div>
 
-          <div className="border-t border-border bg-white px-3 py-3">
+          <div className="border-t border-border bg-white px-3 pb-4 pt-3">
             <audio ref={audioRef} className="hidden" />
-            <div className="mb-2 flex gap-2 overflow-auto pb-1">
+            <div className="mb-2 flex min-h-8 gap-2 overflow-auto pb-1">
               {quick.map((t) => (
                 <button
                   key={t}
