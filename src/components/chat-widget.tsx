@@ -63,6 +63,7 @@ export function ChatWidget() {
   const [listening, setListening] = useState(false);
   const [typing, setTyping] = useState(false);
   const [hoverReadEnabled, setHoverReadEnabled] = useState(false);
+  const [canStopResponse, setCanStopResponse] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState<string>(() => {
     if (typeof window === "undefined") return VOICES[0]?.id ?? "browser-default";
     const cached = window.localStorage.getItem("access-stamp-voice-id");
@@ -76,6 +77,7 @@ export function ChatWidget() {
   ]);
   const scroller = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
   const lastHoverSpeechAtRef = useRef(0);
   const lastHoverTextRef = useRef("");
   const liveTranscriptRef = useRef("");
@@ -163,15 +165,19 @@ export function ChatWidget() {
   async function send(text: string) {
     const t = text.trim();
     if (!t) return;
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
     setMsgs((m) => [...m, { role: "user", text: t }]);
     setDraft("");
     setTyping(true);
+    setCanStopResponse(true);
 
     let data: ApiResponse | null = null;
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "content-type": "application/json" },
+        signal: abortRef.current.signal,
         body: JSON.stringify({
           message: t,
           page,
@@ -179,9 +185,15 @@ export function ChatWidget() {
         }),
       });
       if (res.ok) data = (await res.json()) as ApiResponse;
-    } catch {
-      // ignore
+    } catch (err) {
+      if ((err as Error).name === "AbortError") {
+        setTyping(false);
+        setCanStopResponse(false);
+        setMsgs((m) => [...m, { role: "assistant", text: "Stopped. Ask again when you're ready." }]);
+        return;
+      }
     }
+    setCanStopResponse(false);
 
     const reply =
       data?.reply ??
@@ -208,6 +220,13 @@ export function ChatWidget() {
         },
       ]);
     }
+  }
+
+  function stopResponse() {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setTyping(false);
+    setCanStopResponse(false);
   }
 
   function startListening() {
@@ -336,6 +355,26 @@ export function ChatWidget() {
                   </option>
                 ))}
               </select>
+              <button
+                type="button"
+                className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white hover:bg-white/20"
+                onClick={stopAllSpeech}
+                title="Stop voice playback"
+              >
+                Stop talking
+              </button>
+              <button
+                type="button"
+                className={cn(
+                  "rounded-[var(--radius-ui)] px-2 py-1 text-xs font-semibold text-white",
+                  canStopResponse ? "bg-white/20 hover:bg-white/30" : "bg-white/5 text-[#c0d0e2]",
+                )}
+                onClick={stopResponse}
+                disabled={!canStopResponse}
+                title="Stop current AI response"
+              >
+                Stop response
+              </button>
               <button
                 type="button"
                 className={cn(
