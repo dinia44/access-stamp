@@ -229,6 +229,12 @@ export function ChatWidget() {
     setCanStopResponse(false);
   }
 
+  function collapseChat() {
+    stopResponse();
+    stopAllSpeech();
+    setOpen(false);
+  }
+
   function startListening() {
     if (!canUseSpeech()) return;
     const Rec = getWebkitSpeechRecognition();
@@ -359,6 +365,7 @@ export function ChatWidget() {
                 type="button"
                 className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white hover:bg-white/20"
                 onClick={stopAllSpeech}
+                aria-label="Stop talking"
                 title="Stop voice playback"
               >
                 Stop talking
@@ -371,6 +378,7 @@ export function ChatWidget() {
                 )}
                 onClick={stopResponse}
                 disabled={!canStopResponse}
+                aria-label="Stop response"
                 title="Stop current AI response"
               >
                 Stop response
@@ -388,9 +396,11 @@ export function ChatWidget() {
               </button>
               <button
                 type="button"
-                className="rounded-[var(--radius-ui)] px-2 py-1 text-sm font-semibold hover:bg-white/10"
+                className="grid h-8 w-8 place-items-center rounded-full border border-white/30 bg-white/10 text-base font-semibold text-white hover:bg-white/20"
                 aria-label="Close chat"
-                onClick={() => setOpen(false)}
+                onClick={collapseChat}
+                title="Close and collapse chat"
+                style={{ backgroundColor: "rgba(220, 38, 38, 0.92)", borderColor: "rgba(254, 202, 202, 0.7)" }}
               >
                 ✕
               </button>
@@ -452,6 +462,7 @@ export function ChatWidget() {
                 aria-label={listening ? "Listening" : "Voice input"}
                 onClick={() => startListening()}
                 disabled={!canUseSpeech()}
+                title={listening ? "Listening now" : "Tap to speak"}
               >
                 {listening ? "●" : "🎤"}
               </button>
@@ -476,12 +487,25 @@ export function ChatWidget() {
               <button
                 type="button"
                 className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] bg-blue text-white"
-                aria-label="Send"
+                aria-label="Send message"
                 onClick={() => send(draft)}
               >
                 ➤
               </button>
+              <button
+                type="button"
+                className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] border border-border bg-white text-heading hover:bg-background-2"
+                aria-label="Close chat"
+                onClick={collapseChat}
+                title="Close and collapse chat"
+                style={{ backgroundColor: "#fef2f2", color: "#b91c1c", borderColor: "#fecaca" }}
+              >
+                ✕
+              </button>
             </div>
+            <p className="mt-2 text-[11px] font-semibold text-muted">
+              Type or use the mic to speak. Use Stop talking / Stop response any time, then close with ✕.
+            </p>
           </div>
         </div>
       )}
