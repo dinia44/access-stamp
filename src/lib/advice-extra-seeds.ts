@@ -174,6 +174,62 @@ export const ADVICE_EXTRA_SEEDS = [
       "Remember OH advice is not a final legal determination.",
     ],
   },
+  {
+    slug: "access-to-work-what-employer-pays-vs-grant",
+    title: "Access to Work vs employer duty: who pays for what?",
+    categorySlug: "workplace" as const,
+    tags: ["Access to Work", "Employer duty", "Funding"],
+    intro:
+      "A common confusion: employers still owe reasonable adjustments under the Equality Act, even when Access to Work exists. The grant can fund extra support, but it is not a substitute for core employer duties.",
+    steps: [
+      "List adjustments your employer should provide immediately under reasonable adjustments.",
+      "List additional specialist costs that Access to Work may fund.",
+      "Confirm in writing which party is paying each item and by when.",
+      "Escalate delays that leave you unable to work safely.",
+    ],
+  },
+  {
+    slug: "access-to-work-application-walkthrough",
+    title: "Access to Work application: step-by-step walkthrough",
+    categorySlug: "workplace" as const,
+    tags: ["Access to Work", "Application", "Steps"],
+    intro:
+      "Applications go better when your evidence names concrete work tasks, barriers, and consequences. Generic statements like \"I need support\" usually lead to slower and weaker recommendations.",
+    steps: [
+      "Prepare your role tasks and where barriers happen (travel, meetings, software, fatigue).",
+      "Describe what happens without support: delays, errors, pain, sickness absence, safety risk.",
+      "Include previous adjustments that helped or failed.",
+      "After submitting, keep timelines and chase if responses stall.",
+    ],
+  },
+  {
+    slug: "workplace-meeting-script-and-email-template",
+    title: "Workplace adjustment meeting script and follow-up email template",
+    categorySlug: "workplace" as const,
+    tags: ["Meetings", "Templates", "Adjustments"],
+    intro:
+      "Most workplace disputes come from unclear conversations. A short script and a same-day follow-up email create accountability without escalating too early.",
+    steps: [
+      "Start with: barrier, requested adjustment, and expected outcome.",
+      "Ask for trial dates, review date, and decision owner.",
+      "Send a follow-up email summarising what was agreed.",
+      "If no response, send one reminder before formal grievance.",
+    ],
+  },
+  {
+    slug: "probation-disability-disclosure-and-risk",
+    title: "Probation, disclosure, and disability risk at a new job",
+    categorySlug: "workplace" as const,
+    tags: ["Probation", "Disclosure", "New job"],
+    intro:
+      "Starting a new role while managing disability can mean deciding when to disclose and how much detail to share. You do not need to overshare medical history to request practical adjustments.",
+    steps: [
+      "Decide what to disclose based on barriers, not diagnosis detail.",
+      "Request essential adjustments early enough for probation targets to be fair.",
+      "Track missed support and impact on performance metrics.",
+      "Get advice quickly if capability action starts before adjustments are in place.",
+    ],
+  },
 
   // --- Travel (leisure / holidays) ---
   {
