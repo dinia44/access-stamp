@@ -1,18 +1,54 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
-import { VenueFinderFilters } from "@/components/venue-finder-filters";
+import { VENUE_FILTERS, VenueFinderFilters } from "@/components/venue-finder-filters";
+
+function normalize(text: string) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function mapIncomingFilters(input: string) {
+  if (!input.trim()) return [];
+  const requested = input
+    .split(",")
+    .map((x) => normalize(x))
+    .filter(Boolean);
+  return VENUE_FILTERS.filter((f) => requested.some((r) => normalize(f).includes(r) || r.includes(normalize(f))));
+}
 
 export default function VenueFinderPage() {
-  const [locationQuery, setLocationQuery] = useState("");
-  const [venueType, setVenueType] = useState("Any");
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState("Relevance");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const initialLocation = searchParams.get("location") ?? "";
+  const initialType = searchParams.get("type") ?? "Any";
+  const initialQuery = searchParams.get("q") ?? "";
+  const initialFilters = mapIncomingFilters(searchParams.get("filters") ?? "");
+  const initialSort = searchParams.get("sort") ?? "Relevance";
+
+  const [locationQuery, setLocationQuery] = useState(initialLocation || initialQuery);
+  const [venueType, setVenueType] = useState(initialType);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>(initialFilters);
+  const [sortBy, setSortBy] = useState(initialSort);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (locationQuery.trim()) params.set("location", locationQuery.trim());
+    if (venueType !== "Any") params.set("type", venueType);
+    if (selectedFilters.length) params.set("filters", selectedFilters.join(","));
+    if (sortBy !== "Relevance") params.set("sort", sortBy);
+
+    const next = params.toString();
+    const current = searchParams.toString();
+    if (next === current) return;
+    router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+  }, [locationQuery, venueType, selectedFilters, sortBy, pathname, router, searchParams]);
 
   const filtered = useMemo(() => {
     let items = [...SAMPLE_VENUES];
