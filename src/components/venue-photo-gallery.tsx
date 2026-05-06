@@ -28,8 +28,8 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
     if (!expanded) return;
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setExpanded(false);
-      if (e.key === "ArrowRight") goNext();
-      if (e.key === "ArrowLeft") goPrev();
+      if (e.key === "ArrowRight") setActive((prev) => (prev + 1) % photos.length);
+      if (e.key === "ArrowLeft") setActive((prev) => (prev - 1 + photos.length) % photos.length);
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
