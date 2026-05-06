@@ -93,39 +93,39 @@ export default function HomePage() {
           aria-hidden
           style={{
             background:
-              "radial-gradient(700px 500px at 20% 60%, rgba(122,155,138,0.10), transparent 60%), radial-gradient(700px 500px at 80% 20%, rgba(196,162,101,0.08), transparent 60%)",
+              "radial-gradient(980px 600px at 10% 40%, rgba(36,120,208,0.22), transparent 58%), radial-gradient(800px 500px at 90% 15%, rgba(15,38,72,0.35), transparent 62%)",
           }}
         />
 
-        <Container className="relative py-16 sm:py-20">
-          <div className="mx-auto max-w-[700px] text-center">
+        <Container className="relative py-12 sm:py-14">
+          <div className="mx-auto max-w-[760px] text-center">
             <FadeIn>
-              <span className="inline-flex items-center rounded-full bg-amber-pale px-4 py-1 text-[11px] font-semibold tracking-[0.18em] uppercase text-[color:var(--amber-light)]">
-                UK accessibility platform
+              <span className="inline-flex items-center rounded-full border border-[#ebd7ad]/70 bg-[#fff6de] px-4 py-1 text-[11px] font-semibold tracking-[0.18em] uppercase text-[#8b6b2a]">
+                👑 UK accessibility platform
               </span>
             </FadeIn>
 
             <FadeIn delayMs={120}>
-              <h1 className="mt-5 font-[var(--font-heading)] text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.02] tracking-[-0.025em] text-[#e8e2d8]">
+              <h1 className="mt-4 font-[var(--font-heading)] text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.02] tracking-[-0.03em] text-white">
                 Find places that actually work for your access needs
               </h1>
             </FadeIn>
 
             <FadeIn delayMs={240}>
-              <p className="mx-auto mt-5 max-w-[560px] text-[17px] leading-[1.7] text-[#a0998f]">
-                Search practical access details before you go - including step-free entry, toilets, parking, door
-                width, turning space, seating and quiet-space information.
+              <p className="mx-auto mt-3 max-w-[640px] text-[22px] leading-[1.35] text-[#e1e9f7]">
+                Search practical access details before you go — including step-free entry,
+                accessible toilets, parking, hearing support, lift access and more.
               </p>
             </FadeIn>
 
             <FadeIn delayMs={300}>
-              <p className="mx-auto mt-4 max-w-[700px] text-sm font-medium text-[#c8b38a]">
-                Built from lived experience · Practical UK guidance · Real access detail, not vague labels
+              <p className="mx-auto mt-3 max-w-[700px] text-sm font-medium text-[#e8cc8e]">
+                Built from lived experience. Practical UK guidance. Real access detail, not vague labels.
               </p>
             </FadeIn>
           </div>
 
-          <div className="mx-auto mt-10 max-w-[880px]">
+          <div className="mx-auto mt-6 max-w-[980px]">
             <FadeIn delayMs={360}>
               <HeroSearchCard />
             </FadeIn>

@@ -5,20 +5,21 @@ import Link from "next/link";
 import { Button, Card } from "@/components/ui";
 
 const FILTERS = [
-  "Step-free entrance",
+  "Step-free access",
   "Accessible toilet",
+  "Hearing loop",
+  "Lift access",
+  "Parking",
+  "Sensory support",
   "Wide doorways",
-  "Nearby parking",
-  "Automatic doors",
   "Turning space",
   "Changing Places",
-  "Space for carers",
 ] as const;
 
 const DEFAULT_ACTIVE = new Set<string>([
-  "Step-free entrance",
+  "Step-free access",
   "Accessible toilet",
-  "Wide doorways",
+  "Parking",
 ]);
 
 export function HeroSearchCard() {
@@ -36,68 +37,79 @@ export function HeroSearchCard() {
   }
 
   return (
-    <Card className="border border-border shadow-[0_32px_72px_-16px_rgba(0,0,0,0.2)]">
-      <div className="p-7 sm:p-8">
-        <div className="grid gap-4">
-          {/* Row 1 */}
-          <div className="grid gap-3 lg:grid-cols-[1fr_180px_260px]">
-            <label htmlFor="hero-location" className="text-sm font-semibold text-muted">
-              <span className="sr-only">Location</span>
-              <input
-                id="hero-location"
-                className="h-11 w-full rounded-[var(--radius-ui)] border border-border bg-background px-3 text-heading"
-                placeholder="📍 City, town, or postcode"
-                autoComplete="postal-code"
-                inputMode="search"
-              />
+    <Card className="overflow-hidden border border-[#d8dfea] bg-[#f7f7f8] shadow-[0_28px_64px_-20px_rgba(0,0,0,0.35)]">
+      <div className="p-4 sm:p-5">
+        <div className="grid gap-3">
+          <div className="grid gap-2 lg:grid-cols-[1.4fr_1fr_220px]">
+            <label htmlFor="hero-search" className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[10px] border border-[#d8dfea] bg-white px-3">
+              <span aria-hidden className="text-lg text-[#184080]">⌕</span>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold text-heading">Search for a venue or place</div>
+                <input
+                  id="hero-search"
+                  className="w-full border-0 bg-transparent p-0 text-xs text-muted outline-none"
+                  placeholder="e.g. museum, library, cinema, restaurant"
+                  aria-label="Search for a venue or place"
+                />
+              </div>
             </label>
-            <label htmlFor="hero-venue-type" className="text-sm font-semibold text-muted">
-              <span className="sr-only">Venue type</span>
-              <select
-                id="hero-venue-type"
-                className="h-11 w-full rounded-[var(--radius-ui)] border border-border bg-background px-3 text-heading"
-              >
-                <option>Restaurant</option>
-                <option>Café</option>
-                <option>Hotel</option>
-                <option>Shopping</option>
-                <option>Leisure</option>
-                <option>Arts & Culture</option>
-              </select>
+
+            <label htmlFor="hero-location" className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[10px] border border-[#d8dfea] bg-white px-3">
+              <span aria-hidden className="text-lg text-[#184080]">⌖</span>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold text-heading">Location</div>
+                <input
+                  id="hero-location"
+                  className="w-full border-0 bg-transparent p-0 text-xs text-muted outline-none"
+                  placeholder="Enter city, town or postcode"
+                  autoComplete="postal-code"
+                  inputMode="search"
+                />
+              </div>
             </label>
-            <div className="flex items-end">
-              <Button className="w-full justify-center" aria-label="Search venues">
-                Search venues
-              </Button>
-            </div>
-            <div className="flex items-end gap-2">
-              <Link
-                href="/ai"
-                className="inline-flex h-11 w-full items-center justify-center rounded-[var(--radius-ui)] border border-border bg-white px-4 text-sm font-semibold text-heading hover:bg-background-2"
-              >
-                Ask Access Stamp AI
-              </Link>
-            </div>
+
+            <Button className="h-12 w-full justify-center rounded-[10px] bg-[#0d4bb3] text-white hover:bg-[#0a3f97]" aria-label="Search venues">
+              Search venues →
+            </Button>
           </div>
 
-          <div className="h-px w-full bg-border" aria-hidden />
-
-          {/* Row 2 */}
-          <div>
-            <div className="text-[11px] font-semibold tracking-[0.12em] uppercase text-[#9a9590]">
-              Access filters
+          <Link
+            href="/ai"
+            className="grid min-h-11 grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[10px] border border-[#d8dfea] bg-white px-3 py-2 hover:bg-[#f5f8ff]"
+          >
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-blue text-xs text-white" aria-hidden>
+              ✦
+            </span>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-heading">Ask Access Stamp AI</span>
+                <span className="rounded-full bg-blue px-2 py-0.5 text-[10px] font-bold text-white">BETA</span>
+              </div>
+              <div className="truncate text-xs text-muted">
+                Get help finding venues, understanding accessibility, and planning your visit.
+              </div>
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <span className="text-[#184080]" aria-hidden>›</span>
+          </Link>
+
+          <div>
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <div className="text-[11px] font-semibold tracking-[0.14em] uppercase text-[#5f6f86]">Access filters</div>
+              <button type="button" className="text-xs font-semibold text-[#184080] hover:underline cursor-pointer">
+                View all filters ˅
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
               {chips.map(({ t, on }) => (
                 <button
                   key={t}
                   type="button"
                   onClick={() => toggle(t)}
                   className={
-                    "rounded-[10px] px-4 py-2 text-[13px] font-medium transition-colors " +
+                    "rounded-[10px] border px-3 py-2 text-[13px] font-medium transition-colors cursor-pointer " +
                     (on
-                      ? "bg-blue text-white"
-                      : "border border-border bg-white text-heading hover:bg-background-2")
+                      ? "border-[#0d4bb3] bg-[#e8f0ff] text-[#184080]"
+                      : "border-[#d8dfea] bg-white text-[#184080] hover:bg-[#f5f8ff]")
                   }
                   aria-pressed={on}
                 >
@@ -107,17 +119,12 @@ export function HeroSearchCard() {
             </div>
           </div>
 
-          <div className="h-px w-full bg-border" aria-hidden />
-
-          {/* Row 3 */}
-          <div className="flex items-start gap-3 text-sm text-muted">
-            <div className="text-xl leading-none" aria-hidden>
-              💬
-            </div>
+          <div className="flex items-center gap-2 rounded-[10px] bg-[#eef2f7] px-3 py-2 text-sm text-muted">
+            <span className="text-base leading-none text-[#184080]" aria-hidden>◌</span>
             <div>
               Or describe what you need, for example:{" "}
-              <span className="italic text-text">
-                “wheelchair-friendly pub in Liverpool with good parking”
+              <span className="italic text-[#184080]">
+                wheelchair-friendly museum in Liverpool with accessible toilets
               </span>
             </div>
           </div>
