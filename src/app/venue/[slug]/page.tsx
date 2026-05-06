@@ -6,6 +6,7 @@ import { Button, Card } from "@/components/ui";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
 import { VenueDetailActions } from "@/components/venue-detail-actions";
+import { VenuePhotoGallery } from "@/components/venue-photo-gallery";
 
 const ACCESS_AREAS = [
   {
@@ -151,6 +152,16 @@ export default async function VenueDetailPage({
               </div>
             </div>
           </Card>
+
+          {v.photos?.length ? (
+            <Card className="p-5">
+              <div className="mb-3 text-sm font-semibold text-heading">Photo guide with measurements</div>
+              <p className="mb-4 text-sm text-muted">
+                Click through images of the venue, entrance, doorway width, bathroom, and internal layout.
+              </p>
+              <VenuePhotoGallery photos={v.photos} />
+            </Card>
+          ) : null}
 
           <div className="grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
             <Card className="p-5">

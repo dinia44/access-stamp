@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <rect width="1400" height="900" fill="#f0ede8"/>
+  <rect x="140" y="150" width="1120" height="640" rx="22" fill="#ffffff" stroke="#ddd8d0" stroke-width="6"/>
+  <rect x="250" y="260" width="180" height="120" rx="12" fill="#e6f0fb"/>
+  <rect x="500" y="260" width="180" height="120" rx="12" fill="#e6f0fb"/>
+  <rect x="750" y="260" width="180" height="120" rx="12" fill="#e6f0fb"/>
+  <rect x="1000" y="260" width="180" height="120" rx="12" fill="#e6f0fb"/>
+  <circle cx="700" cy="560" r="150" fill="none" stroke="#d4952a" stroke-width="10" stroke-dasharray="16 12"/>
+  <text x="700" y="570" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#0c1d34" font-weight="700">150cm+</text>
+  <text x="700" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" fill="#0c1d34" font-weight="700">Inside Layout</text>
+  <text x="700" y="845" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#2c3e54">Turning space indicator (sample placeholder)</text>
+</svg>

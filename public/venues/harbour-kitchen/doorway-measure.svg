@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <rect width="1400" height="900" fill="#f0ede8"/>
+  <rect x="360" y="130" width="680" height="700" rx="20" fill="#ffffff" stroke="#ddd8d0" stroke-width="6"/>
+  <rect x="520" y="220" width="360" height="520" rx="10" fill="#2478d0"/>
+  <line x1="520" y1="760" x2="880" y2="760" stroke="#d4952a" stroke-width="8"/>
+  <polygon points="520,760 548,748 548,772" fill="#d4952a"/>
+  <polygon points="880,760 852,748 852,772" fill="#d4952a"/>
+  <rect x="585" y="705" width="230" height="44" rx="12" fill="#0c1d34"/>
+  <text x="700" y="736" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#ffffff" font-weight="700">92cm</text>
+  <text x="700" y="95" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" fill="#0c1d34" font-weight="700">Doorway Width</text>
+  <text x="700" y="865" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#2c3e54">Measurement overlay example</text>
+</svg>

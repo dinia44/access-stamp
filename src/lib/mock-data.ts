@@ -23,6 +23,12 @@ export type Venue = {
   lastUpdated: string;
   confidence: "High" | "Medium" | "Low";
   features: Record<string, "yes" | "no" | "unknown">;
+  photos?: Array<{
+    src: string;
+    alt: string;
+    label: string;
+    measurement?: string;
+  }>;
 };
 
 export const SAMPLE_VENUES: Venue[] = [
@@ -51,6 +57,35 @@ export const SAMPLE_VENUES: Venue[] = [
       "Quiet environment": "unknown",
       "Staff disability awareness": "unknown",
     },
+    photos: [
+      {
+        src: "/venues/harbour-kitchen/venue-overview.svg",
+        alt: "Harbour Kitchen front view and outdoor approach",
+        label: "Venue overview",
+      },
+      {
+        src: "/venues/harbour-kitchen/entrance.svg",
+        alt: "Harbour Kitchen main entrance with step-free approach",
+        label: "Entrance",
+      },
+      {
+        src: "/venues/harbour-kitchen/doorway-measure.svg",
+        alt: "Doorway opening at Harbour Kitchen with width measurement arrow",
+        label: "Doorway",
+        measurement: "Door width measured: 92cm",
+      },
+      {
+        src: "/venues/harbour-kitchen/accessible-toilet.svg",
+        alt: "Accessible toilet at Harbour Kitchen",
+        label: "Bathroom",
+      },
+      {
+        src: "/venues/harbour-kitchen/internal-layout.svg",
+        alt: "Internal seating and turning space at Harbour Kitchen",
+        label: "Inside layout",
+        measurement: "Turning circle shown: 150cm+",
+      },
+    ],
   },
   {
     slug: "gallery-cafe-manchester",

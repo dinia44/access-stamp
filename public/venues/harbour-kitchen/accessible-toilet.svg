@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <rect width="1400" height="900" fill="#f6f4f1"/>
+  <rect x="170" y="150" width="1060" height="640" rx="22" fill="#ffffff" stroke="#ddd8d0" stroke-width="6"/>
+  <rect x="280" y="280" width="300" height="360" rx="18" fill="#e6f0fb"/>
+  <rect x="730" y="300" width="430" height="300" rx="16" fill="#fdf4e3"/>
+  <line x1="615" y1="320" x2="615" y2="620" stroke="#2478d0" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="1060" cy="420" r="46" fill="#d4952a"/>
+  <text x="700" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" fill="#0c1d34" font-weight="700">Accessible Bathroom</text>
+  <text x="700" y="845" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#2c3e54">Toilet and grab rail view (sample placeholder)</text>
+</svg>
