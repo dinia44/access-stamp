@@ -19,6 +19,24 @@ type ApiResponse = {
   links?: Array<{ label: string; href: string }>;
 };
 
+type VoiceChoice = {
+  id: string;
+  label: string;
+  provider: "eleven" | "browser";
+};
+
+const ELEVEN_VOICE_ID = process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID ?? "";
+const ELEVEN_VOICE_ID_2 = process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID_2 ?? "";
+const VOICES: VoiceChoice[] = [
+  ...(ELEVEN_VOICE_ID
+    ? [{ id: ELEVEN_VOICE_ID, label: "Access Stamp Voice", provider: "eleven" as const }]
+    : []),
+  ...(ELEVEN_VOICE_ID_2
+    ? [{ id: ELEVEN_VOICE_ID_2, label: "Access Stamp Voice 2", provider: "eleven" as const }]
+    : []),
+  { id: "browser-default", label: "Browser voice", provider: "browser" as const },
+];
+
 type WebkitSpeechRecognitionCtor = new () => {
   continuous: boolean;
   interimResults: boolean;
@@ -44,6 +62,11 @@ export function ChatWidget() {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [listening, setListening] = useState(false);
   const [typing, setTyping] = useState(false);
+  const [selectedVoice, setSelectedVoice] = useState<string>(() => {
+    if (typeof window === "undefined") return VOICES[0]?.id ?? "browser-default";
+    const cached = window.localStorage.getItem("access-stamp-voice-id");
+    return cached && VOICES.some((v) => v.id === cached) ? cached : VOICES[0]?.id ?? "browser-default";
+  });
   const [msgs, setMsgs] = useState<Msg[]>([
     {
       role: "assistant",
@@ -51,6 +74,7 @@ export function ChatWidget() {
     },
   ]);
   const scroller = useRef<HTMLDivElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight });
@@ -74,6 +98,45 @@ export function ChatWidget() {
     quickOverride && quickOverride.kind === page.kind
       ? quickOverride.actions
       : defaultQuick;
+
+  async function speakReply(reply: string) {
+    const text = reply.trim();
+    if (!voiceEnabled || !text) return;
+    const selected = VOICES.find((v) => v.id === selectedVoice);
+
+    if (selected?.provider === "eleven") {
+      try {
+        const res = await fetch("/api/voice", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ text, voiceId: selected.id }),
+        });
+        if (res.ok) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.src = url;
+            await audioRef.current.play();
+          }
+          return;
+        }
+      } catch {
+        // fall through to browser voice
+      }
+    }
+
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = 1;
+        window.speechSynthesis.speak(u);
+      } catch {
+        // ignore
+      }
+    }
+  }
 
   async function send(text: string) {
     const t = text.trim();
@@ -107,16 +170,7 @@ export function ChatWidget() {
     setMsgs((m) => [...m, { role: "assistant", text: reply }]);
     setTyping(false);
 
-    if (voiceEnabled && typeof window !== "undefined" && "speechSynthesis" in window) {
-      try {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(reply);
-        u.rate = 1;
-        window.speechSynthesis.speak(u);
-      } catch {
-        // ignore
-      }
-    }
+    await speakReply(reply);
 
     if (data?.venues?.length) {
       // Render as a short follow-up message with links.
@@ -196,6 +250,22 @@ export function ChatWidget() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <select
+                className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white"
+                value={selectedVoice}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setSelectedVoice(v);
+                  if (typeof window !== "undefined") window.localStorage.setItem("access-stamp-voice-id", v);
+                }}
+                aria-label="Select AI voice"
+              >
+                {VOICES.map((v) => (
+                  <option key={v.id} value={v.id} className="text-heading">
+                    {v.label}
+                  </option>
+                ))}
+              </select>
               <button
                 type="button"
                 className={cn(
@@ -244,6 +314,7 @@ export function ChatWidget() {
           </div>
 
           <div className="border-t border-border bg-white px-3 py-3">
+            <audio ref={audioRef} className="hidden" />
             <div className="mb-2 flex gap-2 overflow-auto pb-1">
               {quick.map((t) => (
                 <button
