@@ -7,49 +7,96 @@ import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
 import { VenueDetailActions } from "@/components/venue-detail-actions";
 
-export default function VenueDetailPage({
+const ACCESS_AREAS = [
+  {
+    title: "Entrance & approach",
+    points: ["Step-free entrance", "Ramp access", "Automatic doors", "Wide doorways (80cm+)"],
+  },
+  {
+    title: "Inside the venue",
+    points: ["Turning space (150cm+)", "Lift access", "Quiet environment", "Powered wheelchair suitable"],
+  },
+  {
+    title: "Toilets",
+    points: ["Accessible toilet", "Changing Places toilet"],
+  },
+  {
+    title: "Parking & support",
+    points: ["Nearby Blue Badge parking", "Staff disability awareness"],
+  },
+] as const;
+
+function statusDetails(v: "yes" | "no" | "unknown" | undefined) {
+  if (v === "yes") return { icon: "✅", label: "Available", cls: "text-[#1f7a42]" };
+  if (v === "no") return { icon: "❌", label: "Not available", cls: "text-[#8a2b2b]" };
+  return { icon: "❓", label: "Unknown", cls: "text-muted" };
+}
+
+function venueEmoji(type: string) {
+  if (type === "Restaurant" || type === "Café" || type === "Pub & Bar") return "🍽️";
+  if (type === "Hotel") return "🏨";
+  if (type === "Shopping") return "🛍️";
+  if (type === "Arts & Culture") return "🎭";
+  if (type === "Entertainment") return "🎬";
+  if (type === "Sports & Fitness") return "🏋️";
+  if (type === "Outdoor") return "🌳";
+  if (type === "Healthcare") return "🏥";
+  return "📍";
+}
+
+const VENUE_COPY: Record<
+  string,
+  {
+    about: string;
+    beforeYouGo: string[];
+  }
+> = {
+  "harbour-kitchen-liverpool": {
+    about:
+      "Harbour Kitchen is one of the stronger central Liverpool options for a practical wheelchair-friendly meal stop, especially for mixed groups. The key positives are step-free access, wider internal routes, and a ground-floor accessible toilet.",
+    beforeYouGo: [
+      "Ask staff to reserve a route-side table if you use a larger powered chair or travel with a PA.",
+      "Check where the nearest Blue Badge spaces or drop-off points are before leaving.",
+      "If visiting at peak times, call ahead to confirm aisle space remains clear around your seating area.",
+    ],
+  },
+  "botanical-gardens-manchester": {
+    about:
+      "Botanical Gardens is popular for low-noise daytime visits and flatter pathways compared with many older parks. The main route from the visitor centre to the central garden loop is typically easier for powered chairs and mobility scooters.",
+    beforeYouGo: [
+      "Ask which entrances are staffed on the day you plan to visit.",
+      "Check if temporary event setups are blocking wider paths.",
+      "Plan rest stops if fatigue or pain increases on longer outdoor routes.",
+    ],
+  },
+  "gluckberry-woods-cafe-liverpool": {
+    about:
+      "Gluckberry Woods Cafe is usually quieter outside peak brunch times and has a layout that can often be adjusted by staff. Seating flexibility and circulation space are the key strengths in this listing.",
+    beforeYouGo: [
+      "Call ahead for the best time window if you need more space around tables.",
+      "Confirm where the nearest Blue Badge spaces are that day.",
+      "Ask staff to reserve a table with clear turning space if possible.",
+    ],
+  },
+};
+
+export default async function VenueDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }> | { slug: string };
 }) {
-  const v = SAMPLE_VENUES.find((x) => x.slug === params.slug);
+  const resolved = await Promise.resolve(params);
+  const v = SAMPLE_VENUES.find((x) => x.slug === resolved.slug);
   if (!v) return notFound();
-
-  const rows: Array<{ area: string; key: string }[]> = [
-    [
-      { area: "Entrance & Approach", key: "Step-free entrance" },
-      { area: "Entrance & Approach", key: "Ramp access" },
-      { area: "Entrance & Approach", key: "Automatic doors" },
-      { area: "Entrance & Approach", key: "Wide doorways (80cm+)" },
-    ],
-    [
-      { area: "Interior", key: "Turning space (150cm+)" },
-      { area: "Interior", key: "Quiet environment" },
-      { area: "Interior", key: "Powered wheelchair suitable" },
-    ],
-    [
-      { area: "Toilets", key: "Accessible toilet" },
-      { area: "Toilets", key: "Changing Places toilet" },
-    ],
-    [
-      { area: "Parking", key: "Nearby Blue Badge parking" },
-    ],
-    [
-      { area: "Staff", key: "Staff disability awareness" },
-    ],
-  ];
-
-  function statusIcon(s: string | undefined) {
-    if (s === "yes") return "✅";
-    if (s === "no") return "❌";
-    return "❓";
-  }
+  const yesCount = Object.values(v.features).filter((x) => x === "yes").length;
+  const unknownCount = Object.values(v.features).filter((x) => x === "unknown").length;
+  const custom = VENUE_COPY[v.slug];
 
   return (
     <div className="bg-background">
       <SetChatContext page={{ kind: "venue", slug: v.slug, name: v.name }} />
       <Container className="py-10">
-        <div className="space-y-6">
+        <div className="space-y-8">
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
@@ -58,105 +105,179 @@ export default function VenueDetailPage({
             ]}
           />
 
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div>
-              <h1 className="font-[var(--font-heading)] text-4xl text-heading">{v.name}</h1>
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                <span className="text-sm font-semibold text-muted">{v.location}</span>
-                <span className="rounded-full bg-blue-pale px-3 py-1 text-xs font-semibold text-blue">{v.type}</span>
-                <span className="rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-amber">
-                  Rating {v.rating.toFixed(1)}
-                </span>
+          <Card className="overflow-hidden p-0">
+            <div
+              className="border-b border-border px-5 py-6 sm:px-7"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--blue-pale) 0%, var(--background-2) 45%, var(--amber-pale) 100%)",
+              }}
+            >
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <span className="grid h-12 w-12 place-items-center rounded-[var(--radius-ui)] bg-card text-2xl">
+                      {venueEmoji(v.type)}
+                    </span>
+                    <div>
+                      <h1 className="font-[var(--font-heading)] text-4xl text-heading">{v.name}</h1>
+                      <div className="mt-1 flex flex-wrap items-center gap-2">
+                        <span className="text-sm font-semibold text-muted">{v.location}</span>
+                        <span className="rounded-full bg-blue-pale px-3 py-1 text-xs font-semibold text-blue">{v.type}</span>
+                        <span className="rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-amber">
+                          Rating {v.rating.toFixed(1)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="max-w-[80ch] text-sm leading-6 text-text">{v.summary}</p>
+                </div>
+                <VenueDetailActions slug={v.slug} venueName={v.name} />
               </div>
             </div>
-            <VenueDetailActions slug={v.slug} venueName={v.name} />
-          </div>
 
-          <Card className="p-5">
-            <div className="text-sm font-semibold text-heading">Practical summary</div>
-            <p className="mt-2 text-sm text-muted">{v.summary}</p>
-            <div className="mt-4 grid gap-1 border-t border-border pt-3 text-xs text-muted sm:grid-cols-3">
-              <div>
+            <div className="grid gap-3 px-5 py-5 text-xs sm:grid-cols-2 lg:grid-cols-4 sm:px-7">
+              <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
                 <span className="font-semibold text-heading">Verification:</span> {v.verification}
               </div>
-              <div>
+              <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
                 <span className="font-semibold text-heading">Last updated:</span> {v.lastUpdated}
               </div>
-              <div>
+              <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
                 <span className="font-semibold text-heading">Confidence:</span> {v.confidence}
+              </div>
+              <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
+                <span className="font-semibold text-heading">Known access features:</span> {yesCount} confirmed
               </div>
             </div>
           </Card>
 
-          <div className="grid gap-4 lg:grid-cols-[1.2fr_.8fr]">
+          <div className="grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
             <Card className="p-5">
-              <div className="text-sm font-semibold text-heading">Accessibility breakdown</div>
-              <div className="mt-4 grid gap-3">
-                {rows.flat().map((r) => (
-                  <div
-                    key={`${r.area}-${r.key}`}
-                    className="grid gap-1 rounded-[var(--radius-card)] border border-border bg-background p-4"
+              <div className="text-sm font-semibold text-heading">What this means for your visit</div>
+              <p className="mt-2 text-sm text-muted">
+                This venue currently has <span className="font-semibold text-heading">{yesCount}</span> confirmed access points.
+                {unknownCount > 0 ? (
+                  <>
+                    {" "}
+                    <span className="font-semibold text-heading">{unknownCount}</span> details are still unknown, so it is worth
+                    calling ahead for exact measurements and on-the-day setup.
+                  </>
+                ) : (
+                  " Key details are mostly documented, but confirming current layout before travel is still sensible."
+                )}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {v.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-heading"
                   >
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="text-sm font-semibold text-heading">{r.key}</div>
-                      <div className="text-sm" aria-label={v.features[r.key] ?? "unknown"}>
-                        {statusIcon(v.features[r.key])}
-                      </div>
-                    </div>
-                    <div className="text-xs text-muted">{r.area}</div>
-                  </div>
+                    {tag}
+                  </span>
                 ))}
               </div>
             </Card>
 
-            <div className="grid gap-4">
-              <Card className="p-5">
-                <div className="text-sm font-semibold text-heading">Map</div>
-                <div className="mt-3 grid h-56 place-items-center rounded-[var(--radius-card)] border border-border bg-background text-sm font-semibold text-muted">
-                  Map placeholder
-                </div>
-                <div className="mt-3 text-xs text-muted">
-                  Location mapping will be expanded over time. For now, check the practical access details listed on
-                  this page before visiting.
-                </div>
-              </Card>
-
-              <Card className="p-5">
-                <div className="text-sm font-semibold text-heading">Contact details</div>
-                <div className="mt-3 grid gap-2 text-sm text-muted">
-                  <div>
-                    <span className="font-semibold text-heading">Address:</span> {v.location}
-                  </div>
-                  <div>
-                    <span className="font-semibold text-heading">Phone:</span> Coming soon
-                  </div>
-                  <div>
-                    <span className="font-semibold text-heading">Website:</span> Coming soon
-                  </div>
-                  <div>
-                    <span className="font-semibold text-heading">Opening hours:</span> Coming soon
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <Button href={`/submit-venue?suggested=${encodeURIComponent(v.slug)}`} variant="secondary">
-                    Suggest an update
-                  </Button>
-                </div>
-              </Card>
-            </div>
+            <Card className="p-5">
+              <div className="text-sm font-semibold text-heading">Location snapshot</div>
+              <div className="mt-3 grid h-44 place-items-center rounded-[var(--radius-card)] border border-border bg-background text-sm font-semibold text-muted">
+                Map preview coming soon
+              </div>
+              <p className="mt-3 text-xs text-muted">
+                Address area: <span className="font-semibold text-heading">{v.location}</span>. Use this with your route planner and
+                check Blue Badge options or drop-off points before leaving.
+              </p>
+            </Card>
           </div>
 
-          <Card className="p-5">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-sm font-semibold text-heading">Reviews</div>
-                <p className="mt-1 text-sm text-muted">Reviews coming soon (Phase 2).</p>
-              </div>
-              <Link href="/venue-finder" className="text-sm font-semibold text-blue">
-                Back to search →
-              </Link>
+          {custom ? (
+            <div className="grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
+              <Card className="p-5">
+                <div className="text-sm font-semibold text-heading">About this location</div>
+                <p className="mt-2 text-sm leading-6 text-muted">{custom.about}</p>
+              </Card>
+              <Card className="p-5">
+                <div className="text-sm font-semibold text-heading">Before you go</div>
+                <ul className="mt-2 list-disc space-y-2 pl-5 text-sm text-muted">
+                  {custom.beforeYouGo.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </Card>
             </div>
-          </Card>
+          ) : null}
+
+          <section className="space-y-4">
+            <div>
+              <h2 className="font-[var(--font-heading)] text-2xl text-heading">Accessibility breakdown</h2>
+              <p className="mt-1 text-sm text-muted">
+                Feature-by-feature status so you can decide quickly whether this place fits your access needs.
+              </p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {ACCESS_AREAS.map((area) => (
+                <Card key={area.title} className="p-5">
+                  <div className="text-sm font-semibold text-heading">{area.title}</div>
+                  <div className="mt-3 grid gap-2">
+                    {area.points.map((key) => {
+                      const s = statusDetails(v.features[key]);
+                      return (
+                        <div
+                          key={key}
+                          className="flex items-center justify-between rounded-[var(--radius-ui)] border border-border bg-background px-3 py-2"
+                        >
+                          <span className="text-sm text-heading">{key}</span>
+                          <span className={`text-xs font-semibold ${s.cls}`} aria-label={s.label}>
+                            {s.icon} {s.label}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </section>
+
+          <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+            <Card className="p-5">
+              <div className="text-sm font-semibold text-heading">Contact details</div>
+              <div className="mt-3 grid gap-2 text-sm text-muted">
+                <div>
+                  <span className="font-semibold text-heading">Address area:</span> {v.location}
+                </div>
+                <div>
+                  <span className="font-semibold text-heading">Phone:</span> Coming soon
+                </div>
+                <div>
+                  <span className="font-semibold text-heading">Website:</span> Coming soon
+                </div>
+                <div>
+                  <span className="font-semibold text-heading">Opening hours:</span> Coming soon
+                </div>
+              </div>
+              <div className="mt-4">
+                <Button href={`/submit-venue?suggested=${encodeURIComponent(v.slug)}`} variant="secondary">
+                  Suggest an update
+                </Button>
+              </div>
+            </Card>
+
+            <Card className="p-5">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-sm font-semibold text-heading">Reviews</div>
+                  <p className="mt-1 text-sm text-muted">
+                    Reviews coming soon (Phase 2). For now, this listing combines community reports and practical checks.
+                  </p>
+                </div>
+                <Link href="/venue-finder" className="text-sm font-semibold text-blue">
+                  Back to search →
+                </Link>
+              </div>
+            </Card>
+          </div>
         </div>
       </Container>
     </div>
