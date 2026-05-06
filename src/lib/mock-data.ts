@@ -59,31 +59,51 @@ export const SAMPLE_VENUES: Venue[] = [
     },
     photos: [
       {
-        src: "/venues/harbour-kitchen/venue-overview.svg",
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070383/harbour-overview_xhnawl.png",
         alt: "Harbour Kitchen front view and outdoor approach",
         label: "Venue overview",
       },
       {
-        src: "/venues/harbour-kitchen/entrance.svg",
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070411/harbour-entrance_xkan6a.png",
         alt: "Harbour Kitchen main entrance with step-free approach",
         label: "Entrance",
       },
       {
-        src: "/venues/harbour-kitchen/doorway-measure.svg",
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070373/harbour-doorway_c14mq8.png",
         alt: "Doorway opening at Harbour Kitchen with width measurement arrow",
         label: "Doorway",
         measurement: "Door width measured: 92cm",
       },
       {
-        src: "/venues/harbour-kitchen/accessible-toilet.svg",
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070380/harbour-bathroom_rqjprt.png",
         alt: "Accessible toilet at Harbour Kitchen",
         label: "Bathroom",
       },
       {
-        src: "/venues/harbour-kitchen/internal-layout.svg",
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070402/harbour-layout_trxskl.png",
         alt: "Internal seating and turning space at Harbour Kitchen",
         label: "Inside layout",
         measurement: "Turning circle shown: 150cm+",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070410/harbour-parking_asmpkh.png",
+        alt: "Nearby parking and approach route for Harbour Kitchen",
+        label: "Parking",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070408/harbour-quiet-corner_hvj1k5.png",
+        alt: "Quieter seating corner inside Harbour Kitchen",
+        label: "Quiet corner",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070381/harbour-staff-desk_jwbn6y.png",
+        alt: "Service desk and staff assistance point at Harbour Kitchen",
+        label: "Staff desk",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070404/harbour-report-collage_h519nm.png",
+        alt: "Combined venue accessibility visual report for Harbour Kitchen",
+        label: "Full report",
       },
     ],
   },
