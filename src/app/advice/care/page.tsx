@@ -7,6 +7,7 @@
  * Edit this file for hub layout only: quick actions, featured slugs, pathways, scenarios, related links.
  * Slugs here must match seeds (run `npm run build` after adding articles).
  */
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
@@ -113,6 +114,13 @@ const PAPERWORK_HABITS = [
 /** Avoid stale CDN/HTML cache hiding fresh deploys of this hub. */
 export const dynamic = "force-dynamic";
 
+/** Distinct tab title — if you still see only “Access Stamp”, you’re not on the latest deployment URL. */
+export const metadata: Metadata = {
+  title: "Care & Support hub",
+  description:
+    "Personal budgets, employing PAs, Care Act assessments, respite, advocacy, and escalation when social care fails — UK-focused guides.",
+};
+
 export default function CarePage() {
   const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === "care").sort((a, b) =>
     a.title.localeCompare(b.title),
@@ -120,7 +128,7 @@ export default function CarePage() {
   const featured = FEATURED.map((slug) => articles.find((a) => a.slug === slug)).filter(Boolean);
 
   return (
-    <div className="bg-background">
+    <div className="bg-background" data-access-stamp-care-hub="expanded">
       <SetChatContext page={{ kind: "advice" }} />
       <Container className="py-10">
         <div className="space-y-10">
