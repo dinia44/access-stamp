@@ -35,7 +35,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 shadow-[0_1px_0_rgba(15,26,43,0.06)] backdrop-blur-md supports-[backdrop-filter]:bg-background/88">
       <Container>
         <div className="flex h-16 items-center justify-between gap-3">
-          <Link href="/" className="flex shrink-0 items-center gap-3">
+          <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Access Stamp home">
             <SiteLogo priority className="h-auto w-auto max-h-[48px] object-contain" />
           </Link>
 

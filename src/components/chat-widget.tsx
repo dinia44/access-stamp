@@ -88,7 +88,7 @@ export function ChatWidget() {
   const [msgs, setMsgs] = useState<Msg[]>([
     {
       role: "assistant",
-      text: "Town + must-haves -> results. Tell me where you are and what access features you need first.",
+      text: "Hello, I'm ACCESS Stamp AI. How can I help you today? I can help you find accessible venues, explain equipment and benefits, and support you with disability-related questions. Ask me anything and I will guide you step by step.",
     },
   ]);
   const scroller = useRef<HTMLDivElement | null>(null);
@@ -370,19 +370,19 @@ export function ChatWidget() {
           <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-amber shadow" aria-hidden />
         </button>
       ) : (
-        <div className="flex h-[min(560px,calc(100vh-32px))] w-[min(390px,calc(100vw-20px))] flex-col overflow-hidden rounded-[20px] border border-border bg-card shadow-[var(--shadow)]">
+        <div className="flex h-[min(620px,calc(100vh-28px))] w-[min(420px,calc(100vw-16px))] flex-col overflow-hidden rounded-[22px] border border-[#d8d3cb] bg-card shadow-[0_22px_60px_-20px_rgba(12,29,52,0.35)]">
           <div
             className="flex items-center justify-between gap-3 px-4 py-3 text-white"
             style={{
-              background: "linear-gradient(135deg, #0f1a2b 0%, #1a2740 100%)",
+              background: "linear-gradient(135deg, #0d1626 0%, #1a2842 60%, #243957 100%)",
             }}
           >
-            <div>
+            <div className="min-w-0">
               <div className="text-sm font-semibold">Access Stamp AI</div>
               <div className="text-xs text-[#a0998f]">
                 <span className="inline-flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-green-400" aria-hidden />
-                  Online · Voice enabled
+                  Online assistant
                 </span>
               </div>
             </div>
@@ -467,14 +467,14 @@ export function ChatWidget() {
 
           <div
             ref={scroller}
-            className="min-h-0 flex-1 overflow-auto bg-background p-4"
+            className="min-h-0 flex-1 overflow-auto bg-[#f7f5f2] p-4"
             role="log"
             aria-live="polite"
             aria-relevant="additions text"
             aria-label="Chat transcript"
           >
             {(lastSummary.location || lastSummary.mustHaves.length) ? (
-              <div className="mb-3 rounded-full border border-border bg-white px-3 py-1 text-xs font-semibold text-heading">
+              <div className="mb-3 rounded-[var(--radius-ui)] border border-[#e3ded6] bg-white px-3 py-2 text-xs font-semibold text-heading shadow-[0_1px_3px_rgba(12,29,52,0.06)]">
                 {(lastSummary.location || "Your area")} · {lastSummary.venueType || "Any"} · Must-haves:{" "}
                 {lastSummary.mustHaves.join(", ") || "Not set yet"}
               </div>
@@ -484,10 +484,10 @@ export function ChatWidget() {
                 <div
                   key={i}
                   className={cn(
-                    "max-w-[90%] rounded-[var(--radius-card)] border px-3 py-2 text-sm",
+                    "max-w-[90%] rounded-[14px] border px-3 py-2 text-sm shadow-[0_1px_3px_rgba(12,29,52,0.05)]",
                     m.role === "assistant"
-                      ? "justify-self-start border-border bg-white"
-                      : "justify-self-end border-blue/20 bg-blue text-white",
+                      ? "justify-self-start border-[#e3ded6] bg-white"
+                      : "justify-self-end border-blue/10 bg-[#2478d0] text-white",
                   )}
                 >
                   {m.text.split("\n").map((line, idx) => (
@@ -496,17 +496,17 @@ export function ChatWidget() {
                 </div>
               ))}
               {typing ? (
-                <div className="max-w-[90%] justify-self-start rounded-[var(--radius-card)] border border-border bg-white px-3 py-2 text-sm text-muted">
+                <div className="max-w-[90%] justify-self-start rounded-[14px] border border-[#e3ded6] bg-white px-3 py-2 text-sm text-muted">
                   Typing…
                 </div>
               ) : null}
               {lastVenues.length ? (
                 <div className="mt-1 grid gap-2">
                   {lastVenues.map((v) => (
-                    <div key={v.slug} className="rounded-[var(--radius-ui)] border border-border bg-white p-2">
+                    <div key={v.slug} className="rounded-[var(--radius-ui)] border border-[#e3ded6] bg-white p-2 shadow-[0_1px_3px_rgba(12,29,52,0.06)]">
                       <div className="text-sm font-semibold text-heading">{v.name}</div>
                       <div className="text-xs text-muted">{v.location}</div>
-                      <div className="mt-1 flex items-center gap-2 text-[11px] font-semibold">
+                      <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] font-semibold">
                         <span className="rounded-full bg-green-100 px-2 py-0.5 text-green-700">Confidence: Medium</span>
                         <span className="rounded-full bg-background-2 px-2 py-0.5 text-muted">Distance: TBC</span>
                       </div>
@@ -553,7 +553,7 @@ export function ChatWidget() {
             </div>
           </div>
 
-          <div className="border-t border-border bg-white px-3 pb-4 pt-3">
+          <div className="border-t border-[#e3ded6] bg-white px-3 pb-3 pt-3">
             <audio ref={audioRef} className="hidden" />
             <div className="mb-2 flex min-h-8 gap-2 overflow-auto pb-1">
               {quick.map((t) => (
@@ -561,7 +561,7 @@ export function ChatWidget() {
                   key={t}
                   type="button"
                   className={cn(
-                    "rounded-full px-3 py-1 text-xs font-semibold cursor-pointer",
+                    "rounded-full px-3 py-1 text-xs font-semibold cursor-pointer whitespace-nowrap transition-colors",
                     t === quick[0]
                       ? "bg-blue text-white hover:bg-[#1f66b0]"
                       : "bg-amber-pale text-amber hover:bg-[#f8e8c5]",
@@ -578,11 +578,11 @@ export function ChatWidget() {
               ) : null}
             </div>
 
-            <div className="flex items-end gap-2">
+            <div className="grid grid-cols-[auto_auto_auto_1fr_auto_auto] items-end gap-2">
               <button
                 type="button"
                 className={cn(
-                  "grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] border border-border bg-white text-heading cursor-pointer",
+                  "grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] border border-[#ded8cf] bg-white text-heading cursor-pointer transition-colors hover:bg-[#f7f5f2]",
                   listening && "border-amber bg-amber-pale",
                 )}
                 aria-label={listening ? "Listening" : "Voice input"}
@@ -594,7 +594,7 @@ export function ChatWidget() {
               </button>
               <button
                 type="button"
-                className="h-10 rounded-[var(--radius-ui)] border border-border bg-white px-2 text-xs font-semibold text-heading hover:bg-background-2 cursor-pointer"
+                className="h-10 rounded-[var(--radius-ui)] border border-[#ded8cf] bg-white px-2 text-xs font-semibold text-heading hover:bg-[#f7f5f2] cursor-pointer transition-colors"
                 onClick={stopAllSpeech}
               >
                 Stop talking
@@ -604,15 +604,15 @@ export function ChatWidget() {
                 className={cn(
                   "h-10 rounded-[var(--radius-ui)] border px-2 text-xs font-semibold",
                   canStopResponse
-                    ? "border-border bg-white text-heading hover:bg-background-2 cursor-pointer"
-                    : "border-border bg-background-2 text-muted",
+                    ? "border-[#ded8cf] bg-white text-heading hover:bg-[#f7f5f2] cursor-pointer transition-colors"
+                    : "border-[#ded8cf] bg-[#f3f0ec] text-muted",
                 )}
                 onClick={stopResponse}
                 disabled={!canStopResponse}
               >
                 Stop response
               </button>
-              <div className="flex-1">
+              <div className="min-w-0">
                 <label className="sr-only" htmlFor="chat-input">
                   Ask Access Stamp AI
                 </label>
@@ -622,7 +622,7 @@ export function ChatWidget() {
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   placeholder="Ask me anything…"
-                  className="h-10 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-sm text-heading"
+                  className="h-10 w-full rounded-[var(--radius-ui)] border border-[#ded8cf] bg-white px-3 text-sm text-heading"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") send(draft);
                   }}
@@ -633,7 +633,7 @@ export function ChatWidget() {
               </div>
               <button
                 type="button"
-                className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] bg-blue text-white cursor-pointer"
+                className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] bg-blue text-white cursor-pointer transition-colors hover:bg-[#1f66b0]"
                 aria-label="Send message"
                 onClick={() => send(draft)}
               >
@@ -641,7 +641,7 @@ export function ChatWidget() {
               </button>
               <button
                 type="button"
-                className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] border border-border bg-white text-heading hover:bg-background-2 cursor-pointer"
+                className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] border border-[#fecaca] bg-[#fef2f2] text-[#b91c1c] hover:bg-[#fee2e2] cursor-pointer transition-colors"
                 aria-label="Close chat"
                 onClick={collapseChat}
                 title="Close and collapse chat"
@@ -650,18 +650,18 @@ export function ChatWidget() {
                 ✕
               </button>
             </div>
-            <p className="mt-2 text-[11px] font-semibold text-muted">
-              Type or use the mic to speak. Use Stop talking / Stop response any time, then close with ✕.
+            <p className="mt-2 text-[11px] text-muted">
+              Type or use the mic. You can stop speech, stop response, or close at any time.
             </p>
-            <div className="mt-2 flex items-center gap-2 text-[11px]">
+            <div className="mt-1 flex items-center gap-2 text-[11px]">
               <span className="font-semibold text-muted">Was this helpful?</span>
-              <button type="button" className="rounded border border-border px-2 py-0.5 text-heading cursor-pointer">
+              <button type="button" className="rounded border border-[#ded8cf] px-2 py-0.5 text-heading cursor-pointer hover:bg-[#f7f5f2] transition-colors">
                 Yes
               </button>
-              <button type="button" className="rounded border border-border px-2 py-0.5 text-heading cursor-pointer">
+              <button type="button" className="rounded border border-[#ded8cf] px-2 py-0.5 text-heading cursor-pointer hover:bg-[#f7f5f2] transition-colors">
                 Not yet
               </button>
-              <button type="button" className="ml-auto rounded border border-border px-2 py-0.5 text-heading cursor-pointer" onClick={copySummary}>
+              <button type="button" className="ml-auto rounded border border-[#ded8cf] px-2 py-0.5 text-heading cursor-pointer hover:bg-[#f7f5f2] transition-colors" onClick={copySummary}>
                 Copy summary
               </button>
             </div>

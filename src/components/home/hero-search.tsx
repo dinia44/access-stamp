@@ -41,16 +41,22 @@ export function HeroSearchCard() {
         <div className="grid gap-4">
           {/* Row 1 */}
           <div className="grid gap-3 lg:grid-cols-[1fr_180px_260px]">
-            <label className="text-sm font-semibold text-muted">
+            <label htmlFor="hero-location" className="text-sm font-semibold text-muted">
               <span className="sr-only">Location</span>
               <input
+                id="hero-location"
                 className="h-11 w-full rounded-[var(--radius-ui)] border border-border bg-background px-3 text-heading"
                 placeholder="📍 City, town, or postcode"
+                autoComplete="postal-code"
+                inputMode="search"
               />
             </label>
-            <label className="text-sm font-semibold text-muted">
+            <label htmlFor="hero-venue-type" className="text-sm font-semibold text-muted">
               <span className="sr-only">Venue type</span>
-              <select className="h-11 w-full rounded-[var(--radius-ui)] border border-border bg-background px-3 text-heading">
+              <select
+                id="hero-venue-type"
+                className="h-11 w-full rounded-[var(--radius-ui)] border border-border bg-background px-3 text-heading"
+              >
                 <option>Restaurant</option>
                 <option>Café</option>
                 <option>Hotel</option>
@@ -60,7 +66,9 @@ export function HeroSearchCard() {
               </select>
             </label>
             <div className="flex items-end">
-              <Button className="w-full justify-center">Search venues</Button>
+              <Button className="w-full justify-center" aria-label="Search venues">
+                Search venues
+              </Button>
             </div>
             <div className="flex items-end gap-2">
               <Link

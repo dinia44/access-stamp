@@ -8,6 +8,30 @@ type Req = {
   voiceMode?: boolean;
 };
 
+const MUST_HAVE_TOKENS = [
+  "step-free",
+  "accessible toilet",
+  "parking",
+  "blue badge",
+  "turning space",
+  "quiet",
+  "lift",
+  "automatic doors",
+] as const;
+
+function extractLocation(t: string) {
+  const fromIn = t.match(/\bin\s+([a-z][a-z\s-]{1,30})/i)?.[1]?.trim();
+  if (fromIn) return fromIn;
+  const postcode = t.match(/\b[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}\b/i)?.[0];
+  if (postcode) return postcode.toUpperCase();
+  return "";
+}
+
+function extractMustHaves(t: string) {
+  const low = t.toLowerCase();
+  return MUST_HAVE_TOKENS.filter((token) => low.includes(token));
+}
+
 function short(s: string) {
   return s.replace(/\s+/g, " ").trim();
 }
@@ -80,8 +104,13 @@ export async function POST(req: Request) {
 
   // Venue search mode (simple mock until database + real AI integration)
   if (page.kind === "venue-finder" || isVenueQuestion(msg)) {
-    const reply =
-      "I can help you find places that genuinely work, not just ones labelled ‘accessible’. What location are you searching (city/town or postcode area), and what are your must-haves (step-free entrance, accessible toilet, Blue Badge parking, turning space, quiet, etc.)?";
+    const location = extractLocation(msg);
+    const mustHaves = extractMustHaves(msg);
+    const missingLocation = !location;
+    const missingMustHaves = mustHaves.length === 0;
+    const reply = missingLocation || missingMustHaves
+      ? `I can help you find places that genuinely work. ${missingLocation ? "Share your town/postcode area." : ""} ${missingMustHaves ? "Tell me your must-haves (like step-free, toilet, parking, quiet)." : ""}`.trim()
+      : `Great, I’ll use ${location} with must-haves: ${mustHaves.join(", ")}. Here are a few places to start.`;
     return NextResponse.json({
       reply: voice ? short(reply) : reply,
       venues: SAMPLE_VENUES.map((v) => ({

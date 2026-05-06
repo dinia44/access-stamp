@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Button, Card } from "@/components/ui";
@@ -7,6 +8,7 @@ import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
 import { VenueDetailActions } from "@/components/venue-detail-actions";
 import { VenuePhotoGallery } from "@/components/venue-photo-gallery";
+import { VenueVisitPlanActions } from "@/components/venue-visit-plan-actions";
 
 const ACCESS_AREAS = [
   {
@@ -81,6 +83,30 @@ const VENUE_COPY: Record<
   },
 };
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }> | { slug: string };
+}): Promise<Metadata> {
+  const resolved = await Promise.resolve(params);
+  const v = SAMPLE_VENUES.find((x) => x.slug === resolved.slug);
+  if (!v) return {};
+  return {
+    title: `${v.name} accessibility guide`,
+    description: v.summary,
+    openGraph: {
+      title: `${v.name} accessibility guide`,
+      description: v.summary,
+      type: "article",
+    },
+    twitter: {
+      card: "summary",
+      title: `${v.name} accessibility guide`,
+      description: v.summary,
+    },
+  };
+}
+
 export default async function VenueDetailPage({
   params,
 }: {
@@ -92,10 +118,26 @@ export default async function VenueDetailPage({
   const yesCount = Object.values(v.features).filter((x) => x === "yes").length;
   const unknownCount = Object.values(v.features).filter((x) => x === "unknown").length;
   const custom = VENUE_COPY[v.slug];
+  const beforeYouGo = custom?.beforeYouGo ?? [
+    "Call ahead to confirm current layout and staff support.",
+    "Check Blue Badge parking and nearest drop-off before leaving.",
+    "Confirm toilet access and doorway widths for your equipment.",
+  ];
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: v.name,
+    description: v.summary,
+    address: { "@type": "PostalAddress", addressLocality: v.location, addressCountry: "GB" },
+    aggregateRating: { "@type": "AggregateRating", ratingValue: v.rating.toFixed(1), reviewCount: 1 },
+    keywords: v.tags.join(", "),
+  };
 
   return (
     <div className="bg-background">
       <SetChatContext page={{ kind: "venue", slug: v.slug, name: v.name }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <Container className="py-10">
         <div className="space-y-8">
           <Breadcrumbs
@@ -188,6 +230,13 @@ export default async function VenueDetailPage({
                   </span>
                 ))}
               </div>
+              <VenueVisitPlanActions
+                venueName={v.name}
+                location={v.location}
+                summary={v.summary}
+                tags={v.tags}
+                beforeYouGo={beforeYouGo}
+              />
             </Card>
 
             <Card className="p-5">
@@ -211,7 +260,7 @@ export default async function VenueDetailPage({
               <Card className="p-5">
                 <div className="text-sm font-semibold text-heading">Before you go</div>
                 <ul className="mt-2 list-disc space-y-2 pl-5 text-sm text-muted">
-                  {custom.beforeYouGo.map((item) => (
+                  {beforeYouGo.map((item) => (
                     <li key={item}>{item}</li>
                   ))}
                 </ul>

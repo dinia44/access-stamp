@@ -57,6 +57,24 @@ body {
     Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
+body[data-text-scale="large"] {
+  font-size: 1.075rem;
+}
+
+body[data-line-spacing="wide"] {
+  line-height: 1.7;
+}
+
+body[data-high-contrast="on"] {
+  --background: #ffffff;
+  --background-2: #f4f4f4;
+  --card: #ffffff;
+  --heading: #071224;
+  --text: #0f1722;
+  --muted: #213144;
+  --border: #aab8c6;
+}
+
 ::selection {
   background: rgba(212, 149, 42, 0.28);
 }
@@ -66,6 +84,20 @@ body {
   outline: 3px solid var(--ring);
   outline-offset: 2px;
   border-radius: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body[data-reduce-motion="on"] * {
+  animation-duration: 0ms !important;
+  transition-duration: 0ms !important;
+  scroll-behavior: auto !important;
 }
 
 @media print {

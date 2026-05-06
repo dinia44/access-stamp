@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const PRIMARY_COUNT = 8;
 
-const FILTERS = [
+export const VENUE_FILTERS = [
   "Step-free entrance",
   "Ramp access",
   "Accessible toilet",
@@ -22,28 +22,29 @@ const FILTERS = [
   "Staff disability awareness",
 ] as const;
 
-export function VenueFinderFilters() {
-  const [selected, setSelected] = useState<Set<string>>(() => new Set());
+type Props = {
+  selected: string[];
+  onChange: (next: string[]) => void;
+};
+
+export function VenueFinderFilters({ selected, onChange }: Props) {
   const [moreOpen, setMoreOpen] = useState(false);
+  const selectedSet = new Set(selected);
 
   function toggle(label: string) {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(label)) next.delete(label);
-      else next.add(label);
-      return next;
-    });
+    const next = new Set(selectedSet);
+    if (next.has(label)) next.delete(label);
+    else next.add(label);
+    onChange(Array.from(next));
   }
 
-  const primary = FILTERS.slice(0, PRIMARY_COUNT);
-  const extra = FILTERS.slice(PRIMARY_COUNT);
+  const primary = VENUE_FILTERS.slice(0, PRIMARY_COUNT);
+  const extra = VENUE_FILTERS.slice(PRIMARY_COUNT);
 
   return (
     <div className="mt-5 space-y-3">
       <div className="text-sm font-semibold text-heading">Access filters</div>
-      <p className="text-xs text-muted">
-        Tap to highlight must-haves (preview only — live filtering connects when search is wired to data).
-      </p>
+      <p className="text-xs text-muted">Tap to filter must-haves.</p>
       <div className="flex flex-wrap gap-2">
         {primary.map((t) => (
           <button
@@ -52,7 +53,7 @@ export function VenueFinderFilters() {
             onClick={() => toggle(t)}
             className={cn(
               "rounded-full border px-3 py-2 text-xs font-semibold transition-colors",
-              selected.has(t)
+              selectedSet.has(t)
                 ? "border-blue bg-blue-pale text-blue"
                 : "border-border bg-background text-heading hover:bg-background-2",
             )}
@@ -76,7 +77,7 @@ export function VenueFinderFilters() {
               onClick={() => toggle(t)}
               className={cn(
                 "rounded-full border px-3 py-2 text-xs font-semibold transition-colors",
-                selected.has(t)
+                selectedSet.has(t)
                   ? "border-blue bg-blue-pale text-blue"
                   : "border-border bg-background text-heading hover:bg-background-2",
               )}
@@ -87,9 +88,18 @@ export function VenueFinderFilters() {
         </div>
       </details>
 
-      {selected.size > 0 ? (
-        <div className="text-xs font-semibold text-muted">
-          {selected.size} filter{selected.size === 1 ? "" : "s"} selected
+      {selected.length > 0 ? (
+        <div className="flex items-center justify-between gap-3 text-xs font-semibold text-muted">
+          <span>
+            {selected.length} filter{selected.length === 1 ? "" : "s"} selected
+          </span>
+          <button
+            type="button"
+            className="rounded-[var(--radius-ui)] border border-border px-2 py-1 text-heading hover:bg-background-2"
+            onClick={() => onChange([])}
+          >
+            Clear filters
+          </button>
         </div>
       ) : null}
     </div>

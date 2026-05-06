@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useMemo, useState } from "react";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
@@ -6,6 +9,38 @@ import { SetChatContext } from "@/components/chat/set-context";
 import { VenueFinderFilters } from "@/components/venue-finder-filters";
 
 export default function VenueFinderPage() {
+  const [locationQuery, setLocationQuery] = useState("");
+  const [venueType, setVenueType] = useState("Any");
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState("Relevance");
+
+  const filtered = useMemo(() => {
+    let items = [...SAMPLE_VENUES];
+
+    const loc = locationQuery.trim().toLowerCase();
+    if (loc) {
+      items = items.filter((v) => v.location.toLowerCase().includes(loc) || v.name.toLowerCase().includes(loc));
+    }
+
+    if (venueType !== "Any") {
+      items = items.filter((v) => v.type === venueType);
+    }
+
+    if (selectedFilters.length) {
+      items = items.filter((v) => selectedFilters.every((f) => v.features[f] === "yes"));
+    }
+
+    if (sortBy === "Rating") {
+      items.sort((a, b) => b.rating - a.rating);
+    } else if (sortBy === "Distance") {
+      items.sort((a, b) => a.location.localeCompare(b.location));
+    } else {
+      items.sort((a, b) => b.confidence.localeCompare(a.confidence));
+    }
+
+    return items;
+  }, [locationQuery, venueType, selectedFilters, sortBy]);
+
   return (
     <div className="bg-background">
       <SetChatContext page={{ kind: "venue-finder" }} />
@@ -37,11 +72,19 @@ export default function VenueFinderPage() {
                   <input
                     className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
                     placeholder="City, town, or postcode"
+                    value={locationQuery}
+                    onChange={(e) => setLocationQuery(e.target.value)}
+                    autoComplete="postal-code"
+                    inputMode="search"
                   />
                 </label>
                 <label className="text-sm font-semibold text-muted">
                   Venue type
-                  <select className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading">
+                  <select
+                    className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
+                    value={venueType}
+                    onChange={(e) => setVenueType(e.target.value)}
+                  >
                     <option>Any</option>
                     <option>Restaurant</option>
                     <option>Café</option>
@@ -75,14 +118,18 @@ export default function VenueFinderPage() {
               </div>
             </div>
 
-            <VenueFinderFilters />
+            <VenueFinderFilters selected={selectedFilters} onChange={setSelectedFilters} />
           </Card>
 
           <div className="flex items-center justify-between gap-3">
-            <div className="text-sm font-semibold text-heading">Results</div>
+            <div className="text-sm font-semibold text-heading">Results ({filtered.length})</div>
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted">Sort:</span>
-              <select className="h-9 rounded-[var(--radius-ui)] border border-border bg-white px-3 text-sm font-semibold text-heading">
+              <select
+                className="h-9 rounded-[var(--radius-ui)] border border-border bg-white px-3 text-sm font-semibold text-heading"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
                 <option>Relevance</option>
                 <option>Distance</option>
                 <option>Rating</option>
@@ -90,8 +137,9 @@ export default function VenueFinderPage() {
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {SAMPLE_VENUES.map((v) => (
+          {filtered.length ? (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((v) => (
               <Link key={v.slug} href={`/venue/${v.slug}`} className="group">
                 <Card className="h-full transition-shadow group-hover:shadow-[var(--shadow)]">
                   <div className="p-5">
@@ -128,8 +176,16 @@ export default function VenueFinderPage() {
                   </div>
                 </Card>
               </Link>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <Card className="p-5">
+              <div className="text-sm font-semibold text-heading">No results with current filters</div>
+              <p className="mt-1 text-sm text-muted">
+                Try clearing one or two filters, or search a wider location area.
+              </p>
+            </Card>
+          )}
 
           <Card className="p-5">
             <div className="text-sm font-semibold text-heading">No results?</div>
