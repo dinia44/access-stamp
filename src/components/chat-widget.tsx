@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useChat } from "@/components/chat/provider";
 
 type Msg = { role: "user" | "assistant"; text: string };
+type StateSummary = {
+  location: string;
+  venueType: string;
+  mustHaves: string[];
+};
 
 type ApiVenue = {
   slug: string;
@@ -63,7 +69,17 @@ export function ChatWidget() {
   const [listening, setListening] = useState(false);
   const [typing, setTyping] = useState(false);
   const [hoverReadEnabled, setHoverReadEnabled] = useState(false);
+  const [plainLanguage, setPlainLanguage] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [canStopResponse, setCanStopResponse] = useState(false);
+  const [errorText, setErrorText] = useState("");
+  const [lastLinks, setLastLinks] = useState<Array<{ label: string; href: string }>>([]);
+  const [lastVenues, setLastVenues] = useState<ApiVenue[]>([]);
+  const [lastSummary, setLastSummary] = useState<StateSummary>({
+    location: "",
+    venueType: "Any",
+    mustHaves: [],
+  });
   const [selectedVoice, setSelectedVoice] = useState<string>(() => {
     if (typeof window === "undefined") return VOICES[0]?.id ?? "browser-default";
     const cached = window.localStorage.getItem("access-stamp-voice-id");
@@ -72,7 +88,7 @@ export function ChatWidget() {
   const [msgs, setMsgs] = useState<Msg[]>([
     {
       role: "assistant",
-      text: "Hi, I’m Access Stamp AI. Tell me your location and your access needs, or ask about rights, equipment, or care.",
+      text: "Town + must-haves -> results. Tell me where you are and what access features you need first.",
     },
   ]);
   const scroller = useRef<HTMLDivElement | null>(null);
@@ -111,6 +127,39 @@ export function ChatWidget() {
       .replace(/\s+/g, " ")
       .replace(/([a-zA-Z0-9])\s*([.?!])(?!\s)/g, "$1$2 ")
       .trim();
+  }
+
+  function toPlainLanguage(text: string) {
+    return text
+      .replace(/genuinely/gi, "really")
+      .replace(/accessibility/gi, "access")
+      .replace(/must-haves/gi, "key needs")
+      .replace(/\butilise\b/gi, "use");
+  }
+
+  function parseStateSummary(text: string) {
+    const lower = text.toLowerCase();
+    const location =
+      text.match(/\bin\s+([a-z][a-z\s-]{1,30})/i)?.[1]?.trim() ??
+      text.match(/\b[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}\b/i)?.[0] ??
+      "";
+    const venueType =
+      /(restaurant|cafe|café|hotel|shopping|leisure|arts|pub|bar)/i.exec(text)?.[1] ?? lastSummary.venueType;
+    const mustHaves = [
+      "step-free",
+      "accessible toilet",
+      "parking",
+      "blue badge",
+      "turning space",
+      "quiet",
+      "lift",
+      "automatic doors",
+    ].filter((token) => lower.includes(token));
+    return {
+      location: location || lastSummary.location,
+      venueType: venueType ? venueType[0].toUpperCase() + venueType.slice(1) : "Any",
+      mustHaves: mustHaves.length ? mustHaves : lastSummary.mustHaves,
+    };
   }
 
   function stopAllSpeech() {
@@ -168,9 +217,11 @@ export function ChatWidget() {
     abortRef.current?.abort();
     abortRef.current = new AbortController();
     setMsgs((m) => [...m, { role: "user", text: t }]);
+    setLastSummary(parseStateSummary(t));
     setDraft("");
     setTyping(true);
     setCanStopResponse(true);
+    setErrorText("");
 
     let data: ApiResponse | null = null;
     try {
@@ -185,6 +236,7 @@ export function ChatWidget() {
         }),
       });
       if (res.ok) data = (await res.json()) as ApiResponse;
+      else setErrorText("I could not reach the assistant right now.");
     } catch (err) {
       if ((err as Error).name === "AbortError") {
         setTyping(false);
@@ -192,34 +244,24 @@ export function ChatWidget() {
         setMsgs((m) => [...m, { role: "assistant", text: "Stopped. Ask again when you're ready." }]);
         return;
       }
+      setErrorText("Connection problem. Try again, or use Venue Finder/Browse advice below.");
     }
     setCanStopResponse(false);
 
-    const reply =
+    const rawReply =
       data?.reply ??
       "Got it. Quick check: what city/town or postcode area are you in, and which access features matter most (step-free, toilet, parking, quiet, etc.)?";
+    const reply = plainLanguage ? toPlainLanguage(rawReply) : rawReply;
 
     if (data?.quickActions?.length)
       setQuickOverride({ kind: page.kind, actions: data.quickActions });
+    setLastLinks(data?.links ?? []);
+    setLastVenues(data?.venues?.slice(0, 3) ?? []);
     setMsgs((m) => [...m, { role: "assistant", text: reply }]);
     setTyping(false);
 
     await speakReply(reply);
 
-    if (data?.venues?.length) {
-      // Render as a short follow-up message with links.
-      const venueLines = data.venues
-        .slice(0, 3)
-        .map((v) => `• ${v.name} (${v.location})`)
-        .join("\n");
-      setMsgs((m) => [
-        ...m,
-        {
-          role: "assistant",
-          text: `Here are a few matches:\n${venueLines}\n\nOpen a venue page for the full breakdown.`,
-        },
-      ]);
-    }
   }
 
   function stopResponse() {
@@ -233,6 +275,18 @@ export function ChatWidget() {
     stopResponse();
     stopAllSpeech();
     setOpen(false);
+  }
+
+  async function copySummary() {
+    const summary = `Location: ${lastSummary.location || "Not set"}\nType: ${lastSummary.venueType}\nMust-haves: ${
+      lastSummary.mustHaves.join(", ") || "Not set"
+    }`;
+    try {
+      await navigator.clipboard.writeText(summary);
+      setMsgs((m) => [...m, { role: "assistant", text: "Summary copied for sharing." }]);
+    } catch {
+      setMsgs((m) => [...m, { role: "assistant", text: "Could not copy summary on this browser." }]);
+    }
   }
 
   function startListening() {
@@ -306,7 +360,7 @@ export function ChatWidget() {
       {!open ? (
         <button
           type="button"
-          className="relative grid h-[58px] w-[58px] place-items-center rounded-[16px] bg-blue text-white shadow-[var(--shadow)] transition-transform hover:scale-[1.03]"
+          className="relative grid h-[58px] w-[58px] place-items-center rounded-[16px] bg-blue text-white shadow-[var(--shadow)] transition-transform hover:scale-[1.03] cursor-pointer"
           aria-label="Open chat"
           onClick={() => setOpen(true)}
         >
@@ -335,65 +389,69 @@ export function ChatWidget() {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className={cn(
-                  "rounded-[var(--radius-ui)] px-2 py-1 text-xs font-semibold",
-                  hoverReadEnabled ? "bg-white/20" : "bg-white/5 text-[#c0d0e2]",
-                )}
-                onClick={() => setHoverReadEnabled((v) => !v)}
-                aria-pressed={hoverReadEnabled}
-                title="Read labels when hovering over elements"
+                className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white hover:bg-white/20 cursor-pointer"
+                aria-haspopup="menu"
+                aria-expanded={settingsOpen}
+                onClick={() => setSettingsOpen((v) => !v)}
               >
-                {hoverReadEnabled ? "Hover read: on" : "Hover read: off"}
+                Settings
               </button>
-              <select
-                className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white"
-                value={selectedVoice}
-                onChange={(e) => {
-                  const v = e.target.value;
-                  setSelectedVoice(v);
-                  if (typeof window !== "undefined") window.localStorage.setItem("access-stamp-voice-id", v);
-                }}
-                aria-label="Select AI voice"
-              >
-                {VOICES.map((v) => (
-                  <option key={v.id} value={v.id} className="text-heading">
-                    {v.label}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="button"
-                className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white hover:bg-white/20"
-                onClick={stopAllSpeech}
-                aria-label="Stop talking"
-                title="Stop voice playback"
-              >
-                Stop talking
-              </button>
-              <button
-                type="button"
-                className={cn(
-                  "rounded-[var(--radius-ui)] px-2 py-1 text-xs font-semibold text-white",
-                  canStopResponse ? "bg-white/20 hover:bg-white/30" : "bg-white/5 text-[#c0d0e2]",
-                )}
-                onClick={stopResponse}
-                disabled={!canStopResponse}
-                aria-label="Stop response"
-                title="Stop current AI response"
-              >
-                Stop response
-              </button>
-              <button
-                type="button"
-                className={cn(
-                  "rounded-[var(--radius-ui)] px-2 py-1 text-xs font-semibold",
-                  voiceEnabled ? "bg-white/10" : "bg-white/5 text-[#c0d0e2]",
-                )}
-                onClick={() => setVoiceEnabled((v) => !v)}
-                aria-pressed={voiceEnabled}
-              >
-                {voiceEnabled ? "Voice: on" : "Voice: off"}
-              </button>
+              {settingsOpen ? (
+                <div className="absolute right-14 top-12 z-10 w-52 rounded-[var(--radius-card)] border border-white/30 bg-[#142138] p-2 text-white shadow-[var(--shadow)]">
+                  <label className="mb-2 grid gap-1 text-xs font-semibold">
+                    Voice
+                    <select
+                      className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white"
+                      value={selectedVoice}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setSelectedVoice(v);
+                        if (typeof window !== "undefined") window.localStorage.setItem("access-stamp-voice-id", v);
+                      }}
+                      aria-label="Select AI voice"
+                    >
+                      {VOICES.map((v) => (
+                        <option key={v.id} value={v.id} className="text-heading">
+                          {v.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <button
+                    type="button"
+                    className={cn(
+                      "mb-2 w-full rounded-[var(--radius-ui)] px-2 py-1 text-left text-xs font-semibold cursor-pointer",
+                      hoverReadEnabled ? "bg-white/20" : "bg-white/5 text-[#c0d0e2]",
+                    )}
+                    onClick={() => setHoverReadEnabled((v) => !v)}
+                    aria-pressed={hoverReadEnabled}
+                  >
+                    {hoverReadEnabled ? "Hover read: on" : "Hover read: off"}
+                  </button>
+                  <button
+                    type="button"
+                    className={cn(
+                      "w-full rounded-[var(--radius-ui)] px-2 py-1 text-left text-xs font-semibold cursor-pointer",
+                      voiceEnabled ? "bg-white/20" : "bg-white/5 text-[#c0d0e2]",
+                    )}
+                    onClick={() => setVoiceEnabled((v) => !v)}
+                    aria-pressed={voiceEnabled}
+                  >
+                    {voiceEnabled ? "Voice playback: on" : "Voice playback: off"}
+                  </button>
+                  <button
+                    type="button"
+                    className={cn(
+                      "mt-2 w-full rounded-[var(--radius-ui)] px-2 py-1 text-left text-xs font-semibold cursor-pointer",
+                      plainLanguage ? "bg-white/20" : "bg-white/5 text-[#c0d0e2]",
+                    )}
+                    onClick={() => setPlainLanguage((v) => !v)}
+                    aria-pressed={plainLanguage}
+                  >
+                    {plainLanguage ? "Plain language: on" : "Plain language: off"}
+                  </button>
+                </div>
+              ) : null}
               <button
                 type="button"
                 className="grid h-8 w-8 place-items-center rounded-full border border-white/30 bg-white/10 text-base font-semibold text-white hover:bg-white/20"
@@ -407,7 +465,20 @@ export function ChatWidget() {
             </div>
           </div>
 
-          <div ref={scroller} className="min-h-0 flex-1 overflow-auto bg-background p-4">
+          <div
+            ref={scroller}
+            className="min-h-0 flex-1 overflow-auto bg-background p-4"
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions text"
+            aria-label="Chat transcript"
+          >
+            {(lastSummary.location || lastSummary.mustHaves.length) ? (
+              <div className="mb-3 rounded-full border border-border bg-white px-3 py-1 text-xs font-semibold text-heading">
+                {(lastSummary.location || "Your area")} · {lastSummary.venueType || "Any"} · Must-haves:{" "}
+                {lastSummary.mustHaves.join(", ") || "Not set yet"}
+              </div>
+            ) : null}
             <div className="grid gap-2">
               {msgs.map((m, i) => (
                 <div
@@ -429,6 +500,56 @@ export function ChatWidget() {
                   Typing…
                 </div>
               ) : null}
+              {lastVenues.length ? (
+                <div className="mt-1 grid gap-2">
+                  {lastVenues.map((v) => (
+                    <div key={v.slug} className="rounded-[var(--radius-ui)] border border-border bg-white p-2">
+                      <div className="text-sm font-semibold text-heading">{v.name}</div>
+                      <div className="text-xs text-muted">{v.location}</div>
+                      <div className="mt-1 flex items-center gap-2 text-[11px] font-semibold">
+                        <span className="rounded-full bg-green-100 px-2 py-0.5 text-green-700">Confidence: Medium</span>
+                        <span className="rounded-full bg-background-2 px-2 py-0.5 text-muted">Distance: TBC</span>
+                      </div>
+                      <div className="mt-1 flex flex-wrap gap-1">
+                        {v.tags.slice(0, 3).map((tag) => (
+                          <span key={tag} className="rounded-full bg-blue-pale px-2 py-0.5 text-[11px] font-semibold text-blue">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <Link href={`/venue/${v.slug}`} className="mt-2 inline-block text-xs font-semibold text-blue cursor-pointer">
+                        View listing →
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+              {lastLinks.length ? (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {lastLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="rounded-[var(--radius-ui)] border border-border bg-white px-3 py-1 text-xs font-semibold text-blue"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+              {errorText ? (
+                <div className="rounded-[var(--radius-ui)] border border-[#fecaca] bg-[#fef2f2] p-2 text-xs text-[#991b1b]">
+                  {errorText}
+                  <div className="mt-2 flex gap-2">
+                    <Link href="/venue-finder" className="font-semibold underline">
+                      Use Venue Finder
+                    </Link>
+                    <Link href="/advice" className="font-semibold underline">
+                      Browse advice
+                    </Link>
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -439,7 +560,12 @@ export function ChatWidget() {
                 <button
                   key={t}
                   type="button"
-                  className="rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-amber hover:bg-[#f8e8c5]"
+                  className={cn(
+                    "rounded-full px-3 py-1 text-xs font-semibold cursor-pointer",
+                    t === quick[0]
+                      ? "bg-blue text-white hover:bg-[#1f66b0]"
+                      : "bg-amber-pale text-amber hover:bg-[#f8e8c5]",
+                  )}
                   onClick={() => send(t)}
                 >
                   {t}
@@ -456,7 +582,7 @@ export function ChatWidget() {
               <button
                 type="button"
                 className={cn(
-                  "grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] border border-border bg-white text-heading",
+                  "grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] border border-border bg-white text-heading cursor-pointer",
                   listening && "border-amber bg-amber-pale",
                 )}
                 aria-label={listening ? "Listening" : "Voice input"}
@@ -466,12 +592,33 @@ export function ChatWidget() {
               >
                 {listening ? "●" : "🎤"}
               </button>
+              <button
+                type="button"
+                className="h-10 rounded-[var(--radius-ui)] border border-border bg-white px-2 text-xs font-semibold text-heading hover:bg-background-2 cursor-pointer"
+                onClick={stopAllSpeech}
+              >
+                Stop talking
+              </button>
+              <button
+                type="button"
+                className={cn(
+                  "h-10 rounded-[var(--radius-ui)] border px-2 text-xs font-semibold",
+                  canStopResponse
+                    ? "border-border bg-white text-heading hover:bg-background-2 cursor-pointer"
+                    : "border-border bg-background-2 text-muted",
+                )}
+                onClick={stopResponse}
+                disabled={!canStopResponse}
+              >
+                Stop response
+              </button>
               <div className="flex-1">
                 <label className="sr-only" htmlFor="chat-input">
                   Ask Access Stamp AI
                 </label>
                 <input
                   id="chat-input"
+                  aria-label="Message Access Stamp AI"
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   placeholder="Ask me anything…"
@@ -486,7 +633,7 @@ export function ChatWidget() {
               </div>
               <button
                 type="button"
-                className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] bg-blue text-white"
+                className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] bg-blue text-white cursor-pointer"
                 aria-label="Send message"
                 onClick={() => send(draft)}
               >
@@ -494,7 +641,7 @@ export function ChatWidget() {
               </button>
               <button
                 type="button"
-                className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] border border-border bg-white text-heading hover:bg-background-2"
+                className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] border border-border bg-white text-heading hover:bg-background-2 cursor-pointer"
                 aria-label="Close chat"
                 onClick={collapseChat}
                 title="Close and collapse chat"
@@ -506,6 +653,18 @@ export function ChatWidget() {
             <p className="mt-2 text-[11px] font-semibold text-muted">
               Type or use the mic to speak. Use Stop talking / Stop response any time, then close with ✕.
             </p>
+            <div className="mt-2 flex items-center gap-2 text-[11px]">
+              <span className="font-semibold text-muted">Was this helpful?</span>
+              <button type="button" className="rounded border border-border px-2 py-0.5 text-heading cursor-pointer">
+                Yes
+              </button>
+              <button type="button" className="rounded border border-border px-2 py-0.5 text-heading cursor-pointer">
+                Not yet
+              </button>
+              <button type="button" className="ml-auto rounded border border-border px-2 py-0.5 text-heading cursor-pointer" onClick={copySummary}>
+                Copy summary
+              </button>
+            </div>
           </div>
         </div>
       )}
