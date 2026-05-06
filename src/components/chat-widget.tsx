@@ -5,7 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useChat } from "@/components/chat/provider";
 
-type Msg = { role: "user" | "assistant"; text: string };
+type Msg = { role: "user" | "assistant"; text: string; time: string };
 type StateSummary = {
   location: string;
   venueType: string;
@@ -63,6 +63,73 @@ function getWebkitSpeechRecognition(): WebkitSpeechRecognitionCtor | null {
   return w.webkitSpeechRecognition ?? null;
 }
 
+function nowLabel() {
+  return new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
+
+function IconSpeaker({ muted = false }: { muted?: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+      {muted ? <path d="m17 9 4 6m0-6-4 6" /> : <path d="M16 9a4 4 0 0 1 0 6m2-8a7 7 0 0 1 0 10" />}
+    </svg>
+  );
+}
+
+function IconDots() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
+      <circle cx="12" cy="5" r="2" />
+      <circle cx="12" cy="12" r="2" />
+      <circle cx="12" cy="19" r="2" />
+    </svg>
+  );
+}
+
+function IconChevronDown() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+function IconRobot() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <rect x="4" y="8" width="16" height="11" rx="3" />
+      <path d="M12 4v4m-3 5h.01M15 13h.01M8 19v2m8-2v2" />
+    </svg>
+  );
+}
+
+function IconUser() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" />
+    </svg>
+  );
+}
+
+function IconMic() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M5 11a7 7 0 0 0 14 0M12 18v3m-4 0h8" />
+    </svg>
+  );
+}
+
+function IconSend() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M22 2 11 13" />
+      <path d="m22 2-7 20-4-9-9-4 20-7Z" />
+    </svg>
+  );
+}
+
 export function ChatWidget() {
   const { page, open, setOpen, draft, setDraft, voiceMode } = useChat();
   const [voiceEnabled, setVoiceEnabled] = useState(true);
@@ -85,10 +152,12 @@ export function ChatWidget() {
     const cached = window.localStorage.getItem("access-stamp-voice-id");
     return cached && VOICES.some((v) => v.id === cached) ? cached : VOICES[0]?.id ?? "browser-default";
   });
+  const [selectedLanguage, setSelectedLanguage] = useState("en-GB");
   const [msgs, setMsgs] = useState<Msg[]>([
     {
       role: "assistant",
       text: "Hello, I'm ACCESS Stamp AI. How can I help you today? I can help you find accessible venues, explain equipment and benefits, and support you with disability-related questions. Ask me anything and I will guide you step by step.",
+      time: nowLabel(),
     },
   ]);
   const scroller = useRef<HTMLDivElement | null>(null);
@@ -203,6 +272,7 @@ export function ChatWidget() {
       try {
         stopAllSpeech();
         const u = new SpeechSynthesisUtterance(text);
+        u.lang = selectedLanguage;
         u.rate = 1;
         window.speechSynthesis.speak(u);
       } catch {
@@ -216,7 +286,7 @@ export function ChatWidget() {
     if (!t) return;
     abortRef.current?.abort();
     abortRef.current = new AbortController();
-    setMsgs((m) => [...m, { role: "user", text: t }]);
+    setMsgs((m) => [...m, { role: "user", text: t, time: nowLabel() }]);
     setLastSummary(parseStateSummary(t));
     setDraft("");
     setTyping(true);
@@ -241,7 +311,7 @@ export function ChatWidget() {
       if ((err as Error).name === "AbortError") {
         setTyping(false);
         setCanStopResponse(false);
-        setMsgs((m) => [...m, { role: "assistant", text: "Stopped. Ask again when you're ready." }]);
+        setMsgs((m) => [...m, { role: "assistant", text: "Stopped. Ask again when you're ready.", time: nowLabel() }]);
         return;
       }
       setErrorText("Connection problem. Try again, or use Venue Finder/Browse advice below.");
@@ -257,7 +327,7 @@ export function ChatWidget() {
       setQuickOverride({ kind: page.kind, actions: data.quickActions });
     setLastLinks(data?.links ?? []);
     setLastVenues(data?.venues?.slice(0, 3) ?? []);
-    setMsgs((m) => [...m, { role: "assistant", text: reply }]);
+    setMsgs((m) => [...m, { role: "assistant", text: reply, time: nowLabel() }]);
     setTyping(false);
 
     await speakReply(reply);
@@ -283,9 +353,9 @@ export function ChatWidget() {
     }`;
     try {
       await navigator.clipboard.writeText(summary);
-      setMsgs((m) => [...m, { role: "assistant", text: "Summary copied for sharing." }]);
+      setMsgs((m) => [...m, { role: "assistant", text: "Summary copied for sharing.", time: nowLabel() }]);
     } catch {
-      setMsgs((m) => [...m, { role: "assistant", text: "Could not copy summary on this browser." }]);
+      setMsgs((m) => [...m, { role: "assistant", text: "Could not copy summary on this browser.", time: nowLabel() }]);
     }
   }
 
@@ -296,7 +366,7 @@ export function ChatWidget() {
     const rec = new Rec();
     rec.continuous = false;
     rec.interimResults = true;
-    rec.lang = "en-GB";
+    rec.lang = selectedLanguage;
     setListening(true);
     liveTranscriptRef.current = "";
 
@@ -370,36 +440,30 @@ export function ChatWidget() {
           <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-amber shadow" aria-hidden />
         </button>
       ) : (
-        <div className="flex h-[min(620px,calc(100vh-28px))] w-[min(420px,calc(100vw-16px))] flex-col overflow-hidden rounded-[22px] border border-[#d8d3cb] bg-card shadow-[0_22px_60px_-20px_rgba(12,29,52,0.35)]">
+        <div className="flex h-[min(700px,calc(100vh-18px))] w-[min(1020px,calc(100vw-12px))] flex-col overflow-hidden rounded-[14px] border border-[#d8dfea] bg-white shadow-[0_18px_48px_-20px_rgba(12,29,52,0.3)]">
           <div
             className="flex items-center justify-between gap-3 px-4 py-3 text-white"
             style={{
-              background: "linear-gradient(135deg, #0d1626 0%, #1a2842 60%, #243957 100%)",
+              background: "linear-gradient(90deg, #0d4bb3 0%, #0b3f9f 100%)",
             }}
           >
             <div className="min-w-0">
-              <div className="text-sm font-semibold">Access Stamp AI</div>
-              <div className="text-xs text-[#a0998f]">
+              <div className="text-2sm font-semibold">Ask Access Stamp AI</div>
+              <div className="text-xs text-blue-100">
                 <span className="inline-flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-green-400" aria-hidden />
-                  Online assistant
+                  Online · Ready to help
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white hover:bg-white/20 cursor-pointer"
-                aria-haspopup="menu"
-                aria-expanded={settingsOpen}
-                onClick={() => setSettingsOpen((v) => !v)}
-              >
-                Settings
-              </button>
+              <button type="button" className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/15 cursor-pointer" onClick={() => setVoiceEnabled((v) => !v)} aria-label="Toggle voice"><IconSpeaker muted={!voiceEnabled} /></button>
+              <button type="button" className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/15 cursor-pointer" aria-haspopup="menu" aria-expanded={settingsOpen} onClick={() => setSettingsOpen((v) => !v)} aria-label="Open chat settings"><IconDots /></button>
+              <button type="button" className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/15 cursor-pointer" onClick={collapseChat} aria-label="Collapse chat"><IconChevronDown /></button>
               {settingsOpen ? (
-                <div className="absolute right-14 top-12 z-10 w-52 rounded-[var(--radius-card)] border border-white/30 bg-[#142138] p-2 text-white shadow-[var(--shadow)]">
+                <div className="absolute right-4 top-12 z-10 w-56 rounded-[var(--radius-card)] border border-white/30 bg-[#142138] p-2 text-white shadow-[var(--shadow)]">
                   <label className="mb-2 grid gap-1 text-xs font-semibold">
-                    Voice
+                    Voice style
                     <select
                       className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white"
                       value={selectedVoice}
@@ -415,6 +479,20 @@ export function ChatWidget() {
                           {v.label}
                         </option>
                       ))}
+                    </select>
+                  </label>
+                  <label className="mb-2 grid gap-1 text-xs font-semibold">
+                    Language
+                    <select
+                      className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white"
+                      value={selectedLanguage}
+                      onChange={(e) => setSelectedLanguage(e.target.value)}
+                      aria-label="Select language"
+                    >
+                      <option value="en-GB" className="text-heading">English (UK)</option>
+                      <option value="en-US" className="text-heading">English (US)</option>
+                      <option value="es-ES" className="text-heading">Spanish (ES)</option>
+                      <option value="fr-FR" className="text-heading">French (FR)</option>
                     </select>
                   </label>
                   <button
@@ -450,49 +528,48 @@ export function ChatWidget() {
                   >
                     {plainLanguage ? "Plain language: on" : "Plain language: off"}
                   </button>
+                  <button
+                    type="button"
+                    className="mt-2 w-full rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-left text-xs font-semibold cursor-pointer hover:bg-white/20"
+                    onClick={copySummary}
+                  >
+                    Copy state summary
+                  </button>
                 </div>
               ) : null}
-              <button
-                type="button"
-                className="grid h-8 w-8 place-items-center rounded-full border border-white/30 bg-white/10 text-base font-semibold text-white hover:bg-white/20"
-                aria-label="Close chat"
-                onClick={collapseChat}
-                title="Close and collapse chat"
-                style={{ backgroundColor: "rgba(220, 38, 38, 0.92)", borderColor: "rgba(254, 202, 202, 0.7)" }}
-              >
-                ✕
-              </button>
             </div>
           </div>
 
           <div
             ref={scroller}
-            className="min-h-0 flex-1 overflow-auto bg-[#f7f5f2] p-4"
+            className="min-h-0 flex-1 overflow-auto bg-[#f8fafc] px-5 py-4"
             role="log"
             aria-live="polite"
             aria-relevant="additions text"
             aria-label="Chat transcript"
           >
-            {(lastSummary.location || lastSummary.mustHaves.length) ? (
-              <div className="mb-3 rounded-[var(--radius-ui)] border border-[#e3ded6] bg-white px-3 py-2 text-xs font-semibold text-heading shadow-[0_1px_3px_rgba(12,29,52,0.06)]">
-                {(lastSummary.location || "Your area")} · {lastSummary.venueType || "Any"} · Must-haves:{" "}
-                {lastSummary.mustHaves.join(", ") || "Not set yet"}
-              </div>
-            ) : null}
             <div className="grid gap-2">
               {msgs.map((m, i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    "max-w-[90%] rounded-[14px] border px-3 py-2 text-sm shadow-[0_1px_3px_rgba(12,29,52,0.05)]",
-                    m.role === "assistant"
-                      ? "justify-self-start border-[#e3ded6] bg-white"
-                      : "justify-self-end border-blue/10 bg-[#2478d0] text-white",
-                  )}
-                >
-                  {m.text.split("\n").map((line, idx) => (
-                    <div key={idx}>{line}</div>
-                  ))}
+                <div key={i} className={cn("flex items-end gap-2", m.role === "user" && "justify-end")}>
+                  {m.role === "assistant" ? (
+                    <div className="grid h-8 w-8 place-items-center rounded-full bg-[#0d4bb3] text-white text-xs"><IconRobot /></div>
+                  ) : null}
+                  <div
+                    className={cn(
+                      "max-w-[70%] rounded-[14px] border px-4 py-3 text-sm",
+                      m.role === "assistant"
+                        ? "border-[#e3e8ef] bg-[#f3f6fa] text-heading"
+                        : "border-[#d3e2ff] bg-[#e8f0ff] text-heading",
+                    )}
+                  >
+                    {m.text.split("\n").map((line, idx) => (
+                      <div key={idx}>{line}</div>
+                    ))}
+                    <div className="mt-1 text-[11px] text-muted">{m.time}</div>
+                  </div>
+                  {m.role === "user" ? (
+                    <div className="grid h-8 w-8 place-items-center rounded-full bg-[#0d4bb3] text-white text-xs"><IconUser /></div>
+                  ) : null}
                 </div>
               ))}
               {typing ? (
@@ -553,65 +630,25 @@ export function ChatWidget() {
             </div>
           </div>
 
-          <div className="border-t border-[#e3ded6] bg-white px-3 pb-3 pt-3">
+          <div className="border-t border-[#dde4ef] bg-white px-4 pb-3 pt-3">
             <audio ref={audioRef} className="hidden" />
-            <div className="mb-2 flex min-h-8 gap-2 overflow-auto pb-1">
+            <div className="mb-3 flex min-h-8 gap-2 overflow-auto pb-1">
               {quick.map((t) => (
                 <button
                   key={t}
                   type="button"
                   className={cn(
                     "rounded-full px-3 py-1 text-xs font-semibold cursor-pointer whitespace-nowrap transition-colors",
-                    t === quick[0]
-                      ? "bg-blue text-white hover:bg-[#1f66b0]"
-                      : "bg-amber-pale text-amber hover:bg-[#f8e8c5]",
+                    "border border-[#d8e1ef] bg-white text-[#184080] hover:bg-[#f5f8ff]",
                   )}
                   onClick={() => send(t)}
                 >
                   {t}
                 </button>
               ))}
-              {page.kind === "venue" ? (
-                <span className="ml-auto text-[11px] font-semibold text-muted">
-                  Context: {page.name}
-                </span>
-              ) : null}
             </div>
 
-            <div className="grid grid-cols-[auto_auto_auto_1fr_auto_auto] items-end gap-2">
-              <button
-                type="button"
-                className={cn(
-                  "grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] border border-[#ded8cf] bg-white text-heading cursor-pointer transition-colors hover:bg-[#f7f5f2]",
-                  listening && "border-amber bg-amber-pale",
-                )}
-                aria-label={listening ? "Listening" : "Voice input"}
-                onClick={() => startListening()}
-                disabled={!canUseSpeech()}
-                title={listening ? "Listening now" : "Tap to speak"}
-              >
-                {listening ? "●" : "🎤"}
-              </button>
-              <button
-                type="button"
-                className="h-10 rounded-[var(--radius-ui)] border border-[#ded8cf] bg-white px-2 text-xs font-semibold text-heading hover:bg-[#f7f5f2] cursor-pointer transition-colors"
-                onClick={stopAllSpeech}
-              >
-                Stop talking
-              </button>
-              <button
-                type="button"
-                className={cn(
-                  "h-10 rounded-[var(--radius-ui)] border px-2 text-xs font-semibold",
-                  canStopResponse
-                    ? "border-[#ded8cf] bg-white text-heading hover:bg-[#f7f5f2] cursor-pointer transition-colors"
-                    : "border-[#ded8cf] bg-[#f3f0ec] text-muted",
-                )}
-                onClick={stopResponse}
-                disabled={!canStopResponse}
-              >
-                Stop response
-              </button>
+            <div className="grid grid-cols-[1fr_auto_auto] items-end gap-2">
               <div className="min-w-0">
                 <label className="sr-only" htmlFor="chat-input">
                   Ask Access Stamp AI
@@ -621,49 +658,64 @@ export function ChatWidget() {
                   aria-label="Message Access Stamp AI"
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
-                  placeholder="Ask me anything…"
-                  className="h-10 w-full rounded-[var(--radius-ui)] border border-[#ded8cf] bg-white px-3 text-sm text-heading"
+                  placeholder="Ask about a venue or accessibility feature..."
+                  className="h-12 w-full rounded-[12px] border border-[#d8e1ef] bg-white px-4 text-sm text-heading"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") send(draft);
                   }}
                 />
-                {listening ? (
-                  <div className="mt-1 text-xs text-muted">Listening…</div>
-                ) : null}
               </div>
               <button
                 type="button"
-                className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] bg-blue text-white cursor-pointer transition-colors hover:bg-[#1f66b0]"
-                aria-label="Send message"
-                onClick={() => send(draft)}
+                className={cn(
+                  "grid h-12 w-12 place-items-center rounded-[12px] border border-[#d8e1ef] bg-white text-[#0d4bb3] cursor-pointer transition-colors hover:bg-[#f5f8ff]",
+                  listening && "border-amber bg-amber-pale",
+                )}
+                aria-label={listening ? "Listening" : "Voice input"}
+                onClick={() => startListening()}
+                disabled={!canUseSpeech()}
+                title={listening ? "Listening now" : "Tap to speak"}
               >
-                ➤
+                {listening ? <span className="h-2 w-2 rounded-full bg-amber-600" aria-hidden /> : <IconMic />}
               </button>
               <button
                 type="button"
-                className="grid h-10 w-10 place-items-center rounded-[var(--radius-ui)] border border-[#fecaca] bg-[#fef2f2] text-[#b91c1c] hover:bg-[#fee2e2] cursor-pointer transition-colors"
-                aria-label="Close chat"
-                onClick={collapseChat}
-                title="Close and collapse chat"
-                style={{ backgroundColor: "#fef2f2", color: "#b91c1c", borderColor: "#fecaca" }}
+                className="grid h-12 w-12 place-items-center rounded-[12px] bg-[#0d4bb3] text-white cursor-pointer transition-colors hover:bg-[#0a3f97]"
+                aria-label="Send message"
+                onClick={() => send(draft)}
               >
-                ✕
+                <IconSend />
               </button>
             </div>
-            <p className="mt-2 text-[11px] text-muted">
-              Type or use the mic. You can stop speech, stop response, or close at any time.
-            </p>
-            <div className="mt-1 flex items-center gap-2 text-[11px]">
-              <span className="font-semibold text-muted">Was this helpful?</span>
-              <button type="button" className="rounded border border-[#ded8cf] px-2 py-0.5 text-heading cursor-pointer hover:bg-[#f7f5f2] transition-colors">
-                Yes
+            <div className="mt-3 flex items-center gap-3 text-xs text-[#0d4bb3]">
+              <span className="font-semibold">Voice input</span>
+              <select
+                className="rounded-[8px] border border-[#d8e1ef] bg-white px-2 py-1 text-xs text-heading"
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+                aria-label="Voice input language"
+              >
+                <option value="en-GB">English (UK)</option>
+                <option value="en-US">English (US)</option>
+                <option value="es-ES">Spanish (ES)</option>
+                <option value="fr-FR">French (FR)</option>
+              </select>
+              <button type="button" className="ml-auto rounded border border-[#d8e1ef] px-2 py-1 text-xs text-heading cursor-pointer hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
+                Stop talking
               </button>
-              <button type="button" className="rounded border border-[#ded8cf] px-2 py-0.5 text-heading cursor-pointer hover:bg-[#f7f5f2] transition-colors">
-                Not yet
+              <button type="button" className={cn("rounded border px-2 py-1 text-xs cursor-pointer", canStopResponse ? "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]" : "border-[#e6ebf3] text-muted")} disabled={!canStopResponse} onClick={stopResponse}>
+                Stop response
               </button>
-              <button type="button" className="ml-auto rounded border border-[#ded8cf] px-2 py-0.5 text-heading cursor-pointer hover:bg-[#f7f5f2] transition-colors" onClick={copySummary}>
-                Copy summary
-              </button>
+            </div>
+            <div className="mt-3 border-t border-[#edf1f7] pt-3">
+              <div className="text-xs font-semibold text-muted">Popular accessibility guides</div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <Link href="/advice/new-to-disability" className="rounded-full border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-[#184080] hover:bg-[#f5f8ff]">Visiting a venue</Link>
+                <Link href="/advice/sport" className="rounded-full border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-[#184080] hover:bg-[#f5f8ff]">Attending an event</Link>
+                <Link href="/advice/transport" className="rounded-full border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-[#184080] hover:bg-[#f5f8ff]">Travel and transport</Link>
+                <Link href="/advice/care" className="rounded-full border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-[#184080] hover:bg-[#f5f8ff]">Using public toilets</Link>
+                <Link href="/advice" className="rounded-full border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-[#184080] hover:bg-[#f5f8ff]">View all guides</Link>
+              </div>
             </div>
           </div>
         </div>
