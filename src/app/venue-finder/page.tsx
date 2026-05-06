@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
@@ -22,7 +22,7 @@ function mapIncomingFilters(input: string) {
   return VENUE_FILTERS.filter((f) => requested.some((r) => normalize(f).includes(r) || r.includes(normalize(f))));
 }
 
-export default function VenueFinderPage() {
+function VenueFinderPageInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -237,5 +237,23 @@ export default function VenueFinderPage() {
         </div>
       </Container>
     </div>
+  );
+}
+
+export default function VenueFinderPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="bg-background">
+          <Container className="py-10">
+            <Card className="p-5">
+              <div className="text-sm font-semibold text-heading">Loading venue finder…</div>
+            </Card>
+          </Container>
+        </div>
+      }
+    >
+      <VenueFinderPageInner />
+    </Suspense>
   );
 }
