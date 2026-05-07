@@ -14,7 +14,16 @@ type VenuePhoto = {
 export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
   const [active, setActive] = useState(0);
   const [expanded, setExpanded] = useState(false);
+  const [broken, setBroken] = useState<Record<number, boolean>>({});
   const current = photos[active];
+
+  function cloudinary(src: string, transform: string) {
+    return src.includes("/upload/") ? src.replace("/upload/", `/upload/${transform}/`) : src;
+  }
+
+  function markBroken(index: number) {
+    setBroken((prev) => ({ ...prev, [index]: true }));
+  }
 
   function goNext() {
     setActive((prev) => (prev + 1) % photos.length);
@@ -45,13 +54,21 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
           aria-label={`Expand photo: ${current.label}`}
         >
           <div className="relative h-[280px] sm:h-[360px]">
-            <Image
-              src={current.src}
-              alt={current.alt}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-              sizes="(max-width: 768px) 100vw, 840px"
-            />
+            {broken[active] ? (
+              <div className="grid h-full place-items-center bg-background text-sm font-semibold text-muted">
+                Image unavailable
+              </div>
+            ) : (
+              <Image
+                src={cloudinary(current.src, "f_auto,q_auto:good,c_limit,w_1400")}
+                alt={current.alt}
+                fill
+                className="object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                sizes="(max-width: 768px) 100vw, 840px"
+                priority
+                onError={() => markBroken(active)}
+              />
+            )}
           </div>
           <div className="absolute right-3 top-3 rounded-full bg-card/95 px-3 py-1 text-xs font-semibold text-heading shadow-[var(--shadow-soft)]">
             Expand
@@ -79,13 +96,21 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
               aria-label={`Open photo: ${photo.label}`}
             >
               <div className="relative h-20">
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-                sizes="140px"
-              />
+                {broken[idx] ? (
+                  <div className="grid h-full place-items-center bg-background text-[10px] font-semibold text-muted">
+                    Missing
+                  </div>
+                ) : (
+                  <Image
+                    src={cloudinary(photo.src, "f_auto,q_auto:good,c_fill,w_320,h_220")}
+                    alt={photo.alt}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="140px"
+                    loading="lazy"
+                    onError={() => markBroken(idx)}
+                  />
+                )}
               </div>
               <div className="truncate px-2 py-1 text-[11px] font-semibold text-heading">{photo.label}</div>
             </button>
@@ -114,8 +139,22 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
             </button>
 
             <div className="relative flex-1 overflow-hidden rounded-[var(--radius-card)] bg-black">
-              <div className="relative h-[55vh] sm:h-[68vh]">
-                <Image src={current.src} alt={current.alt} fill className="object-contain" sizes="90vw" />
+              <div className="relative h-[min(82vh,900px)]">
+                {broken[active] ? (
+                  <div className="grid h-full place-items-center text-sm font-semibold text-white/80">
+                    This photo could not be loaded.
+                  </div>
+                ) : (
+                  <Image
+                    src={cloudinary(current.src, "f_auto,q_auto:good,c_limit,w_2200")}
+                    alt={current.alt}
+                    fill
+                    className="object-contain"
+                    sizes="90vw"
+                    priority
+                    onError={() => markBroken(active)}
+                  />
+                )}
               </div>
               <div className="absolute left-3 top-3 rounded-full bg-black/55 px-3 py-1 text-xs font-semibold text-white">
                 {current.label}

@@ -46,12 +46,12 @@
 body {
   background-color: var(--background);
   background-image: radial-gradient(
-      1200px 520px at 10% -5%,
-      var(--page-sage-glow),
-      transparent 55%
+      1200px 520px at 10% -8%,
+      rgba(36, 120, 208, 0.05),
+      transparent 60%
     ),
-    radial-gradient(900px 480px at 95% 5%, var(--page-gold-glow), transparent 52%),
-    linear-gradient(180deg, #faf9f7 0%, var(--background) 35%, var(--background-2) 100%);
+    radial-gradient(900px 480px at 95% 5%, rgba(212, 149, 42, 0.04), transparent 58%),
+    linear-gradient(180deg, #ffffff 0%, #fbfcff 46%, #f6f9ff 100%);
   color: var(--text);
   font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system,
     Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
