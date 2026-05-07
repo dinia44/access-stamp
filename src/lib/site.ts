@@ -21,7 +21,6 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Venue Finder", href: "/venue-finder" },
   { label: "Advice Hub", href: "/advice" },
-  { label: "AI Assistant", href: "/ai" },
   { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
 ];

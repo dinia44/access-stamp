@@ -24,7 +24,6 @@ export function Footer() {
               <li><Link href="/venue-finder">Venue Finder</Link></li>
               <li><Link href="/submit-venue">Suggest a venue</Link></li>
               <li><Link href="/advice">Advice Hub</Link></li>
-              <li><Link href="/ai">AI Assistant</Link></li>
             </ul>
           </div>
 

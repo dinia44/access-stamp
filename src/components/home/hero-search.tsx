@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card } from "@/components/ui";
+import { useChat } from "@/components/chat/provider";
 
 const FILTERS = [
   { label: "Step-free access", key: "Step-free entrance" },
@@ -31,6 +31,7 @@ const RECENT_SEARCHES = [
 
 export function HeroSearchCard() {
   const router = useRouter();
+  const { openChat } = useChat();
   const [active, setActive] = useState<Set<string>>(new Set(DEFAULT_ACTIVE));
   const [showAllFilters, setShowAllFilters] = useState(false);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -242,9 +243,15 @@ export function HeroSearchCard() {
             </div>
           ) : null}
 
-          <Link
-            href="/ai"
-            className="grid min-h-11 grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[10px] border border-[#d8dfea] bg-white px-3 py-2 hover:bg-[#f5f8ff]"
+          <button
+            type="button"
+            onClick={() =>
+              openChat({
+                prefill: mainQuery || `Find accessible venues${location ? ` in ${location}` : ""}${active.size ? ` with ${Array.from(active).join(", ")}` : ""}.`,
+              })
+            }
+            className="grid min-h-11 w-full grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[10px] border border-[#d8dfea] bg-white px-3 py-2 text-left hover:bg-[#f5f8ff] cursor-pointer"
+            aria-label="Ask Access Stamp AI"
           >
             <span className="grid h-7 w-7 place-items-center rounded-full bg-blue text-xs text-white" aria-hidden>
               ✦
@@ -259,7 +266,7 @@ export function HeroSearchCard() {
               </div>
             </div>
             <span className="text-[#184080]" aria-hidden>›</span>
-          </Link>
+          </button>
 
           <div>
             <div className="mb-2 flex items-center justify-between gap-2">
