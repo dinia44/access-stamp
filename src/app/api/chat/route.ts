@@ -66,6 +66,9 @@ function buildLlmUserPrompt(message: string, page: PageContext) {
     advice,
     "Sample help cards:",
     cards,
+    "Answer the user's question directly first.",
+    "Only suggest help cards when the user explicitly asks for a card/template/checklist/download.",
+    "If the user is off-topic for Access Stamp (for example recipes), refuse briefly and redirect to Access Stamp topics.",
     'Return STRICT JSON only: {"reply":"string","quickActions":["string"],"links":[{"label":"string","href":"string"}]}',
     "Limit quickActions to max 4 short suggestions.",
   ].join("\n\n");
@@ -138,6 +141,20 @@ function isPipQuestion(t: string) {
   return /\bpip\b|personal independence payment/i.test(t);
 }
 
+function isHelpCardIntent(t: string) {
+  return /(help card|access card|flashcard|flash card|download.*card|print.*card|template card|checklist card)/i.test(t);
+}
+
+function isOutOfScope(t: string) {
+  const low = t.toLowerCase();
+  const domainSignal =
+    /(access|accessible|disab|wheelchair|pip|benefit|reasonable adjustment|care plan|mobility|venue|toilet|blue badge|transport|school|send|workplace|equality act|adjustment|carer|equipment|rights)/i.test(
+      t,
+    );
+  if (domainSignal) return false;
+  return /(recipe|cook|cooking|meal plan|football score|crypto|stock tip|horoscope|movie review|gaming build|dating advice)/i.test(low);
+}
+
 function crisisSignal(t: string) {
   return /(suicide|kill myself|self-harm|end my life|can't go on)/i.test(t);
 }
@@ -156,6 +173,15 @@ export async function POST(req: Request) {
     const reply =
       "I’m really sorry you’re feeling this way. If you’re in immediate danger, call 999 now. If you can, call Samaritans on 116 123 (free, 24/7) or text SHOUT to 85258. If you tell me what’s happening right now and where you are in the UK, I can help you find the safest next step.";
     return NextResponse.json({ reply: voice ? short(reply) : reply });
+  }
+
+  if (isOutOfScope(msg)) {
+    const reply =
+      "I can only help with Access Stamp topics like disability access, venues, support, benefits, rights, transport, education, work adjustments, and care planning. Ask me one of those and I’ll give you a direct answer.";
+    return NextResponse.json({
+      reply: voice ? short(reply) : reply,
+      quickActions: ["Find an accessible venue", "Explain PIP simply", "Reasonable adjustments at work"],
+    });
   }
 
   if (isTransferQuestion(msg)) {
@@ -193,9 +219,9 @@ export async function POST(req: Request) {
   }
 
   const matchedCards = matchHelpCards(msg);
-  if (matchedCards.length) {
+  if (matchedCards.length && isHelpCardIntent(msg)) {
     const reply =
-      "I found specialist help cards that match this concern. Open one and use 'Tailor with AI' to adapt it to your exact situation.";
+      "I found help cards that match what you asked for. Open one and use 'Tailor with AI' if you want it adapted to your situation.";
     return NextResponse.json({
       reply: voice ? short(reply) : reply,
       links: matchedCards,

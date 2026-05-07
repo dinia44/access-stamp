@@ -93,7 +93,7 @@ export function HelpCardsHub({ initialConcern = "" }: { initialConcern?: string 
     let y = 130;
     ctx.fillStyle = "#2478d0";
     ctx.font = "700 30px Arial, sans-serif";
-    ctx.fillText(`Access Stamp Help Card • ${card.category}`, 100, y);
+    ctx.fillText(`${card.category} guide`, 100, y);
 
     y += 65;
     ctx.fillStyle = "#0c1d34";
