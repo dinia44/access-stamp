@@ -2,8 +2,8 @@
 
 /* Access Stamp — tokens aligned with access-stamp-build-prompt.md */
 :root {
-  --background: #fbfdff;
-  --background-2: #f4f8ff;
+  --background: #f3f8ff;
+  --background-2: #eaf2ff;
   --card: #ffffff;
   --heading: #0c1d34;
   --text: #2c3e54;
@@ -47,11 +47,11 @@ body {
   background-color: var(--background);
   background-image: radial-gradient(
       1200px 520px at 10% -8%,
-      rgba(36, 120, 208, 0.05),
+      rgba(36, 120, 208, 0.08),
       transparent 60%
     ),
-    radial-gradient(900px 480px at 95% 5%, rgba(212, 149, 42, 0.04), transparent 58%),
-    linear-gradient(180deg, #ffffff 0%, #f8fbff 46%, #eef5ff 100%);
+    radial-gradient(900px 480px at 95% 5%, rgba(36, 120, 208, 0.04), transparent 58%),
+    linear-gradient(180deg, #f7fbff 0%, #edf4ff 46%, #e5eeff 100%);
   color: var(--text);
   font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system,
     Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
