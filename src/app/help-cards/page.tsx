@@ -3,7 +3,14 @@ import { Badge, Card } from "@/components/ui";
 import { HelpCardsHub } from "@/components/help-cards-hub";
 import { SetChatContext } from "@/components/chat/set-context";
 
-export default function HelpCardsPage() {
+export default async function HelpCardsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = searchParams ? await searchParams : {};
+  const concernRaw = sp.concern;
+  const concern = typeof concernRaw === "string" ? concernRaw : Array.isArray(concernRaw) ? concernRaw[0] : "";
   return (
     <div className="bg-background">
       <SetChatContext page={{ kind: "none" }} />
@@ -24,7 +31,7 @@ export default function HelpCardsPage() {
             </p>
           </Card>
 
-          <HelpCardsHub />
+          <HelpCardsHub initialConcern={concern} />
         </div>
       </Container>
     </div>

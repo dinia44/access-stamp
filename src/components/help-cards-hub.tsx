@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Badge, Button, Card } from "@/components/ui";
 import { HELP_CARDS, HELP_CARD_CONCERNS, type HelpCard } from "@/lib/help-cards";
+import { useChat } from "@/components/chat/provider";
 
 function toDownloadText(card: HelpCard) {
   return [
@@ -17,6 +18,12 @@ function toDownloadText(card: HelpCard) {
     "Checklist:",
     ...card.checklist.map((item) => `- ${item}`),
     "",
+    "Documents to carry:",
+    ...card.documentsToCarry.map((item) => `- ${item}`),
+    "",
+    "Escalate if:",
+    ...card.escalateIf.map((item) => `- ${item}`),
+    "",
     "Key line to use:",
     card.keyLine,
     "",
@@ -28,23 +35,31 @@ function slugifyFile(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
-export function HelpCardsHub() {
+export function HelpCardsHub({ initialConcern = "" }: { initialConcern?: string }) {
+  const { openChat } = useChat();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
-  const [concern, setConcern] = useState("");
+  const [concern, setConcern] = useState(initialConcern);
 
   const filtered = useMemo(() => {
+    const order = ["Work", "Education", "Driving", "Travel", "Care", "Rights", "Emergency"];
     const q = query.trim().toLowerCase();
     return HELP_CARDS.filter((card) => {
       if (category !== "All" && card.category !== category) return false;
-      if (concern && !card.tags.join(" ").toLowerCase().includes(concern.toLowerCase())) return false;
+      if (
+        concern &&
+        !`${card.title} ${card.summary} ${card.tags.join(" ")} ${card.checklist.join(" ")}`.toLowerCase().includes(concern.toLowerCase())
+      ) {
+        return false;
+      }
       if (!q) return true;
       return (
         card.title.toLowerCase().includes(q) ||
         card.summary.toLowerCase().includes(q) ||
-        card.tags.some((tag) => tag.toLowerCase().includes(q))
+        card.tags.some((tag) => tag.toLowerCase().includes(q)) ||
+        card.checklist.some((item) => item.toLowerCase().includes(q))
       );
-    });
+    }).sort((a, b) => order.indexOf(a.category) - order.indexOf(b.category));
   }, [query, category, concern]);
 
   function downloadCard(card: HelpCard) {
@@ -119,10 +134,35 @@ export function HelpCardsHub() {
             <p className="mt-2 text-sm text-muted">{card.summary}</p>
             <div className="mt-4 text-xs font-semibold uppercase tracking-wide text-muted">Checklist</div>
             <ul className="mt-2 grid gap-1 text-sm text-text">
-              {card.checklist.slice(0, 4).map((line) => (
+              {card.checklist.slice(0, 6).map((line) => (
                 <li key={line}>- {line}</li>
               ))}
             </ul>
+            <div className="mt-4 text-xs font-semibold uppercase tracking-wide text-muted">Must ask</div>
+            <ul className="mt-2 grid gap-1 text-sm text-text">
+              {card.mustAsk.map((line) => (
+                <li key={line}>- {line}</li>
+              ))}
+            </ul>
+            <details className="mt-3 rounded-[var(--radius-ui)] border border-border bg-background-2 px-3 py-2">
+              <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wide text-heading">
+                Documents and escalation
+              </summary>
+              <div className="mt-2 text-sm text-text">
+                <div className="font-semibold text-heading">Carry:</div>
+                <ul className="mt-1 grid gap-1">
+                  {card.documentsToCarry.map((line) => (
+                    <li key={line}>- {line}</li>
+                  ))}
+                </ul>
+                <div className="mt-2 font-semibold text-heading">Escalate if:</div>
+                <ul className="mt-1 grid gap-1">
+                  {card.escalateIf.map((line) => (
+                    <li key={line}>- {line}</li>
+                  ))}
+                </ul>
+              </div>
+            </details>
             <div className="mt-4 rounded-[var(--radius-ui)] border border-border bg-background-2 px-3 py-2 text-sm text-heading">
               <span className="font-semibold">Key line:</span> {card.keyLine}
             </div>
@@ -130,6 +170,16 @@ export function HelpCardsHub() {
               <Button onClick={() => downloadCard(card)}>Download card</Button>
               <Button variant="ghost" onClick={() => window.print()}>
                 Print
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() =>
+                  openChat({
+                    prefill: `Tailor this help card for me: ${card.title}. My situation is: `,
+                  })
+                }
+              >
+                Tailor with AI
               </Button>
             </div>
           </Card>

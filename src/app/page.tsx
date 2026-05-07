@@ -8,6 +8,7 @@ import { SectionLabel } from "@/components/home/section-label";
 import { HeroSearchCard } from "@/components/home/hero-search";
 import { RightsTabs } from "@/components/home/rights-tabs";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
+import { FEATURED_HELP_CARD_SLUGS, HELP_CARDS } from "@/lib/help-cards";
 
 type Pillar = {
   emoji: string;
@@ -81,6 +82,9 @@ export default function HomePage() {
     "riverside-arts-centre-bristol",
     "greenfield-shopping-village-leeds",
   ].map((slug) => SAMPLE_VENUES.find((v) => v.slug === slug)).filter(Boolean);
+  const featuredCards = FEATURED_HELP_CARD_SLUGS
+    .map((slug) => HELP_CARDS.find((card) => card.slug === slug))
+    .filter(Boolean);
 
   return (
     <div>
@@ -351,6 +355,41 @@ export default function HomePage() {
                   </Card>
                 </Link>
               </FadeIn>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* Section 5: Education */}
+      <section className="bg-background py-16">
+        <Container>
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-2">
+              <SectionLabel>Downloadable help cards</SectionLabel>
+              <h2 className="font-[var(--font-heading)] text-[30px] tracking-[-0.025em] text-heading">
+                Quick support cards for real scenarios
+              </h2>
+              <p className="max-w-[70ch] text-[15px] leading-[1.7] text-text">
+                Carry these in meetings, interviews, airports, school handovers, or when something goes wrong.
+              </p>
+            </div>
+            <Link
+              href="/help-cards"
+              className="inline-flex items-center justify-center rounded-[var(--radius-ui)] bg-blue px-4 py-2 text-sm font-semibold text-white"
+            >
+              View all cards →
+            </Link>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {featuredCards.map((card) => (
+              <Link key={card!.slug} href={`/help-cards?concern=${encodeURIComponent(card!.tags[0] ?? card!.title)}`}>
+                <Card className="h-full p-5 transition-all duration-300 hover:-translate-y-[2px] hover:shadow-[var(--shadow)]">
+                  <Badge tone="blue">{card!.category}</Badge>
+                  <div className="mt-3 text-sm font-semibold text-heading">{card!.title}</div>
+                  <p className="mt-2 text-sm text-muted">{card!.summary}</p>
+                  <div className="mt-3 text-xs font-semibold text-blue">Open card set</div>
+                </Card>
+              </Link>
             ))}
           </div>
         </Container>

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { PageContext } from "@/components/chat/provider";
 import { ADVICE_ARTICLES, SAMPLE_VENUES } from "@/lib/mock-data";
 import { ACCESS_STAMP_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
+import { HELP_CARDS } from "@/lib/help-cards";
 
 type Req = {
   message: string;
@@ -11,6 +12,7 @@ type Req = {
 type LlmShape = {
   reply: string;
   quickActions?: string[];
+  links?: Array<{ label: string; href: string }>;
 };
 
 const MUST_HAVE_TOKENS = [
@@ -54,6 +56,7 @@ function buildLlmUserPrompt(message: string, page: PageContext) {
     .map((v) => `${v.name} (${v.location}) — ${v.tags.join(", ")}`)
     .join("\n");
   const advice = ADVICE_ARTICLES.slice(0, 10).map((a) => `${a.title} (/advice/${a.slug})`).join("\n");
+  const cards = HELP_CARDS.slice(0, 14).map((c) => `${c.title} (/help-cards?concern=${encodeURIComponent(c.tags[0] ?? c.title)})`).join("\n");
   return [
     `User message: ${message}`,
     `Page context: ${pageSummary(page)}`,
@@ -61,7 +64,9 @@ function buildLlmUserPrompt(message: string, page: PageContext) {
     venues,
     "Sample advice guides:",
     advice,
-    'Return STRICT JSON only: {"reply":"string","quickActions":["string"]}',
+    "Sample help cards:",
+    cards,
+    'Return STRICT JSON only: {"reply":"string","quickActions":["string"],"links":[{"label":"string","href":"string"}]}',
     "Limit quickActions to max 4 short suggestions.",
   ].join("\n\n");
 }
@@ -98,10 +103,27 @@ async function callLlm(message: string, page: PageContext): Promise<LlmShape | n
     return {
       reply: parsed.reply,
       quickActions: Array.isArray(parsed.quickActions) ? parsed.quickActions.slice(0, 4) : undefined,
+      links: Array.isArray(parsed.links) ? parsed.links.slice(0, 3) : undefined,
     };
   } catch {
     return null;
   }
+}
+
+function matchHelpCards(message: string) {
+  const low = message.toLowerCase();
+  const scored = HELP_CARDS.map((card) => {
+    const hay = `${card.title} ${card.summary} ${card.tags.join(" ")} ${card.checklist.join(" ")}`.toLowerCase();
+    const score = low.split(/\s+/).reduce((acc, token) => (token && hay.includes(token) ? acc + 1 : acc), 0);
+    return { card, score };
+  })
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+  return scored.map((x) => ({
+    label: x.card.title,
+    href: `/help-cards?concern=${encodeURIComponent(x.card.tags[0] ?? x.card.title)}`,
+  }));
 }
 
 function isTransferQuestion(t: string) {
@@ -170,11 +192,23 @@ export async function POST(req: Request) {
     });
   }
 
+  const matchedCards = matchHelpCards(msg);
+  if (matchedCards.length) {
+    const reply =
+      "I found specialist help cards that match this concern. Open one and use 'Tailor with AI' to adapt it to your exact situation.";
+    return NextResponse.json({
+      reply: voice ? short(reply) : reply,
+      links: matchedCards,
+      quickActions: ["Tailor this for my case", "Give me a meeting script", "What should I ask first?"],
+    });
+  }
+
   const llm = await callLlm(msg, page);
   if (llm) {
     return NextResponse.json({
       reply: voice ? short(llm.reply) : llm.reply,
       quickActions: llm.quickActions,
+      links: llm.links,
     });
   }
 
