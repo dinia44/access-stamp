@@ -4,10 +4,44 @@ type VoiceReq = {
   text: string;
   voiceId?: string;
 };
+type ElevenVoice = {
+  voice_id: string;
+  name: string;
+  category?: string;
+};
 
 const ELEVEN_API = "https://api.elevenlabs.io/v1/text-to-speech";
+const ELEVEN_VOICES_API = "https://api.elevenlabs.io/v1/voices";
 const DEFAULT_MODEL = process.env.ELEVENLABS_MODEL_ID ?? "eleven_multilingual_v2";
 const DEFAULT_VOICE = process.env.ELEVENLABS_VOICE_ID ?? "";
+
+export async function GET() {
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json({ voices: [] }, { status: 200 });
+  }
+
+  const res = await fetch(ELEVEN_VOICES_API, {
+    method: "GET",
+    headers: {
+      "xi-api-key": apiKey,
+      accept: "application/json",
+    },
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    return NextResponse.json({ voices: [] }, { status: 200 });
+  }
+
+  const json = (await res.json()) as { voices?: ElevenVoice[] };
+  const voices = (json.voices ?? []).map((voice) => ({
+    id: voice.voice_id,
+    label: voice.category === "cloned" ? `${voice.name} (Custom)` : voice.name,
+  }));
+
+  return NextResponse.json({ voices }, { status: 200 });
+}
 
 export async function POST(req: Request) {
   const apiKey = process.env.ELEVENLABS_API_KEY;

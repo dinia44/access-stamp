@@ -28,19 +28,18 @@ type ApiResponse = {
 type VoiceChoice = {
   id: string;
   label: string;
-  provider: "eleven" | "browser";
+  provider: "eleven";
 };
 
 const ELEVEN_VOICE_ID = process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID ?? "";
 const ELEVEN_VOICE_ID_2 = process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID_2 ?? "";
-const VOICES: VoiceChoice[] = [
+const FALLBACK_VOICES: VoiceChoice[] = [
   ...(ELEVEN_VOICE_ID
     ? [{ id: ELEVEN_VOICE_ID, label: "Access Stamp Voice", provider: "eleven" as const }]
     : []),
   ...(ELEVEN_VOICE_ID_2
     ? [{ id: ELEVEN_VOICE_ID_2, label: "Access Stamp Voice 2", provider: "eleven" as const }]
     : []),
-  { id: "browser-default", label: "Browser voice", provider: "browser" as const },
 ];
 
 type WebkitSpeechRecognitionCtor = new () => {
@@ -147,10 +146,15 @@ export function ChatWidget() {
     venueType: "Any",
     mustHaves: [],
   });
+  const [voices, setVoices] = useState<VoiceChoice[]>(() => {
+    const unique = new Map<string, VoiceChoice>();
+    for (const voice of FALLBACK_VOICES) unique.set(voice.id, voice);
+    return [...unique.values()];
+  });
   const [selectedVoice, setSelectedVoice] = useState<string>(() => {
-    if (typeof window === "undefined") return VOICES[0]?.id ?? "browser-default";
+    if (typeof window === "undefined") return FALLBACK_VOICES[0]?.id ?? "";
     const cached = window.localStorage.getItem("access-stamp-voice-id");
-    return cached && VOICES.some((v) => v.id === cached) ? cached : VOICES[0]?.id ?? "browser-default";
+    return cached || FALLBACK_VOICES[0]?.id || "";
   });
   const [selectedLanguage, setSelectedLanguage] = useState("en-GB");
   const [msgs, setMsgs] = useState<Msg[]>([
@@ -170,6 +174,36 @@ export function ChatWidget() {
   useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight });
   }, [msgs, open, typing]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadVoices() {
+      try {
+        const res = await fetch("/api/voice", { method: "GET", cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as { voices?: Array<{ id: string; label: string }> };
+        if (cancelled) return;
+        const elevenVoices: VoiceChoice[] = (data.voices ?? []).map((voice) => ({
+          id: voice.id,
+          label: voice.label,
+          provider: "eleven",
+        }));
+        const unique = new Map<string, VoiceChoice>();
+        for (const voice of [...elevenVoices, ...FALLBACK_VOICES]) unique.set(voice.id, voice);
+        setVoices([...unique.values()]);
+      } catch {
+        // keep fallback voices
+      }
+    }
+    void loadVoices();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const selectedVoiceSafe = voices.some((voice) => voice.id === selectedVoice)
+    ? selectedVoice
+    : (voices[0]?.id ?? "");
 
   const speechSupported = canUseSpeech();
 
@@ -246,7 +280,7 @@ export function ChatWidget() {
   async function speakReply(reply: string) {
     const text = normalizeForSpeech(reply);
     if (!voiceEnabled || !text) return;
-    const selected = VOICES.find((v) => v.id === selectedVoice);
+    const selected = voices.find((v) => v.id === selectedVoiceSafe);
 
     if (selected?.provider === "eleven") {
       try {
@@ -266,19 +300,7 @@ export function ChatWidget() {
           return;
         }
       } catch {
-        // fall through to browser voice
-      }
-    }
-
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      try {
-        stopAllSpeech();
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = selectedLanguage;
-        u.rate = 1;
-        window.speechSynthesis.speak(u);
-      } catch {
-        // ignore
+        // do not fallback to browser voice
       }
     }
   }
@@ -468,7 +490,7 @@ export function ChatWidget() {
                     Voice style
                     <select
                       className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white"
-                      value={selectedVoice}
+                      value={selectedVoiceSafe}
                       onChange={(e) => {
                         const v = e.target.value;
                         setSelectedVoice(v);
@@ -476,7 +498,7 @@ export function ChatWidget() {
                       }}
                       aria-label="Select AI voice"
                     >
-                      {VOICES.map((v) => (
+                      {voices.map((v) => (
                         <option key={v.id} value={v.id} className="text-heading">
                           {v.label}
                         </option>
