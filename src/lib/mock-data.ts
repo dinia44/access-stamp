@@ -549,6 +549,7 @@ export type AdviceArticle = {
     | { type: "h2"; text: string }
     | { type: "p"; text: string }
     | { type: "ul"; items: string[] }
+    | { type: "pre"; text: string }
     | { type: "callout"; tone: "warning" | "tip" | "contact" | "steps"; title: string; body: string }
   >;
 };

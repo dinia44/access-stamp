@@ -131,6 +131,16 @@ export default async function AdviceArticlePage({
                       </p>
                     );
                   }
+                  if (s.type === "pre") {
+                    return (
+                      <pre
+                        key={idx}
+                        className="mt-4 overflow-x-auto rounded-[var(--radius-card)] border border-border bg-background-2 p-4 font-mono text-xs leading-relaxed text-text whitespace-pre-wrap print:border print:bg-white"
+                      >
+                        {s.text}
+                      </pre>
+                    );
+                  }
                   if (s.type === "ul") {
                     return (
                       <ul key={idx} className="mt-3 list-disc pl-5 text-sm text-text">

@@ -1,11 +1,11 @@
 /**
  * Care & Support hub — URL: /advice/care
  *
- * Edit article text (intro/steps) in `src/lib/advice-extra-seeds.ts` under `// --- Care & support ---`
- * using `categorySlug: "care"`. Each `slug` becomes `/advice/[slug]`.
+ * Article bodies: `src/lib/care-articles-detail.ts` and `src/lib/care-pa-employer-sections.ts`.
+ * Legacy seeds: `src/lib/advice-extra-seeds.ts` (non-care topics). Each `slug` becomes `/advice/[slug]`.
  *
  * Edit this file for hub layout only: quick actions, featured slugs, pathways, scenarios, related links.
- * Slugs here must match seeds (run `npm run build` after adding articles).
+ * Slugs here must match articles in mock-data (run `npm run build` after adding articles).
  */
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -46,7 +46,7 @@ const PATHWAYS = [
   },
   {
     title: "Employing & managing PAs",
-    desc: "Safer recruitment, boundaries, manual handling limits, and ending unsafe arrangements.",
+    desc: "Mock job adverts, person specs, interview scorecards, induction forms, timesheets — plus safer recruitment and ending unsafe care.",
     href: "/advice/employing-a-personal-assistant-basics",
   },
   {
@@ -214,6 +214,25 @@ export default function CarePage() {
                 </Button>
               </div>
             </div>
+          </Card>
+
+          <Card className="border border-border bg-background-2 p-5 sm:p-6">
+            <div className="text-sm font-semibold text-heading">UK hubs for PA recruitment & direct payment tools</div>
+            <p className="mt-2 text-sm leading-6 text-text">
+              Many people use{" "}
+              <a href="https://www.independentlives.org/" className="font-semibold text-blue hover:underline" target="_blank" rel="noreferrer">
+                independentlives.org
+              </a>{" "}
+              (direct payment support and recruitment information) and{" "}
+              <a href="https://pa-pages.org/" className="font-semibold text-blue hover:underline" target="_blank" rel="noreferrer">
+                pa-pages.org
+              </a>{" "}
+              (PA matching and employer tools). Access Stamp is not affiliated — we cite them as useful inspiration alongside our own mock templates in the{" "}
+              <Link href="/advice/employing-a-personal-assistant-basics" className="font-semibold text-blue hover:underline">
+                employing a PA guide
+              </Link>
+              .
+            </p>
           </Card>
 
           <section className="space-y-4">

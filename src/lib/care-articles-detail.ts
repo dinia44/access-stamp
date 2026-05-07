@@ -1,4 +1,5 @@
 import type { AdviceArticle } from "@/lib/mock-data";
+import { PA_EMPLOYER_GUIDE_SECTIONS } from "@/lib/care-pa-employer-sections";
 
 /**
  * Full-length care & support guides (England-focused where law differs by nation;
@@ -88,81 +89,11 @@ export const CARE_ARTICLES_DETAILED: AdviceArticle[] = [
   },
   {
     slug: "employing-a-personal-assistant-basics",
-    title: "Employing a PA: checks, boundaries, and stopping unsafe care",
+    title: "Employing a PA: recruitment pack, mock templates, and staying safe",
     categorySlug: "care",
     updated: "2026-05-07",
-    tags: ["PA", "Employment", "Recruitment", "Safety"],
-    sections: [
-      {
-        type: "h2",
-        text: "Start with a written role profile",
-      },
-      {
-        type: "p",
-        text: "List tasks, times, locations, and what is explicitly not included (e.g. heavy clinical procedures you are not commissioning). Include how lone working, keys, and medication support will work. Ambiguity creates boundary drift — especially on domestic extras, transport, or emotional load.",
-      },
-      {
-        type: "h2",
-        text: "Safer recruitment basics",
-      },
-      {
-        type: "ul",
-        items: [
-          "Right to work checks — follow gov.uk lists; keep copies dated.",
-          "References from prior care or employment roles, with gaps explained.",
-          "DBS: the role and setting determine the appropriate level; use the DBS update service where it helps continuity.",
-          "Interview with scenario questions, not only sympathy stories.",
-        ],
-      },
-      {
-        type: "callout",
-        tone: "tip",
-        title: "Probation and supervisions",
-        body: "A short probation with clear review dates helps both sides. Brief weekly notes on what worked reduce awkward “suddenly it’s not working” conversations.",
-      },
-      {
-        type: "h2",
-        text: "Training, manual handling, and medication",
-      },
-      {
-        type: "p",
-        text: "Do not improvise hoisting, repositioning, or catheter care from YouTube. Commission training tied to occupational therapy or nurse sign-off where needed. For medication prompts vs administration, the legal line matters — wrong assumptions create safeguarding and criminal risk.",
-      },
-      {
-        type: "h2",
-        text: "Boundaries, dignity, and harassment",
-      },
-      {
-        type: "p",
-        text: "PAs are at risk of harassment too; disabled employers also deserve respect. A simple code — how to raise concerns, how to swap tasks when pain spikes, how to end shifts on time — prevents burnout on both sides.",
-      },
-      {
-        type: "h2",
-        text: "When care is unsafe or abusive",
-      },
-      {
-        type: "ul",
-        items: [
-          "Pause tasks that could injure either person; call 999 if immediate harm.",
-          "Contact the council safeguarding team where an adult with care needs is at risk.",
-          "Follow employment law on suspension and investigation where appropriate — ACAS guidance helps.",
-        ],
-      },
-      {
-        type: "h2",
-        text: "Ending employment fairly",
-      },
-      {
-        type: "p",
-        text: "Use notice periods in the contract, meet pension and holiday pay duties, and give written reasons where required. Retaliation or “ghosting” creates tribunal risk and destabilises the person receiving care.",
-      },
-      {
-        type: "callout",
-        tone: "warning",
-        title: "Important",
-        body: "Employment law changes over time. This is general information, not legal advice — verify notice periods, national minimum wage rates, and sick pay rules at the time you act.",
-      },
-    ],
+    tags: ["PA", "Templates", "Recruitment", "DBS", "Direct payments"],
+    sections: PA_EMPLOYER_GUIDE_SECTIONS as AdviceArticle["sections"],
   },
   {
     slug: "care-act-assessments-and-eligibility",
