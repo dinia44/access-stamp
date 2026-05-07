@@ -22,17 +22,20 @@ export function Navbar() {
   const moreRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    function onDocClick(e: MouseEvent) {
-      if (!moreRef.current?.contains(e.target as Node)) setMoreOpen(false);
+    if (!moreOpen) return;
+    function onDocClick(e: PointerEvent) {
+      if (!moreRef.current?.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
     }
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-  }, []);
+    document.addEventListener("pointerdown", onDocClick);
+    return () => document.removeEventListener("pointerdown", onDocClick);
+  }, [moreOpen]);
 
   const allMobile = useMemo(() => [...NAV_ITEMS, ...MORE_ITEMS], []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 shadow-[0_1px_0_rgba(15,26,43,0.06)] backdrop-blur-md supports-[backdrop-filter]:bg-background/88">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/98 shadow-[0_1px_0_rgba(15,26,43,0.06)]">
       <Container>
         <div className="flex h-16 items-center justify-between gap-3">
           <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Access Stamp home">
@@ -109,7 +112,7 @@ export function Navbar() {
         <div
           role="search"
           aria-labelledby="site-search-label"
-          className="relative z-[70] -mx-4 border-t border-border px-4 py-3 sm:-mx-6 sm:px-6"
+          className="relative z-10 -mx-4 border-t border-border px-4 py-3 sm:-mx-6 sm:px-6"
           style={{
             background: "linear-gradient(105deg, var(--blue-pale) 0%, var(--background-2) 45%, var(--amber-pale) 100%)",
           }}
