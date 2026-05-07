@@ -40,6 +40,7 @@ type WebkitSpeechRecognitionCtor = new () => {
   onerror: ((e: unknown) => void) | null;
   onend: (() => void) | null;
   start: () => void;
+  stop: () => void;
 };
 
 function canUseSpeech() {
