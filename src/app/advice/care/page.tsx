@@ -9,6 +9,8 @@
  */
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AdviceArticleCard } from "@/components/advice/advice-article-card";
+import { AdviceManualCard } from "@/components/advice/advice-manual-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
@@ -223,13 +225,14 @@ export default function CarePage() {
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {PATHWAYS.map((item) => (
-                <Link key={item.href} href={item.href} className="group">
-                  <Card className="h-full border-blue-pale/80 p-5 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
-                    <div className="text-sm font-semibold text-heading">{item.title}</div>
-                    <p className="mt-2 text-sm leading-6 text-muted">{item.desc}</p>
-                    <div className="mt-4 text-sm font-semibold text-blue">Open guide →</div>
-                  </Card>
-                </Link>
+                <AdviceManualCard
+                  key={item.href}
+                  href={item.href}
+                  title={item.title}
+                  description={item.desc}
+                  categorySlug="care"
+                  cta="Open guide"
+                />
               ))}
             </div>
           </section>
@@ -241,13 +244,14 @@ export default function CarePage() {
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               {MORE_TOPICS.map((item) => (
-                <Link key={item.href} href={item.href} className="group">
-                  <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
-                    <div className="text-sm font-semibold text-heading">{item.title}</div>
-                    <p className="mt-2 text-sm text-muted">{item.desc}</p>
-                    <div className="mt-4 text-sm font-semibold text-blue">Read guide →</div>
-                  </Card>
-                </Link>
+                <AdviceManualCard
+                  key={item.href}
+                  href={item.href}
+                  title={item.title}
+                  description={item.desc}
+                  categorySlug="care"
+                  cta="Read guide"
+                />
               ))}
             </div>
           </section>
@@ -259,13 +263,15 @@ export default function CarePage() {
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               {SCENARIOS.map((s) => (
-                <Card key={s.title} className="border-border bg-card p-5">
-                  <div className="text-sm font-semibold text-heading">{s.title}</div>
-                  <p className="mt-2 text-sm leading-6 text-muted">{s.body}</p>
-                  <Link href={s.href} className="mt-4 inline-block text-sm font-semibold text-blue hover:underline">
-                    {s.cta}
-                  </Link>
-                </Card>
+                <AdviceManualCard
+                  key={s.title}
+                  href={s.href}
+                  title={s.title}
+                  description={s.body}
+                  categorySlug="care"
+                  cta={s.cta}
+                  variant="explore"
+                />
               ))}
             </div>
           </section>
@@ -319,19 +325,7 @@ export default function CarePage() {
             </div>
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {articles.map((a) => (
-                <Link key={a.slug} href={`/advice/${a.slug}`} className="group">
-                  <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
-                    <div className="text-sm font-semibold text-heading">{a.title}</div>
-                    <div className="mt-2 text-xs font-semibold text-muted">Updated: {a.updated}</div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {a.tags.slice(0, 4).map((tag) => (
-                        <Badge key={tag} tone="blue">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </Card>
-                </Link>
+                <AdviceArticleCard key={a.slug} article={a} badgeTone="blue" tagLimit={4} showReadCta={false} />
               ))}
             </div>
           </section>

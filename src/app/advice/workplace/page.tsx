@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { AdviceArticleCard } from "@/components/advice/advice-article-card";
+import { AdviceManualCard } from "@/components/advice/advice-manual-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
@@ -55,16 +56,16 @@ export default function WorkplacePage() {
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               {MORE_TOPICS.map((item) => (
-                <Link key={item.href} href={item.href} className="group">
-                  <Card className="h-full border-[#dce6f4] p-5 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="text-sm font-semibold text-heading">{item.title}</div>
-                      <Badge tone="amber">Guide</Badge>
-                    </div>
-                    <p className="mt-2 text-sm text-muted">{item.desc}</p>
-                    <div className="mt-4 text-sm font-semibold text-blue">Open guide</div>
-                  </Card>
-                </Link>
+                <AdviceManualCard
+                  key={item.href}
+                  href={item.href}
+                  title={item.title}
+                  description={item.desc}
+                  categorySlug="workplace"
+                  badge="Guide"
+                  variant="explore"
+                  cta="Open guide"
+                />
               ))}
             </div>
           </section>
@@ -74,12 +75,18 @@ export default function WorkplacePage() {
             </div>
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {articles.map((a) => (
-                <Link key={a.slug} href={`/advice/${a.slug}`} className="group">
-                  <Card className="h-full border-[#dce6f4] p-5 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
-                    <div className="text-sm font-semibold text-heading">{a.title}</div>
-                    <div className="mt-2 text-xs font-semibold text-muted">Updated: {a.updated} · {readMinutes(a.title)} min read</div>
-                  </Card>
-                </Link>
+                <AdviceArticleCard
+                  key={a.slug}
+                  article={a}
+                  badgeTone="blue"
+                  showReadCta={false}
+                  tagLimit={0}
+                  meta={
+                    <div className="mt-2 text-xs font-semibold text-muted">
+                      Updated: {a.updated} · {readMinutes(a.title)} min read
+                    </div>
+                  }
+                />
               ))}
             </div>
           </section>

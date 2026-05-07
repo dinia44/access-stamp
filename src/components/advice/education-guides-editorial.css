@@ -1,0 +1,363 @@
+/* Education guides hub — editorial layout aligned with Landing.html prototype; Access Stamp palette */
+
+.education-guides-editorial {
+  --eg-accent: var(--amber);
+  --eg-accent-deep: #9a6b18;
+  --eg-ink: var(--heading);
+  --eg-ink-soft: var(--text);
+  --eg-ink-mute: var(--muted);
+  --eg-rule: var(--border);
+  --eg-rule-soft: color-mix(in srgb, var(--border) 65%, white);
+  --eg-paper: var(--background);
+  --eg-paper-deep: color-mix(in srgb, var(--amber-pale) 55%, var(--background-2));
+  --eg-plate: color-mix(in srgb, var(--amber-pale) 72%, var(--background));
+  --eg-plate-stripe: color-mix(in srgb, var(--amber) 14%, var(--amber-pale));
+  --eg-tag-secondary: color-mix(in srgb, var(--blue) 55%, var(--muted));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Reading comfort — echoes tweaks-app palette switching without extra bundles */
+.education-guides-editorial[data-education-tone="warm"] {
+  --eg-paper-deep: color-mix(in srgb, var(--amber-pale) 68%, var(--amber-light));
+  --eg-plate: color-mix(in srgb, var(--amber-pale) 82%, var(--amber-light));
+  --eg-plate-stripe: color-mix(in srgb, var(--amber) 18%, var(--amber-pale));
+}
+
+.education-guides-editorial[data-education-tone="crisp"] {
+  --eg-paper-deep: color-mix(in srgb, var(--background-2) 94%, var(--blue));
+  --eg-rule: color-mix(in srgb, var(--border) 45%, var(--heading));
+  --eg-rule-soft: color-mix(in srgb, var(--border) 55%, var(--heading));
+}
+
+.education-guides-editorial .eg-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--eg-accent);
+  flex-shrink: 0;
+}
+
+.education-guides-editorial .eg-hero-title {
+  font-family: var(--font-eg-display), "Newsreader", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(2.25rem, 6.4vw, 5.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--eg-ink);
+  text-wrap: balance;
+  margin: 1.125rem 0 0;
+}
+
+.education-guides-editorial .eg-hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--eg-accent-deep);
+}
+
+.education-guides-editorial .eg-section-head h2 {
+  font-family: var(--font-eg-display), "Newsreader", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(1.875rem, 3.4vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin: 0.75rem 0 0;
+  text-wrap: balance;
+  color: var(--eg-ink);
+}
+
+.education-guides-editorial .eg-section-head h2 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--eg-accent-deep);
+}
+
+.education-guides-editorial .eg-path-title {
+  font-family: var(--font-eg-display), "Newsreader", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(1.375rem, 2vw, 1.875rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+  color: var(--eg-ink);
+}
+
+.education-guides-editorial .eg-index-title {
+  font-family: var(--font-eg-display), "Newsreader", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(1.125rem, 1.7vw, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.education-guides-editorial .eg-quote {
+  font-family: var(--font-eg-display), "Newsreader", Georgia, serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  max-width: 22ch;
+  color: var(--eg-ink);
+}
+
+.education-guides-editorial .eg-quote::before {
+  content: "\201C";
+  color: var(--eg-accent);
+  padding-right: 0.25rem;
+}
+
+.education-guides-editorial .eg-quote::after {
+  content: "\201D";
+  color: var(--eg-accent);
+  padding-left: 0.125rem;
+}
+
+/* Pathway columns — hover lifts paper like prototype */
+.education-guides-editorial .eg-path-cell {
+  transition: background-color 0.25s ease;
+}
+
+.education-guides-editorial .eg-path-cell:hover {
+  background: var(--eg-paper-deep);
+}
+
+/* Plate: sharp corners, warm stripes like prototype */
+.education-guides-editorial .eg-plate {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  background: var(--eg-plate);
+  border: 1px solid var(--eg-rule-soft);
+}
+
+.education-guides-editorial .eg-plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--eg-plate) 0 14px,
+    var(--eg-plate-stripe) 14px 15px
+  );
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.education-guides-editorial .eg-plate-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 1;
+  background: var(--eg-ink);
+  color: var(--card);
+  font-family: var(--font-eg-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 9px;
+  border-radius: 2px;
+}
+
+.education-guides-editorial .eg-plate-cap {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  right: 14px;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--font-eg-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--eg-ink-soft);
+}
+
+.education-guides-editorial .eg-plate-cap .eg-plate-cap-l {
+  background: var(--eg-paper);
+  padding: 4px 8px;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(12, 29, 52, 0.06);
+}
+
+.education-guides-editorial .eg-plate-cap .eg-plate-cap-r {
+  color: var(--eg-ink-mute);
+  align-self: flex-end;
+  text-align: right;
+}
+
+/* Index: warm section + row hover like prototype */
+.education-guides-editorial .eg-index-section {
+  background: var(--eg-paper-deep);
+  border-radius: 4px;
+  margin-left: -0.25rem;
+  margin-right: -0.25rem;
+  padding-left: clamp(1rem, 3vw, 1.75rem);
+  padding-right: clamp(1rem, 3vw, 1.75rem);
+}
+
+@media (min-width: 640px) {
+  .education-guides-editorial .eg-index-section {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+  }
+}
+
+.education-guides-editorial .eg-index-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1.6fr) minmax(0, 1fr) 130px 24px;
+  gap: 24px;
+  align-items: center;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--eg-rule);
+  transition:
+    background-color 0.2s ease,
+    padding 0.2s ease;
+}
+
+.education-guides-editorial .eg-index-row:first-child {
+  border-top: 1px solid var(--eg-rule);
+}
+
+.education-guides-editorial .eg-index-row:hover {
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+}
+
+.education-guides-editorial .eg-index-row:hover .eg-index-arrow {
+  transform: translateX(4px);
+  color: var(--eg-accent-deep);
+}
+
+.education-guides-editorial .eg-index-row:hover .eg-index-title {
+  color: var(--eg-accent-deep);
+}
+
+@media (max-width: 880px) {
+  .education-guides-editorial .eg-index-row {
+    grid-template-columns: 40px 1fr 24px;
+    grid-template-areas:
+      "n t a"
+      ". topics topics"
+      ". upd upd";
+    gap: 6px 16px;
+    padding: 18px 0;
+  }
+
+  .education-guides-editorial .eg-index-row .eg-index-num {
+    grid-area: n;
+    align-self: start;
+    padding-top: 4px;
+  }
+
+  .education-guides-editorial .eg-index-row .eg-index-title-wrap {
+    grid-area: t;
+  }
+
+  .education-guides-editorial .eg-index-row .eg-index-topics {
+    grid-area: topics;
+    margin-top: 10px;
+  }
+
+  .education-guides-editorial .eg-index-row .eg-index-updated {
+    grid-area: upd;
+    margin-top: 6px;
+    text-align: left;
+  }
+
+  .education-guides-editorial .eg-index-row .eg-index-arrow {
+    grid-area: a;
+    align-self: start;
+    padding-top: 4px;
+  }
+}
+
+/* In-page editorial footer — Landing.html dark strip (site chrome stays global) */
+.education-guides-editorial .eg-editorial-footer {
+  background: var(--navy);
+  color: rgba(255, 255, 255, 0.92);
+  margin-top: clamp(2rem, 6vw, 3.5rem);
+  padding-block: clamp(2.5rem, 5vw, 3.75rem);
+  padding-inline: clamp(1.25rem, 4vw, 2rem);
+  border-radius: 4px;
+}
+
+.education-guides-editorial .eg-editorial-footer h3 {
+  font-family: var(--font-eg-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.52);
+  margin: 0 0 0.875rem;
+}
+
+.education-guides-editorial .eg-editorial-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 14.5px;
+}
+
+.education-guides-editorial .eg-editorial-footer a {
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.education-guides-editorial .eg-editorial-footer a:hover {
+  color: #fff;
+}
+
+.education-guides-editorial .eg-editorial-footer button {
+  color: rgba(255, 255, 255, 0.88);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+}
+
+.education-guides-editorial .eg-editorial-footer button:hover {
+  color: #fff;
+}
+
+.education-guides-editorial .eg-editorial-footer .eg-footer-lockup {
+  font-family: var(--font-eg-display), "Newsreader", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  letter-spacing: -0.01em;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.education-guides-editorial .eg-editorial-footer .eg-footer-blurb {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14.5px;
+  line-height: 1.5;
+  max-width: 36ch;
+  margin: 0;
+}
+
+.education-guides-editorial .eg-editorial-footer-base {
+  margin-top: clamp(2rem, 4vw, 2.75rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  font-family: var(--font-eg-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+}

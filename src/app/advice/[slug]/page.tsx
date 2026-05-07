@@ -7,6 +7,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { ADVICE_ARTICLES, ADVICE_CATEGORIES } from "@/lib/mock-data";
+import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { LAWS_GUIDANCE_LINKS } from "@/lib/laws-guidance";
 import { SetChatContext } from "@/components/chat/set-context";
 
@@ -35,6 +36,11 @@ export default async function AdviceArticlePage({
   const resolved = await Promise.resolve(params);
   const a = ADVICE_ARTICLES.find((x) => x.slug === resolved.slug);
   if (!a) return notFound();
+
+  /** Matches hub cards: explicit hero in data, else pooled image for this slug/category */
+  const guideHero = a.heroImage
+    ? { src: a.heroImage.src, alt: a.heroImage.alt }
+    : getAdviceArticleCardImage(a);
 
   const categoryLabel = slugToCategoryLabel(a.categorySlug);
   const related = relatedFor(a.slug, a.categorySlug);
@@ -73,6 +79,19 @@ export default async function AdviceArticlePage({
             ]}
           />
 
+          <Card className="overflow-hidden border-border shadow-[var(--shadow-soft)]">
+            <div className="relative aspect-[21/9] w-full min-h-[180px] sm:min-h-[220px]">
+              <Image
+                src={guideHero.src}
+                alt={guideHero.alt}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, min(1152px, 96vw)"
+                priority
+              />
+            </div>
+          </Card>
+
           <div className="space-y-3">
             <h1 className="font-[var(--font-heading)] text-4xl leading-tight text-heading">
               {a.title}
@@ -89,13 +108,6 @@ export default async function AdviceArticlePage({
               </span>
             </div>
           </div>
-          {a.heroImage ? (
-            <Card className="overflow-hidden">
-              <div className="relative h-[220px] w-full sm:h-[280px]">
-                <Image src={a.heroImage.src} alt={a.heroImage.alt} fill className="object-cover" sizes="100vw" />
-              </div>
-            </Card>
-          ) : null}
 
           <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
             <Card className="advice-article-print p-6 print:border-0 print:shadow-none">
@@ -193,13 +205,19 @@ export default async function AdviceArticlePage({
                 <div className="text-sm font-semibold text-heading">Related</div>
                 {related.length ? (
                   <ul className="mt-3 grid gap-2 text-sm">
-                    {related.map((r) => (
-                      <li key={r.slug}>
-                        <Link className="font-semibold text-blue hover:underline" href={`/advice/${r.slug}`}>
-                          {r.title}
-                        </Link>
-                      </li>
-                    ))}
+                    {related.map((r) => {
+                      const img = getAdviceArticleCardImage(r);
+                      return (
+                        <li key={r.slug} className="flex gap-3 rounded-md py-1">
+                          <div className="relative h-11 w-14 shrink-0 overflow-hidden rounded-md bg-background-2">
+                            <Image src={img.src} alt="" fill className="object-cover" sizes="56px" />
+                          </div>
+                          <Link className="self-center font-semibold text-blue hover:underline" href={`/advice/${r.slug}`}>
+                            {r.title}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : (
                   <p className="mt-2 text-sm text-muted">More guides in this section are coming soon.</p>

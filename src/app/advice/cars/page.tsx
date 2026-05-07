@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdviceIllustratedCard } from "@/components/advice/advice-manual-card";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
@@ -64,10 +65,7 @@ export default function CarsPage() {
 
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {TOPICS.map(([title, desc]) => (
-              <Card key={title} className="p-5">
-                <div className="text-sm font-semibold text-heading">{title}</div>
-                <p className="mt-2 text-sm text-muted">{desc}</p>
-              </Card>
+              <AdviceIllustratedCard key={title} title={title} description={desc} categorySlug="cars" />
             ))}
           </div>
 

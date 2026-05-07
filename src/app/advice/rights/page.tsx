@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdviceArticleCard } from "@/components/advice/advice-article-card";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { ADVICE_ARTICLES } from "@/lib/mock-data";
@@ -94,20 +95,7 @@ export default function RightsPage() {
 
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {featured.map((a) => (
-                <Link key={a!.slug} href={`/advice/${a!.slug}`} className="group">
-                  <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
-                    <div className="text-sm font-semibold text-heading">{a!.title}</div>
-                    <div className="mt-2 text-xs font-semibold text-muted">Updated: {a!.updated}</div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {a!.tags.slice(0, 3).map((t) => (
-                        <Badge key={t} tone="blue">
-                          {t}
-                        </Badge>
-                      ))}
-                    </div>
-                    <div className="mt-4 text-sm font-semibold text-blue">Read →</div>
-                  </Card>
-                </Link>
+                <AdviceArticleCard key={a!.slug} article={a!} badgeTone="blue" />
               ))}
             </div>
           </section>
@@ -120,19 +108,7 @@ export default function RightsPage() {
 
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {articles.map((a) => (
-                <Link key={a.slug} href={`/advice/${a.slug}`} className="group">
-                  <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
-                    <div className="text-sm font-semibold text-heading">{a.title}</div>
-                    <div className="mt-2 text-xs font-semibold text-muted">Updated: {a.updated}</div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {a.tags.slice(0, 3).map((t) => (
-                        <Badge key={t} tone="amber">
-                          {t}
-                        </Badge>
-                      ))}
-                    </div>
-                  </Card>
-                </Link>
+                <AdviceArticleCard key={a.slug} article={a} badgeTone="amber" showReadCta={false} />
               ))}
             </div>
           </section>

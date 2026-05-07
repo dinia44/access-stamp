@@ -1,6 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { Badge, Card } from "@/components/ui";
+import { ADVICE_HUB_CATEGORY_IMAGES } from "@/lib/advice-card-images";
 import { ADVICE_CATEGORIES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
 
@@ -20,24 +22,42 @@ export default function AdviceHubPage() {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {ADVICE_CATEGORIES.map((c) => (
-              <Link key={c.href} href={c.href} className="group">
-                <Card className="h-full transition-shadow group-hover:shadow-[var(--shadow)]">
-                  <div className="p-5">
-                    <div className="flex items-start gap-3">
-                      <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-pale text-lg" aria-hidden>
-                        {c.icon}
-                      </div>
-                      <div>
-                        <div className="text-sm font-semibold text-heading">{c.title}</div>
-                        <div className="mt-1 text-sm text-muted">{c.desc}</div>
-                      </div>
+            {ADVICE_CATEGORIES.map((c) => {
+              const hubImg = ADVICE_HUB_CATEGORY_IMAGES[c.href];
+              return (
+                <Link key={c.href} href={c.href} className="group">
+                  <Card className="h-full overflow-hidden p-0 transition-shadow group-hover:shadow-[var(--shadow)]">
+                    <div className="relative aspect-[16/10] w-full bg-background-2">
+                      {hubImg ? (
+                        <Image
+                          src={hubImg.src}
+                          alt={hubImg.alt}
+                          fill
+                          className="object-cover transition duration-300 group-hover:scale-[1.03]"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <div className="flex h-full min-h-[140px] items-center justify-center bg-blue-pale text-4xl" aria-hidden>
+                          {c.icon}
+                        </div>
+                      )}
                     </div>
-                    <div className="mt-4 text-sm font-semibold text-blue">Open →</div>
-                  </div>
-                </Card>
-              </Link>
-            ))}
+                    <div className="p-5">
+                      <div className="flex items-start gap-3">
+                        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-blue-pale text-lg" aria-hidden>
+                          {c.icon}
+                        </div>
+                        <div>
+                          <div className="text-sm font-semibold text-heading">{c.title}</div>
+                          <div className="mt-1 text-sm text-muted">{c.desc}</div>
+                        </div>
+                      </div>
+                      <div className="mt-4 text-sm font-semibold text-blue">Open →</div>
+                    </div>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
 
           <div className="grid gap-3 md:grid-cols-3">

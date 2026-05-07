@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { AdviceArticleCard } from "@/components/advice/advice-article-card";
+import { AdviceManualCard } from "@/components/advice/advice-manual-card";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
@@ -101,13 +103,14 @@ export default function NewToDisabilityPage() {
 
           <section className="grid gap-3 md:grid-cols-3">
             {PRIORITIES.map((item) => (
-              <Link key={item.title} href={item.href} className="group">
-                <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
-                  <div className="text-sm font-semibold text-heading">{item.title}</div>
-                  <p className="mt-2 text-sm leading-6 text-muted">{item.desc}</p>
-                  <div className="mt-4 text-sm font-semibold text-blue">Open guide →</div>
-                </Card>
-              </Link>
+              <AdviceManualCard
+                key={item.title}
+                href={item.href}
+                title={item.title}
+                description={item.desc}
+                categorySlug="new-to-disability"
+                cta="Open guide"
+              />
             ))}
           </section>
 
@@ -121,19 +124,7 @@ export default function NewToDisabilityPage() {
 
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {articles.map((a) => (
-                <Link key={a.slug} href={`/advice/${a.slug}`} className="group">
-                  <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
-                    <div className="text-sm font-semibold text-heading">{a.title}</div>
-                    <div className="mt-2 text-xs font-semibold text-muted">Updated: {a.updated}</div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {a.tags.slice(0, 3).map((tag) => (
-                        <Badge key={tag} tone="blue">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </Card>
-                </Link>
+                <AdviceArticleCard key={a.slug} article={a} badgeTone="blue" />
               ))}
             </div>
           </section>

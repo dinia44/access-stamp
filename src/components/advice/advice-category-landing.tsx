@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { AdviceArticleCard } from "@/components/advice/advice-article-card";
+import { AdviceManualCard } from "@/components/advice/advice-manual-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
@@ -84,16 +85,19 @@ export function AdviceCategoryLanding({
                     <div className="text-sm font-semibold text-heading">Featured guides</div>
                     <Badge tone="blue">Popular</Badge>
                   </div>
-                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
                     {featured.map((a) => (
-                      <Link
+                      <AdviceArticleCard
                         key={a.slug}
-                        href={`/advice/${a.slug}`}
-                        className="rounded-[var(--radius-ui)] border border-[#dce6f4] bg-card px-3 py-3 text-sm font-semibold text-heading transition-all hover:-translate-y-0.5 hover:bg-blue-pale hover:text-blue hover:shadow-[var(--shadow-soft)]"
-                      >
-                        <div>{a.title}</div>
-                        <div className="mt-1 text-[11px] font-medium text-muted">{readMinutes(a)} min read · Updated {a.updated}</div>
-                      </Link>
+                        article={a}
+                        badgeTone="blue"
+                        tagLimit={2}
+                        meta={
+                          <div className="mt-2 text-[11px] font-medium text-muted">
+                            {readMinutes(a)} min read · Updated {a.updated}
+                          </div>
+                        }
+                      />
                     ))}
                   </div>
                 </div>
@@ -138,16 +142,15 @@ export function AdviceCategoryLanding({
             </div>
             <div className="grid gap-3 md:grid-cols-3">
               {topicAreas.map((item) => (
-                <Link key={item.title} href={item.href} className="group">
-                  <Card className="h-full border-[#dce6f4] p-5 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="text-sm font-semibold uppercase tracking-wide text-muted">{item.title}</div>
-                      <Badge tone="amber">Guide</Badge>
-                    </div>
-                    <p className="mt-2 text-sm leading-6 text-muted">{item.desc}</p>
-                    <div className="mt-4 text-sm font-semibold text-blue">Open guide</div>
-                  </Card>
-                </Link>
+                <AdviceManualCard
+                  key={item.title}
+                  href={item.href}
+                  title={item.title}
+                  description={item.desc}
+                  categorySlug={categorySlug}
+                  badge="Guide"
+                  cta="Open guide"
+                />
               ))}
             </div>
           </section>
@@ -160,19 +163,16 @@ export function AdviceCategoryLanding({
 
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {articles.map((a) => (
-                <Link key={a.slug} href={`/advice/${a.slug}`} className="group">
-                  <Card className="h-full border-[#dce6f4] p-5 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
-                    <div className="text-sm font-semibold text-heading">{a.title}</div>
-                    <div className="mt-2 text-xs font-semibold text-muted">Updated: {a.updated} · {readMinutes(a)} min read</div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {a.tags.slice(0, 3).map((tag) => (
-                        <Badge key={tag} tone="blue">
-                          {tag}
-                        </Badge>
-                      ))}
+                <AdviceArticleCard
+                  key={a.slug}
+                  article={a}
+                  badgeTone="blue"
+                  meta={
+                    <div className="mt-2 text-xs font-semibold text-muted">
+                      Updated: {a.updated} · {readMinutes(a)} min read
                     </div>
-                  </Card>
-                </Link>
+                  }
+                />
               ))}
             </div>
           </section>
