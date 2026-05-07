@@ -43,6 +43,23 @@ function short(s: string) {
   return s.replace(/\s+/g, " ").trim();
 }
 
+/** Wrong slug sometimes emitted by models; Venue Finder lives at `/venue-finder`. */
+function normalizeVenueHref(href: string) {
+  return href.replace(/^\/venues(?=$|[/?#])/i, "/venue-finder");
+}
+
+function normalizeAssistantReply(reply: string) {
+  return reply.replace(/\]\(\/venues([^)]*)\)/gi, "](/venue-finder$1)");
+}
+
+function normalizeAssistantLinks(links?: Array<{ label: string; href: string }>) {
+  if (!links?.length) return [];
+  return links.map((l) => ({
+    ...l,
+    href: normalizeVenueHref(l.href),
+  }));
+}
+
 function pageSummary(page: PageContext) {
   if (page.kind === "venue-finder") return "User is on venue finder page.";
   if (page.kind === "submit-venue") return "User is on submit venue page.";
@@ -71,6 +88,8 @@ function buildLlmUserPrompt(message: string, page: PageContext) {
     "If the user is off-topic for Access Stamp (for example recipes), refuse briefly and redirect to Access Stamp topics.",
     'Return STRICT JSON only: {"reply":"string","quickActions":["string"],"links":[{"label":"string","href":"string"}]}',
     "Limit quickActions to max 4 short suggestions.",
+    "Use Markdown in reply sparingly: **bold** for emphasis, bullet lists when listing steps. Never output raw broken Markdown.",
+    "For more venues, link only to `/venue-finder` (never `/venues`). Match quick-action wording to link labels (e.g. both say Open Venue Finder).",
   ].join("\n\n");
 }
 
@@ -104,9 +123,9 @@ async function callLlm(message: string, page: PageContext): Promise<LlmShape | n
     const parsed = JSON.parse(content) as LlmShape;
     if (!parsed.reply || typeof parsed.reply !== "string") return null;
     return {
-      reply: parsed.reply,
+      reply: normalizeAssistantReply(parsed.reply),
       quickActions: Array.isArray(parsed.quickActions) ? parsed.quickActions.slice(0, 4) : undefined,
-      links: Array.isArray(parsed.links) ? parsed.links.slice(0, 3) : undefined,
+      links: normalizeAssistantLinks(Array.isArray(parsed.links) ? parsed.links.slice(0, 3) : undefined),
     };
   } catch {
     return null;
@@ -234,7 +253,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       reply: voice ? short(llm.reply) : llm.reply,
       quickActions: llm.quickActions,
-      links: llm.links,
+      links: normalizeAssistantLinks(llm.links),
     });
   }
 

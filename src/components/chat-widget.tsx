@@ -4,8 +4,17 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useChat } from "@/components/chat/provider";
+import { ChatMessageContent } from "@/components/chat/chat-message-content";
 
-type Msg = { role: "user" | "assistant"; text: string; time: string };
+type Msg = { role: "user" | "assistant"; text: string; sentAt: number };
+
+function clockLabel(sentAt: number) {
+  return new Date(sentAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
+
+function normalizeVenueHref(href: string) {
+  return href.replace(/^\/venues(?=$|[/?#])/i, "/venue-finder");
+}
 type StateSummary = {
   location: string;
   venueType: string;
@@ -51,10 +60,6 @@ function getWebkitSpeechRecognition(): WebkitSpeechRecognitionCtor | null {
   if (typeof window === "undefined") return null;
   const w = window as unknown as { webkitSpeechRecognition?: WebkitSpeechRecognitionCtor };
   return w.webkitSpeechRecognition ?? null;
-}
-
-function nowLabel() {
-  return new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
 function IconSpeaker({ muted = false }: { muted?: boolean }) {
@@ -131,7 +136,6 @@ export function ChatWidget() {
   const [hoverReadEnabled, setHoverReadEnabled] = useState(false);
   const [plainLanguage, setPlainLanguage] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [canStopResponse, setCanStopResponse] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [lastLinks, setLastLinks] = useState<Array<{ label: string; href: string }>>([]);
   const [lastVenues, setLastVenues] = useState<ApiVenue[]>([]);
@@ -146,7 +150,7 @@ export function ChatWidget() {
     {
       role: "assistant",
       text: "Hi, I'm Access Stamp AI. How can I help you today?",
-      time: nowLabel(),
+      sentAt: Date.now(),
     },
   ]);
   const scroller = useRef<HTMLDivElement | null>(null);
@@ -157,10 +161,20 @@ export function ChatWidget() {
   const lastHoverSpeechAtRef = useRef(0);
   const lastHoverTextRef = useRef("");
   const liveTranscriptRef = useRef("");
+  const lastOutboundRef = useRef("");
+  const userStoppedRef = useRef(false);
 
   useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight });
   }, [msgs, open, typing]);
+
+  useEffect(() => {
+    if (!typing) return;
+    const id = window.setTimeout(() => {
+      abortRef.current?.abort();
+    }, 45000);
+    return () => window.clearTimeout(id);
+  }, [typing]);
 
   useEffect(() => {
     let cancelled = false;
@@ -202,8 +216,25 @@ export function ChatWidget() {
       ? quickOverride.actions
       : defaultQuick;
 
+  const hasUserMessage = useMemo(() => msgs.some((m) => m.role === "user"), [msgs]);
+
+  function summaryChipText() {
+    const loc = lastSummary.location.trim();
+    const needs = lastSummary.mustHaves.length ? lastSummary.mustHaves.join(", ") : "";
+    const type = lastSummary.venueType !== "Any" ? lastSummary.venueType : "";
+    const parts: string[] = [];
+    if (loc) parts.push(`Location: ${loc}`);
+    if (needs) parts.push(`Needs: ${needs}`);
+    if (type) parts.push(`Type: ${type}`);
+    return parts.join(" · ");
+  }
+
   function normalizeForSpeech(text: string) {
-    return text
+    const plain = text
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/\*([^*]+)\*/g, "$1")
+      .replace(/`+/g, "");
+    return plain
       .replace(/\n+/g, ". ")
       .replace(/\s+/g, " ")
       .replace(/([a-zA-Z0-9])\s*([.?!])(?!\s)/g, "$1$2 ")
@@ -321,16 +352,20 @@ export function ChatWidget() {
     }
   }
 
-  async function send(text: string) {
+  async function send(text: string, opts?: { skipUserEcho?: boolean }) {
     const t = text.trim();
     if (!t) return;
     abortRef.current?.abort();
     abortRef.current = new AbortController();
-    setMsgs((m) => [...m, { role: "user", text: t, time: nowLabel() }]);
-    setLastSummary(parseStateSummary(t));
+    userStoppedRef.current = false;
+    lastOutboundRef.current = t;
+    const sentNow = Date.now();
+    if (!opts?.skipUserEcho) {
+      setMsgs((m) => [...m, { role: "user", text: t, sentAt: sentNow }]);
+      setLastSummary(parseStateSummary(t));
+    }
     setDraft("");
     setTyping(true);
-    setCanStopResponse(true);
     setErrorText("");
 
     let data: ApiResponse | null = null;
@@ -350,13 +385,19 @@ export function ChatWidget() {
     } catch (err) {
       if ((err as Error).name === "AbortError") {
         setTyping(false);
-        setCanStopResponse(false);
-        setMsgs((m) => [...m, { role: "assistant", text: "Stopped. Ask again when you're ready.", time: nowLabel() }]);
+        if (userStoppedRef.current) {
+          userStoppedRef.current = false;
+          setMsgs((m) => [
+            ...m,
+            { role: "assistant", text: "Stopped. Ask again when you're ready.", sentAt: Date.now() },
+          ]);
+        } else {
+          setErrorText("Something went wrong or the request timed out. Please try again.");
+        }
         return;
       }
       setErrorText("Connection problem. Try again, or use Venue Finder/Browse advice below.");
     }
-    setCanStopResponse(false);
 
     const rawReply =
       data?.reply ??
@@ -365,9 +406,9 @@ export function ChatWidget() {
 
     if (data?.quickActions?.length)
       setQuickOverride({ kind: page.kind, actions: data.quickActions });
-    setLastLinks(data?.links ?? []);
+    setLastLinks((data?.links ?? []).map((l) => ({ ...l, href: normalizeVenueHref(l.href) })));
     setLastVenues(data?.venues?.slice(0, 3) ?? []);
-    setMsgs((m) => [...m, { role: "assistant", text: reply, time: nowLabel() }]);
+    setMsgs((m) => [...m, { role: "assistant", text: reply, sentAt: Date.now() }]);
     setTyping(false);
 
     await speakReply(reply);
@@ -379,10 +420,10 @@ export function ChatWidget() {
   }
 
   function stopResponse() {
+    userStoppedRef.current = true;
     abortRef.current?.abort();
     abortRef.current = null;
     setTyping(false);
-    setCanStopResponse(false);
   }
 
   function collapseChat() {
@@ -426,9 +467,9 @@ export function ChatWidget() {
     }`;
     try {
       await navigator.clipboard.writeText(summary);
-      setMsgs((m) => [...m, { role: "assistant", text: "Summary copied for sharing.", time: nowLabel() }]);
+      setMsgs((m) => [...m, { role: "assistant", text: "Summary copied for sharing.", sentAt: Date.now() }]);
     } catch {
-      setMsgs((m) => [...m, { role: "assistant", text: "Could not copy summary on this browser.", time: nowLabel() }]);
+      setMsgs((m) => [...m, { role: "assistant", text: "Could not copy summary on this browser.", sentAt: Date.now() }]);
     }
   }
 
@@ -559,8 +600,14 @@ export function ChatWidget() {
                 </div>
                 <div className="grid gap-2">
                   {msgs.slice(-6).map((m, i) => (
-                    <div key={i} className={cn("rounded-[12px] border px-3 py-2 text-sm", m.role === "assistant" ? "border-[#e3e8ef] bg-white" : "border-[#d3e2ff] bg-[#e8f0ff]")}>
-                      {m.text}
+                    <div
+                      key={`${m.sentAt}-${i}`}
+                      className={cn(
+                        "rounded-[12px] border px-3 py-2 text-sm",
+                        m.role === "assistant" ? "border-[#e3e8ef] bg-white" : "border-[#d3e2ff] bg-[#e8f0ff]",
+                      )}
+                    >
+                      <ChatMessageContent text={m.text} />
                     </div>
                   ))}
                 </div>
@@ -596,9 +643,15 @@ export function ChatWidget() {
                   <button type="button" className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
                     Stop speaking
                   </button>
-                  <button type="button" className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]" onClick={stopResponse} disabled={!canStopResponse}>
-                    Stop response
-                  </button>
+                  {typing ? (
+                    <button
+                      type="button"
+                      className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                      onClick={stopResponse}
+                    >
+                      Stop response
+                    </button>
+                  ) : null}
                 </div>
                 <div className="flex items-end gap-2">
                   <textarea
@@ -622,7 +675,7 @@ export function ChatWidget() {
         ) : (
         <div className="flex h-[min(640px,calc(100vh-18px))] w-[min(440px,calc(100vw-12px))] flex-col overflow-hidden rounded-[16px] border border-[#d8dfea] bg-white shadow-[0_24px_54px_-26px_rgba(12,29,52,0.35)]">
           <div
-            className="flex items-center justify-between gap-3 border-b border-white/15 px-4 py-3 text-white"
+            className="relative flex items-center justify-between gap-3 border-b border-white/15 px-4 py-3 text-white"
             style={{
               background: "linear-gradient(90deg, #0d4bb3 0%, #0b3f9f 100%)",
             }}
@@ -636,22 +689,48 @@ export function ChatWidget() {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button type="button" className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/15 cursor-pointer" onClick={() => setVoiceEnabled((v) => !v)} aria-label="Toggle voice"><IconSpeaker muted={!voiceEnabled} /></button>
-              <button type="button" className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/15 cursor-pointer" aria-haspopup="menu" aria-expanded={settingsOpen} onClick={() => setSettingsOpen((v) => !v)} aria-label="Open chat settings"><IconDots /></button>
-              <button type="button" className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/15 cursor-pointer" onClick={collapseChat} aria-label="Collapse chat"><IconChevronDown /></button>
+            <div className="relative flex items-center gap-2">
+              <button
+                type="button"
+                title="Turn spoken replies on or off"
+                className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/15 cursor-pointer"
+                onClick={() => setVoiceEnabled((v) => !v)}
+                aria-label="Toggle voice playback"
+              >
+                <IconSpeaker muted={!voiceEnabled} />
+              </button>
+              <button
+                type="button"
+                title="Language, voice style, and accessibility options"
+                className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/15 cursor-pointer"
+                aria-haspopup="menu"
+                aria-expanded={settingsOpen}
+                onClick={() => setSettingsOpen((v) => !v)}
+                aria-label="Open chat settings"
+              >
+                <IconDots />
+              </button>
+              <button
+                type="button"
+                title="Minimize chat"
+                className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/15 cursor-pointer"
+                onClick={collapseChat}
+                aria-label="Collapse chat"
+              >
+                <IconChevronDown />
+              </button>
               {settingsOpen ? (
                 <div className="absolute right-4 top-12 z-10 w-56 rounded-[var(--radius-card)] border border-white/30 bg-[#142138] p-2 text-white shadow-[var(--shadow)]">
                   <div className="mb-2 rounded-[var(--radius-ui)] bg-white/10 px-2 py-2 text-xs font-semibold text-white">
                     Voice style: {voiceLabel}
                   </div>
                   <label className="mb-2 grid gap-1 text-xs font-semibold">
-                    Language
+                    Voice input language
                     <select
                       className="rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-xs font-semibold text-white"
                       value={selectedLanguage}
                       onChange={(e) => setSelectedLanguage(e.target.value)}
-                      aria-label="Select language"
+                      aria-label="Voice input language"
                     >
                       <option value="en-GB" className="text-heading">English (UK)</option>
                       <option value="en-US" className="text-heading">English (US)</option>
@@ -659,6 +738,29 @@ export function ChatWidget() {
                       <option value="fr-FR" className="text-heading">French (FR)</option>
                     </select>
                   </label>
+                  <div className="mb-2 border-t border-white/10 pt-2">
+                    <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[#8eb4dc]">Conversation</div>
+                    <button
+                      type="button"
+                      className={cn(
+                        "mb-1 w-full rounded-[var(--radius-ui)] px-2 py-1 text-left text-xs font-semibold cursor-pointer",
+                        conversationMode ? "bg-white/20 text-white" : "bg-white/5 text-[#c0d0e2]",
+                      )}
+                      onClick={() => {
+                        if (conversationMode) endConversation();
+                        else startConversationMode();
+                      }}
+                    >
+                      {conversationMode ? "End conversation mode" : "Start conversation mode"}
+                    </button>
+                    <button
+                      type="button"
+                      className="w-full rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-left text-xs font-semibold cursor-pointer hover:bg-white/20"
+                      onClick={() => stopAllSpeech()}
+                    >
+                      Stop talking (playback)
+                    </button>
+                  </div>
                   <button
                     type="button"
                     className={cn(
@@ -716,32 +818,43 @@ export function ChatWidget() {
               Ask about venues, equipment, benefits, rights, travel, school, work, or care support.
             </p>
             <div className="grid gap-2">
-              {msgs.map((m, i) => (
-                <div key={i} className={cn("flex items-end gap-2", m.role === "user" && "justify-end")}>
-                  {m.role === "assistant" ? (
-                    <div className="grid h-8 w-8 place-items-center rounded-full bg-[#0d4bb3] text-white text-xs"><IconRobot /></div>
-                  ) : null}
-                  <div
-                    className={cn(
-                  "max-w-[78%] rounded-[16px] border px-4 py-3 text-sm leading-6 shadow-[0_8px_18px_-16px_rgba(12,29,52,0.28)]",
-                      m.role === "assistant"
-                        ? "border-[#e3e8ef] bg-white text-heading"
-                        : "border-[#d3e2ff] bg-[#e8f0ff] text-heading",
-                    )}
-                  >
-                    {m.text.split("\n").map((line, idx) => (
-                      <div key={idx}>{line}</div>
-                    ))}
-                    <div className="mt-1 text-[11px] text-muted">{m.time}</div>
+              {msgs.map((m, i) => {
+                const prev = msgs[i - 1];
+                const showTime =
+                  i === 0 ||
+                  Math.floor(m.sentAt / 60000) !== Math.floor((prev?.sentAt ?? 0) / 60000);
+                return (
+                  <div key={`${m.sentAt}-${i}`} className={cn("flex items-end gap-2", m.role === "user" && "justify-end")}>
+                    {m.role === "assistant" ? (
+                      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#0d4bb3] text-white text-xs">
+                        <IconRobot />
+                      </div>
+                    ) : null}
+                    <div
+                      className={cn(
+                        "max-w-[78%] rounded-[16px] border px-4 py-3 shadow-[0_8px_18px_-16px_rgba(12,29,52,0.28)]",
+                        m.role === "assistant"
+                          ? "border-[#e3e8ef] bg-white text-heading"
+                          : "border-[#d3e2ff] bg-[#e8f0ff] text-heading",
+                      )}
+                    >
+                      <ChatMessageContent text={m.text} />
+                      {showTime ? (
+                        <div className="mt-2 border-t border-[#e8ecf3] pt-2 text-[11px] text-muted">{clockLabel(m.sentAt)}</div>
+                      ) : null}
+                    </div>
+                    {m.role === "user" ? (
+                      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#0d4bb3] text-white text-xs">
+                        <IconUser />
+                      </div>
+                    ) : null}
                   </div>
-                  {m.role === "user" ? (
-                    <div className="grid h-8 w-8 place-items-center rounded-full bg-[#0d4bb3] text-white text-xs"><IconUser /></div>
-                  ) : null}
-                </div>
-              ))}
+                );
+              })}
               {typing ? (
                 <div className="max-w-[90%] justify-self-start rounded-[14px] border border-[#e3ded6] bg-white px-3 py-2 text-sm text-muted">
-                  Typing…
+                  <span aria-busy="true">Typing…</span>
+                  <span className="mt-1 block text-[11px] text-muted">If this hangs, you can stop and retry.</span>
                 </div>
               ) : null}
               {lastVenues.length ? (
@@ -772,8 +885,8 @@ export function ChatWidget() {
                 <div className="mt-2 flex flex-wrap gap-2">
                   {lastLinks.map((link) => (
                     <Link
-                      key={link.href}
-                      href={link.href}
+                      key={`${link.label}-${link.href}`}
+                      href={normalizeVenueHref(link.href)}
                       className="rounded-[var(--radius-ui)] border border-border bg-white px-3 py-1 text-xs font-semibold text-blue"
                     >
                       {link.label}
@@ -782,13 +895,25 @@ export function ChatWidget() {
                 </div>
               ) : null}
               {errorText ? (
-                <div className="rounded-[var(--radius-ui)] border border-[#fecaca] bg-[#fef2f2] p-2 text-xs text-[#991b1b]">
-                  {errorText}
-                  <div className="mt-2 flex gap-2">
-                    <Link href="/venue-finder" className="font-semibold underline">
-                      Use Venue Finder
+                <div className="rounded-[var(--radius-ui)] border border-[#fecaca] bg-[#fef2f2] p-3 text-xs text-[#991b1b]">
+                  <p>{errorText}</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      className="rounded-[var(--radius-ui)] bg-[#991b1b] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#7f1d1d]"
+                      onClick={() => {
+                        const retry = lastOutboundRef.current.trim();
+                        if (!retry) return;
+                        setErrorText("");
+                        void send(retry, { skipUserEcho: true });
+                      }}
+                    >
+                      Retry
+                    </button>
+                    <Link href="/venue-finder" className="inline-flex items-center rounded-[var(--radius-ui)] border border-[#fecaca] px-3 py-1.5 text-xs font-semibold hover:bg-white">
+                      Open Venue Finder
                     </Link>
-                    <Link href="/advice" className="font-semibold underline">
+                    <Link href="/advice" className="inline-flex items-center rounded-[var(--radius-ui)] border border-[#fecaca] px-3 py-1.5 text-xs font-semibold hover:bg-white">
                       Browse advice
                     </Link>
                   </div>
@@ -817,6 +942,16 @@ export function ChatWidget() {
                 </button>
               ))}
             </div>
+
+            {hasUserMessage && summaryChipText() ? (
+              <div className="mb-2 flex flex-wrap items-center gap-2 rounded-[12px] border border-[#dbe4f2] bg-[#f4f8ff] px-3 py-2 text-[11px] text-heading">
+                <span className="font-semibold text-muted">Search context</span>
+                <span className="min-w-0 flex-1 font-medium">{summaryChipText()}</span>
+                <Link href="/venue-finder" className="shrink-0 font-semibold text-blue underline-offset-2 hover:underline">
+                  Change
+                </Link>
+              </div>
+            ) : null}
 
             <div className="grid grid-cols-[1fr_auto_auto] items-end gap-2">
               <div className="min-w-0">
@@ -861,62 +996,25 @@ export function ChatWidget() {
               </button>
               <button
                 type="button"
-                  className={cn(
-                    "grid h-12 min-w-12 place-items-center rounded-[12px] bg-[#0d4bb3] px-3 text-white cursor-pointer transition-colors hover:bg-[#0a3f97]",
-                    canStopResponse && "bg-[#b45309] hover:bg-[#92400e]",
-                  )}
-                  aria-label={canStopResponse ? "Stop response" : "Send message"}
-                  onClick={() => {
-                    if (canStopResponse) {
-                      stopResponse();
-                      return;
-                    }
-                    void send(draft);
-                  }}
-              >
-                  {canStopResponse ? "Stop" : <IconSend />}
-              </button>
-            </div>
-            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[#0d4bb3]">
-              <span className="font-semibold">Voice input</span>
-              <select
-                className="rounded-[8px] border border-[#d8e1ef] bg-white px-2 py-1 text-xs text-heading"
-                value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                aria-label="Voice input language"
-              >
-                <option value="en-GB">English (UK)</option>
-                <option value="en-US">English (US)</option>
-                <option value="es-ES">Spanish (ES)</option>
-                <option value="fr-FR">French (FR)</option>
-              </select>
-              <button
-                type="button"
                 className={cn(
-                  "ml-auto rounded border px-2 py-1 text-xs font-semibold cursor-pointer",
-                  conversationMode
-                    ? "border-[#f59e0b] bg-[#fff7ed] text-[#92400e]"
-                    : "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]",
+                  "grid h-12 min-w-12 place-items-center rounded-[12px] bg-[#0d4bb3] px-3 text-white cursor-pointer transition-colors hover:bg-[#0a3f97]",
+                  typing && "bg-[#b45309] hover:bg-[#92400e]",
                 )}
+                aria-label={typing ? "Stop response" : "Send message"}
+                title={typing ? "Stop the current reply" : "Send message"}
                 onClick={() => {
-                  if (conversationMode) {
-                    endConversation();
+                  if (typing) {
+                    stopResponse();
                     return;
                   }
-                  startConversationMode();
+                  void send(draft);
                 }}
               >
-                {conversationMode ? "End conversation" : "Start conversation"}
-              </button>
-              <button type="button" className="rounded border border-[#d8e1ef] px-2 py-1 text-xs font-semibold text-heading cursor-pointer hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
-                Stop talking
-              </button>
-              <button type="button" className={cn("rounded border px-2 py-1 text-xs font-semibold cursor-pointer", canStopResponse ? "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]" : "border-[#e6ebf3] text-muted")} disabled={!canStopResponse} onClick={stopResponse}>
-                Stop response
+                {typing ? "Stop" : <IconSend />}
               </button>
             </div>
             {!speechSupported ? (
-              <p className="mt-2 text-[11px] text-muted">Voice not supported in this browser.</p>
+              <p className="mt-2 text-[11px] text-muted">Voice input is not supported in this browser. You can still type messages.</p>
             ) : null}
           </div>
         </div>

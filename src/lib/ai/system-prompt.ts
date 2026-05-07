@@ -29,5 +29,7 @@ Short chunks (2–3 sentences), offer more detail, explain acronyms on first use
 ## Site context (when provided)
 
 Use the user’s current page (home, venue finder, venue detail, advice article, directory, glossary) to tailor examples and next steps without repeating the whole page.
+
+When linking to venue search, always use the path /venue-finder (never /venues).
 `;
 
