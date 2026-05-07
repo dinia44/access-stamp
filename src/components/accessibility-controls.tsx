@@ -7,6 +7,7 @@ type Prefs = {
   lineSpacing: "normal" | "wide";
   highContrast: boolean;
   reduceMotion: boolean;
+  dyslexiaFont: boolean;
 };
 
 const DEFAULTS: Prefs = {
@@ -14,6 +15,7 @@ const DEFAULTS: Prefs = {
   lineSpacing: "normal",
   highContrast: false,
   reduceMotion: false,
+  dyslexiaFont: false,
 };
 
 export function AccessibilityControls() {
@@ -36,6 +38,7 @@ export function AccessibilityControls() {
     document.body.dataset.lineSpacing = prefs.lineSpacing;
     document.body.dataset.highContrast = prefs.highContrast ? "on" : "off";
     document.body.dataset.reduceMotion = prefs.reduceMotion ? "on" : "off";
+    document.body.dataset.dyslexiaFont = prefs.dyslexiaFont ? "on" : "off";
     window.localStorage.setItem("access-stamp-a11y", JSON.stringify(prefs));
   }, [prefs]);
 
@@ -93,6 +96,21 @@ export function AccessibilityControls() {
                 onChange={(e) => setPrefs((p) => ({ ...p, reduceMotion: e.target.checked }))}
               />
             </label>
+            <label className="flex items-center justify-between gap-3">
+              <span className="font-semibold text-heading">Dyslexia-friendly font</span>
+              <input
+                type="checkbox"
+                checked={prefs.dyslexiaFont}
+                onChange={(e) => setPrefs((p) => ({ ...p, dyslexiaFont: e.target.checked }))}
+              />
+            </label>
+            <button
+              type="button"
+              className="rounded-[var(--radius-ui)] border border-border bg-background px-3 py-2 text-sm font-semibold text-heading"
+              onClick={() => setPrefs(DEFAULTS)}
+            >
+              Reset accessibility settings
+            </button>
           </div>
         </div>
       ) : null}

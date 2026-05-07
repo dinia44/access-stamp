@@ -29,6 +29,23 @@ function mapQueryToFilters(query: string) {
   return VENUE_FILTERS.filter((f) => q.includes(normalize(f)));
 }
 
+const QUERY_SYNONYMS: Record<string, string[]> = {
+  toilet: ["accessible toilet", "toilets", "bathroom", "wc"],
+  parking: ["blue badge parking", "nearby blue badge parking", "car park"],
+  quiet: ["quiet environment", "calm", "sensory"],
+  stepfree: ["step free", "step-free entrance", "wheelchair access"],
+};
+
+function tokenize(input: string) {
+  return normalize(input).split(" ").filter(Boolean);
+}
+
+function credibilityScore(verification: string, confidence: string) {
+  const verificationScore = verification === "Access Stamp checked" ? 3 : verification === "Community reported" ? 2 : 1;
+  const confidenceScore = confidence === "High" ? 3 : confidence === "Medium" ? 2 : 1;
+  return verificationScore + confidenceScore;
+}
+
 function VenueFinderPageInner() {
   const router = useRouter();
   const pathname = usePathname();
@@ -42,6 +59,7 @@ function VenueFinderPageInner() {
     ? requestedFilters
     : inferredFromQuery.slice(0, 3);
   const initialSort = searchParams.get("sort") ?? "Relevance";
+  const initialVerifiedOnly = searchParams.get("verified") === "1";
   const { openChat } = useChat();
 
   const [query, setQuery] = useState(initialQuery);
@@ -49,6 +67,7 @@ function VenueFinderPageInner() {
   const [venueType, setVenueType] = useState(initialType);
   const [selectedFilters, setSelectedFilters] = useState<string[]>(initialFilters);
   const [sortBy, setSortBy] = useState(initialSort);
+  const [verifiedOnly, setVerifiedOnly] = useState(initialVerifiedOnly);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -57,26 +76,43 @@ function VenueFinderPageInner() {
     if (venueType !== "Any") params.set("type", venueType);
     if (selectedFilters.length) params.set("filters", selectedFilters.join(","));
     if (sortBy !== "Relevance") params.set("sort", sortBy);
+    if (verifiedOnly) params.set("verified", "1");
 
     const next = params.toString();
     const current = searchParams.toString();
     if (next === current) return;
     router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
-  }, [query, locationQuery, venueType, selectedFilters, sortBy, pathname, router, searchParams]);
+  }, [query, locationQuery, venueType, selectedFilters, sortBy, verifiedOnly, pathname, router, searchParams]);
 
   const filtered = useMemo(() => {
     let items = [...SAMPLE_VENUES];
 
-    const q = query.trim().toLowerCase();
+    const q = query.trim();
     if (q) {
-      items = items.filter(
-        (v) =>
-          v.name.toLowerCase().includes(q) ||
-          v.location.toLowerCase().includes(q) ||
-          v.type.toLowerCase().includes(q) ||
-          v.summary.toLowerCase().includes(q) ||
-          v.tags.some((t) => t.toLowerCase().includes(q)),
-      );
+      const terms = tokenize(q);
+      const expandedTerms = terms.flatMap((term) => [term, ...(QUERY_SYNONYMS[term] ?? [])]);
+      items = items
+        .map((v) => {
+          const featureKeys = Object.entries(v.features)
+            .filter(([, value]) => value === "yes")
+            .map(([key]) => key.toLowerCase());
+          const haystack = [
+            v.name.toLowerCase(),
+            v.location.toLowerCase(),
+            v.type.toLowerCase(),
+            v.summary.toLowerCase(),
+            ...v.tags.map((t) => t.toLowerCase()),
+            ...featureKeys,
+          ];
+          const score = expandedTerms.reduce((acc, term) => {
+            if (haystack.some((field) => field.includes(term))) return acc + 3;
+            return acc;
+          }, 0);
+          return { venue: v, score };
+        })
+        .filter((x) => x.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .map((x) => x.venue);
     }
 
     const loc = locationQuery.trim().toLowerCase();
@@ -92,16 +128,22 @@ function VenueFinderPageInner() {
       items = items.filter((v) => selectedFilters.every((f) => v.features[f] === "yes"));
     }
 
+    if (verifiedOnly) {
+      items = items.filter((v) => v.verification === "Access Stamp checked");
+    }
+
     if (sortBy === "Rating") {
       items.sort((a, b) => b.rating - a.rating);
     } else if (sortBy === "Distance") {
       items.sort((a, b) => a.location.localeCompare(b.location));
+    } else if (sortBy === "Credibility") {
+      items.sort((a, b) => credibilityScore(b.verification, b.confidence) - credibilityScore(a.verification, a.confidence));
     } else {
       items.sort((a, b) => b.confidence.localeCompare(a.confidence));
     }
 
     return items;
-  }, [query, locationQuery, venueType, selectedFilters, sortBy]);
+  }, [query, locationQuery, venueType, selectedFilters, sortBy, verifiedOnly]);
 
   return (
     <div className="bg-background">
@@ -188,6 +230,17 @@ function VenueFinderPageInner() {
             </div>
 
             <VenueFinderFilters selected={selectedFilters} onChange={setSelectedFilters} />
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-ui)] border border-border bg-background-2 px-3 py-2">
+              <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-heading">
+                <input
+                  type="checkbox"
+                  checked={verifiedOnly}
+                  onChange={(e) => setVerifiedOnly(e.target.checked)}
+                />
+                Show verified venues only
+              </label>
+              <p className="text-xs text-muted">Verified = Access Stamp checked in person or by evidence review.</p>
+            </div>
           </Card>
 
           <div className="flex items-center justify-between gap-3">
@@ -200,16 +253,18 @@ function VenueFinderPageInner() {
                 onChange={(e) => setSortBy(e.target.value)}
               >
                 <option>Relevance</option>
+                <option>Credibility</option>
                 <option>Distance</option>
                 <option>Rating</option>
               </select>
             </div>
           </div>
-          {(query || locationQuery || venueType !== "Any" || selectedFilters.length) ? (
+          {(query || locationQuery || venueType !== "Any" || selectedFilters.length || verifiedOnly) ? (
             <div className="flex flex-wrap items-center gap-2 text-xs">
               {query ? <Badge tone="blue">Query: {query}</Badge> : null}
               {locationQuery ? <Badge tone="blue">Location: {locationQuery}</Badge> : null}
               {venueType !== "Any" ? <Badge tone="blue">Type: {venueType}</Badge> : null}
+              {verifiedOnly ? <Badge tone="blue">Verified only</Badge> : null}
               {selectedFilters.map((f) => (
                 <Badge key={f} tone="amber">{f}</Badge>
               ))}
@@ -222,6 +277,7 @@ function VenueFinderPageInner() {
                   setVenueType("Any");
                   setSelectedFilters([]);
                   setSortBy("Relevance");
+                  setVerifiedOnly(false);
                 }}
               >
                 Clear all
@@ -265,6 +321,10 @@ function VenueFinderPageInner() {
                       </div>
                       <div>
                         <span className="font-semibold text-heading">Confidence:</span> {v.confidence}
+                      </div>
+                      <div>
+                        <span className="font-semibold text-heading">Credibility score:</span>{" "}
+                        {credibilityScore(v.verification, v.confidence)}/6
                       </div>
                     </div>
                   </div>

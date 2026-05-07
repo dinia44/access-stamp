@@ -20,6 +20,10 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement | null>(null);
+  const closeMenus = () => {
+    setMobileOpen(false);
+    setMoreOpen(false);
+  };
 
   useEffect(() => {
     if (!moreOpen) return;
@@ -32,13 +36,24 @@ export function Navbar() {
     return () => document.removeEventListener("pointerdown", onDocClick);
   }, [moreOpen]);
 
+  useEffect(() => {
+    function onEscape(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        setMoreOpen(false);
+      }
+    }
+    document.addEventListener("keydown", onEscape);
+    return () => document.removeEventListener("keydown", onEscape);
+  }, []);
+
   const allMobile = useMemo(() => [...NAV_ITEMS, ...MORE_ITEMS], []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/98 shadow-[0_1px_0_rgba(15,26,43,0.06)]">
       <Container>
         <div className="relative z-20 flex h-16 items-center justify-between gap-3">
-          <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Access Stamp home">
+          <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Access Stamp home" onClick={closeMenus}>
             <SiteLogo priority className="h-auto w-auto max-h-[48px] object-contain" />
           </Link>
 
@@ -49,6 +64,7 @@ export function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={closeMenus}
                   className={cn(
                     "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-heading hover:bg-background-2 lg:px-3 [touch-action:manipulation]",
                     active && "bg-blue-pale text-blue",
@@ -69,6 +85,9 @@ export function Navbar() {
                 aria-haspopup="menu"
                 aria-expanded={moreOpen}
                 onClick={() => setMoreOpen((v) => !v)}
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                }}
               >
                 More
               </button>
@@ -84,7 +103,7 @@ export function Navbar() {
                       role="menuitem"
                       href={item.href}
                       className="block rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2"
-                      onClick={() => setMoreOpen(false)}
+                      onClick={closeMenus}
                     >
                       {item.label}
                     </Link>
@@ -95,7 +114,9 @@ export function Navbar() {
           </nav>
 
           <div className="hidden shrink-0 items-center gap-3 md:flex">
-            <Button href="/venue-finder">Start Searching</Button>
+            <Button href="/venue-finder" onClick={closeMenus}>
+              Start Searching
+            </Button>
           </div>
 
           <button
@@ -125,7 +146,7 @@ export function Navbar() {
               Search the site
             </p>
             <div className="min-w-0 flex-1" data-access-stamp="site-search">
-              <GlobalSearch ariaLabelledBy="site-search-label" onSelect={() => setMobileOpen(false)} />
+              <GlobalSearch ariaLabelledBy="site-search-label" onSelect={closeMenus} />
             </div>
           </div>
         </div>
@@ -143,13 +164,13 @@ export function Navbar() {
                       "rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2",
                       active && "bg-blue-pale text-blue",
                     )}
-                    onClick={() => setMobileOpen(false)}
+                    onClick={closeMenus}
                   >
                     {item.label}
                   </Link>
                 );
               })}
-              <Button href="/venue-finder" className="w-full justify-center">
+              <Button href="/venue-finder" className="w-full justify-center" onClick={closeMenus}>
                 Start Searching
               </Button>
             </div>

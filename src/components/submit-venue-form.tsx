@@ -2,12 +2,30 @@
 
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui";
+import { saveSubmission } from "@/lib/submission-store";
 
 export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: string }) {
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError("");
+    const form = new FormData(e.currentTarget);
+    const name = String(form.get("name") ?? "").trim();
+    const location = String(form.get("location") ?? "").trim();
+    const type = String(form.get("type") ?? "").trim();
+    if (!name || !location || !type) {
+      setError("Please fill in venue name, location, and venue type.");
+      return;
+    }
+    saveSubmission({
+      name,
+      location,
+      type,
+      features: String(form.get("features") ?? "").trim(),
+      notes: String(form.get("notes") ?? "").trim(),
+    });
     setSent(true);
   }
 
@@ -16,7 +34,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
       <div className="space-y-3 text-center">
         <p className="font-semibold text-heading">Thanks — we&apos;ve noted your suggestion.</p>
         <p className="text-sm text-muted">
-          Full submission handling is rolling out next. For now this form records intent only in your session.
+          Your submission is now in the moderation queue with status: Pending review.
         </p>
       </div>
     );
@@ -104,6 +122,10 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
         <span className="text-xs font-normal text-muted">Attachments will connect when uploads go live.</span>
       </label>
 
+      <div className="rounded-[var(--radius-ui)] border border-border bg-background-2 px-3 py-2 text-xs text-muted">
+        Submissions are triaged within 3 working days. High-impact venue updates are prioritized.
+      </div>
+      {error ? <p className="text-sm font-semibold text-amber">{error}</p> : null}
       <Button type="submit">Submit suggestion</Button>
     </form>
   );

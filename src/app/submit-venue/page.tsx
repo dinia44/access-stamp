@@ -4,6 +4,7 @@ import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { SubmitVenueForm } from "@/components/submit-venue-form";
+import { SubmissionQueuePreview } from "@/components/submission-queue-preview";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 
 export default async function SubmitVenuePage({
@@ -41,6 +42,9 @@ export default async function SubmitVenuePage({
           <Card className="p-6 sm:p-8">
             <SubmitVenueForm defaultVenueName={presetVenue?.name} />
           </Card>
+          <Card className="p-6 sm:p-8">
+            <SubmissionQueuePreview />
+          </Card>
 
           <p className="text-sm text-muted">
             Prefer to browse first?{" "}
@@ -55,7 +59,7 @@ export default async function SubmitVenuePage({
               Describe what you need in plain language — the assistant can point you to similar venues or explain access
               terms.
             </p>
-            <Button href="/ai" className="mt-3">
+            <Button href="/?openChat=1" className="mt-3">
               Open AI Assistant
             </Button>
           </Card>
