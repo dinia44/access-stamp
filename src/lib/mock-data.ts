@@ -1,4 +1,5 @@
 import { ADVICE_EXTRA_SEEDS } from "@/lib/advice-extra-seeds";
+import { EQUIPMENT_ARTICLES_DETAILED } from "@/lib/equipment-articles-detail";
 
 export type Venue = {
   slug: string;
@@ -777,90 +778,6 @@ const BASE_ADVICE_ARTICLES: AdviceArticle[] = [
         ],
       },
       {
-        slug: "choosing-a-wheelchair",
-        title: "Choosing a wheelchair: what to check before you commit",
-        categorySlug: "equipment",
-        tags: ["Wheelchairs", "Mobility", "Setup"],
-        intro:
-          "A wheelchair is not just a seat with wheels. Fit, posture, terrain, transport, storage, pain, fatigue, and daily routine all matter.",
-        steps: [
-          "List where the chair must work: home, pavements, car, work, school, venues.",
-          "Check seat width, depth, cushion, footplates, armrests, and posture.",
-          "Think about fatigue, pain, pushing distance, hills, and weather.",
-          "Ask about repairs, warranty, servicing, and temporary backup.",
-        ],
-      },
-      {
-        slug: "nhs-wheelchair-services-equipment",
-        title: "NHS wheelchair services: referral and what to expect",
-        categorySlug: "equipment",
-        tags: ["NHS", "Wheelchairs", "Referral"],
-        intro:
-          "NHS wheelchair services vary by area, but the core process usually involves referral, assessment, eligibility, prescription, provision, and review.",
-        steps: [
-          "Ask your GP, occupational therapist, physiotherapist, or consultant about referral routes.",
-          "Prepare examples of daily mobility barriers.",
-          "Take measurements, photos, or notes if home access is part of the issue.",
-          "Ask how repairs and urgent breakdowns are handled locally.",
-        ],
-      },
-      {
-        slug: "home-equipment-and-adaptations",
-        title: "Home equipment and adaptations: start with the task",
-        categorySlug: "equipment",
-        tags: ["Home", "Adaptations", "OT"],
-        intro:
-          "Good equipment starts with the real task: washing, toileting, cooking, transferring, getting in and out, sleeping, or moving safely around the home.",
-        steps: [
-          "Write down the task that is unsafe or impossible.",
-          "Ask for an occupational therapy assessment if needed.",
-          "Check whether a small item, major adaptation, or care support is the real solution.",
-          "Do not buy expensive equipment before checking fit, safety, and funding routes.",
-        ],
-      },
-      {
-        slug: "pressure-care-basics",
-        title: "Pressure care basics for wheelchair users",
-        categorySlug: "equipment",
-        tags: ["Pressure care", "Wheelchairs", "Safety"],
-        intro:
-          "Pressure care is about reducing skin damage risk from sitting or lying in one position. Cushions, posture, transfers, nutrition, pain, sensation, and routine all matter.",
-        steps: [
-          "Get professional advice if there is redness, broken skin, swelling, heat, or pain.",
-          "Check the cushion is right for the chair and the person.",
-          "Review posture and transfer technique.",
-          "Build pressure relief into the day in a way the person can actually follow.",
-        ],
-      },
-      {
-        slug: "assistive-tech-at-home",
-        title: "Assistive tech at home: useful, low-fuss options",
-        categorySlug: "equipment",
-        tags: ["Tech", "Home", "Independence"],
-        intro:
-          "Assistive tech does not have to mean expensive specialist equipment. Phone settings, smart plugs, voice control, reminders, video doorbells, and simple sensors can reduce daily friction.",
-        steps: [
-          "Pick one repeated problem, not ten gadgets at once.",
-          "Check privacy, reliability, and whether someone can troubleshoot it.",
-          "Keep manual backup routes for lights, doors, heating, and medication.",
-          "Review whether the tech reduces effort or creates more admin.",
-        ],
-      },
-      {
-        slug: "mobility-aids-before-you-buy",
-        title: "Mobility aids: questions before buying privately",
-        categorySlug: "equipment",
-        tags: ["Mobility aids", "Buying", "Safety"],
-        intro:
-          "Walking sticks, rollators, scooters, ramps, and transfer aids can help, but the wrong item can increase falls, pain, or wasted money.",
-        steps: [
-          "Ask what problem the aid is meant to solve.",
-          "Check size, weight, braking, storage, turning space, and transport.",
-          "Try it in the environment where it will actually be used.",
-          "Ask a professional if balance, falls, transfers, or fatigue are involved.",
-        ],
-      },
-      {
         slug: "first-30-days-disabled",
         title: "First 30 days: a practical route through the overwhelm",
         categorySlug: "new-to-disability",
@@ -970,6 +887,7 @@ const BASE_ADVICE_ARTICLES: AdviceArticle[] = [
       },
     ],
   })),
+  ...EQUIPMENT_ARTICLES_DETAILED,
   ...ADVICE_EXTRA_SEEDS.map(({ slug, title, categorySlug, tags, intro, steps }) => ({
     slug,
     title,
