@@ -35,7 +35,7 @@ export function ArticleActions({ title }: Props) {
         {copied ? "Link copied" : "Share"}
       </Button>
       <Button variant="ghost" onClick={() => window.print()}>
-        Print / Download
+        Print or save as PDF
       </Button>
     </>
   );

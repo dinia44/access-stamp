@@ -194,24 +194,37 @@ export default async function AdviceArticlePage({
                 <div className="flex flex-wrap gap-2">
                   <Button href="/ai">Ask the AI about this topic</Button>
                   {a.slug === "employing-a-personal-assistant-basics" ? (
-                    <a
-                      href="/api/downloads/pa-recruitment-pack"
-                      download="access-stamp-pa-recruitment-pack.txt"
-                      className={cn(
-                        "inline-flex items-center justify-center rounded-[var(--radius-ui)] px-4 py-2 text-sm font-semibold transition-colors",
-                        "bg-navy text-white hover:bg-[#0f2648]",
-                      )}
-                    >
-                      Download pack (.txt)
-                    </a>
+                    <>
+                      <a
+                        href="/api/downloads/pa-recruitment-pack/pdf"
+                        download="access-stamp-pa-recruitment-pack.pdf"
+                        className={cn(
+                          "inline-flex items-center justify-center rounded-[var(--radius-ui)] px-4 py-2 text-sm font-semibold transition-colors",
+                          "bg-navy text-white hover:bg-[#0f2648]",
+                        )}
+                      >
+                        Download pack (PDF)
+                      </a>
+                      <a
+                        href="/api/downloads/pa-recruitment-pack"
+                        download="access-stamp-pa-recruitment-pack.txt"
+                        className={cn(
+                          "inline-flex items-center justify-center rounded-[var(--radius-ui)] px-4 py-2 text-sm font-semibold transition-colors",
+                          "border border-border bg-card text-heading hover:bg-background-2",
+                        )}
+                      >
+                        Plain text (.txt)
+                      </a>
+                    </>
                   ) : null}
                   <Button variant="secondary">Was this helpful?</Button>
                   <ArticleActions title={a.title} />
                 </div>
                 {a.slug === "employing-a-personal-assistant-basics" ? (
                   <p className="text-xs text-muted">
-                    The .txt file is generated from the same templates as this page. Use <strong className="text-heading">Print / Download</strong> in the
-                    actions for a layout-ready A4 handout (hero and sidebar hidden when printing). Informational only — not medical or legal advice.
+                    <strong className="text-heading">PDF</strong> and <strong className="text-heading">.txt</strong> are built from the same templates as this page.
+                    Use <strong className="text-heading">Print or save as PDF</strong> for a styled browser printout (hero and sidebar hidden on paper). Informational
+                    only — not medical or legal advice.
                   </p>
                 ) : (
                   <div className="text-xs text-muted">
