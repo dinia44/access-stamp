@@ -171,17 +171,19 @@ export default function HomePage() {
 
                     <div className="flex-1">
                       <div className="grid grid-cols-2 gap-2">
-                        {[
-                          ["🦽", "Choosing your first wheelchair"],
-                          ["💷", "Benefits you can claim"],
-                          ["🏠", "Adapting your home"],
-                          ["🤝", "Getting care support"],
-                          ["🚗", "Driving & Motability"],
-                          ["💬", "Talking to others"],
-                        ].map(([e, label]) => (
+                        {(
+                          [
+                            ["🦽", "Choosing your first wheelchair", "/advice/choosing-a-wheelchair"],
+                            ["💷", "Benefits you can claim", "/advice/pip-in-plain-english"],
+                            ["🏠", "Adapting your home", "/advice/home-equipment-and-adaptations"],
+                            ["🤝", "Getting care support", "/advice/care"],
+                            ["🚗", "Driving & Motability", "/advice/cars"],
+                            ["💬", "Talking to others", "/blog"],
+                          ] as const
+                        ).map(([e, label, href]) => (
                           <Link
                             key={label}
-                            href="/advice/new-to-disability"
+                            href={href}
                             className="flex items-center gap-2 rounded-[var(--radius-ui)] bg-amber-pale px-4 py-3 text-[13px] font-semibold text-heading hover:bg-[#efe3c7]"
                           >
                             <span className="text-[18px]" aria-hidden>
