@@ -98,6 +98,11 @@ export default function EducationPage() {
                     Ask the AI
                   </Button>
                 </div>
+                <div className="mt-3">
+                  <Link href="/laws-guidance" className="text-xs font-semibold text-blue hover:underline">
+                    Open laws and guidance links →
+                  </Link>
+                </div>
               </div>
             </div>
           </Card>

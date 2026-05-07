@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { AdviceArticleJsonLd } from "@/components/advice-article-jsonld";
 import { ArticleActions } from "@/components/article-actions";
@@ -6,6 +7,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { ADVICE_ARTICLES, ADVICE_CATEGORIES } from "@/lib/mock-data";
+import { LAWS_GUIDANCE_LINKS } from "@/lib/laws-guidance";
 import { SetChatContext } from "@/components/chat/set-context";
 
 function relatedFor(slug: string, categorySlug: string, limit = 4) {
@@ -42,6 +44,12 @@ export default async function AdviceArticlePage({
       text: (s as { type: "h2"; text: string }).text,
       id: slugifyHeading((s as { type: "h2"; text: string }).text),
     }));
+  const relevantLaws =
+    a.categorySlug === "education"
+      ? LAWS_GUIDANCE_LINKS.filter((item) => item.audience === "Education" || item.audience === "General").slice(0, 4)
+      : a.categorySlug === "workplace" || a.categorySlug === "rights"
+        ? LAWS_GUIDANCE_LINKS.filter((item) => item.audience === "Work" || item.audience === "General").slice(0, 4)
+        : [];
 
   return (
     <div className="bg-background">
@@ -81,6 +89,13 @@ export default async function AdviceArticlePage({
               </span>
             </div>
           </div>
+          {a.heroImage ? (
+            <Card className="overflow-hidden">
+              <div className="relative h-[220px] w-full sm:h-[280px]">
+                <Image src={a.heroImage.src} alt={a.heroImage.alt} fill className="object-cover" sizes="100vw" />
+              </div>
+            </Card>
+          ) : null}
 
           <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
             <Card className="advice-article-print p-6 print:border-0 print:shadow-none">
@@ -195,6 +210,25 @@ export default async function AdviceArticlePage({
                   </Link>
                 </div>
               </Card>
+              {relevantLaws.length ? (
+                <Card className="border-[#dce6f4] p-5 shadow-[0_8px_18px_-14px_rgba(12,29,52,0.2)]">
+                  <div className="text-sm font-semibold text-heading">Useful laws and guidance</div>
+                  <ul className="mt-3 grid gap-2 text-sm">
+                    {relevantLaws.map((item) => (
+                      <li key={item.href}>
+                        <a href={item.href} target="_blank" rel="noreferrer" className="font-semibold text-blue hover:underline">
+                          {item.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-4">
+                    <Link className="text-sm font-semibold text-blue hover:underline" href="/laws-guidance">
+                      Open full laws list →
+                    </Link>
+                  </div>
+                </Card>
+              ) : null}
             </div>
           </div>
         </div>

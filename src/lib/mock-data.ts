@@ -291,6 +291,168 @@ export const SAMPLE_VENUES: Venue[] = [
   },
 ];
 
+const EDUCATION_ARTICLE_OVERRIDES: Record<string, Pick<AdviceArticle, "heroImage" | "sections" | "tags" | "updated">> = {
+  "dsa-disabled-students-allowance": {
+    updated: "2026-05-07",
+    tags: ["DSA", "University", "Funding", "Needs assessment"],
+    heroImage: {
+      src: "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?auto=format&fit=crop&w=1200&q=80",
+      alt: "University student using an adapted laptop at a desk",
+    },
+    sections: [
+      { type: "h2", text: "What DSA can fund in practice" },
+      {
+        type: "p",
+        text: "Disabled Students' Allowance can fund specialist software, ergonomic equipment, mentoring, note-taking support, and disability-related travel costs. It does not replace general living costs or standard tuition support.",
+      },
+      { type: "h2", text: "What to prepare before applying" },
+      {
+        type: "ul",
+        items: [
+          "Evidence of disability or long-term condition (GP/consultant/diagnostic letter).",
+          "A short barrier summary: what part of study is hard, where, and why.",
+          "Current course details and university disability service contact.",
+          "Any existing adjustment letters or support plans.",
+        ],
+      },
+      { type: "h2", text: "Needs assessment meeting: what to ask" },
+      {
+        type: "ul",
+        items: [
+          "What recommendations address my core barriers first?",
+          "What is funded by DSA vs what the university should provide?",
+          "What are realistic delivery timelines for equipment and support workers?",
+          "What fallback support exists if implementation is delayed?",
+        ],
+      },
+      {
+        type: "callout",
+        tone: "steps",
+        title: "Fast action checklist",
+        body: "1) Apply early. 2) Prepare barrier notes before assessment. 3) Ask for written recommendations. 4) Share recommendations with disability services immediately. 5) Track delivery dates.",
+      },
+      {
+        type: "callout",
+        tone: "warning",
+        title: "Important",
+        body: "If term starts and support is missing, ask for interim adjustments in writing the same day.",
+      },
+    ],
+  },
+  "ehc-plan-basics": {
+    updated: "2026-05-07",
+    tags: ["EHC plan", "School", "SEND", "Family"],
+    heroImage: {
+      src: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1200&q=80",
+      alt: "Parent and child reviewing school paperwork together",
+    },
+    sections: [
+      { type: "h2", text: "What makes an EHC plan enforceable" },
+      {
+        type: "p",
+        text: "A useful EHC plan is specific: it names support, frequency, setting, staff responsibilities, and outcomes. Vague wording often leads to weak delivery and difficult challenge.",
+      },
+      { type: "h2", text: "Key checks in meetings" },
+      {
+        type: "ul",
+        items: [
+          "Does each need have a clearly matched provision?",
+          "Is provision quantified (hours, sessions, staffing)?",
+          "Are outcomes measurable and time-bound?",
+          "Are transport, therapies, and exam support covered where needed?",
+        ],
+      },
+      { type: "h2", text: "After each review" },
+      {
+        type: "ul",
+        items: [
+          "Send your own written summary of agreed actions.",
+          "Ask for named owners and deadlines.",
+          "Track what was promised versus delivered.",
+        ],
+      },
+      {
+        type: "callout",
+        tone: "tip",
+        title: "Parent strategy",
+        body: "Keep one timeline file: meetings, decisions, missed support, and school communications. This is essential if you need to escalate.",
+      },
+    ],
+  },
+  "reasonable-adjustments-at-school": {
+    updated: "2026-05-07",
+    tags: ["Adjustments", "School", "College", "Equality Act"],
+    heroImage: {
+      src: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80",
+      alt: "Accessible classroom layout with adjustable desks",
+    },
+    sections: [
+      { type: "h2", text: "Reasonable adjustments that commonly help" },
+      {
+        type: "ul",
+        items: [
+          "Alternative timetables, movement breaks, and fatigue pacing.",
+          "Accessible classroom seating and equipment setup.",
+          "Communication adjustments (written instructions, processing time).",
+          "Toilet/medical access plans that avoid dignity issues.",
+        ],
+      },
+      { type: "h2", text: "How to phrase requests" },
+      {
+        type: "p",
+        text: "Describe barrier → impact → adjustment requested → expected outcome. Keep requests practical and linked to learning/safety impact.",
+      },
+      {
+        type: "callout",
+        tone: "steps",
+        title: "Template",
+        body: "Barrier: [what happens]. Impact: [attendance/learning/safety]. Request: [specific adjustment]. Review date: [date].",
+      },
+      {
+        type: "callout",
+        tone: "warning",
+        title: "If support is not delivered",
+        body: "Request written reasons, ask for urgent interim support, and escalate through school complaints route with evidence timeline.",
+      },
+    ],
+  },
+  "university-support-plan": {
+    updated: "2026-05-07",
+    tags: ["University", "Support plan", "Adjustments", "DSA"],
+    heroImage: {
+      src: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
+      alt: "University campus with accessible pathways",
+    },
+    sections: [
+      { type: "h2", text: "What a strong support plan includes" },
+      {
+        type: "ul",
+        items: [
+          "Lecture delivery adjustments and attendance flexibility.",
+          "Assessment and deadline adjustments with escalation route.",
+          "Placement/field trip access requirements.",
+          "Accommodation and campus route accessibility actions.",
+        ],
+      },
+      { type: "h2", text: "First month checks" },
+      {
+        type: "ul",
+        items: [
+          "Are all departments aware of support plan commitments?",
+          "Is DSA-recommended kit/support active yet?",
+          "Do you have one named contact for urgent failures?",
+        ],
+      },
+      {
+        type: "callout",
+        tone: "tip",
+        title: "Keep pressure low",
+        body: "Ask for one email thread that tracks unresolved adjustments and deadlines. This prevents repeated retelling.",
+      },
+    ],
+  },
+};
+
 export const ADVICE_CATEGORIES = [
   {
     title: "Your Rights",
@@ -377,6 +539,10 @@ export type AdviceArticle = {
     | "sport";
   updated: string;
   tags: string[];
+  heroImage?: {
+    src: string;
+    alt: string;
+  };
   sections: Array<
     | { type: "h2"; text: string }
     | { type: "p"; text: string }
@@ -385,7 +551,7 @@ export type AdviceArticle = {
   >;
 };
 
-export const ADVICE_ARTICLES: AdviceArticle[] = [
+const BASE_ADVICE_ARTICLES: AdviceArticle[] = [
   {
     slug: "pip-in-plain-english",
     title: "PIP in plain English (what it is, who it’s for, what to do next)",
@@ -830,6 +996,17 @@ export const ADVICE_ARTICLES: AdviceArticle[] = [
     ],
   })),
 ];
+
+export const ADVICE_ARTICLES: AdviceArticle[] = BASE_ADVICE_ARTICLES.map((article) => {
+  const override = EDUCATION_ARTICLE_OVERRIDES[article.slug];
+  if (!override) return article;
+  return {
+    ...article,
+    ...override,
+    tags: [...override.tags],
+    sections: [...override.sections],
+  };
+});
 
 export const GLOSSARY: Array<{ term: string; meaning: string }> = [
   { term: "Access to Work", meaning: "A UK government scheme that can fund workplace adjustments and support." },

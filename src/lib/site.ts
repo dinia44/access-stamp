@@ -32,6 +32,7 @@ export const MORE_ITEMS: NavItem[] = [
   { label: "Workplace", href: "/advice/workplace" },
   { label: "Travel", href: "/advice/travel" },
   { label: "Help Cards", href: "/help-cards" },
+  { label: "Laws & Guidance", href: "/laws-guidance" },
   { label: "Directory", href: "/directory" },
   { label: "Glossary", href: "/glossary" },
 ];
