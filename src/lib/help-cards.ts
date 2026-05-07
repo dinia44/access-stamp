@@ -25,6 +25,12 @@ export const HELP_CARD_CONCERNS = [
   "University disability support",
   "Public transport refusal",
   "Blue Badge and parking",
+  "Equality Act rights",
+  "Disability discrimination at work",
+  "School/university discrimination",
+  "Service provider discrimination",
+  "Housing accessibility refusal",
+  "Making a formal complaint",
 ] as const;
 
 export const HELP_CARDS: HelpCard[] = [
@@ -539,6 +545,198 @@ export const HELP_CARDS: HelpCard[] = [
     keyLine:
       "I’m committed to the role and need agreed adjustments, risk controls, occupational health actions, and emergency planning implemented to work safely and effectively.",
     tags: ["New job", "Risk assessment", "Occupational health", "Access to Work", "PEEP"],
+  },
+  {
+    slug: "equality-act-core-rights-card",
+    title: "Equality Act core rights card (UK)",
+    category: "Rights",
+    summary: "High-clarity reminder of your core disability protections under the Equality Act 2010.",
+    whenToUse: ["When you need to explain your rights quickly.", "Before meetings with employers, schools, or services."],
+    mustAsk: [
+      "What reasonable adjustments will you make and by when?",
+      "Who is the named decision-maker for this adjustment request?",
+      "How will you avoid substantial disadvantage in practice?",
+    ],
+    checklist: [
+      "State barrier and impact clearly in plain language.",
+      "Request specific adjustment linked to the barrier.",
+      "Ask for written response with timeline.",
+      "Keep records of requests, responses, and outcomes.",
+      "Escalate if ignored, delayed, or refused without reason.",
+    ],
+    documentsToCarry: [
+      "Short rights summary and adjustment request.",
+      "Timeline of key events and communications.",
+      "Evidence of practical disadvantage (notes/photos/emails).",
+    ],
+    escalateIf: [
+      "Adjustment is refused without practical alternatives.",
+      "You are treated worse after disclosing disability.",
+      "You experience repeated access barriers despite notice.",
+    ],
+    keyLine:
+      "Under the Equality Act 2010, I am requesting reasonable adjustments to remove disability-related barriers and avoid substantial disadvantage.",
+    tags: ["Equality Act", "Reasonable adjustments", "Disability rights"],
+  },
+  {
+    slug: "workplace-discrimination-response-card",
+    title: "Workplace disability discrimination response card",
+    category: "Rights",
+    summary: "Practical action steps if treatment at work crosses into disability discrimination.",
+    whenToUse: ["After discriminatory comments/actions.", "When adjustments are ignored and harm is ongoing."],
+    mustAsk: [
+      "Can this be investigated under grievance and equality procedures now?",
+      "What immediate protections are in place while this is reviewed?",
+      "Who is the independent escalation contact (HR/senior lead)?",
+    ],
+    checklist: [
+      "Write factual timeline: who/what/when/impact.",
+      "Submit written grievance with specific remedies requested.",
+      "Request interim protections during investigation.",
+      "Keep copies of all notes, emails, and meeting outcomes.",
+      "Seek specialist advice before legal deadlines pass.",
+    ],
+    documentsToCarry: [
+      "Incident timeline with evidence references.",
+      "Adjustment history and unresolved requests.",
+      "Sickness/impact notes if relevant.",
+    ],
+    escalateIf: [
+      "Retaliation follows your complaint.",
+      "Investigation is delayed or not impartial.",
+      "Health/safety risk continues while unresolved.",
+    ],
+    keyLine:
+      "I am raising a formal disability discrimination concern and requesting immediate interim protections while this is investigated.",
+    tags: ["Workplace", "Discrimination", "Grievance", "HR"],
+  },
+  {
+    slug: "education-discrimination-card",
+    title: "School and university discrimination card",
+    category: "Education",
+    summary: "Checklist for disability discrimination and adjustment failures in education settings.",
+    whenToUse: ["Support plan failures.", "Exclusions/penalties linked to disability needs."],
+    mustAsk: [
+      "Which adjustment duties are being applied now, not later?",
+      "Who signs off support and how is delivery monitored?",
+      "What is the formal complaint and escalation route?",
+    ],
+    checklist: [
+      "Document specific incidents and educational impact.",
+      "Link each barrier to a reasonable adjustment request.",
+      "Ask for written action plan with dates.",
+      "Request urgent review if safety/attendance is affected.",
+      "Escalate to governing body/university process if unresolved.",
+    ],
+    documentsToCarry: [
+      "Support plan and review history.",
+      "Incident log (attendance, sanctions, missed support).",
+      "Professional evidence letters where relevant.",
+    ],
+    escalateIf: [
+      "Repeated failures despite agreed support plan.",
+      "Disciplinary action ignores disability context.",
+      "Attendance or safety is compromised.",
+    ],
+    keyLine:
+      "I am requesting immediate disability adjustments and a written action plan to prevent ongoing educational disadvantage.",
+    tags: ["Education", "Discrimination", "SEND", "University"],
+  },
+  {
+    slug: "services-and-public-places-rights-card",
+    title: "Services and public places access rights card",
+    category: "Rights",
+    summary: "Use when shops, venues, healthcare, or public services fail to provide accessible service.",
+    whenToUse: ["Service refusal.", "Inaccessible booking/entry/payment processes."],
+    mustAsk: [
+      "What immediate alternative service can you provide today?",
+      "Who is your accessibility lead and complaint owner?",
+      "When will this barrier be fixed and communicated?",
+    ],
+    checklist: [
+      "Ask for immediate practical workaround.",
+      "Record date/time/staff and barrier detail.",
+      "Submit complaint with specific remedy requested.",
+      "Request written outcome and implementation date.",
+      "Escalate to regulator/ombudsman where applicable.",
+    ],
+    documentsToCarry: [
+      "Barrier evidence (photos/screenshots/notes).",
+      "Complaint references and correspondence.",
+      "Requested remedy list.",
+    ],
+    escalateIf: [
+      "No workaround is offered at point of need.",
+      "Same barrier appears repeatedly after complaint.",
+      "Essential care/health/service access is blocked.",
+    ],
+    keyLine:
+      "I need an accessible equivalent service now, and a written plan for permanent removal of this barrier.",
+    tags: ["Services", "Public places", "Access", "Complaint"],
+  },
+  {
+    slug: "housing-access-refusal-card",
+    title: "Housing accessibility refusal card",
+    category: "Rights",
+    summary: "For refused adaptations, inaccessible allocations, or unsafe housing access barriers.",
+    whenToUse: ["Landlord/council refuses adaptation request.", "Property offered is functionally inaccessible."],
+    mustAsk: [
+      "What formal assessment has been completed and by whom?",
+      "What reasonable alternatives are available immediately?",
+      "What is the written appeal/review route and deadline?",
+    ],
+    checklist: [
+      "Describe unsafe/impossible tasks in the home.",
+      "Request written decision with reasons and evidence.",
+      "Request occupational therapy/housing reassessment.",
+      "Submit appeal with practical impact examples.",
+      "Escalate to housing ombudsman/legal advice if needed.",
+    ],
+    documentsToCarry: [
+      "OT or clinical evidence where available.",
+      "Photos/measurements of barriers.",
+      "Decision letters and appeal drafts.",
+    ],
+    escalateIf: [
+      "Safety-critical access is unresolved.",
+      "Decision ignores evidence of functional need.",
+      "No interim safety measures are offered.",
+    ],
+    keyLine:
+      "My current housing setup creates disability-related safety barriers. I request reassessment and accessible interim measures in writing.",
+    tags: ["Housing", "Adaptations", "OT", "Appeal"],
+  },
+  {
+    slug: "formal-complaint-and-evidence-card",
+    title: "Formal complaint and evidence pack card",
+    category: "Rights",
+    summary: "Template-style card for building a strong complaint trail and preparing for escalation.",
+    whenToUse: ["Before submitting formal complaint.", "When preparing tribunal/legal advice pack."],
+    mustAsk: [
+      "What exact remedy am I asking for and by when?",
+      "What evidence proves barrier, impact, and notice given?",
+      "What are the next escalation deadlines?",
+    ],
+    checklist: [
+      "Build one timeline with dates, actors, and outcomes.",
+      "Attach key evidence only (clear and relevant).",
+      "State requested remedy in measurable terms.",
+      "Set response deadline in writing.",
+      "Prepare escalation draft before deadline expires.",
+    ],
+    documentsToCarry: [
+      "Master timeline document.",
+      "Evidence index (emails/notes/photos/reports).",
+      "Draft complaint and escalation letters.",
+    ],
+    escalateIf: [
+      "No response by stated deadline.",
+      "Response ignores core remedy request.",
+      "Barrier continues to cause harm or exclusion.",
+    ],
+    keyLine:
+      "I am submitting a formal disability access complaint with supporting evidence and a clear remedy request. Please confirm receipt and response deadline.",
+    tags: ["Complaint", "Evidence", "Escalation", "Tribunal prep"],
   },
 ];
 
