@@ -171,6 +171,8 @@ export function ChatWidget() {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight });
   }, [msgs, open, typing]);
 
+  const speechSupported = canUseSpeech();
+
   const defaultQuick = useMemo(() => {
     if (page.kind === "venue-finder")
       return ["Help me search", "What does step-free mean?", "Venues near me"];
@@ -440,7 +442,7 @@ export function ChatWidget() {
           <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-amber shadow" aria-hidden />
         </button>
       ) : (
-        <div className="flex h-[min(700px,calc(100vh-18px))] w-[min(1020px,calc(100vw-12px))] flex-col overflow-hidden rounded-[14px] border border-[#d8dfea] bg-white shadow-[0_18px_48px_-20px_rgba(12,29,52,0.3)]">
+        <div className="flex h-[min(640px,calc(100vh-18px))] w-[min(440px,calc(100vw-12px))] flex-col overflow-hidden rounded-[14px] border border-[#d8dfea] bg-white shadow-[0_18px_48px_-20px_rgba(12,29,52,0.3)]">
           <div
             className="flex items-center justify-between gap-3 px-4 py-3 text-white"
             style={{
@@ -641,7 +643,10 @@ export function ChatWidget() {
                     "rounded-full px-3 py-1 text-xs font-semibold cursor-pointer whitespace-nowrap transition-colors",
                     "border border-[#d8e1ef] bg-white text-[#184080] hover:bg-[#f5f8ff]",
                   )}
-                  onClick={() => send(t)}
+                  onClick={() => {
+                    setDraft(t);
+                    void send(t);
+                  }}
                 >
                   {t}
                 </button>
@@ -651,11 +656,11 @@ export function ChatWidget() {
             <div className="grid grid-cols-[1fr_auto_auto] items-end gap-2">
               <div className="min-w-0">
                 <label className="sr-only" htmlFor="chat-input">
-                  Ask Access Stamp AI
+                  Chat message
                 </label>
                 <input
                   id="chat-input"
-                  aria-label="Message Access Stamp AI"
+                  aria-label="Chat message"
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   placeholder="Ask about a venue or accessibility feature..."
@@ -670,21 +675,31 @@ export function ChatWidget() {
                 className={cn(
                   "grid h-12 w-12 place-items-center rounded-[12px] border border-[#d8e1ef] bg-white text-[#0d4bb3] cursor-pointer transition-colors hover:bg-[#f5f8ff]",
                   listening && "border-amber bg-amber-pale",
+                    !speechSupported && "cursor-not-allowed border-[#e6ebf3] bg-[#f6f8fb] text-muted hover:bg-[#f6f8fb]",
                 )}
-                aria-label={listening ? "Listening" : "Voice input"}
+                  aria-label={listening ? "Stop voice input" : "Start voice input"}
                 onClick={() => startListening()}
-                disabled={!canUseSpeech()}
+                  disabled={!speechSupported}
                 title={listening ? "Listening now" : "Tap to speak"}
               >
                 {listening ? <span className="h-2 w-2 rounded-full bg-amber-600" aria-hidden /> : <IconMic />}
               </button>
               <button
                 type="button"
-                className="grid h-12 w-12 place-items-center rounded-[12px] bg-[#0d4bb3] text-white cursor-pointer transition-colors hover:bg-[#0a3f97]"
-                aria-label="Send message"
-                onClick={() => send(draft)}
+                  className={cn(
+                    "grid h-12 min-w-12 place-items-center rounded-[12px] bg-[#0d4bb3] px-3 text-white cursor-pointer transition-colors hover:bg-[#0a3f97]",
+                    canStopResponse && "bg-[#b45309] hover:bg-[#92400e]",
+                  )}
+                  aria-label={canStopResponse ? "Stop response" : "Send message"}
+                  onClick={() => {
+                    if (canStopResponse) {
+                      stopResponse();
+                      return;
+                    }
+                    void send(draft);
+                  }}
               >
-                <IconSend />
+                  {canStopResponse ? "Stop" : <IconSend />}
               </button>
             </div>
             <div className="mt-3 flex items-center gap-3 text-xs text-[#0d4bb3]">
@@ -707,6 +722,9 @@ export function ChatWidget() {
                 Stop response
               </button>
             </div>
+            {!speechSupported ? (
+              <p className="mt-2 text-[11px] text-muted">Voice not supported in this browser.</p>
+            ) : null}
             <div className="mt-3 border-t border-[#edf1f7] pt-3">
               <div className="text-xs font-semibold text-muted">Popular accessibility guides</div>
               <div className="mt-2 flex flex-wrap gap-2">

@@ -8,6 +8,7 @@ import { Badge, Button, Card } from "@/components/ui";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
 import { VENUE_FILTERS, VenueFinderFilters } from "@/components/venue-finder-filters";
+import { useChat } from "@/components/chat/provider";
 
 function normalize(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -41,6 +42,7 @@ function VenueFinderPageInner() {
     ? requestedFilters
     : inferredFromQuery.slice(0, 3);
   const initialSort = searchParams.get("sort") ?? "Relevance";
+  const { openChat } = useChat();
 
   const [query, setQuery] = useState(initialQuery);
   const [locationQuery, setLocationQuery] = useState(initialLocation);
@@ -183,9 +185,17 @@ function VenueFinderPageInner() {
                 </label>
                 <div className="flex flex-wrap items-center gap-3">
                   <Button>Search</Button>
-                  <Link href="/ai" className="text-sm font-semibold text-blue">
+                  <button
+                    type="button"
+                    className="text-sm font-semibold text-blue hover:underline"
+                    onClick={() =>
+                      openChat({
+                        prefill: `Help me search${locationQuery ? ` in ${locationQuery}` : ""}${selectedFilters.length ? ` with ${selectedFilters.join(", ")}` : ""}.`,
+                      })
+                    }
+                  >
                     Ask the AI to help you search →
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
@@ -281,6 +291,29 @@ function VenueFinderPageInner() {
               <p className="mt-1 text-sm text-muted">
                 Try clearing one or two filters, or search a wider location area.
               </p>
+              <div className="mt-4 rounded-[var(--radius-ui)] border border-border bg-background p-3">
+                <label htmlFor="inline-ai-assist" className="text-xs font-semibold text-heading">
+                  Chat message
+                </label>
+                <input
+                  id="inline-ai-assist"
+                  readOnly
+                  value={`Find venues${locationQuery ? ` in ${locationQuery}` : ""}${selectedFilters.length ? ` with ${selectedFilters.join(", ")}` : ""}.`}
+                  className="mt-2 h-10 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-sm text-heading"
+                  aria-label="Chat message"
+                />
+                <button
+                  type="button"
+                  className="mt-3 rounded-[var(--radius-ui)] bg-blue px-3 py-2 text-xs font-semibold text-white"
+                  onClick={() =>
+                    openChat({
+                      prefill: `Find accessible venues${locationQuery ? ` in ${locationQuery}` : ""}${selectedFilters.length ? ` with ${selectedFilters.join(", ")}` : ""}.`,
+                    })
+                  }
+                >
+                  Ask AI with current filters
+                </button>
+              </div>
             </Card>
           )}
 
