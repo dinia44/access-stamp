@@ -125,6 +125,7 @@ export function ChatWidget() {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [listening, setListening] = useState(false);
   const [conversationMode, setConversationMode] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
   const [typing, setTyping] = useState(false);
   const [hoverReadEnabled, setHoverReadEnabled] = useState(false);
   const [plainLanguage, setPlainLanguage] = useState(false);
@@ -249,6 +250,7 @@ export function ChatWidget() {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
+    setSpeaking(false);
   }
 
   async function speakReply(reply: string) {
@@ -264,6 +266,9 @@ export function ChatWidget() {
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         if (audioRef.current) {
+          setSpeaking(true);
+          audioRef.current.onended = () => setSpeaking(false);
+          audioRef.current.onpause = () => setSpeaking(false);
           audioRef.current.pause();
           audioRef.current.src = url;
           await audioRef.current.play();
@@ -356,6 +361,7 @@ export function ChatWidget() {
     }
     recognitionRef.current = null;
     setListening(false);
+    setSpeaking(false);
   }
 
   function startConversationMode() {
@@ -365,6 +371,12 @@ export function ChatWidget() {
     if (!typing && !listening) {
       startListening(true);
     }
+  }
+
+  function interruptAndListen() {
+    stopResponse();
+    stopAllSpeech();
+    if (!listening) startListening(true);
   }
 
   async function copySummary() {
@@ -471,6 +483,97 @@ export function ChatWidget() {
           <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-amber shadow" aria-hidden />
         </button>
       ) : (
+        conversationMode ? (
+          <div className="fixed inset-0 z-[70] bg-[#071224]/75 p-3 backdrop-blur-[2px]">
+            <div className="mx-auto flex h-full w-full max-w-3xl flex-col overflow-hidden rounded-[18px] border border-[#d8dfea] bg-white shadow-[0_24px_60px_-20px_rgba(12,29,52,0.45)]">
+              <div className="flex items-center justify-between gap-3 border-b border-[#dde4ef] bg-[#0d4bb3] px-4 py-3 text-white">
+                <div>
+                  <div className="text-sm font-semibold">Voice conversation mode</div>
+                  <div className="text-xs text-blue-100">
+                    {listening ? "Listening…" : speaking ? "Speaking…" : "Ready"}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    className="rounded border border-white/30 px-3 py-1 text-xs font-semibold hover:bg-white/10"
+                    onClick={interruptAndListen}
+                  >
+                    Interrupt
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded border border-white/30 px-3 py-1 text-xs font-semibold hover:bg-white/10"
+                    onClick={endConversation}
+                  >
+                    Exit voice mode
+                  </button>
+                </div>
+              </div>
+
+              <div ref={scroller} className="min-h-0 flex-1 overflow-auto bg-[#f8fafc] px-5 py-4">
+                <div className="mb-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
+                  <span className="font-semibold">Live input:</span>{" "}
+                  {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice or pasted text…")}
+                </div>
+                <div className="grid gap-2">
+                  {msgs.slice(-10).map((m, i) => (
+                    <div key={i} className={cn("rounded-[12px] border px-3 py-2 text-sm", m.role === "assistant" ? "border-[#e3e8ef] bg-white" : "border-[#d3e2ff] bg-[#e8f0ff]")}>
+                      {m.text}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t border-[#dde4ef] bg-white px-4 py-3">
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    className={cn(
+                      "rounded border px-3 py-1 text-xs font-semibold",
+                      listening ? "border-amber bg-amber-pale text-[#92400e]" : "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]",
+                    )}
+                    onClick={() => {
+                      if (listening) {
+                        try {
+                          recognitionRef.current?.stop?.();
+                        } catch {
+                          // ignore
+                        }
+                      } else {
+                        startListening(true);
+                      }
+                    }}
+                  >
+                    {listening ? "Stop listening" : "Talk"}
+                  </button>
+                  <button type="button" className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
+                    Stop speaking
+                  </button>
+                  <button type="button" className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]" onClick={stopResponse} disabled={!canStopResponse}>
+                    Stop response
+                  </button>
+                </div>
+                <div className="flex items-end gap-2">
+                  <textarea
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    rows={2}
+                    placeholder="Paste text (e.g. email) and press Send…"
+                    className="min-h-11 flex-1 resize-y rounded-[12px] border border-[#d8e1ef] bg-white px-3 py-2 text-sm text-heading"
+                  />
+                  <button
+                    type="button"
+                    className="rounded-[12px] bg-[#0d4bb3] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0a3f97]"
+                    onClick={() => void send(draft)}
+                  >
+                    Send
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
         <div className="flex h-[min(640px,calc(100vh-18px))] w-[min(440px,calc(100vw-12px))] flex-col overflow-hidden rounded-[14px] border border-[#d8dfea] bg-white shadow-[0_18px_48px_-20px_rgba(12,29,52,0.3)]">
           <div
             className="flex items-center justify-between gap-3 px-4 py-3 text-white"
@@ -778,6 +881,7 @@ export function ChatWidget() {
             </div>
           </div>
         </div>
+        )
       )}
     </div>
   );

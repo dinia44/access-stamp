@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 import type { PageContext } from "@/components/chat/provider";
 import { ADVICE_ARTICLES, SAMPLE_VENUES } from "@/lib/mock-data";
+import { ACCESS_STAMP_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 
 type Req = {
   message: string;
   page?: PageContext;
   voiceMode?: boolean;
+};
+type LlmShape = {
+  reply: string;
+  quickActions?: string[];
 };
 
 const MUST_HAVE_TOKENS = [
@@ -34,6 +39,69 @@ function extractMustHaves(t: string) {
 
 function short(s: string) {
   return s.replace(/\s+/g, " ").trim();
+}
+
+function pageSummary(page: PageContext) {
+  if (page.kind === "venue-finder") return "User is on venue finder page.";
+  if (page.kind === "submit-venue") return "User is on submit venue page.";
+  if (page.kind === "venue") return `User is on venue page for: ${page.name}.`;
+  if (page.kind === "advice-article") return `User is reading article: ${page.title}.`;
+  return "No specific page context.";
+}
+
+function buildLlmUserPrompt(message: string, page: PageContext) {
+  const venues = SAMPLE_VENUES.slice(0, 8)
+    .map((v) => `${v.name} (${v.location}) — ${v.tags.join(", ")}`)
+    .join("\n");
+  const advice = ADVICE_ARTICLES.slice(0, 10).map((a) => `${a.title} (/advice/${a.slug})`).join("\n");
+  return [
+    `User message: ${message}`,
+    `Page context: ${pageSummary(page)}`,
+    "Sample venue data:",
+    venues,
+    "Sample advice guides:",
+    advice,
+    'Return STRICT JSON only: {"reply":"string","quickActions":["string"]}',
+    "Limit quickActions to max 4 short suggestions.",
+  ].join("\n\n");
+}
+
+async function callLlm(message: string, page: PageContext): Promise<LlmShape | null> {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return null;
+  const model = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        temperature: 0.4,
+        messages: [
+          { role: "system", content: ACCESS_STAMP_SYSTEM_PROMPT },
+          { role: "user", content: buildLlmUserPrompt(message, page) },
+        ],
+      }),
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as {
+      choices?: Array<{ message?: { content?: string } }>;
+    };
+    const raw = json.choices?.[0]?.message?.content?.trim();
+    const content = raw?.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/, "").trim();
+    if (!content) return null;
+    const parsed = JSON.parse(content) as LlmShape;
+    if (!parsed.reply || typeof parsed.reply !== "string") return null;
+    return {
+      reply: parsed.reply,
+      quickActions: Array.isArray(parsed.quickActions) ? parsed.quickActions.slice(0, 4) : undefined,
+    };
+  } catch {
+    return null;
+  }
 }
 
 function isTransferQuestion(t: string) {
@@ -99,6 +167,14 @@ export async function POST(req: Request) {
     return NextResponse.json({
       reply: voice ? short(reply) : reply,
       quickActions: ["It’s step-free with a good toilet", "I’m not sure what to write", "Parking & Blue Badge"],
+    });
+  }
+
+  const llm = await callLlm(msg, page);
+  if (llm) {
+    return NextResponse.json({
+      reply: voice ? short(llm.reply) : llm.reply,
+      quickActions: llm.quickActions,
     });
   }
 
