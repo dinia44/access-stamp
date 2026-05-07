@@ -130,6 +130,7 @@ export function ChatWidget() {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [listening, setListening] = useState(false);
   const [conversationMode, setConversationMode] = useState(false);
+  const [handsFree, setHandsFree] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [voiceError, setVoiceError] = useState("");
   const [typing, setTyping] = useState(false);
@@ -158,11 +159,14 @@ export function ChatWidget() {
   const abortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<{ stop?: () => void } | null>(null);
   const conversationModeRef = useRef(false);
+  const handsFreeRef = useRef(false);
+  const speakingRef = useRef(false);
   const lastHoverSpeechAtRef = useRef(0);
   const lastHoverTextRef = useRef("");
   const liveTranscriptRef = useRef("");
   const lastOutboundRef = useRef("");
   const userStoppedRef = useRef(false);
+  const typingRef = useRef(false);
 
   useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight });
@@ -175,6 +179,18 @@ export function ChatWidget() {
     }, 45000);
     return () => window.clearTimeout(id);
   }, [typing]);
+
+  useEffect(() => {
+    typingRef.current = typing;
+  }, [typing]);
+
+  useEffect(() => {
+    handsFreeRef.current = handsFree;
+  }, [handsFree]);
+
+  useEffect(() => {
+    speakingRef.current = speaking;
+  }, [speaking]);
 
   useEffect(() => {
     let cancelled = false;
@@ -284,7 +300,27 @@ export function ChatWidget() {
       audioRef.current.onended = null;
       audioRef.current.onpause = null;
     }
+    speakingRef.current = false;
     setSpeaking(false);
+  }
+
+  function stopRecognitionOnly() {
+    try {
+      recognitionRef.current?.stop?.();
+    } catch {
+      // ignore
+    }
+    recognitionRef.current = null;
+    setListening(false);
+  }
+
+  function scheduleHandsFreeListen() {
+    if (!conversationModeRef.current || !handsFreeRef.current) return;
+    window.setTimeout(() => {
+      if (!conversationModeRef.current || !handsFreeRef.current) return;
+      if (typingRef.current || speakingRef.current || recognitionRef.current) return;
+      startListening(true);
+    }, 320);
   }
 
   async function speakWithBrowser(text: string) {
@@ -301,9 +337,17 @@ export function ChatWidget() {
   }
 
   async function speakReply(reply: string) {
+    stopRecognitionOnly();
+
     const text = normalizeForSpeech(reply);
-    if (!voiceEnabled || !text) return;
+    if (!voiceEnabled || !text) {
+      scheduleHandsFreeListen();
+      return;
+    }
+
     setVoiceError("");
+    speakingRef.current = true;
+    setSpeaking(true);
     try {
       const res = await fetch("/api/voice", {
         method: "POST",
@@ -314,24 +358,14 @@ export function ChatWidget() {
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         if (audioRef.current) {
-          setSpeaking(true);
           audioRef.current.pause();
           audioRef.current.src = url;
           await audioRef.current.play();
           await new Promise<void>((resolve) => {
             if (!audioRef.current) return resolve();
-            audioRef.current.onended = () => {
-              setSpeaking(false);
-              resolve();
-            };
-            audioRef.current.onpause = () => {
-              setSpeaking(false);
-              resolve();
-            };
-            audioRef.current.onerror = () => {
-              setSpeaking(false);
-              resolve();
-            };
+            audioRef.current.onended = () => resolve();
+            audioRef.current.onpause = () => resolve();
+            audioRef.current.onerror = () => resolve();
           });
         }
         return;
@@ -349,6 +383,10 @@ export function ChatWidget() {
       } else {
         setVoiceError("Voice service unavailable right now.");
       }
+    } finally {
+      speakingRef.current = false;
+      setSpeaking(false);
+      scheduleHandsFreeListen();
     }
   }
 
@@ -359,6 +397,8 @@ export function ChatWidget() {
     abortRef.current = new AbortController();
     userStoppedRef.current = false;
     lastOutboundRef.current = t;
+    const voiceTurnContext = conversationModeRef.current || listening;
+    stopRecognitionOnly();
     const sentNow = Date.now();
     if (!opts?.skipUserEcho) {
       setMsgs((m) => [...m, { role: "user", text: t, sentAt: sentNow }]);
@@ -377,7 +417,7 @@ export function ChatWidget() {
         body: JSON.stringify({
           message: t,
           page,
-          voiceMode: voiceMode || listening,
+          voiceMode: voiceMode || voiceTurnContext,
         }),
       });
       if (res.ok) data = (await res.json()) as ApiResponse;
@@ -413,10 +453,6 @@ export function ChatWidget() {
 
     await speakReply(reply);
 
-    if (conversationModeRef.current && !listening) {
-      window.setTimeout(() => startListening(true), 240);
-    }
-
   }
 
   function stopResponse() {
@@ -450,15 +486,18 @@ export function ChatWidget() {
     conversationModeRef.current = true;
     setConversationMode(true);
     setVoiceEnabled(true);
-    if (!typing && !listening) {
-      startListening(true);
+    if (handsFreeRef.current && !typingRef.current && !speakingRef.current && !recognitionRef.current) {
+      window.setTimeout(() => startListening(true), 320);
     }
   }
 
   function interruptAndListen() {
     stopResponse();
     stopAllSpeech();
-    if (!listening) startListening(true);
+    window.setTimeout(() => {
+      if (!conversationModeRef.current || speakingRef.current || typingRef.current) return;
+      startListening(true);
+    }, 120);
   }
 
   async function copySummary() {
@@ -475,7 +514,8 @@ export function ChatWidget() {
 
   function startListening(fromConversation = false) {
     if (!canUseSpeech()) return;
-    if (typing) return;
+    if (typingRef.current) return;
+    if (speakingRef.current) return;
     if (recognitionRef.current) return;
     const Rec = getWebkitSpeechRecognition();
     if (!Rec) return;
@@ -518,7 +558,7 @@ export function ChatWidget() {
         liveTranscriptRef.current = "";
         return;
       }
-      if ((fromConversation || conversationModeRef.current) && !typing) {
+      if (handsFreeRef.current && conversationModeRef.current && !typingRef.current) {
         window.setTimeout(() => startListening(true), 240);
       }
     };
@@ -568,31 +608,57 @@ export function ChatWidget() {
         conversationMode ? (
           <div className="fixed inset-0 z-[70] bg-[#071224]/75 p-3 backdrop-blur-[2px]">
             <div className="mx-auto flex h-full w-full max-w-3xl flex-col overflow-hidden rounded-[18px] border border-[#d8dfea] bg-white shadow-[0_24px_60px_-20px_rgba(12,29,52,0.45)]">
-              <div className="flex items-center justify-between gap-3 border-b border-[#dde4ef] bg-[#0d4bb3] px-4 py-3 text-white">
-                <div>
-                  <div className="text-sm font-semibold">Voice conversation mode</div>
-                  <div className="text-xs text-blue-100">
-                    {listening ? "Listening…" : speaking ? "Speaking…" : "Ready"}
+              <div className="flex flex-col gap-3 border-b border-[#dde4ef] bg-[#0d4bb3] px-4 py-3 text-white">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold">Voice conversation</div>
+                    <div className="text-xs text-blue-100">
+                      {typing
+                        ? "Thinking…"
+                        : speaking
+                          ? "Speaking…"
+                          : listening
+                            ? "Listening…"
+                            : handsFree
+                              ? "Hands-free on — listens again after each reply"
+                              : "Push-to-talk — tap Talk, then speak"}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <button
+                      type="button"
+                      className="rounded border border-white/30 px-3 py-1 text-xs font-semibold hover:bg-white/10"
+                      onClick={interruptAndListen}
+                    >
+                      Interrupt
+                    </button>
+                    <button
+                      type="button"
+                      className="rounded border border-white/30 px-3 py-1 text-xs font-semibold hover:bg-white/10"
+                      onClick={endConversation}
+                    >
+                      Exit voice mode
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    className="rounded border border-white/30 px-3 py-1 text-xs font-semibold hover:bg-white/10"
-                    onClick={interruptAndListen}
-                  >
-                    Interrupt
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded border border-white/30 px-3 py-1 text-xs font-semibold hover:bg-white/10"
-                    onClick={endConversation}
-                  >
-                    Exit voice mode
-                  </button>
-                </div>
+                <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-white/25 bg-white/10 px-3 py-2 text-xs leading-snug">
+                  <input
+                    type="checkbox"
+                    checked={handsFree}
+                    onChange={(e) => {
+                      const next = e.target.checked;
+                      setHandsFree(next);
+                      if (next && !typingRef.current && !speakingRef.current && !recognitionRef.current) {
+                        window.setTimeout(() => startListening(true), 280);
+                      }
+                    }}
+                    className="h-4 w-4 shrink-0 rounded border-white/40"
+                  />
+                  <span>
+                    <span className="font-semibold">Hands-free</span> — after the assistant finishes speaking, the mic turns back on automatically (push-to-talk when off).
+                  </span>
+                </label>
               </div>
-
               <div ref={scroller} className="min-h-0 flex-1 overflow-auto bg-[#f8fafc] px-5 py-4">
                 <div className="mb-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
                   <span className="font-semibold">Live input:</span>{" "}
@@ -625,8 +691,18 @@ export function ChatWidget() {
                     className={cn(
                       "rounded border px-3 py-1 text-xs font-semibold",
                       listening ? "border-amber bg-amber-pale text-[#92400e]" : "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]",
+                      (speaking || typing) && "cursor-not-allowed opacity-60",
                     )}
+                    disabled={speaking || typing}
+                    title={
+                      speaking
+                        ? "Wait for speech to finish, or tap Interrupt"
+                        : typing
+                          ? "Wait for the reply"
+                          : "Push-to-talk — tap to speak"
+                    }
                     onClick={() => {
+                      if (speaking || typing) return;
                       if (listening) {
                         try {
                           recognitionRef.current?.stop?.();
@@ -752,6 +828,23 @@ export function ChatWidget() {
                       }}
                     >
                       {conversationMode ? "End conversation mode" : "Start conversation mode"}
+                    </button>
+                    <button
+                      type="button"
+                      className={cn(
+                        "mb-1 w-full rounded-[var(--radius-ui)] px-2 py-1 text-left text-xs font-semibold cursor-pointer",
+                        handsFree ? "bg-emerald-500/25 text-emerald-100" : "bg-white/5 text-[#c0d0e2]",
+                      )}
+                      aria-pressed={handsFree}
+                      onClick={() => {
+                        const next = !handsFree;
+                        setHandsFree(next);
+                        if (next && conversationMode && !typingRef.current && !speakingRef.current && !recognitionRef.current) {
+                          window.setTimeout(() => startListening(true), 280);
+                        }
+                      }}
+                    >
+                      {handsFree ? "Hands-free: on" : "Hands-free: off"}
                     </button>
                     <button
                       type="button"
@@ -975,10 +1068,11 @@ export function ChatWidget() {
                 className={cn(
                   "grid h-12 w-12 place-items-center rounded-[12px] border border-[#d8e1ef] bg-white text-[#0d4bb3] cursor-pointer transition-colors hover:bg-[#f5f8ff]",
                   listening && "border-amber bg-amber-pale",
-                    !speechSupported && "cursor-not-allowed border-[#e6ebf3] bg-[#f6f8fb] text-muted hover:bg-[#f6f8fb]",
+                  (!speechSupported || speaking || typing) && "cursor-not-allowed border-[#e6ebf3] bg-[#f6f8fb] text-muted hover:bg-[#f6f8fb]",
                 )}
-                  aria-label={listening ? "Stop voice input" : "Start voice input"}
+                aria-label={listening ? "Stop voice input" : "Start voice input"}
                 onClick={() => {
+                  if (speaking || typing) return;
                   if (listening) {
                     try {
                       recognitionRef.current?.stop?.();
@@ -989,8 +1083,16 @@ export function ChatWidget() {
                   }
                   startListening();
                 }}
-                  disabled={!speechSupported}
-                title={listening ? "Listening now" : "Tap to speak"}
+                disabled={!speechSupported || speaking || typing}
+                title={
+                  speaking
+                    ? "Wait for speech to finish"
+                    : typing
+                      ? "Wait for the reply"
+                      : listening
+                        ? "Listening now"
+                        : "Tap to speak"
+                }
               >
                 {listening ? <span className="h-2 w-2 rounded-full bg-amber-600" aria-hidden /> : <IconMic />}
               </button>
