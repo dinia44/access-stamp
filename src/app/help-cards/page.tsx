@@ -2,6 +2,7 @@ import { Container } from "@/components/container";
 import { Badge, Card } from "@/components/ui";
 import { HelpCardsHub } from "@/components/help-cards-hub";
 import { SetChatContext } from "@/components/chat/set-context";
+import Link from "next/link";
 
 export default async function HelpCardsPage({
   searchParams,
@@ -29,6 +30,14 @@ export default async function HelpCardsPage({
             <p className="text-sm text-text">
               These cards are practical prompts, not legal advice. For formal legal disputes, use specialist support.
             </p>
+            <div className="mt-3 flex flex-wrap gap-2 text-xs">
+              <Link href="/help-cards?concern=Equality%20Act%20rights" className="rounded-full bg-blue-pale px-3 py-1 font-semibold text-blue">
+                Equality Act cards
+              </Link>
+              <Link href="/advice/rights" className="rounded-full bg-amber-pale px-3 py-1 font-semibold text-amber">
+                Rights advice hub
+              </Link>
+            </div>
           </Card>
 
           <HelpCardsHub initialConcern={concern} />
