@@ -22,6 +22,12 @@ function mapIncomingFilters(input: string) {
   return VENUE_FILTERS.filter((f) => requested.some((r) => normalize(f).includes(r) || r.includes(normalize(f))));
 }
 
+function mapQueryToFilters(query: string) {
+  const q = normalize(query);
+  if (!q) return [];
+  return VENUE_FILTERS.filter((f) => q.includes(normalize(f)));
+}
+
 function VenueFinderPageInner() {
   const router = useRouter();
   const pathname = usePathname();
@@ -29,16 +35,22 @@ function VenueFinderPageInner() {
   const initialLocation = searchParams.get("location") ?? "";
   const initialType = searchParams.get("type") ?? "Any";
   const initialQuery = searchParams.get("q") ?? "";
-  const initialFilters = mapIncomingFilters(searchParams.get("filters") ?? "");
+  const requestedFilters = mapIncomingFilters(searchParams.get("filters") ?? "");
+  const inferredFromQuery = mapQueryToFilters(initialQuery);
+  const initialFilters = requestedFilters.length
+    ? requestedFilters
+    : inferredFromQuery.slice(0, 3);
   const initialSort = searchParams.get("sort") ?? "Relevance";
 
-  const [locationQuery, setLocationQuery] = useState(initialLocation || initialQuery);
+  const [query, setQuery] = useState(initialQuery);
+  const [locationQuery, setLocationQuery] = useState(initialLocation);
   const [venueType, setVenueType] = useState(initialType);
   const [selectedFilters, setSelectedFilters] = useState<string[]>(initialFilters);
   const [sortBy, setSortBy] = useState(initialSort);
 
   useEffect(() => {
     const params = new URLSearchParams();
+    if (query.trim()) params.set("q", query.trim());
     if (locationQuery.trim()) params.set("location", locationQuery.trim());
     if (venueType !== "Any") params.set("type", venueType);
     if (selectedFilters.length) params.set("filters", selectedFilters.join(","));
@@ -48,10 +60,22 @@ function VenueFinderPageInner() {
     const current = searchParams.toString();
     if (next === current) return;
     router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
-  }, [locationQuery, venueType, selectedFilters, sortBy, pathname, router, searchParams]);
+  }, [query, locationQuery, venueType, selectedFilters, sortBy, pathname, router, searchParams]);
 
   const filtered = useMemo(() => {
     let items = [...SAMPLE_VENUES];
+
+    const q = query.trim().toLowerCase();
+    if (q) {
+      items = items.filter(
+        (v) =>
+          v.name.toLowerCase().includes(q) ||
+          v.location.toLowerCase().includes(q) ||
+          v.type.toLowerCase().includes(q) ||
+          v.summary.toLowerCase().includes(q) ||
+          v.tags.some((t) => t.toLowerCase().includes(q)),
+      );
+    }
 
     const loc = locationQuery.trim().toLowerCase();
     if (loc) {
@@ -75,7 +99,7 @@ function VenueFinderPageInner() {
     }
 
     return items;
-  }, [locationQuery, venueType, selectedFilters, sortBy]);
+  }, [query, locationQuery, venueType, selectedFilters, sortBy]);
 
   return (
     <div className="bg-background">
@@ -103,6 +127,16 @@ function VenueFinderPageInner() {
           <Card className="p-5 sm:p-6">
             <div className="grid gap-4 lg:grid-cols-[1.2fr_.8fr]">
               <div className="grid gap-3 sm:grid-cols-2">
+                <label className="text-sm font-semibold text-muted">
+                  Search query
+                  <input
+                    className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
+                    placeholder="e.g. step-free restaurant with parking"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    inputMode="search"
+                  />
+                </label>
                 <label className="text-sm font-semibold text-muted">
                   Location
                   <input
@@ -143,6 +177,8 @@ function VenueFinderPageInner() {
                   <input
                     className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
                     placeholder='e.g. "wheelchair-friendly pub in Liverpool with good parking and a Changing Places toilet"'
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
                   />
                 </label>
                 <div className="flex flex-wrap items-center gap-3">
@@ -172,6 +208,29 @@ function VenueFinderPageInner() {
               </select>
             </div>
           </div>
+          {(query || locationQuery || venueType !== "Any" || selectedFilters.length) ? (
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              {query ? <Badge tone="blue">Query: {query}</Badge> : null}
+              {locationQuery ? <Badge tone="blue">Location: {locationQuery}</Badge> : null}
+              {venueType !== "Any" ? <Badge tone="blue">Type: {venueType}</Badge> : null}
+              {selectedFilters.map((f) => (
+                <Badge key={f} tone="amber">{f}</Badge>
+              ))}
+              <button
+                type="button"
+                className="ml-1 rounded-[var(--radius-ui)] border border-border px-2 py-1 font-semibold text-heading hover:bg-background-2"
+                onClick={() => {
+                  setQuery("");
+                  setLocationQuery("");
+                  setVenueType("Any");
+                  setSelectedFilters([]);
+                  setSortBy("Relevance");
+                }}
+              >
+                Clear all
+              </button>
+            </div>
+          ) : null}
 
           {filtered.length ? (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -188,7 +247,9 @@ function VenueFinderPageInner() {
                     </div>
                     <div className="mt-3 text-sm text-muted">{v.summary}</div>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {v.tags.slice(0, 3).map((t) => (
+                      {(selectedFilters.length
+                        ? selectedFilters.filter((f) => v.features[f] === "yes")
+                        : v.tags).slice(0, 3).map((t) => (
                         <Badge key={t} tone="amber" className="text-[11px]">
                           {t}
                         </Badge>

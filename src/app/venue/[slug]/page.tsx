@@ -117,6 +117,9 @@ export default async function VenueDetailPage({
   if (!v) return notFound();
   const yesCount = Object.values(v.features).filter((x) => x === "yes").length;
   const unknownCount = Object.values(v.features).filter((x) => x === "unknown").length;
+  const confirmedFeatures = Object.entries(v.features)
+    .filter(([, value]) => value === "yes")
+    .map(([feature]) => feature);
   const custom = VENUE_COPY[v.slug];
   const beforeYouGo = custom?.beforeYouGo ?? [
     "Call ahead to confirm current layout and staff support.",
@@ -191,6 +194,23 @@ export default async function VenueDetailPage({
               </div>
               <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
                 <span className="font-semibold text-heading">Known access features:</span> {yesCount} confirmed
+                {confirmedFeatures.length ? (
+                  <details className="mt-2">
+                    <summary className="cursor-pointer text-[11px] font-semibold text-blue">
+                      Show all confirmed features ({confirmedFeatures.length})
+                    </summary>
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {confirmedFeatures.map((feature) => (
+                        <span
+                          key={feature}
+                          className="rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-semibold text-heading"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  </details>
+                ) : null}
               </div>
             </div>
           </Card>

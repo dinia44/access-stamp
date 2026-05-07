@@ -40,11 +40,12 @@ export function VenueFinderFilters({ selected, onChange }: Props) {
 
   const primary = VENUE_FILTERS.slice(0, PRIMARY_COUNT);
   const extra = VENUE_FILTERS.slice(PRIMARY_COUNT);
+  const extraSelected = extra.some((t) => selectedSet.has(t));
 
   return (
     <div className="mt-5 space-y-3">
       <div className="text-sm font-semibold text-heading">Access filters</div>
-      <p className="text-xs text-muted">Tap to filter must-haves.</p>
+      <p className="text-xs text-muted">Click or tap to toggle must-haves.</p>
       <div className="flex flex-wrap gap-2">
         {primary.map((t) => (
           <button
@@ -54,10 +55,13 @@ export function VenueFinderFilters({ selected, onChange }: Props) {
             className={cn(
               "rounded-full border px-3 py-2 text-xs font-semibold transition-colors",
               selectedSet.has(t)
-                ? "border-blue bg-blue-pale text-blue"
+                ? "border-blue bg-blue-pale text-blue shadow-[inset_0_0_0_1px_rgba(36,120,208,0.25)]"
                 : "border-border bg-background text-heading hover:bg-background-2",
             )}
+            aria-pressed={selectedSet.has(t)}
+            aria-label={`${t} filter ${selectedSet.has(t) ? "selected" : "not selected"}`}
           >
+            {selectedSet.has(t) ? "✓ " : ""}
             {t}
           </button>
         ))}
@@ -65,7 +69,7 @@ export function VenueFinderFilters({ selected, onChange }: Props) {
 
       <details
         className="rounded-[var(--radius-card)] border border-border bg-background-2/60 p-3"
-        open={moreOpen}
+        open={moreOpen || extraSelected}
         onToggle={(e) => setMoreOpen((e.target as HTMLDetailsElement).open)}
       >
         <summary className="cursor-pointer text-sm font-semibold text-heading">More filters</summary>
@@ -78,10 +82,13 @@ export function VenueFinderFilters({ selected, onChange }: Props) {
               className={cn(
                 "rounded-full border px-3 py-2 text-xs font-semibold transition-colors",
                 selectedSet.has(t)
-                  ? "border-blue bg-blue-pale text-blue"
+                  ? "border-blue bg-blue-pale text-blue shadow-[inset_0_0_0_1px_rgba(36,120,208,0.25)]"
                   : "border-border bg-background text-heading hover:bg-background-2",
               )}
+              aria-pressed={selectedSet.has(t)}
+              aria-label={`${t} filter ${selectedSet.has(t) ? "selected" : "not selected"}`}
             >
+              {selectedSet.has(t) ? "✓ " : ""}
               {t}
             </button>
           ))}

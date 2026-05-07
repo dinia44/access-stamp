@@ -6,44 +6,23 @@ import { useRouter } from "next/navigation";
 import { Button, Card } from "@/components/ui";
 
 const FILTERS = [
-  "Step-free access",
-  "Accessible toilet",
-  "Hearing loop",
-  "Lift access",
-  "Parking",
-  "Sensory support",
-  "Wide doorways",
-  "Turning space",
-  "Changing Places",
+  { label: "Step-free access", key: "Step-free entrance" },
+  { label: "Accessible toilet", key: "Accessible toilet" },
+  { label: "Hearing loop", key: "Staff disability awareness" },
+  { label: "Lift access", key: "Lift access" },
+  { label: "Parking", key: "Nearby Blue Badge parking" },
+  { label: "Sensory support", key: "Quiet environment" },
+  { label: "Wide doorways", key: "Wide doorways (80cm+)" },
+  { label: "Turning space", key: "Turning space (150cm+)" },
+  { label: "Changing Places", key: "Changing Places toilet" },
 ] as const;
 
-const DEFAULT_ACTIVE = new Set<string>([
-  "Step-free access",
-  "Accessible toilet",
-  "Parking",
-]);
-
+const DEFAULT_ACTIVE = new Set<string>(["Step-free entrance", "Accessible toilet", "Nearby Blue Badge parking"]);
 const TOP_FILTER_COUNT = 5;
 
-const VENUE_SUGGESTIONS = [
-  "Restaurant",
-  "Cinema",
-  "Museum",
-  "Library",
-  "Cafe",
-  "Hotel",
-  "Shopping centre",
-] as const;
-
-const LOCATION_SUGGESTIONS = [
-  "Leeds",
-  "Liverpool",
-  "Manchester",
-  "Bristol",
-  "L1 8JQ",
-  "LS1 4AP",
-] as const;
-
+const VENUE_SUGGESTIONS = ["Restaurant", "Cinema", "Museum", "Library", "Cafe", "Hotel", "Shopping centre"] as const;
+const LOCATION_SUGGESTIONS = ["Leeds", "Liverpool", "Manchester", "Bristol", "L1 8JQ", "LS1 4AP"] as const;
+const TYPE_SUGGESTIONS = ["Restaurant", "Cinema", "Museum", "Library", "Cafe", "Hotel", "Shopping", "Arts & Culture"] as const;
 const RECENT_SEARCHES = [
   "Step-free restaurant in Leeds with parking",
   "Accessible museum in Liverpool",
@@ -60,14 +39,14 @@ export function HeroSearchCard() {
   const [location, setLocation] = useState("");
   const [locating, setLocating] = useState(false);
 
-  const chips = useMemo(() => FILTERS.map((t) => ({ t, on: active.has(t) })), [active]);
+  const chips = useMemo(() => FILTERS.map((f) => ({ ...f, on: active.has(f.key) })), [active]);
   const visibleChips = showAllFilters ? chips : chips.slice(0, TOP_FILTER_COUNT);
 
-  function toggle(t: string) {
+  function toggle(key: string) {
     setActive((prev) => {
       const next = new Set(prev);
-      if (next.has(t)) next.delete(t);
-      else next.add(t);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
       return next;
     });
   }
@@ -76,8 +55,48 @@ export function HeroSearchCard() {
     setActive(new Set());
   }
 
+  function extractLocationFromQuery(query: string) {
+    const fromPhrase = query.match(/\b(?:in|near)\s+([a-z][a-z\s-]{2,30})/i)?.[1]?.trim();
+    if (fromPhrase) return fromPhrase;
+    const postcode = query.match(/\b[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}\b/i)?.[0];
+    if (postcode) return postcode.toUpperCase();
+    return "";
+  }
+
+  function extractTypeFromQuery(query: string) {
+    const lower = query.toLowerCase();
+    return TYPE_SUGGESTIONS.find((t) => lower.includes(t.toLowerCase())) ?? "";
+  }
+
+  function inferFiltersFromQuery(query: string) {
+    const lower = query.toLowerCase();
+    return FILTERS.filter((f) => lower.includes(f.label.toLowerCase())).map((f) => f.key);
+  }
+
+  function runSearch(query = mainQuery, forcedLocation = location, forcedType = venueType, forcedFilters = Array.from(active)) {
+    const params = new URLSearchParams();
+    const cleanQuery = query.trim();
+    const inferredLocation = !forcedLocation.trim() ? extractLocationFromQuery(cleanQuery) : "";
+    const inferredType = !forcedType.trim() ? extractTypeFromQuery(cleanQuery) : "";
+    const mergedFilters = forcedFilters.length ? forcedFilters : inferFiltersFromQuery(cleanQuery);
+
+    if (cleanQuery) params.set("q", cleanQuery);
+    if ((forcedType || inferredType).trim()) params.set("type", (forcedType || inferredType).trim());
+    if ((forcedLocation || inferredLocation).trim()) params.set("location", (forcedLocation || inferredLocation).trim());
+    if (mergedFilters.length) params.set("filters", mergedFilters.join(","));
+    const qs = params.toString();
+    router.push(qs ? `/venue-finder?${qs}` : "/venue-finder");
+  }
+
   function applyRecentSearch(search: string) {
     setMainQuery(search);
+    const inferredLocation = extractLocationFromQuery(search);
+    const inferredType = extractTypeFromQuery(search);
+    const inferredFilters = inferFiltersFromQuery(search);
+    if (inferredLocation) setLocation(inferredLocation);
+    if (inferredType) setVenueType(inferredType);
+    if (inferredFilters.length) setActive((prev) => new Set([...Array.from(prev), ...inferredFilters]));
+    runSearch(search, inferredLocation || location, inferredType || venueType, inferredFilters.length ? inferredFilters : Array.from(active));
   }
 
   function useMyLocation() {
@@ -92,16 +111,6 @@ export function HeroSearchCard() {
       () => setLocating(false),
       { timeout: 8000 },
     );
-  }
-
-  function runSearch() {
-    const params = new URLSearchParams();
-    if (mainQuery.trim()) params.set("q", mainQuery.trim());
-    if (venueType.trim()) params.set("type", venueType.trim());
-    if (location.trim()) params.set("location", location.trim());
-    if (active.size) params.set("filters", Array.from(active).join(","));
-    const qs = params.toString();
-    router.push(qs ? `/venue-finder?${qs}` : "/venue-finder");
   }
 
   return (
@@ -123,6 +132,9 @@ export function HeroSearchCard() {
                   aria-label="Search for a venue or place"
                   value={mainQuery}
                   onChange={(e) => setMainQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") runSearch();
+                  }}
                   list="hero-main-suggestions"
                   autoComplete="on"
                 />
@@ -155,12 +167,17 @@ export function HeroSearchCard() {
               onClick={runSearch}
             >
               <span aria-hidden>⌕</span>
-              Find access-checked venues
+              {location.trim() ? `Find access-checked venues in ${location.trim()}` : "Find access-checked venues"}
             </Button>
           </div>
 
           <datalist id="hero-main-suggestions">
             {[...RECENT_SEARCHES, ...VENUE_SUGGESTIONS, ...LOCATION_SUGGESTIONS].map((item) => (
+              <option key={item} value={item} />
+            ))}
+          </datalist>
+          <datalist id="hero-location-suggestions">
+            {LOCATION_SUGGESTIONS.map((item) => (
               <option key={item} value={item} />
             ))}
           </datalist>
@@ -190,14 +207,14 @@ export function HeroSearchCard() {
             <button
               type="button"
               onClick={useMyLocation}
-              className="rounded-full border border-[#d8dfea] bg-white px-3 py-1 font-semibold text-[#184080] hover:bg-[#f5f8ff] cursor-pointer"
+              className="rounded-full border border-[#8fb3ef] bg-[#e8f0ff] px-3 py-1 font-semibold text-[#184080] hover:bg-[#dce9ff] cursor-pointer"
             >
               {locating ? "Finding location..." : "Use my location"}
             </button>
           </div>
 
           {showMoreOptions ? (
-            <div className="grid gap-2 md:grid-cols-2">
+            <div className="grid gap-2">
               <label
                 htmlFor="hero-venue-type"
                 className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[10px] border border-[#d8dfea] bg-white px-3"
@@ -209,7 +226,7 @@ export function HeroSearchCard() {
                     id="hero-venue-type"
                     value={venueType}
                     onChange={(e) => setVenueType(e.target.value)}
-                    className="w-full border-0 bg-transparent p-0 text-xs text-muted outline-none"
+                    className="w-full border-0 bg-transparent p-0 text-sm text-heading outline-none placeholder:text-xs placeholder:text-muted"
                     placeholder="Restaurant, cinema, museum..."
                     list="hero-venue-suggestions"
                     autoComplete="organization-title"
@@ -217,33 +234,8 @@ export function HeroSearchCard() {
                   />
                 </div>
               </label>
-
-              <label
-                htmlFor="hero-location"
-                className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[10px] border border-[#d8dfea] bg-white px-3"
-              >
-                <span aria-hidden className="text-lg text-[#184080]">⌖</span>
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold text-heading">Location</div>
-                  <input
-                    id="hero-location"
-                    className="w-full border-0 bg-transparent p-0 text-sm text-heading outline-none placeholder:text-xs placeholder:text-muted"
-                    placeholder="Enter city, town or postcode"
-                    autoComplete="postal-code"
-                    inputMode="numeric"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    list="hero-location-suggestions"
-                  />
-                </div>
-              </label>
               <datalist id="hero-venue-suggestions">
                 {VENUE_SUGGESTIONS.map((item) => (
-                  <option key={item} value={item} />
-                ))}
-              </datalist>
-              <datalist id="hero-location-suggestions">
-                {LOCATION_SUGGESTIONS.map((item) => (
                   <option key={item} value={item} />
                 ))}
               </datalist>
@@ -295,22 +287,22 @@ export function HeroSearchCard() {
             </div>
             <div className="overflow-x-auto">
               <div className="flex min-w-max flex-wrap gap-2 md:min-w-0">
-                {visibleChips.map(({ t, on }) => (
+                {visibleChips.map(({ label, key, on }) => (
                   <button
-                    key={t}
+                    key={key}
                     type="button"
-                    onClick={() => toggle(t)}
+                    onClick={() => toggle(key)}
                     className={
                       "rounded-[10px] border px-3 py-2 text-[13px] font-medium transition-colors cursor-pointer " +
                       (on
-                        ? "border-[#0d4bb3] bg-[#e8f0ff] text-[#184080]"
+                        ? "border-[#0d4bb3] bg-[#e8f0ff] text-[#184080] shadow-[inset_0_0_0_1px_rgba(13,75,179,0.2)]"
                         : "border-[#d8dfea] bg-white text-[#184080] hover:bg-[#f5f8ff]")
                     }
                     aria-pressed={on}
-                    aria-label={`${t} filter ${on ? "selected" : "not selected"}`}
+                    aria-label={`${label} filter ${on ? "selected" : "not selected"}`}
                   >
                     {on ? "✓ " : ""}
-                    {t}
+                    {label}
                   </button>
                 ))}
               </div>
