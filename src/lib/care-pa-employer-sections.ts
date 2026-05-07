@@ -318,3 +318,38 @@ Employer approval: ______________  Date: ______`,
     body: "Employment law changes over time. Mock templates are not legal documents. Verify pay rates, notice, sick pay, and pension with ACAS, gov.uk, payroll, or a solicitor at the time you act.",
   },
 ];
+
+/** Plain-text export of the same sections (single source of truth) for .txt download. */
+export function buildPaRecruitmentPackPlainText(): string {
+  const lines: string[] = [
+    "ACCESS STAMP — PA recruitment pack (plain text export)",
+    "Guide path: /advice/employing-a-personal-assistant-basics",
+  ];
+  const site =
+    typeof process.env.NEXT_PUBLIC_SITE_URL === "string" && process.env.NEXT_PUBLIC_SITE_URL.trim().length > 0
+      ? process.env.NEXT_PUBLIC_SITE_URL.trim().replace(/\/$/, "")
+      : "";
+  if (site) lines.push(`Full URL: ${site}/advice/employing-a-personal-assistant-basics`);
+  lines.push(
+    "",
+    "Mock templates only — edit for your situation. Not legal, tax, or employment advice.",
+    "Further UK hubs (not affiliated): https://www.independentlives.org/ — https://pa-pages.org/",
+    "",
+  );
+
+  for (const block of PA_EMPLOYER_GUIDE_SECTIONS) {
+    if (block.type === "h2") {
+      lines.push("", "=".repeat(72), block.text.toUpperCase(), "=".repeat(72), "");
+    } else if (block.type === "p") {
+      lines.push(block.text.trim(), "");
+    } else if (block.type === "ul") {
+      lines.push(...block.items.map((item) => `• ${item}`), "");
+    } else if (block.type === "pre") {
+      lines.push("--- form / template ---", block.text.trim(), "");
+    } else if (block.type === "callout") {
+      const tag = block.tone === "warning" ? " (warning)" : "";
+      lines.push(`--- ${block.title}${tag} ---`, block.body.trim(), "");
+    }
+  }
+  return lines.join("\n");
+}

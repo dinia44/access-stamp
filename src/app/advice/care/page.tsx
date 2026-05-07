@@ -27,6 +27,7 @@ const FEATURED = [
 const QUICK_ACTIONS = [
   { label: "Direct payments & budgets", href: "/advice/personal-budgets-and-direct-payments" },
   { label: "Employing a PA", href: "/advice/employing-a-personal-assistant-basics" },
+  { label: "PA pack (.txt download)", href: "/api/downloads/pa-recruitment-pack" },
   { label: "Care Act assessments", href: "/advice/care-act-assessments-and-eligibility" },
   { label: "When care breaks down", href: "/advice/when-care-plans-break-down" },
   { label: "Respite & carer breaks", href: "/advice/respite-carer-breaks-and-funded-support" },

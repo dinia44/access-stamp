@@ -10,6 +10,7 @@ import { ADVICE_ARTICLES, ADVICE_CATEGORIES } from "@/lib/mock-data";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { LAWS_GUIDANCE_LINKS } from "@/lib/laws-guidance";
 import { SetChatContext } from "@/components/chat/set-context";
+import { cn } from "@/lib/utils";
 
 function relatedFor(slug: string, categorySlug: string, limit = 4) {
   return ADVICE_ARTICLES.filter((x) => x.slug !== slug && x.categorySlug === categorySlug).slice(0, limit);
@@ -58,7 +59,7 @@ export default async function AdviceArticlePage({
         : [];
 
   return (
-    <div className="bg-background">
+    <div className="bg-background advice-article-page">
       <AdviceArticleJsonLd article={a} />
       <SetChatContext
         page={{
@@ -70,16 +71,18 @@ export default async function AdviceArticlePage({
       />
       <Container className="py-10">
         <div className="space-y-6">
-          <Breadcrumbs
-            items={[
-              { label: "Home", href: "/" },
-              { label: "Advice Hub", href: "/advice" },
-              { label: categoryLabel, href: `/advice/${a.categorySlug}` },
-              { label: a.title },
-            ]}
-          />
+          <div className="print:hidden">
+            <Breadcrumbs
+              items={[
+                { label: "Home", href: "/" },
+                { label: "Advice Hub", href: "/advice" },
+                { label: categoryLabel, href: `/advice/${a.categorySlug}` },
+                { label: a.title },
+              ]}
+            />
+          </div>
 
-          <Card className="overflow-hidden border-border shadow-[var(--shadow-soft)]">
+          <Card className="advice-article-hero overflow-hidden border-border shadow-[var(--shadow-soft)] print:hidden">
             <div className="relative aspect-[21/9] w-full min-h-[180px] sm:min-h-[220px]">
               <GuideCoverImage
                 src={guideHero.src}
@@ -92,10 +95,10 @@ export default async function AdviceArticlePage({
           </Card>
 
           <div className="space-y-3">
-            <h1 className="font-[var(--font-heading)] text-4xl leading-tight text-heading">
+            <h1 className="advice-print-title font-[var(--font-heading)] text-4xl leading-tight text-heading">
               {a.title}
             </h1>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 print:hidden">
               <Badge tone="amber">{categoryLabel}</Badge>
               {a.tags.map((t) => (
                 <Badge key={t} tone="blue">
@@ -108,7 +111,7 @@ export default async function AdviceArticlePage({
             </div>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+          <div className="grid gap-4 print:grid-cols-1 lg:grid-cols-[1fr_320px]">
             <Card className="advice-article-print p-6 print:border-0 print:shadow-none">
               <article className="prose max-w-none">
                 {a.sections.map((s, idx) => {
@@ -135,7 +138,7 @@ export default async function AdviceArticlePage({
                     return (
                       <pre
                         key={idx}
-                        className="mt-4 overflow-x-auto rounded-[var(--radius-card)] border border-border bg-background-2 p-4 font-mono text-xs leading-relaxed text-text whitespace-pre-wrap print:border print:bg-white"
+                        className="mt-4 overflow-x-auto rounded-[var(--radius-card)] border border-border bg-background-2 p-4 font-mono text-xs leading-relaxed text-text whitespace-pre-wrap print:break-inside-avoid-page print:border print:bg-white print:text-[8.5pt]"
                       >
                         {s.text}
                       </pre>
@@ -171,7 +174,10 @@ export default async function AdviceArticlePage({
                     return (
                       <div
                         key={idx}
-                        className={`mt-4 rounded-[var(--radius-card)] border p-4 ${tone}`}
+                        className={cn(
+                          "advice-callout-print mt-4 rounded-[var(--radius-card)] border p-4",
+                          tone,
+                        )}
                       >
                         <div className="text-sm font-semibold text-heading">
                           {icon} {s.title}
@@ -187,12 +193,31 @@ export default async function AdviceArticlePage({
               <div className="mt-8 grid gap-3 border-t border-border pt-6 print:hidden">
                 <div className="flex flex-wrap gap-2">
                   <Button href="/ai">Ask the AI about this topic</Button>
+                  {a.slug === "employing-a-personal-assistant-basics" ? (
+                    <a
+                      href="/api/downloads/pa-recruitment-pack"
+                      download="access-stamp-pa-recruitment-pack.txt"
+                      className={cn(
+                        "inline-flex items-center justify-center rounded-[var(--radius-ui)] px-4 py-2 text-sm font-semibold transition-colors",
+                        "bg-navy text-white hover:bg-[#0f2648]",
+                      )}
+                    >
+                      Download pack (.txt)
+                    </a>
+                  ) : null}
                   <Button variant="secondary">Was this helpful?</Button>
                   <ArticleActions title={a.title} />
                 </div>
-                <div className="text-xs text-muted">
-                  This is informational content. It’s not medical advice or legal advice.
-                </div>
+                {a.slug === "employing-a-personal-assistant-basics" ? (
+                  <p className="text-xs text-muted">
+                    The .txt file is generated from the same templates as this page. Use <strong className="text-heading">Print / Download</strong> in the
+                    actions for a layout-ready A4 handout (hero and sidebar hidden when printing). Informational only — not medical or legal advice.
+                  </p>
+                ) : (
+                  <div className="text-xs text-muted">
+                    This is informational content. It’s not medical advice or legal advice.
+                  </div>
+                )}
               </div>
             </Card>
 
