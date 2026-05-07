@@ -1,9 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { AdviceArticleJsonLd } from "@/components/advice-article-jsonld";
 import { ArticleActions } from "@/components/article-actions";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { ADVICE_ARTICLES, ADVICE_CATEGORIES } from "@/lib/mock-data";
@@ -81,10 +81,9 @@ export default async function AdviceArticlePage({
 
           <Card className="overflow-hidden border-border shadow-[var(--shadow-soft)]">
             <div className="relative aspect-[21/9] w-full min-h-[180px] sm:min-h-[220px]">
-              <Image
+              <GuideCoverImage
                 src={guideHero.src}
                 alt={guideHero.alt}
-                fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, min(1152px, 96vw)"
                 priority
@@ -210,7 +209,7 @@ export default async function AdviceArticlePage({
                       return (
                         <li key={r.slug} className="flex gap-3 rounded-md py-1">
                           <div className="relative h-11 w-14 shrink-0 overflow-hidden rounded-md bg-background-2">
-                            <Image src={img.src} alt="" fill className="object-cover" sizes="56px" />
+                            <GuideCoverImage src={img.src} alt="" className="object-cover" sizes="56px" />
                           </div>
                           <Link className="self-center font-semibold text-blue hover:underline" href={`/advice/${r.slug}`}>
                             {r.title}

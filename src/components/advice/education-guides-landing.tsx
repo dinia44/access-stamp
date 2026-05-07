@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { JetBrains_Mono, Newsreader } from "next/font/google";
 import { useMemo, useState } from "react";
 import type { AdviceArticle } from "@/lib/mock-data";
 import { useChat } from "@/components/chat/provider";
+import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { cn } from "@/lib/utils";
 import "./education-guides-editorial.css";
@@ -544,13 +544,7 @@ export function EducationGuidesLanding({ articles }: { articles: ArticleLite[] }
               </span>
               <span className="eg-index-title-wrap flex min-w-0 gap-3 sm:items-center">
                 <span className="relative hidden h-14 w-[5.5rem] shrink-0 overflow-hidden rounded-sm bg-background-2 sm:block">
-                  <Image
-                    src={thumb.src}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="88px"
-                  />
+                  <GuideCoverImage src={thumb.src} alt="" className="object-cover" sizes="88px" />
                 </span>
                 <span className="eg-index-title min-w-0 text-heading transition-colors duration-200">{a.title}</span>
               </span>

@@ -21,8 +21,28 @@ const FALLBACK_POOL = [
   u("photo-1516637090014-cb1ab78511f7"),
 ] as const;
 
+/** Same-origin SVG covers — reliable on all hosts (no external CDN). */
+const LOCAL_TRANSPORT_COVERS = [
+  "/images/advice/covers/transport-1.svg",
+  "/images/advice/covers/transport-2.svg",
+  "/images/advice/covers/transport-3.svg",
+] as const;
+
+const LOCAL_TRAVEL_COVERS = [
+  "/images/advice/covers/travel-1.svg",
+  "/images/advice/covers/travel-2.svg",
+  "/images/advice/covers/travel-3.svg",
+] as const;
+
+const LOCAL_EQUIPMENT_COVERS = [
+  "/images/advice/covers/equipment-1.svg",
+  "/images/advice/covers/equipment-2.svg",
+  "/images/advice/covers/equipment-3.svg",
+] as const;
+
 /**
- * Per-section Unsplash pools (UK/accessibility-adjacent stock). Same slug always maps to the same image via hash.
+ * Per-section image pools. Transport, travel & equipment use local SVGs; others use Unsplash.
+ * Same slug always maps to the same image via hash.
  */
 const CATEGORY_IMAGE_POOLS: Record<AdviceArticle["categorySlug"], readonly string[]> = {
   rights: [
@@ -41,14 +61,7 @@ const CATEGORY_IMAGE_POOLS: Record<AdviceArticle["categorySlug"], readonly strin
     u("photo-1427504494785-3a9ca7044f45"),
     u("photo-1434030216411-0b793f4b4173"),
   ],
-  transport: [
-    u("photo-1544620347-c4fd4a3d5957"),
-    u("photo-1474487548417-781cb714cb04"),
-    u("photo-1566230390790-f42991239134"),
-    u("photo-1519452575417-564c1401ecc0"),
-    u("photo-1558618666-fcd25c85cd64"),
-    u("photo-1530521954077-e94f7ae7816f"),
-  ],
+  transport: LOCAL_TRANSPORT_COVERS,
   cars: [
     u("photo-1489824904134-891ab64532f1"),
     u("photo-1519641471654-76ce4337a053"),
@@ -81,14 +94,7 @@ const CATEGORY_IMAGE_POOLS: Record<AdviceArticle["categorySlug"], readonly strin
     u("photo-1516714819001-8ee7a13b71d7"),
     u("photo-1516574187841-c2389dfc93b6"),
   ],
-  equipment: [
-    u("photo-1576765608535-5f03d6910bbf"),
-    u("photo-1588776814546-1ffcf4722acd"),
-    u("photo-1564429238984-f97081ddd968"),
-    u("photo-1579684947550-22e945781d56"),
-    u("photo-1583947215259-38e31be8751f"),
-    u("photo-1519751138087-5bf79df62d5b"),
-  ],
+  equipment: LOCAL_EQUIPMENT_COVERS,
   emergency: [
     u("photo-1584438784894-089d6a62b8fa"),
     u("photo-1584820927498-cfe521198f79"),
@@ -105,14 +111,7 @@ const CATEGORY_IMAGE_POOLS: Record<AdviceArticle["categorySlug"], readonly strin
     u("photo-1529156069898-49953e39b3ac"),
     u("photo-1517245386807-bb43f82c33c4"),
   ],
-  travel: [
-    u("photo-1436491865332-7a61a109cc05"),
-    u("photo-1488085061387-422f29d845f2"),
-    u("photo-1560518883-ce09059eeffa"),
-    u("photo-1469854523086-cc02fe5d8800"),
-    u("photo-1506905925346-21bda4d32df4"),
-    u("photo-1519904981063-b0cf448d479e"),
-  ],
+  travel: LOCAL_TRAVEL_COVERS,
 };
 
 /** Hero imagery for /advice hub category tiles */
@@ -129,8 +128,8 @@ export const ADVICE_HUB_CATEGORY_IMAGES: Record<
     alt: "Student studying with a laptop in a bright library",
   },
   "/advice/transport": {
-    src: u("photo-1544620347-c4fd4a3d5957"),
-    alt: "Train at a station platform",
+    src: LOCAL_TRANSPORT_COVERS[0],
+    alt: "Accessible transport — trains, buses, and getting around",
   },
   "/advice/cars": {
     src: u("photo-1489824904134-891ab64532f1"),
@@ -149,8 +148,8 @@ export const ADVICE_HUB_CATEGORY_IMAGES: Record<
     alt: "Hands holding supportively",
   },
   "/advice/equipment": {
-    src: u("photo-1576070299148-fcd25c85cd64"),
-    alt: "Wheelchair and mobility equipment",
+    src: LOCAL_EQUIPMENT_COVERS[0],
+    alt: "Wheelchairs, home equipment, and assistive technology",
   },
   "/advice/emergency": {
     src: u("photo-1584438784894-089d6a62b8fa"),
@@ -161,8 +160,8 @@ export const ADVICE_HUB_CATEGORY_IMAGES: Record<
     alt: "Person planning with notes and tea",
   },
   "/advice/travel": {
-    src: u("photo-1436491865332-7a61a109cc05"),
-    alt: "Airplane wing and sky, travel",
+    src: LOCAL_TRAVEL_COVERS[0],
+    alt: "Planes, hotels, and accessible travel planning",
   },
 };
 

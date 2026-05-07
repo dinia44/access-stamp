@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { Container } from "@/components/container";
 import { Badge, Card } from "@/components/ui";
 import { ADVICE_HUB_CATEGORY_IMAGES } from "@/lib/advice-card-images";
@@ -29,10 +29,9 @@ export default function AdviceHubPage() {
                   <Card className="h-full overflow-hidden p-0 transition-shadow group-hover:shadow-[var(--shadow)]">
                     <div className="relative aspect-[16/10] w-full bg-background-2">
                       {hubImg ? (
-                        <Image
+                        <GuideCoverImage
                           src={hubImg.src}
                           alt={hubImg.alt}
-                          fill
                           className="object-cover transition duration-300 group-hover:scale-[1.03]"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />

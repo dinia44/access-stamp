@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { AdviceArticle } from "@/lib/mock-data";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
+import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { Badge, Card } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
@@ -26,10 +26,9 @@ export function AdviceArticleCard({
     <Link href={`/advice/${article.slug}`} className={cn("group block h-full", className)}>
       <Card className="flex h-full flex-col overflow-hidden border-[#dce6f4] p-0 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
         <div className="relative aspect-[16/10] w-full overflow-hidden bg-background-2">
-          <Image
+          <GuideCoverImage
             src={img.src}
             alt={img.alt}
-            fill
             className="object-cover transition duration-300 group-hover:scale-[1.03]"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
