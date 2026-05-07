@@ -52,3 +52,4 @@ access-stamp-clean.zip
 access-stamp-clean.tar.gz
 access-stamp.tar.gz
 .env*.local
+*.dmg

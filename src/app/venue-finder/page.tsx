@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Container } from "@/components/container";
-import { Badge, Button, Card } from "@/components/ui";
+import { Badge, Card } from "@/components/ui";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
 import { VENUE_FILTERS, VenueFinderFilters } from "@/components/venue-finder-filters";
@@ -127,8 +127,8 @@ function VenueFinderPageInner() {
           </div>
 
           <Card className="p-5 sm:p-6">
-            <div className="grid gap-4 lg:grid-cols-[1.2fr_.8fr]">
-              <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <label className="text-sm font-semibold text-muted">
                   Search query
                   <input
@@ -172,32 +172,19 @@ function VenueFinderPageInner() {
                   </select>
                 </label>
               </div>
-
-              <div className="grid gap-3">
-                <label className="text-sm font-semibold text-muted">
-                  Or describe what you need (AI search)
-                  <input
-                    className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
-                    placeholder='e.g. "wheelchair-friendly pub in Liverpool with good parking and a Changing Places toilet"'
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                  />
-                </label>
-                <div className="flex flex-wrap items-center gap-3">
-                  <Button>Search</Button>
-                  <button
-                    type="button"
-                    className="text-sm font-semibold text-blue hover:underline"
-                    onClick={() =>
-                      openChat({
-                        prefill: `Help me search${locationQuery ? ` in ${locationQuery}` : ""}${selectedFilters.length ? ` with ${selectedFilters.join(", ")}` : ""}.`,
-                      })
-                    }
-                  >
-                    Ask the AI to help you search →
-                  </button>
-                </div>
-              </div>
+            </div>
+            <div className="mt-3 text-sm">
+              <button
+                type="button"
+                className="font-semibold text-blue hover:underline"
+                onClick={() =>
+                  openChat({
+                    prefill: `Help me search${locationQuery ? ` in ${locationQuery}` : ""}${selectedFilters.length ? ` with ${selectedFilters.join(", ")}` : ""}.`,
+                  })
+                }
+              >
+                Ask the AI to help you search →
+              </button>
             </div>
 
             <VenueFinderFilters selected={selectedFilters} onChange={setSelectedFilters} />

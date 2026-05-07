@@ -37,7 +37,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/98 shadow-[0_1px_0_rgba(15,26,43,0.06)]">
       <Container>
-        <div className="flex h-16 items-center justify-between gap-3">
+        <div className="relative z-20 flex h-16 items-center justify-between gap-3">
           <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Access Stamp home">
             <SiteLogo priority className="h-auto w-auto max-h-[48px] object-contain" />
           </Link>
@@ -50,7 +50,7 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-heading hover:bg-background-2 lg:px-3",
+                    "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-heading hover:bg-background-2 lg:px-3 [touch-action:manipulation]",
                     active && "bg-blue-pale text-blue",
                   )}
                 >
@@ -63,7 +63,7 @@ export function Navbar() {
               <button
                 type="button"
                 className={cn(
-                  "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-heading hover:bg-background-2 lg:px-3",
+                  "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-heading hover:bg-background-2 lg:px-3 [touch-action:manipulation]",
                   moreOpen && "bg-background-2",
                 )}
                 aria-haspopup="menu"
@@ -100,7 +100,7 @@ export function Navbar() {
 
           <button
             type="button"
-            className="shrink-0 lg:hidden rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2"
+            className="shrink-0 lg:hidden rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2 [touch-action:manipulation]"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
@@ -112,7 +112,7 @@ export function Navbar() {
         <div
           role="search"
           aria-labelledby="site-search-label"
-          className="relative z-10 -mx-4 border-t border-border px-4 py-3 sm:-mx-6 sm:px-6"
+          className="relative z-0 -mx-4 border-t border-border px-4 py-3 sm:-mx-6 sm:px-6"
           style={{
             background: "linear-gradient(105deg, var(--blue-pale) 0%, var(--background-2) 45%, var(--amber-pale) 100%)",
           }}
