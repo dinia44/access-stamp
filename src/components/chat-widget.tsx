@@ -126,6 +126,7 @@ export function ChatWidget() {
   const [listening, setListening] = useState(false);
   const [conversationMode, setConversationMode] = useState(false);
   const [speaking, setSpeaking] = useState(false);
+  const [voiceError, setVoiceError] = useState("");
   const [typing, setTyping] = useState(false);
   const [hoverReadEnabled, setHoverReadEnabled] = useState(false);
   const [plainLanguage, setPlainLanguage] = useState(false);
@@ -144,7 +145,7 @@ export function ChatWidget() {
   const [msgs, setMsgs] = useState<Msg[]>([
     {
       role: "assistant",
-      text: "Hello, I'm ACCESS Stamp AI. How can I help you today? I can help you find accessible venues, explain equipment and benefits, and support you with disability-related questions. Ask me anything and I will guide you step by step.",
+      text: "Hi, I'm Access Stamp AI. How can I help you today?",
       time: nowLabel(),
     },
   ]);
@@ -249,13 +250,29 @@ export function ChatWidget() {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
+      audioRef.current.onended = null;
+      audioRef.current.onpause = null;
     }
     setSpeaking(false);
+  }
+
+  async function speakWithBrowser(text: string) {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    await new Promise<void>((resolve) => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = selectedLanguage;
+      utterance.rate = 1;
+      utterance.onend = () => resolve();
+      utterance.onerror = () => resolve();
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    });
   }
 
   async function speakReply(reply: string) {
     const text = normalizeForSpeech(reply);
     if (!voiceEnabled || !text) return;
+    setVoiceError("");
     try {
       const res = await fetch("/api/voice", {
         method: "POST",
@@ -267,16 +284,40 @@ export function ChatWidget() {
         const url = URL.createObjectURL(blob);
         if (audioRef.current) {
           setSpeaking(true);
-          audioRef.current.onended = () => setSpeaking(false);
-          audioRef.current.onpause = () => setSpeaking(false);
           audioRef.current.pause();
           audioRef.current.src = url;
           await audioRef.current.play();
+          await new Promise<void>((resolve) => {
+            if (!audioRef.current) return resolve();
+            audioRef.current.onended = () => {
+              setSpeaking(false);
+              resolve();
+            };
+            audioRef.current.onpause = () => {
+              setSpeaking(false);
+              resolve();
+            };
+            audioRef.current.onerror = () => {
+              setSpeaking(false);
+              resolve();
+            };
+          });
         }
         return;
       }
+      if (conversationModeRef.current) {
+        setVoiceError("Voice service unavailable, using browser speech.");
+        await speakWithBrowser(text);
+      } else {
+        setVoiceError("Voice service unavailable right now.");
+      }
     } catch {
-      // do not fallback to browser voice
+      if (conversationModeRef.current) {
+        setVoiceError("Voice service unavailable, using browser speech.");
+        await speakWithBrowser(text);
+      } else {
+        setVoiceError("Voice service unavailable right now.");
+      }
     }
   }
 
@@ -517,12 +558,17 @@ export function ChatWidget() {
                   {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice or pasted text…")}
                 </div>
                 <div className="grid gap-2">
-                  {msgs.slice(-10).map((m, i) => (
+                  {msgs.slice(-6).map((m, i) => (
                     <div key={i} className={cn("rounded-[12px] border px-3 py-2 text-sm", m.role === "assistant" ? "border-[#e3e8ef] bg-white" : "border-[#d3e2ff] bg-[#e8f0ff]")}>
                       {m.text}
                     </div>
                   ))}
                 </div>
+                {voiceError ? (
+                  <div className="mt-3 rounded-[12px] border border-amber bg-amber-pale px-3 py-2 text-xs text-[#7c5b16]">
+                    {voiceError}
+                  </div>
+                ) : null}
               </div>
 
               <div className="border-t border-[#dde4ef] bg-white px-4 py-3">
@@ -574,9 +620,9 @@ export function ChatWidget() {
             </div>
           </div>
         ) : (
-        <div className="flex h-[min(640px,calc(100vh-18px))] w-[min(440px,calc(100vw-12px))] flex-col overflow-hidden rounded-[14px] border border-[#d8dfea] bg-white shadow-[0_18px_48px_-20px_rgba(12,29,52,0.3)]">
+        <div className="flex h-[min(640px,calc(100vh-18px))] w-[min(440px,calc(100vw-12px))] flex-col overflow-hidden rounded-[16px] border border-[#d8dfea] bg-white shadow-[0_24px_54px_-26px_rgba(12,29,52,0.35)]">
           <div
-            className="flex items-center justify-between gap-3 px-4 py-3 text-white"
+            className="flex items-center justify-between gap-3 border-b border-white/15 px-4 py-3 text-white"
             style={{
               background: "linear-gradient(90deg, #0d4bb3 0%, #0b3f9f 100%)",
             }}
@@ -660,12 +706,15 @@ export function ChatWidget() {
 
           <div
             ref={scroller}
-            className="min-h-0 flex-1 overflow-auto bg-[#f8fafc] px-5 py-4"
+            className="min-h-0 flex-1 overflow-auto bg-[#f7faff] px-5 py-4"
             role="log"
             aria-live="polite"
             aria-relevant="additions text"
             aria-label="Chat transcript"
           >
+            <p className="mb-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-xs text-muted">
+              Ask about venues, equipment, benefits, rights, travel, school, work, or care support.
+            </p>
             <div className="grid gap-2">
               {msgs.map((m, i) => (
                 <div key={i} className={cn("flex items-end gap-2", m.role === "user" && "justify-end")}>
@@ -674,9 +723,9 @@ export function ChatWidget() {
                   ) : null}
                   <div
                     className={cn(
-                      "max-w-[70%] rounded-[14px] border px-4 py-3 text-sm",
+                  "max-w-[78%] rounded-[16px] border px-4 py-3 text-sm leading-6 shadow-[0_8px_18px_-16px_rgba(12,29,52,0.28)]",
                       m.role === "assistant"
-                        ? "border-[#e3e8ef] bg-[#f3f6fa] text-heading"
+                        ? "border-[#e3e8ef] bg-white text-heading"
                         : "border-[#d3e2ff] bg-[#e8f0ff] text-heading",
                     )}
                   >
@@ -780,7 +829,7 @@ export function ChatWidget() {
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   placeholder="Ask about a venue or accessibility feature..."
-                  className="h-12 w-full rounded-[12px] border border-[#d8e1ef] bg-white px-4 text-sm text-heading"
+                  className="h-12 w-full rounded-[12px] border border-[#d8e1ef] bg-white px-4 text-sm text-heading shadow-[inset_0_1px_2px_rgba(12,29,52,0.04)]"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") send(draft);
                   }}
@@ -828,7 +877,7 @@ export function ChatWidget() {
                   {canStopResponse ? "Stop" : <IconSend />}
               </button>
             </div>
-            <div className="mt-3 flex items-center gap-3 text-xs text-[#0d4bb3]">
+            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[#0d4bb3]">
               <span className="font-semibold">Voice input</span>
               <select
                 className="rounded-[8px] border border-[#d8e1ef] bg-white px-2 py-1 text-xs text-heading"
@@ -844,7 +893,7 @@ export function ChatWidget() {
               <button
                 type="button"
                 className={cn(
-                  "ml-auto rounded border px-2 py-1 text-xs cursor-pointer",
+                  "ml-auto rounded border px-2 py-1 text-xs font-semibold cursor-pointer",
                   conversationMode
                     ? "border-[#f59e0b] bg-[#fff7ed] text-[#92400e]"
                     : "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]",
@@ -859,26 +908,16 @@ export function ChatWidget() {
               >
                 {conversationMode ? "End conversation" : "Start conversation"}
               </button>
-              <button type="button" className="rounded border border-[#d8e1ef] px-2 py-1 text-xs text-heading cursor-pointer hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
+              <button type="button" className="rounded border border-[#d8e1ef] px-2 py-1 text-xs font-semibold text-heading cursor-pointer hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
                 Stop talking
               </button>
-              <button type="button" className={cn("rounded border px-2 py-1 text-xs cursor-pointer", canStopResponse ? "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]" : "border-[#e6ebf3] text-muted")} disabled={!canStopResponse} onClick={stopResponse}>
+              <button type="button" className={cn("rounded border px-2 py-1 text-xs font-semibold cursor-pointer", canStopResponse ? "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]" : "border-[#e6ebf3] text-muted")} disabled={!canStopResponse} onClick={stopResponse}>
                 Stop response
               </button>
             </div>
             {!speechSupported ? (
               <p className="mt-2 text-[11px] text-muted">Voice not supported in this browser.</p>
             ) : null}
-            <div className="mt-3 border-t border-[#edf1f7] pt-3">
-              <div className="text-xs font-semibold text-muted">Popular accessibility guides</div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <Link href="/advice/new-to-disability" className="rounded-full border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-[#184080] hover:bg-[#f5f8ff]">Visiting a venue</Link>
-                <Link href="/advice/sport" className="rounded-full border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-[#184080] hover:bg-[#f5f8ff]">Attending an event</Link>
-                <Link href="/advice/transport" className="rounded-full border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-[#184080] hover:bg-[#f5f8ff]">Travel and transport</Link>
-                <Link href="/advice/care" className="rounded-full border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-[#184080] hover:bg-[#f5f8ff]">Using public toilets</Link>
-                <Link href="/advice" className="rounded-full border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-[#184080] hover:bg-[#f5f8ff]">View all guides</Link>
-              </div>
-            </div>
           </div>
         </div>
         )
