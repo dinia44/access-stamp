@@ -24,6 +24,10 @@ export default function WorkplacePage() {
     a.title.localeCompare(b.title),
   );
 
+  function readMinutes(title: string) {
+    return Math.max(2, Math.round(title.split(/\s+/).length / 2));
+  }
+
   return (
     <div className="bg-background">
       <SetChatContext page={{ kind: "advice" }} />
@@ -34,12 +38,12 @@ export default function WorkplacePage() {
             <Badge tone="amber" className="w-fit">Workplace</Badge>
             <h1 className="font-[var(--font-heading)] text-4xl leading-tight text-heading sm:text-5xl">Workplace support you can actually use</h1>
           </div>
-          <Card className="p-6 sm:p-7">
+          <Card className="border-[#dce6f4] p-6 shadow-[0_10px_24px_-16px_rgba(12,29,52,0.2)] sm:p-7">
             <div className="space-y-4">
               <div className="text-sm font-semibold uppercase tracking-wide text-muted">Quick actions</div>
               <div className="flex flex-wrap gap-2">
                 {QUICK_ACTIONS.map((item) => (
-                  <Button key={item.href} href={item.href} variant="ghost" className="border border-border">{item.label}</Button>
+                  <Button key={item.href} href={item.href} variant="ghost" className="border border-border bg-white hover:bg-blue-pale">{item.label}</Button>
                 ))}
               </div>
             </div>
@@ -52,10 +56,13 @@ export default function WorkplacePage() {
             <div className="grid gap-3 md:grid-cols-2">
               {MORE_TOPICS.map((item) => (
                 <Link key={item.href} href={item.href} className="group">
-                  <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
-                    <div className="text-sm font-semibold text-heading">{item.title}</div>
+                  <Card className="h-full border-[#dce6f4] p-5 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="text-sm font-semibold text-heading">{item.title}</div>
+                      <Badge tone="amber">Guide</Badge>
+                    </div>
                     <p className="mt-2 text-sm text-muted">{item.desc}</p>
-                    <div className="mt-4 text-sm font-semibold text-blue">Read guide →</div>
+                    <div className="mt-4 text-sm font-semibold text-blue">Open guide</div>
                   </Card>
                 </Link>
               ))}
@@ -68,9 +75,9 @@ export default function WorkplacePage() {
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {articles.map((a) => (
                 <Link key={a.slug} href={`/advice/${a.slug}`} className="group">
-                  <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
+                  <Card className="h-full border-[#dce6f4] p-5 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
                     <div className="text-sm font-semibold text-heading">{a.title}</div>
-                    <div className="mt-2 text-xs font-semibold text-muted">Updated: {a.updated}</div>
+                    <div className="mt-2 text-xs font-semibold text-muted">Updated: {a.updated} · {readMinutes(a.title)} min read</div>
                   </Card>
                 </Link>
               ))}

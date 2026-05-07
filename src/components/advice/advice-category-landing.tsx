@@ -35,6 +35,15 @@ export function AdviceCategoryLanding({
     .map((slug) => articles.find((a) => a.slug === slug))
     .filter((a): a is AdviceArticle => Boolean(a));
 
+  function readMinutes(article: AdviceArticle) {
+    const words = article.sections
+      .map((s) => (s.type === "ul" ? s.items.join(" ") : "text" in s ? s.text : ""))
+      .join(" ")
+      .split(/\s+/)
+      .filter(Boolean).length;
+    return Math.max(2, Math.round(words / 180));
+  }
+
   return (
     <div className="bg-background">
       <SetChatContext page={{ kind: "advice" }} />
@@ -56,30 +65,34 @@ export function AdviceCategoryLanding({
             <p className="max-w-[82ch] text-base leading-7 text-muted">{subtitle}</p>
           </div>
 
-          <Card className="p-6 sm:p-7">
+          <Card className="border-[#dce6f4] p-6 shadow-[0_10px_24px_-16px_rgba(12,29,52,0.2)] sm:p-7">
             <div className="grid gap-6 lg:grid-cols-[1.3fr_.9fr]">
               <div className="space-y-5">
                 <div className="space-y-3">
                   <div className="text-sm font-semibold uppercase tracking-wide text-muted">Quick actions</div>
                   <div className="flex flex-wrap gap-2">
                     {quickActions.map((item) => (
-                      <Button key={item.href} href={item.href} variant="ghost" className="border border-border">
+                      <Button key={item.href} href={item.href} variant="ghost" className="border border-border bg-white hover:bg-blue-pale">
                         {item.label}
                       </Button>
                     ))}
                   </div>
                 </div>
 
-                <div className="rounded-[var(--radius-card)] border border-border bg-background-2 p-4">
-                  <div className="text-sm font-semibold text-heading">Featured guides</div>
+                <div className="rounded-[var(--radius-card)] border border-[#dce6f4] bg-background-2 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-sm font-semibold text-heading">Featured guides</div>
+                    <Badge tone="blue">Popular</Badge>
+                  </div>
                   <div className="mt-3 grid gap-2 sm:grid-cols-2">
                     {featured.map((a) => (
                       <Link
                         key={a.slug}
                         href={`/advice/${a.slug}`}
-                        className="rounded-[var(--radius-ui)] border border-border bg-card px-3 py-3 text-sm font-semibold text-heading transition-colors hover:bg-blue-pale hover:text-blue"
+                        className="rounded-[var(--radius-ui)] border border-[#dce6f4] bg-card px-3 py-3 text-sm font-semibold text-heading transition-all hover:-translate-y-0.5 hover:bg-blue-pale hover:text-blue hover:shadow-[var(--shadow-soft)]"
                       >
-                        {a.title}
+                        <div>{a.title}</div>
+                        <div className="mt-1 text-[11px] font-medium text-muted">{readMinutes(a)} min read · Updated {a.updated}</div>
                       </Link>
                     ))}
                   </div>
@@ -110,8 +123,8 @@ export function AdviceCategoryLanding({
                     If your situation does not fit a neat category, describe what happened and what you need next — the
                     assistant can help you sort escalation routes.
                   </p>
-                  <Button href="/ai" variant="secondary" className="mt-4 w-full sm:w-auto">
-                    Open AI Assistant
+                  <Button href="/" variant="secondary" className="mt-4 w-full sm:w-auto">
+                    Open assistant
                   </Button>
                 </div>
               )}
@@ -126,10 +139,13 @@ export function AdviceCategoryLanding({
             <div className="grid gap-3 md:grid-cols-3">
               {topicAreas.map((item) => (
                 <Link key={item.title} href={item.href} className="group">
-                  <Card className="h-full p-5 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
-                    <div className="text-sm font-semibold uppercase tracking-wide text-muted">{item.title}</div>
+                  <Card className="h-full border-[#dce6f4] p-5 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="text-sm font-semibold uppercase tracking-wide text-muted">{item.title}</div>
+                      <Badge tone="amber">Guide</Badge>
+                    </div>
                     <p className="mt-2 text-sm leading-6 text-muted">{item.desc}</p>
-                    <div className="mt-4 text-sm font-semibold text-blue">Open guide →</div>
+                    <div className="mt-4 text-sm font-semibold text-blue">Open guide</div>
                   </Card>
                 </Link>
               ))}
@@ -145,9 +161,9 @@ export function AdviceCategoryLanding({
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {articles.map((a) => (
                 <Link key={a.slug} href={`/advice/${a.slug}`} className="group">
-                  <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
+                  <Card className="h-full border-[#dce6f4] p-5 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
                     <div className="text-sm font-semibold text-heading">{a.title}</div>
-                    <div className="mt-2 text-xs font-semibold text-muted">Updated: {a.updated}</div>
+                    <div className="mt-2 text-xs font-semibold text-muted">Updated: {a.updated} · {readMinutes(a)} min read</div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {a.tags.slice(0, 3).map((tag) => (
                         <Badge key={tag} tone="blue">

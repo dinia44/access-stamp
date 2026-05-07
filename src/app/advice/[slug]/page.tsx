@@ -160,8 +160,8 @@ export default async function AdviceArticlePage({
               </div>
             </Card>
 
-            <div className="grid gap-4 print:hidden">
-              <Card className="p-5">
+            <div className="grid gap-4 self-start print:hidden lg:sticky lg:top-24">
+              <Card className="border-[#dce6f4] p-5 shadow-[0_8px_18px_-14px_rgba(12,29,52,0.2)]">
                 <div className="text-sm font-semibold text-heading">Table of contents</div>
                 <ol className="mt-3 grid gap-2 text-sm">
                   {toc.map((t) => (
@@ -174,7 +174,7 @@ export default async function AdviceArticlePage({
                 </ol>
               </Card>
 
-              <Card className="p-5">
+              <Card className="border-[#dce6f4] p-5 shadow-[0_8px_18px_-14px_rgba(12,29,52,0.2)]">
                 <div className="text-sm font-semibold text-heading">Related</div>
                 {related.length ? (
                   <ul className="mt-3 grid gap-2 text-sm">
