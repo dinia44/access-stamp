@@ -123,6 +123,7 @@ export function ChatWidget() {
   const { page, open, setOpen, draft, setDraft, voiceMode } = useChat();
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [listening, setListening] = useState(false);
+  const [conversationMode, setConversationMode] = useState(false);
   const [typing, setTyping] = useState(false);
   const [hoverReadEnabled, setHoverReadEnabled] = useState(false);
   const [plainLanguage, setPlainLanguage] = useState(false);
@@ -148,6 +149,8 @@ export function ChatWidget() {
   const scroller = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const recognitionRef = useRef<{ stop?: () => void } | null>(null);
+  const conversationModeRef = useRef(false);
   const lastHoverSpeechAtRef = useRef(0);
   const lastHoverTextRef = useRef("");
   const liveTranscriptRef = useRef("");
@@ -322,6 +325,10 @@ export function ChatWidget() {
 
     await speakReply(reply);
 
+    if (conversationModeRef.current && !listening) {
+      window.setTimeout(() => startListening(true), 240);
+    }
+
   }
 
   function stopResponse() {
@@ -332,9 +339,31 @@ export function ChatWidget() {
   }
 
   function collapseChat() {
+    endConversation();
+    setOpen(false);
+  }
+
+  function endConversation() {
+    conversationModeRef.current = false;
+    setConversationMode(false);
     stopResponse();
     stopAllSpeech();
-    setOpen(false);
+    try {
+      recognitionRef.current?.stop?.();
+    } catch {
+      // ignore
+    }
+    recognitionRef.current = null;
+    setListening(false);
+  }
+
+  function startConversationMode() {
+    conversationModeRef.current = true;
+    setConversationMode(true);
+    setVoiceEnabled(true);
+    if (!typing && !listening) {
+      startListening(true);
+    }
   }
 
   async function copySummary() {
@@ -349,11 +378,14 @@ export function ChatWidget() {
     }
   }
 
-  function startListening() {
+  function startListening(fromConversation = false) {
     if (!canUseSpeech()) return;
+    if (typing) return;
+    if (recognitionRef.current) return;
     const Rec = getWebkitSpeechRecognition();
     if (!Rec) return;
     const rec = new Rec();
+    recognitionRef.current = rec;
     rec.continuous = false;
     rec.interimResults = true;
     rec.lang = selectedLanguage;
@@ -377,14 +409,22 @@ export function ChatWidget() {
       liveTranscriptRef.current = cleaned;
       setDraft(cleaned);
     };
-    rec.onerror = () => setListening(false);
+    rec.onerror = () => {
+      setListening(false);
+      recognitionRef.current = null;
+    };
     rec.onend = () => {
       setListening(false);
+      recognitionRef.current = null;
       const finalText = liveTranscriptRef.current.trim();
       if (finalText) {
         setDraft(finalText);
         void send(finalText);
         liveTranscriptRef.current = "";
+        return;
+      }
+      if ((fromConversation || conversationModeRef.current) && !typing) {
+        window.setTimeout(() => startListening(true), 240);
       }
     };
     rec.start();
@@ -650,7 +690,17 @@ export function ChatWidget() {
                     !speechSupported && "cursor-not-allowed border-[#e6ebf3] bg-[#f6f8fb] text-muted hover:bg-[#f6f8fb]",
                 )}
                   aria-label={listening ? "Stop voice input" : "Start voice input"}
-                onClick={() => startListening()}
+                onClick={() => {
+                  if (listening) {
+                    try {
+                      recognitionRef.current?.stop?.();
+                    } catch {
+                      // ignore
+                    }
+                    return;
+                  }
+                  startListening();
+                }}
                   disabled={!speechSupported}
                 title={listening ? "Listening now" : "Tap to speak"}
               >
@@ -687,7 +737,25 @@ export function ChatWidget() {
                 <option value="es-ES">Spanish (ES)</option>
                 <option value="fr-FR">French (FR)</option>
               </select>
-              <button type="button" className="ml-auto rounded border border-[#d8e1ef] px-2 py-1 text-xs text-heading cursor-pointer hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
+              <button
+                type="button"
+                className={cn(
+                  "ml-auto rounded border px-2 py-1 text-xs cursor-pointer",
+                  conversationMode
+                    ? "border-[#f59e0b] bg-[#fff7ed] text-[#92400e]"
+                    : "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]",
+                )}
+                onClick={() => {
+                  if (conversationMode) {
+                    endConversation();
+                    return;
+                  }
+                  startConversationMode();
+                }}
+              >
+                {conversationMode ? "End conversation" : "Start conversation"}
+              </button>
+              <button type="button" className="rounded border border-[#d8e1ef] px-2 py-1 text-xs text-heading cursor-pointer hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
                 Stop talking
               </button>
               <button type="button" className={cn("rounded border px-2 py-1 text-xs cursor-pointer", canStopResponse ? "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]" : "border-[#e6ebf3] text-muted")} disabled={!canStopResponse} onClick={stopResponse}>
