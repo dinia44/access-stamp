@@ -39,6 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+*.dmg
+*.zip
+cheetahs_go_kart_safari_adventure_full_digital_book*.pdf
+harbour kitchen images/
 
 # OpenClaw workspace artifacts
 AGENTS.md
