@@ -3,14 +3,17 @@ import type { AdviceArticle } from "@/lib/mock-data";
 type RightsSeed = {
   slug: string;
   title: string;
+  categorySlug?: AdviceArticle["categorySlug"];
   tags: string[];
   intro: string;
   checks: string[];
   actions: string[];
   warning: string;
+  customSections?: AdviceArticle["sections"];
 };
 
 function buildRightsSections(seed: RightsSeed): AdviceArticle["sections"] {
+  if (seed.customSections?.length) return seed.customSections;
   return [
     { type: "h2", text: "What this means in real life" },
     { type: "p", text: seed.intro },
@@ -43,6 +46,7 @@ const RIGHTS_SEEDS: RightsSeed[] = [
   {
     slug: "blue-badge",
     title: "Blue Badge: eligibility, applying, and using it",
+    categorySlug: "cars",
     tags: ["Blue Badge", "Parking", "Local council"],
     intro: "Blue Badge rules are national framework plus local administration. Most problems come from weak evidence, unclear mobility impact, or misunderstanding where the badge can be used.",
     checks: [
@@ -60,6 +64,7 @@ const RIGHTS_SEEDS: RightsSeed[] = [
   {
     slug: "motability",
     title: "Motability scheme: how it works",
+    categorySlug: "cars",
     tags: ["Motability", "Cars", "Mobility support"],
     intro: "Motability can exchange qualifying mobility benefit components for a leased vehicle, scooter, or powered wheelchair package with servicing and insurance included.",
     checks: [
@@ -77,6 +82,7 @@ const RIGHTS_SEEDS: RightsSeed[] = [
   {
     slug: "vehicle-tax-exemption",
     title: "Vehicle tax exemption and reductions",
+    categorySlug: "cars",
     tags: ["Vehicle tax", "DVLA", "Benefits"],
     intro: "Some disabled drivers or passengers can claim vehicle tax exemption or reduction if qualifying benefits and vehicle registration conditions are met.",
     checks: [
@@ -94,6 +100,7 @@ const RIGHTS_SEEDS: RightsSeed[] = [
   {
     slug: "parking-rights",
     title: "Parking rights and enforcement (what to do when it goes wrong)",
+    categorySlug: "cars",
     tags: ["Parking", "Enforcement", "Appeals"],
     intro: "Disabled parking disputes are often won on evidence quality: signage, bay layout, permit visibility, and procedural fairness.",
     checks: [
@@ -111,6 +118,7 @@ const RIGHTS_SEEDS: RightsSeed[] = [
   {
     slug: "wavs",
     title: "Wheelchair Accessible Vehicles (WAVs): options and costs",
+    categorySlug: "cars",
     tags: ["WAV", "Vehicle adaptations", "Wheelchair transport"],
     intro: "A WAV must fit your chair, transfer method, tie-down requirements, and routine routes. The wrong layout can be expensive and unsafe.",
     checks: [
@@ -128,6 +136,7 @@ const RIGHTS_SEEDS: RightsSeed[] = [
   {
     slug: "licence-conditions",
     title: "Licence conditions and driving adaptations",
+    categorySlug: "cars",
     tags: ["DVLA", "Driving", "Adaptations"],
     intro: "Medical conditions can trigger licence notifications and potential driving restrictions. Early disclosure and proper assessment protect you legally and safely.",
     checks: [
@@ -141,6 +150,96 @@ const RIGHTS_SEEDS: RightsSeed[] = [
       "Notify insurer of any relevant diagnosis/adaptation changes.",
     ],
     warning: "Driving without required disclosure can invalidate insurance and expose you to legal risk.",
+  },
+  {
+    slug: "driving-adaptations-products-library",
+    title: "Driving adaptations and products library: what exists and who it helps",
+    categorySlug: "cars",
+    tags: ["Driving adaptations", "Products", "Cars", "Mobility"],
+    intro: "Most people only hear about one or two adaptation options. In reality there are many products for steering, braking, transfers, seating, storage, loading wheelchairs, and reducing pain/fatigue while driving.",
+    checks: [],
+    actions: [],
+    warning: "Wrongly specified adaptations can create serious safety risk. Always use qualified assessors and approved installers.",
+    customSections: [
+      { type: "h2", text: "What this means in real life" },
+      {
+        type: "p",
+        text: "Most people are shown one adaptation and asked to make it work. A better approach is to start with your real barrier (for example pain when steering, unsafe transfers, or struggling to load equipment) and match products to that barrier.",
+      },
+      { type: "h2", text: "Controls for hands, feet, and steering" },
+      {
+        type: "ul",
+        items: [
+          "Hand controls: push/pull, radial, and over-ring systems for accelerator and brake.",
+          "Left-foot accelerators and pedal guards where right-foot control is limited.",
+          "Steering aids: spinner knobs, tri-pins, reduced-effort steering options.",
+          "Secondary controls: indicators, lights, and wipers remapped to easier positions.",
+        ],
+      },
+      { type: "h2", text: "Transfers, seating, and driving position" },
+      {
+        type: "ul",
+        items: [
+          "Transfer plates and grab solutions for safer seat-to-seat movement.",
+          "Swivel/turning seats and six-way/eight-way powered seat systems.",
+          "Custom cushions, lumbar support, and posture supports for longer trips.",
+          "Head/neck positioning and fatigue-reduction setup for pain management.",
+        ],
+      },
+      { type: "h2", text: "Loading and carrying wheelchairs or scooters" },
+      {
+        type: "ul",
+        items: [
+          "Boot hoists/lifts/cranes for manual wheelchairs and scooters.",
+          "Roof loading systems for lighter chairs where suitable.",
+          "Platform lifts and docking systems for larger powered equipment.",
+          "Tie-down and restraint systems for vehicles carrying occupied wheelchairs.",
+        ],
+      },
+      { type: "h2", text: "Safety and visibility tech" },
+      {
+        type: "ul",
+        items: [
+          "Mirror/camera assists and blind-spot support for limited neck movement.",
+          "Parking sensors and reversing support for safer low-speed manoeuvres.",
+          "Voice-activated controls for reduced hand strain in traffic.",
+          "Backup power and charging planning for powered access equipment.",
+        ],
+      },
+      { type: "h2", text: "What to check before spending money" },
+      {
+        type: "ul",
+        items: [
+          "Start with a specialist driving assessment before choosing products.",
+          "Check compatibility with your specific vehicle model and daily routes.",
+          "Confirm insurance and DVLA notification requirements in writing.",
+          "Test in real-world conditions, not only a short demo.",
+          "Get servicing plans, warranty terms, and failure contingency details.",
+        ],
+      },
+      { type: "h2", text: "What to do next (without overwhelm)" },
+      {
+        type: "ul",
+        items: [
+          "Make a two-column list: “what is hard now” and “possible adaptation”.",
+          "Shortlist 2 to 3 adaptation packages (not 20 products).",
+          "Book trial/assessment with your transfer method and wheelchair setup.",
+          "Confirm final specification, training, and handover paperwork before install.",
+        ],
+      },
+      {
+        type: "callout",
+        tone: "tip",
+        title: "Practical tip",
+        body: "Take photos of your current transfer/load process before assessment. It helps assessors recommend what will actually work for your real routine.",
+      },
+      {
+        type: "callout",
+        tone: "warning",
+        title: "Important",
+        body: "Wrongly specified adaptations can create serious safety risk. Always use qualified assessors and approved installers.",
+      },
+    ],
   },
   {
     slug: "dfg",
@@ -640,7 +739,7 @@ const RIGHTS_SEEDS: RightsSeed[] = [
 export const RIGHTS_ARTICLES_DETAILED: AdviceArticle[] = RIGHTS_SEEDS.map((seed) => ({
   slug: seed.slug,
   title: seed.title,
-  categorySlug: "rights",
+  categorySlug: seed.categorySlug ?? "rights",
   updated: "2026-05-08",
   tags: seed.tags,
   sections: buildRightsSections(seed),
