@@ -40,6 +40,8 @@ type VoiceChoice = {
   provider: "eleven";
 };
 
+type HandsFreeState = "idle" | "listening" | "processing" | "speaking" | "error";
+
 
 type WebkitSpeechRecognitionCtor = new () => {
   continuous: boolean;
@@ -179,6 +181,7 @@ export function ChatWidget() {
   const [speaking, setSpeaking] = useState(false);
   const [voiceError, setVoiceError] = useState("");
   const [typing, setTyping] = useState(false);
+  const [handsFreeState, setHandsFreeState] = useState<HandsFreeState>("idle");
   const [hoverReadEnabled, setHoverReadEnabled] = useState(false);
   const [plainLanguage, setPlainLanguage] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -205,6 +208,9 @@ export function ChatWidget() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<{ stop?: () => void } | null>(null);
+  const recognitionFinalRef = useRef("");
+  const recognitionSentRef = useRef(false);
+  const recognitionSilenceTimerRef = useRef<number | null>(null);
   const conversationModeRef = useRef(false);
   const handsFreeRef = useRef(false);
   const speakingRef = useRef(false);
@@ -361,6 +367,7 @@ export function ChatWidget() {
     }
     speakingRef.current = false;
     setSpeaking(false);
+    if (conversationModeRef.current && !typingRef.current) setHandsFreeState("idle");
   }
 
   function stopRecognitionOnly() {
@@ -371,6 +378,13 @@ export function ChatWidget() {
     }
     recognitionRef.current = null;
     setListening(false);
+    if (recognitionSilenceTimerRef.current) {
+      window.clearTimeout(recognitionSilenceTimerRef.current);
+      recognitionSilenceTimerRef.current = null;
+    }
+    if (conversationModeRef.current && !typingRef.current && !speakingRef.current) {
+      setHandsFreeState("idle");
+    }
   }
 
   function scheduleHandsFreeListen() {
@@ -394,15 +408,17 @@ export function ChatWidget() {
     setVoiceError("");
     speakingRef.current = true;
     setSpeaking(true);
+    if (conversationModeRef.current) setHandsFreeState("speaking");
     try {
       if (!elevenAvailable || !selectedVoiceId) {
         setVoiceError("ElevenLabs voice is not configured/connected.");
+        if (conversationModeRef.current) setHandsFreeState("error");
         return;
       }
 
       const voiceAbort = new AbortController();
       const timeout = window.setTimeout(() => voiceAbort.abort(), 7000);
-      const res = await fetch("/api/voice", {
+      const res = await fetch("/api/tts", {
         method: "POST",
         headers: { "content-type": "application/json" },
         signal: voiceAbort.signal,
@@ -422,6 +438,7 @@ export function ChatWidget() {
             await audioRef.current.play();
           } catch {
             setVoiceError("Audio playback blocked by browser. Please interact again and check autoplay/audio settings.");
+            if (conversationModeRef.current) setHandsFreeState("error");
             return;
           }
           await new Promise<void>((resolve) => {
@@ -434,8 +451,10 @@ export function ChatWidget() {
         return;
       }
       setVoiceError("ElevenLabs voice unavailable right now.");
+      if (conversationModeRef.current) setHandsFreeState("error");
     } catch {
       setVoiceError("ElevenLabs voice unavailable right now.");
+      if (conversationModeRef.current) setHandsFreeState("error");
     } finally {
       speakingRef.current = false;
       setSpeaking(false);
@@ -459,7 +478,11 @@ export function ChatWidget() {
     }
     setDraft("");
     setTyping(true);
+    if (conversationModeRef.current) setHandsFreeState("processing");
     setErrorText("");
+    const history = [...msgs, { role: "user" as const, text: t, sentAt: sentNow }]
+      .slice(-10)
+      .map((m) => ({ role: m.role, text: m.text }));
 
     let data: ApiResponse | null = null;
     try {
@@ -471,6 +494,7 @@ export function ChatWidget() {
           message: t,
           page,
           voiceMode: voiceMode || voiceTurnContext,
+          history,
         }),
       });
       if (res.ok) data = (await res.json()) as ApiResponse;
@@ -513,6 +537,7 @@ export function ChatWidget() {
     abortRef.current?.abort();
     abortRef.current = null;
     setTyping(false);
+    if (conversationModeRef.current) setHandsFreeState("idle");
   }
 
   function collapseChat() {
@@ -533,12 +558,14 @@ export function ChatWidget() {
     recognitionRef.current = null;
     setListening(false);
     setSpeaking(false);
+    setHandsFreeState("idle");
   }
 
   function startConversationMode(autoListen = true) {
     conversationModeRef.current = true;
     setConversationMode(true);
     setVoiceEnabled(true);
+    setHandsFreeState("idle");
     if (autoListen && !typingRef.current && !speakingRef.current && !recognitionRef.current) {
       // Entering voice mode should immediately start listening.
       window.setTimeout(() => startListening(true), 220);
@@ -554,7 +581,10 @@ export function ChatWidget() {
 
   function setHandsFreeMode(next: boolean) {
     setHandsFree(next);
-    if (!next) return;
+    if (!next) {
+      setHandsFreeState("idle");
+      return;
+    }
 
     if (!conversationModeRef.current) {
       startConversationMode(false);
@@ -587,7 +617,13 @@ export function ChatWidget() {
   }
 
   function startListening(fromConversation = false) {
-    if (!canUseSpeech()) return;
+    if (!canUseSpeech()) {
+      if (fromConversation || conversationModeRef.current) {
+        setVoiceError("Microphone unavailable in this browser.");
+        setHandsFreeState("error");
+      }
+      return;
+    }
     if (typingRef.current) return;
     if (speakingRef.current) return;
     if (recognitionRef.current) return;
@@ -599,41 +635,71 @@ export function ChatWidget() {
     rec.interimResults = true;
     rec.lang = selectedLanguage;
     setListening(true);
+    if (fromConversation || conversationModeRef.current) setHandsFreeState("listening");
     liveTranscriptRef.current = "";
+    recognitionFinalRef.current = "";
+    recognitionSentRef.current = false;
 
     rec.onresult = (e: unknown) => {
       const ev = e as {
         resultIndex?: number;
-        results?: ArrayLike<{ 0?: { transcript?: string } }>;
+        results?: ArrayLike<{ 0?: { transcript?: string }; isFinal?: boolean }>;
       };
       const results = ev.results;
       if (!results || typeof results.length !== "number") return;
       const start = typeof ev.resultIndex === "number" ? ev.resultIndex : 0;
 
-      let transcript = "";
+      let interimTranscript = "";
       for (let i = start; i < results.length; i++) {
-        transcript += results[i]?.[0]?.transcript ?? "";
+        const part = results[i]?.[0]?.transcript ?? "";
+        if (results[i]?.isFinal) recognitionFinalRef.current += part;
+        else interimTranscript += part;
       }
-      const cleaned = transcript.trim();
+      const cleaned = (recognitionFinalRef.current || interimTranscript).trim();
       liveTranscriptRef.current = cleaned;
       setDraft(cleaned);
+      if (recognitionSilenceTimerRef.current) window.clearTimeout(recognitionSilenceTimerRef.current);
+      recognitionSilenceTimerRef.current = window.setTimeout(() => {
+        try {
+          recognitionRef.current?.stop?.();
+        } catch {
+          // ignore
+        }
+      }, 900);
     };
-    rec.onerror = () => {
+    rec.onerror = (err: unknown) => {
       setListening(false);
       recognitionRef.current = null;
+      if (recognitionSilenceTimerRef.current) {
+        window.clearTimeout(recognitionSilenceTimerRef.current);
+        recognitionSilenceTimerRef.current = null;
+      }
+      const code = String((err as { error?: string })?.error ?? "");
+      if (fromConversation || conversationModeRef.current) {
+        setVoiceError(code === "not-allowed" ? "Microphone permission denied." : "Microphone unavailable.");
+        setHandsFreeState("error");
+      }
     };
     rec.onend = () => {
       setListening(false);
       recognitionRef.current = null;
-      const finalText = liveTranscriptRef.current.trim();
-      if (finalText) {
+      if (recognitionSilenceTimerRef.current) {
+        window.clearTimeout(recognitionSilenceTimerRef.current);
+        recognitionSilenceTimerRef.current = null;
+      }
+      const finalText = recognitionFinalRef.current.trim() || liveTranscriptRef.current.trim();
+      if (finalText && !recognitionSentRef.current) {
+        recognitionSentRef.current = true;
         setDraft(finalText);
         void send(finalText);
         liveTranscriptRef.current = "";
+        recognitionFinalRef.current = "";
         return;
       }
       if (handsFreeRef.current && conversationModeRef.current && !typingRef.current) {
         window.setTimeout(() => startListening(true), 240);
+      } else if (conversationModeRef.current && !typingRef.current && !speakingRef.current) {
+        setHandsFreeState("idle");
       }
     };
     rec.start();
@@ -664,6 +730,39 @@ export function ChatWidget() {
     return () => window.removeEventListener("mouseover", handler);
   }, [hoverReadEnabled]);
 
+  useEffect(() => {
+    if (!open && conversationModeRef.current) endConversation();
+    return () => {
+      stopResponse();
+      stopAllSpeech();
+      try {
+        recognitionRef.current?.stop?.();
+      } catch {
+        // ignore
+      }
+      if (recognitionSilenceTimerRef.current) window.clearTimeout(recognitionSilenceTimerRef.current);
+      recognitionRef.current = null;
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!conversationModeRef.current) return;
+    endConversation();
+  }, [page.kind]);
+
+  const statusLabel =
+    handsFreeState === "listening"
+      ? "Listening..."
+      : handsFreeState === "processing"
+        ? "Thinking..."
+        : handsFreeState === "speaking"
+          ? "Speaking..."
+          : handsFreeState === "error"
+            ? voiceError.includes("Microphone")
+              ? "Microphone unavailable"
+              : "Voice unavailable"
+            : "Ready";
+
   return (
     <div className="fixed bottom-5 right-5 z-[60] print:hidden">
       {!open ? (
@@ -686,16 +785,8 @@ export function ChatWidget() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="text-sm font-semibold">Voice conversation</div>
-                    <div className="text-xs text-blue-100">
-                      {typing
-                        ? "Thinking…"
-                        : speaking
-                          ? "Speaking…"
-                          : listening
-                            ? "Listening…"
-                            : handsFree
-                              ? "Hands-free on — listens again after each reply"
-                              : "Push-to-talk — tap Start listening, then speak"}
+                    <div className="text-xs text-blue-100" aria-live="polite">
+                      {statusLabel}
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
@@ -742,11 +833,11 @@ export function ChatWidget() {
                       <div className="flex justify-center">
                         <VoiceOrb
                           state={
-                            listening
+                            handsFreeState === "listening"
                               ? "listening"
-                              : speaking
+                              : handsFreeState === "speaking"
                                 ? "speaking"
-                                : typing
+                                : handsFreeState === "processing"
                                   ? "thinking"
                                   : "idle"
                           }
@@ -800,6 +891,13 @@ export function ChatWidget() {
                     Mic input {speechSupported ? "OK" : "Unavailable"} · Output{" "}
                     {speechOutputSupported ? "OK" : "Unavailable"} · ElevenLabs{" "}
                     {elevenAvailable ? "Connected" : "Not configured"}
+                  </div>
+                ) : null}
+                {process.env.NODE_ENV !== "production" && handsFree ? (
+                  <div className="mt-2 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-[11px] text-muted">
+                    <span className="font-semibold text-heading">Debug:</span>{" "}
+                    state={handsFreeState} · recognitionSupported={String(speechSupported)} · muted=
+                    {String(!voiceEnabled)} · activeRequest={String(typing)}
                   </div>
                 ) : null}
               </div>

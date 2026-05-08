@@ -8,6 +8,7 @@ type Req = {
   message: string;
   page?: PageContext;
   voiceMode?: boolean;
+  history?: Array<{ role: "user" | "assistant"; text: string }>;
 };
 type LlmShape = {
   reply: string;
@@ -84,12 +85,19 @@ function pageSummary(page: PageContext) {
   return "No specific page context.";
 }
 
-function buildLlmUserPrompt(message: string, page: PageContext) {
+function buildLlmUserPrompt(message: string, page: PageContext, history?: Req["history"]) {
   const venues = SAMPLE_VENUES.slice(0, 8)
     .map((v) => `${v.name} (${v.location}) — ${v.tags.join(", ")}`)
     .join("\n");
   const advice = ADVICE_ARTICLES.slice(0, 10).map((a) => `${a.title} (/advice/${a.slug})`).join("\n");
   const cards = HELP_CARDS.slice(0, 14).map((c) => `${c.title} (/help-cards?concern=${encodeURIComponent(c.tags[0] ?? c.title)})`).join("\n");
+  const historyText =
+    history?.length
+      ? history
+          .slice(-8)
+          .map((h) => `${h.role === "user" ? "User" : "Assistant"}: ${h.text}`)
+          .join("\n")
+      : "No prior turns.";
   return [
     `User message: ${message}`,
     `Page context: ${pageSummary(page)}`,
@@ -99,6 +107,8 @@ function buildLlmUserPrompt(message: string, page: PageContext) {
     advice,
     "Sample help cards:",
     cards,
+    "Recent conversation:",
+    historyText,
     "Answer the user's question directly first.",
     "Only suggest help cards when the user explicitly asks for a card/template/checklist/download.",
     "If the user is off-topic for Access Stamp (for example recipes), refuse briefly and redirect to Access Stamp topics.",
@@ -109,7 +119,7 @@ function buildLlmUserPrompt(message: string, page: PageContext) {
   ].join("\n\n");
 }
 
-async function callLlm(message: string, page: PageContext): Promise<LlmShape | null> {
+async function callLlm(message: string, page: PageContext, history?: Req["history"]): Promise<LlmShape | null> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return null;
   const model = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
@@ -125,7 +135,7 @@ async function callLlm(message: string, page: PageContext): Promise<LlmShape | n
         temperature: 0.4,
         messages: [
           { role: "system", content: ACCESS_STAMP_SYSTEM_PROMPT },
-          { role: "user", content: buildLlmUserPrompt(message, page) },
+          { role: "user", content: buildLlmUserPrompt(message, page, history) },
         ],
       }),
     });
@@ -266,7 +276,7 @@ export async function POST(req: Request) {
     });
   }
 
-  const llm = await callLlm(msg, page);
+  const llm = await callLlm(msg, page, body.history);
   if (llm) {
     return NextResponse.json({
       reply: voice ? short(llm.reply) : llm.reply,
