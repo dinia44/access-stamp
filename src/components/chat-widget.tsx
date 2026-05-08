@@ -515,14 +515,20 @@ export function ChatWidget() {
     setSpeaking(false);
   }
 
-  function startConversationMode() {
+  function startConversationMode(autoListen = true) {
     conversationModeRef.current = true;
     setConversationMode(true);
     setVoiceEnabled(true);
-    if (!typingRef.current && !speakingRef.current && !recognitionRef.current) {
+    if (autoListen && !typingRef.current && !speakingRef.current && !recognitionRef.current) {
       // Entering voice mode should immediately start listening.
       window.setTimeout(() => startListening(true), 220);
     }
+  }
+
+  function startHandsFreeGreeting() {
+    const greeting = "Hi, I'm Access Stamp voice. How can I help today?";
+    setMsgs((m) => [...m, { role: "assistant", text: greeting, sentAt: Date.now() }]);
+    void speakReply(greeting);
   }
 
   function setHandsFreeMode(next: boolean) {
@@ -530,13 +536,12 @@ export function ChatWidget() {
     if (!next) return;
 
     if (!conversationModeRef.current) {
-      startConversationMode();
+      startConversationMode(false);
+      startHandsFreeGreeting();
       return;
     }
 
-    if (!typingRef.current && !speakingRef.current && !recognitionRef.current) {
-      window.setTimeout(() => startListening(true), 220);
-    }
+    startHandsFreeGreeting();
   }
 
   function interruptAndListen() {
