@@ -192,6 +192,7 @@ export function ChatWidget() {
   });
   const [voiceLabel, setVoiceLabel] = useState("Access Stamp Voice");
   const [selectedVoiceId, setSelectedVoiceId] = useState("");
+  const [elevenAvailable, setElevenAvailable] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("en-GB");
   const [msgs, setMsgs] = useState<Msg[]>([
     {
@@ -249,9 +250,12 @@ export function ChatWidget() {
         if (data.voices?.[0]?.label) {
           setVoiceLabel(data.voices[0].label);
           setSelectedVoiceId(data.voices[0].id);
+          setElevenAvailable(true);
+        } else {
+          setElevenAvailable(false);
         }
       } catch {
-        // keep default label
+        setElevenAvailable(false);
       }
     }
     void loadVoiceLabel();
@@ -261,6 +265,8 @@ export function ChatWidget() {
   }, []);
 
   const speechSupported = canUseSpeech();
+  const speechOutputSupported =
+    typeof window !== "undefined" && "speechSynthesis" in window;
 
   const defaultQuick = useMemo(() => {
     if (page.kind === "venue-finder")
@@ -402,6 +408,18 @@ export function ChatWidget() {
     speakingRef.current = true;
     setSpeaking(true);
     try {
+      if (!elevenAvailable || !selectedVoiceId) {
+        if (conversationModeRef.current || handsFreeRef.current || opts?.force) {
+          if (!speechOutputSupported) {
+            setVoiceError("No voice output available in this browser.");
+          } else {
+            setVoiceError("ElevenLabs not configured; using browser voice.");
+            await speakWithBrowser(text);
+          }
+        }
+        return;
+      }
+
       const voiceAbort = new AbortController();
       const timeout = window.setTimeout(() => voiceAbort.abort(), 7000);
       const res = await fetch("/api/voice", {
@@ -806,6 +824,14 @@ export function ChatWidget() {
                 {voiceError ? (
                   <div className="mt-3 rounded-[12px] border border-amber bg-amber-pale px-3 py-2 text-xs text-[#7c5b16]">
                     {voiceError}
+                  </div>
+                ) : null}
+                {handsFree ? (
+                  <div className="mt-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-[11px] text-muted">
+                    <span className="font-semibold text-heading">Voice health:</span>{" "}
+                    Mic input {speechSupported ? "OK" : "Unavailable"} · Output{" "}
+                    {speechOutputSupported ? "OK" : "Unavailable"} · ElevenLabs{" "}
+                    {elevenAvailable ? "Connected" : "Not configured"}
                   </div>
                 ) : null}
               </div>
