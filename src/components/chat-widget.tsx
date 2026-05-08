@@ -486,8 +486,9 @@ export function ChatWidget() {
     conversationModeRef.current = true;
     setConversationMode(true);
     setVoiceEnabled(true);
-    if (handsFreeRef.current && !typingRef.current && !speakingRef.current && !recognitionRef.current) {
-      window.setTimeout(() => startListening(true), 320);
+    if (!typingRef.current && !speakingRef.current && !recognitionRef.current) {
+      // Entering voice mode should immediately start listening.
+      window.setTimeout(() => startListening(true), 220);
     }
   }
 
@@ -621,7 +622,7 @@ export function ChatWidget() {
                             ? "Listening…"
                             : handsFree
                               ? "Hands-free on — listens again after each reply"
-                              : "Push-to-talk — tap Talk, then speak"}
+                              : "Push-to-talk — tap Start listening, then speak"}
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
@@ -699,7 +700,7 @@ export function ChatWidget() {
                         ? "Wait for speech to finish, or tap Interrupt"
                         : typing
                           ? "Wait for the reply"
-                          : "Push-to-talk — tap to speak"
+                        : "Push-to-talk — tap Start listening"
                     }
                     onClick={() => {
                       if (speaking || typing) return;
@@ -714,7 +715,7 @@ export function ChatWidget() {
                       }
                     }}
                   >
-                    {listening ? "Stop listening" : "Talk"}
+                    {listening ? "Stop listening" : "Start listening"}
                   </button>
                   <button type="button" className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
                     Stop speaking
@@ -827,7 +828,7 @@ export function ChatWidget() {
                         else startConversationMode();
                       }}
                     >
-                      {conversationMode ? "End conversation mode" : "Start conversation mode"}
+                      {conversationMode ? "End voice mode" : "Start listening"}
                     </button>
                     <button
                       type="button"
