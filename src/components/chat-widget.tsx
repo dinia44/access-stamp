@@ -519,11 +519,29 @@ export function ChatWidget() {
               return;
             }
           }
-          await new Promise<void>((resolve) => {
-            playbackAudio.onended = () => resolve();
-            playbackAudio.onpause = () => resolve();
-            playbackAudio.onerror = () => resolve();
+          const startedAt = Date.now();
+          const playbackResult = await new Promise<"ended" | "paused" | "error">((resolve) => {
+            playbackAudio.onended = () => resolve("ended");
+            playbackAudio.onpause = () => resolve("paused");
+            playbackAudio.onerror = () => resolve("error");
           });
+          const elapsed = Date.now() - startedAt;
+          // Chrome can occasionally resolve play() but immediately pause at 0s with no sound.
+          // Treat that as a failed playback attempt and use fallback voice.
+          if (
+            playbackResult !== "ended" &&
+            (playbackAudio.currentTime < 0.05 || elapsed < 180)
+          ) {
+            const fellBack = await speakWithBrowserFallback(text);
+            if (fellBack) {
+              setVoiceError("ElevenLabs audio did not play in browser; using voice fallback.");
+            } else {
+              setVoiceError("Voice playback failed. Tap 'Enable voice playback' and try again.");
+              setAwaitingVoiceUnlock(true);
+              if (conversationModeRef.current) setHandsFreeState("error");
+              return;
+            }
+          }
         } finally {
           URL.revokeObjectURL(url);
           if (playbackAudioRef.current) {
