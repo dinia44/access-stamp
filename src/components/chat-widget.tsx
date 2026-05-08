@@ -125,6 +125,51 @@ function IconSend() {
   );
 }
 
+function VoiceOrb({
+  state,
+}: {
+  state: "idle" | "listening" | "speaking" | "thinking";
+}) {
+  const base =
+    state === "listening"
+      ? "from-emerald-300/70 via-cyan-300/60 to-blue-300/70"
+      : state === "speaking"
+        ? "from-amber-300/75 via-orange-300/70 to-rose-300/70"
+        : state === "thinking"
+          ? "from-violet-300/70 via-indigo-300/65 to-blue-300/70"
+          : "from-blue-200/55 via-sky-200/50 to-indigo-200/55";
+
+  return (
+    <div className="relative grid h-[184px] w-[184px] place-items-center">
+      <div
+        className={cn(
+          "absolute inset-0 rounded-full blur-sm",
+          "bg-[conic-gradient(from_0deg,var(--tw-gradient-stops))]",
+          base,
+          state === "idle" ? "animate-pulse" : "animate-spin",
+        )}
+        style={{ animationDuration: state === "idle" ? "2.2s" : "3.6s" }}
+      />
+      <div
+        className={cn(
+          "absolute inset-[14px] rounded-full opacity-85",
+          "bg-[conic-gradient(from_180deg,var(--tw-gradient-stops))]",
+          base,
+          "animate-spin",
+        )}
+        style={{ animationDuration: "5.2s", animationDirection: "reverse" }}
+      />
+      <div className="absolute inset-[32px] rounded-full bg-[#0e1f3a]/92 backdrop-blur-[1px]" />
+      <div className="relative z-10 text-center text-white">
+        <div className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-100">
+          {state === "listening" ? "Listening" : state === "speaking" ? "Speaking" : state === "thinking" ? "Thinking" : "Ready"}
+        </div>
+        <div className="mt-1 text-[11px] text-blue-100/90">Access Stamp Voice</div>
+      </div>
+    </div>
+  );
+}
+
 export function ChatWidget() {
   const { page, open, setOpen, draft, setDraft, voiceMode } = useChat();
   const [voiceEnabled, setVoiceEnabled] = useState(true);
@@ -233,6 +278,10 @@ export function ChatWidget() {
       : defaultQuick;
 
   const hasUserMessage = useMemo(() => msgs.some((m) => m.role === "user"), [msgs]);
+  const lastAssistantSpokenText = useMemo(
+    () => [...msgs].reverse().find((m) => m.role === "assistant")?.text ?? "",
+    [msgs],
+  );
 
   function summaryChipText() {
     const loc = lastSummary.location.trim();
@@ -661,6 +710,41 @@ export function ChatWidget() {
                 </label>
               </div>
               <div ref={scroller} className="min-h-0 flex-1 overflow-auto bg-[#f8fafc] px-5 py-4">
+                {handsFree ? (
+                  <div className="mb-4 rounded-[14px] border border-[#d5e2f5] bg-[#f2f7ff] p-4">
+                    <div className="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">
+                      <div className="flex justify-center">
+                        <VoiceOrb
+                          state={
+                            listening
+                              ? "listening"
+                              : speaking
+                                ? "speaking"
+                                : typing
+                                  ? "thinking"
+                                  : "idle"
+                          }
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                          Hands-free conversation
+                        </div>
+                        <div className="rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
+                          <span className="font-semibold">You:</span>{" "}
+                          {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice input…")}
+                        </div>
+                        <div className="rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
+                          <span className="font-semibold">Assistant:</span>{" "}
+                          {typing ? "Thinking…" : lastAssistantSpokenText || "I will speak back here once we start."}
+                        </div>
+                        <p className="text-xs text-muted">
+                          Keep talking naturally. After each reply, the mic turns back on automatically.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
                 <div className="mb-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
                   <span className="font-semibold">Live input:</span>{" "}
                   {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice or pasted text…")}
