@@ -196,6 +196,7 @@ export function ChatWidget() {
   const [voiceLabel, setVoiceLabel] = useState("Access Stamp Voice");
   const [selectedVoiceId, setSelectedVoiceId] = useState("");
   const [elevenAvailable, setElevenAvailable] = useState(false);
+  const [awaitingVoiceUnlock, setAwaitingVoiceUnlock] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("en-GB");
   const [msgs, setMsgs] = useState<Msg[]>([
     {
@@ -406,16 +407,11 @@ export function ChatWidget() {
     }
 
     setVoiceError("");
+    setAwaitingVoiceUnlock(false);
     speakingRef.current = true;
     setSpeaking(true);
     if (conversationModeRef.current) setHandsFreeState("speaking");
     try {
-      if (!elevenAvailable || !selectedVoiceId) {
-        setVoiceError("ElevenLabs voice is not configured/connected.");
-        if (conversationModeRef.current) setHandsFreeState("error");
-        return;
-      }
-
       const voiceAbort = new AbortController();
       const timeout = window.setTimeout(() => voiceAbort.abort(), 7000);
       const res = await fetch("/api/tts", {
@@ -437,7 +433,8 @@ export function ChatWidget() {
           try {
             await audioRef.current.play();
           } catch {
-            setVoiceError("Audio playback blocked by browser. Please interact again and check autoplay/audio settings.");
+            setVoiceError("Audio playback blocked by browser. Tap 'Enable voice playback' below.");
+            setAwaitingVoiceUnlock(true);
             if (conversationModeRef.current) setHandsFreeState("error");
             return;
           }
@@ -450,7 +447,14 @@ export function ChatWidget() {
         }
         return;
       }
-      setVoiceError("ElevenLabs voice unavailable right now.");
+      let detail = "";
+      try {
+        const err = (await res.json()) as { error?: string };
+        detail = err?.error ? ` (${err.error})` : "";
+      } catch {
+        // ignore JSON parse errors
+      }
+      setVoiceError(`ElevenLabs voice unavailable right now.${detail}`);
       if (conversationModeRef.current) setHandsFreeState("error");
     } catch {
       setVoiceError("ElevenLabs voice unavailable right now.");
@@ -459,6 +463,18 @@ export function ChatWidget() {
       speakingRef.current = false;
       setSpeaking(false);
       scheduleHandsFreeListen();
+    }
+  }
+
+  async function unlockVoicePlayback() {
+    if (!audioRef.current) return;
+    try {
+      await audioRef.current.play();
+      setAwaitingVoiceUnlock(false);
+      setVoiceError("");
+      if (conversationModeRef.current && !typingRef.current) setHandsFreeState("speaking");
+    } catch {
+      setVoiceError("Still blocked. Check browser site sound/autoplay permissions, then try again.");
     }
   }
 
@@ -884,6 +900,16 @@ export function ChatWidget() {
                   <div className="mt-3 rounded-[12px] border border-amber bg-amber-pale px-3 py-2 text-xs text-[#7c5b16]">
                     {voiceError}
                   </div>
+                ) : null}
+                {awaitingVoiceUnlock ? (
+                  <button
+                    type="button"
+                    className="mt-2 rounded-[10px] border border-[#d8e1ef] bg-white px-3 py-2 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                    onClick={() => void unlockVoicePlayback()}
+                    aria-label="Enable voice playback"
+                  >
+                    Enable voice playback
+                  </button>
                 ) : null}
                 {handsFree ? (
                   <div className="mt-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-[11px] text-muted">
