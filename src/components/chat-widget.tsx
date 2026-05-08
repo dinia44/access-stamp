@@ -841,6 +841,10 @@ export function ChatWidget() {
       setHandsFreeState("idle");
       return;
     }
+    // Always open the dedicated hands-free section immediately.
+    if (!conversationModeRef.current) {
+      startConversationMode(false);
+    }
     setHandsFree(true);
     const unlocked = await primeAudioPlaybackFromUserGesture();
     if (!unlocked) {
@@ -853,13 +857,6 @@ export function ChatWidget() {
     setVoiceError("");
     // Voice-first default: keep text hidden during live hands-free turns.
     setShowCaptions(false);
-
-    if (!conversationModeRef.current) {
-      startConversationMode(false);
-      startHandsFreeGreeting();
-      void startMicMonitor();
-      return;
-    }
 
     startHandsFreeGreeting();
     void startMicMonitor();
