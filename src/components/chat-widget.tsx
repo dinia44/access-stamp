@@ -525,6 +525,20 @@ export function ChatWidget() {
     }
   }
 
+  function setHandsFreeMode(next: boolean) {
+    setHandsFree(next);
+    if (!next) return;
+
+    if (!conversationModeRef.current) {
+      startConversationMode();
+      return;
+    }
+
+    if (!typingRef.current && !speakingRef.current && !recognitionRef.current) {
+      window.setTimeout(() => startListening(true), 220);
+    }
+  }
+
   function interruptAndListen() {
     stopResponse();
     stopAllSpeech();
@@ -680,11 +694,7 @@ export function ChatWidget() {
                     type="checkbox"
                     checked={handsFree}
                     onChange={(e) => {
-                      const next = e.target.checked;
-                      setHandsFree(next);
-                      if (next && !typingRef.current && !speakingRef.current && !recognitionRef.current) {
-                        window.setTimeout(() => startListening(true), 280);
-                      }
+                      setHandsFreeMode(e.target.checked);
                     }}
                     className="h-4 w-4 shrink-0 rounded border-white/40"
                   />
@@ -913,11 +923,7 @@ export function ChatWidget() {
                       )}
                       aria-pressed={handsFree}
                       onClick={() => {
-                        const next = !handsFree;
-                        setHandsFree(next);
-                        if (next && conversationMode && !typingRef.current && !speakingRef.current && !recognitionRef.current) {
-                          window.setTimeout(() => startListening(true), 280);
-                        }
+                        setHandsFreeMode(!handsFree);
                       }}
                     >
                       {handsFree ? "Hands-free: on" : "Hands-free: off"}
@@ -1122,7 +1128,7 @@ export function ChatWidget() {
               </div>
             ) : null}
 
-            <div className="grid grid-cols-[1fr_auto_auto] items-end gap-2">
+            <div className="grid grid-cols-[1fr_auto_auto_auto] items-end gap-2">
               <div className="min-w-0">
                 <label className="sr-only" htmlFor="chat-input">
                   Chat message
@@ -1139,6 +1145,29 @@ export function ChatWidget() {
                   }}
                 />
               </div>
+              <button
+                type="button"
+                className={cn(
+                  "h-12 rounded-[12px] border px-3 text-xs font-semibold transition-colors",
+                  handsFree
+                    ? "border-emerald-300 bg-emerald-50 text-emerald-800"
+                    : "border-[#d8e1ef] bg-white text-heading hover:bg-[#f5f8ff]",
+                  !speechSupported && "cursor-not-allowed border-[#e6ebf3] bg-[#f6f8fb] text-muted hover:bg-[#f6f8fb]",
+                )}
+                aria-label={handsFree ? "Turn off hands-free mode" : "Turn on hands-free mode"}
+                title={
+                  handsFree
+                    ? "Hands-free mode is on"
+                    : "Turn on hands-free voice mode"
+                }
+                onClick={() => {
+                  if (!speechSupported) return;
+                  setHandsFreeMode(!handsFree);
+                }}
+                disabled={!speechSupported}
+              >
+                {handsFree ? "HF on" : "HF"}
+              </button>
               <button
                 type="button"
                 className={cn(
