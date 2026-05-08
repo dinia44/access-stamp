@@ -644,6 +644,13 @@ export function ChatWidget() {
     }
     setAwaitingVoiceUnlock(false);
     setVoiceError("");
+    if (handsFreeRef.current) {
+      if (!conversationModeRef.current) {
+        startConversationMode(false);
+      }
+      startHandsFreeGreeting();
+      void startMicMonitor();
+    }
   }
 
   function togglePauseSpeaking() {
@@ -782,15 +789,24 @@ export function ChatWidget() {
     void speakReply(greeting, { force: true });
   }
 
-  function setHandsFreeMode(next: boolean) {
+  async function setHandsFreeMode(next: boolean) {
     setHandsFree(next);
     if (!next) {
       stopRecognitionOnly();
       stopAllSpeech();
       stopMicMonitor();
+      setAwaitingVoiceUnlock(false);
       setHandsFreeState("idle");
       return;
     }
+    const unlocked = await primeAudioPlaybackFromUserGesture();
+    if (!unlocked) {
+      setVoiceError("Sound is blocked. Tap 'Enable voice playback' to continue hands-free mode.");
+      setAwaitingVoiceUnlock(true);
+      setHandsFreeState("error");
+      return;
+    }
+    setAwaitingVoiceUnlock(false);
     setVoiceError("");
     // Voice-first default: keep text hidden during live hands-free turns.
     setShowCaptions(false);
@@ -1044,7 +1060,7 @@ export function ChatWidget() {
                     type="checkbox"
                     checked={handsFree}
                     onChange={(e) => {
-                      setHandsFreeMode(e.target.checked);
+                      void setHandsFreeMode(e.target.checked);
                     }}
                     className="h-4 w-4 shrink-0 rounded border-white/40"
                   />
@@ -1370,7 +1386,7 @@ export function ChatWidget() {
                       aria-pressed={handsFree}
                       title={handsFree ? "Turn off hands-free mode" : "Turn on hands-free mode"}
                       onClick={() => {
-                        setHandsFreeMode(!handsFree);
+                        void setHandsFreeMode(!handsFree);
                       }}
                     >
                       {handsFree ? "Turn off hands-free mode" : "Turn on hands-free mode"}
@@ -1619,7 +1635,7 @@ export function ChatWidget() {
                 }
                 onClick={() => {
                   if (!speechSupported) return;
-                  setHandsFreeMode(!handsFree);
+                  void setHandsFreeMode(!handsFree);
                 }}
                 disabled={!speechSupported}
               >
