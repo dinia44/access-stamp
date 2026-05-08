@@ -526,8 +526,9 @@ export function ChatWidget() {
   }
 
   function startHandsFreeGreeting() {
-    const greeting = "Hi, I'm Access Stamp voice. How can I help today?";
-    setMsgs((m) => [...m, { role: "assistant", text: greeting, sentAt: Date.now() }]);
+    const lastAssistant = [...msgs].reverse().find((m) => m.role === "assistant")?.text?.trim();
+    const greeting = lastAssistant || "Hi, I'm Access Stamp voice. How can I help today?";
+    // Speak the greeting without appending a duplicate transcript bubble.
     void speakReply(greeting);
   }
 
