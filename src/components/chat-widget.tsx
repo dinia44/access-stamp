@@ -883,6 +883,45 @@ export function ChatWidget() {
     }
   }
 
+  function buildConversationExportText() {
+    const header = `Access Stamp conversation export\nCreated: ${new Date().toLocaleString()}`;
+    const body = msgs
+      .map((m) => {
+        const speaker = m.role === "assistant" ? "Assistant" : "You";
+        return `[${clockLabel(m.sentAt)}] ${speaker}: ${m.text}`;
+      })
+      .join("\n\n");
+    return `${header}\n\n${body}`.trim();
+  }
+
+  function downloadBlob(filename: string, blob: Blob) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadConversationTxt() {
+    const plain = buildConversationExportText();
+    const blob = new Blob([plain], { type: "text/plain;charset=utf-8" });
+    downloadBlob("access-stamp-conversation.txt", blob);
+  }
+
+  function downloadConversationDoc() {
+    const plain = buildConversationExportText()
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\n/g, "<br>");
+    const html = `<!doctype html><html><head><meta charset="utf-8"></head><body>${plain}</body></html>`;
+    const blob = new Blob([html], { type: "application/msword" });
+    downloadBlob("access-stamp-conversation.doc", blob);
+  }
+
   function startListening(fromConversation = false) {
     if (!canUseSpeech()) {
       if (fromConversation || conversationModeRef.current) {
@@ -1266,6 +1305,20 @@ export function ChatWidget() {
                     onClick={() => setVoiceEnabled((v) => !v)}
                   >
                     {voiceEnabled ? "Mute voice replies" : "Unmute voice replies"}
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                    onClick={downloadConversationTxt}
+                  >
+                    Download transcript (.txt)
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                    onClick={downloadConversationDoc}
+                  >
+                    Download transcript (.doc)
                   </button>
                   {speaking ? (
                     <button
