@@ -219,6 +219,7 @@ export function ChatWidget() {
   ]);
   const scroller = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playbackAudioRef = useRef<HTMLAudioElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<{ stop?: () => void } | null>(null);
   const recognitionFinalRef = useRef("");
@@ -376,6 +377,15 @@ export function ChatWidget() {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
+    if (playbackAudioRef.current) {
+      playbackAudioRef.current.pause();
+      playbackAudioRef.current.currentTime = 0;
+      playbackAudioRef.current.src = "";
+      playbackAudioRef.current.onended = null;
+      playbackAudioRef.current.onpause = null;
+      playbackAudioRef.current.onerror = null;
+      playbackAudioRef.current = null;
+    }
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -486,34 +496,39 @@ export function ChatWidget() {
           return;
         }
         const url = URL.createObjectURL(blob);
-        if (audioRef.current) {
+        try {
+          playbackAudioRef.current?.pause();
+          const playbackAudio = new Audio(url);
+          playbackAudio.setAttribute("playsinline", "true");
+          playbackAudio.preload = "auto";
+          playbackAudio.muted = false;
+          playbackAudio.volume = 1;
+          playbackAudio.playbackRate = audioRate;
+          playbackAudioRef.current = playbackAudio;
           try {
-            audioRef.current.pause();
-            audioRef.current.muted = false;
-            audioRef.current.volume = 1;
-            audioRef.current.playbackRate = audioRate;
-            audioRef.current.src = url;
-            try {
-              await audioRef.current.play();
-            } catch {
-              const fellBack = await speakWithBrowserFallback(text);
-              if (fellBack) {
-                setVoiceError("Audio playback blocked for ElevenLabs; using browser voice fallback.");
-              } else {
-                setVoiceError("Audio playback blocked by browser. Tap 'Enable voice playback' below.");
-                setAwaitingVoiceUnlock(true);
-                if (conversationModeRef.current) setHandsFreeState("error");
-                return;
-              }
+            await playbackAudio.play();
+          } catch {
+            const fellBack = await speakWithBrowserFallback(text);
+            if (fellBack) {
+              setVoiceError("Audio playback blocked for ElevenLabs; using browser voice fallback.");
+            } else {
+              setVoiceError("Audio playback blocked by browser. Tap 'Enable voice playback' below.");
+              setAwaitingVoiceUnlock(true);
+              if (conversationModeRef.current) setHandsFreeState("error");
+              return;
             }
-            await new Promise<void>((resolve) => {
-              if (!audioRef.current) return resolve();
-              audioRef.current.onended = () => resolve();
-              audioRef.current.onpause = () => resolve();
-              audioRef.current.onerror = () => resolve();
-            });
-          } finally {
-            URL.revokeObjectURL(url);
+          }
+          await new Promise<void>((resolve) => {
+            playbackAudio.onended = () => resolve();
+            playbackAudio.onpause = () => resolve();
+            playbackAudio.onerror = () => resolve();
+          });
+        } finally {
+          URL.revokeObjectURL(url);
+          if (playbackAudioRef.current) {
+            playbackAudioRef.current.onended = null;
+            playbackAudioRef.current.onpause = null;
+            playbackAudioRef.current.onerror = null;
           }
         }
         return;
@@ -654,13 +669,13 @@ export function ChatWidget() {
   }
 
   function togglePauseSpeaking() {
-    if (!audioRef.current) return;
-    if (audioRef.current.paused) {
-      void audioRef.current.play();
+    if (!playbackAudioRef.current) return;
+    if (playbackAudioRef.current.paused) {
+      void playbackAudioRef.current.play();
       setAudioPaused(false);
       setHandsFreeState("speaking");
     } else {
-      audioRef.current.pause();
+      playbackAudioRef.current.pause();
       setAudioPaused(true);
       setHandsFreeState("idle");
     }
