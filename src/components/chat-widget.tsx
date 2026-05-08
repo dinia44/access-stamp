@@ -207,7 +207,6 @@ export function ChatWidget() {
   });
   const [voiceLabel, setVoiceLabel] = useState("Access Stamp Voice");
   const [selectedVoiceId, setSelectedVoiceId] = useState("");
-  const [elevenAvailable, setElevenAvailable] = useState(false);
   const [awaitingVoiceUnlock, setAwaitingVoiceUnlock] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("en-GB");
   const [msgs, setMsgs] = useState<Msg[]>([
@@ -276,12 +275,9 @@ export function ChatWidget() {
         if (data.voices?.[0]?.label) {
           setVoiceLabel(data.voices[0].label);
           setSelectedVoiceId(data.voices[0].id);
-          setElevenAvailable(true);
-        } else {
-          setElevenAvailable(false);
         }
       } catch {
-        setElevenAvailable(false);
+        // Ignore voice list fetch errors here; /api/tts resolves default voice server-side.
       }
     }
     void loadVoiceLabel();
@@ -982,6 +978,8 @@ export function ChatWidget() {
   useEffect(() => {
     if (!hoverReadEnabled || typeof window === "undefined" || !("speechSynthesis" in window)) return;
     const handler = (e: MouseEvent) => {
+      // Never let hover-read interfere with the dedicated hands-free voice loop.
+      if (conversationModeRef.current && handsFreeRef.current) return;
       const target = e.target as HTMLElement | null;
       if (!target) return;
       const now = Date.now();
@@ -1024,14 +1022,6 @@ export function ChatWidget() {
     if (!conversationModeRef.current) return;
     endConversation();
   }, [page.kind]);
-
-  useEffect(() => {
-    if (handsFree && conversationMode) {
-      void startMicMonitor();
-    } else {
-      stopMicMonitor();
-    }
-  }, [handsFree, conversationMode]);
 
   const statusLabel =
     handsFreeState === "listening"
