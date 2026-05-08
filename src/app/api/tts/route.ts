@@ -4,10 +4,33 @@ type TtsReq = {
   text: string;
   voiceId?: string;
 };
+type ElevenVoice = {
+  voice_id: string;
+};
 
 const ELEVEN_API = "https://api.elevenlabs.io/v1/text-to-speech";
+const ELEVEN_VOICES_API = "https://api.elevenlabs.io/v1/voices";
 const DEFAULT_MODEL = process.env.ELEVENLABS_MODEL_ID ?? "eleven_multilingual_v2";
 const DEFAULT_VOICE = process.env.ELEVENLABS_VOICE_ID ?? "";
+
+async function resolveVoiceId(apiKey: string, requestedVoiceId?: string) {
+  const requested = (requestedVoiceId ?? "").trim();
+  if (requested) return requested;
+  if (DEFAULT_VOICE.trim()) return DEFAULT_VOICE.trim();
+
+  const voicesRes = await fetch(ELEVEN_VOICES_API, {
+    method: "GET",
+    headers: {
+      "xi-api-key": apiKey,
+      accept: "application/json",
+    },
+    cache: "no-store",
+  });
+  if (!voicesRes.ok) return "";
+
+  const voicesJson = (await voicesRes.json()) as { voices?: ElevenVoice[] };
+  return (voicesJson.voices?.[0]?.voice_id ?? "").trim();
+}
 
 export async function POST(req: Request) {
   const apiKey = process.env.ELEVENLABS_API_KEY;
@@ -17,7 +40,7 @@ export async function POST(req: Request) {
 
   const body = (await req.json()) as TtsReq;
   const text = (body.text ?? "").trim().slice(0, 1200);
-  const voiceId = (body.voiceId ?? DEFAULT_VOICE).trim();
+  const voiceId = await resolveVoiceId(apiKey, body.voiceId);
 
   if (!text) return NextResponse.json({ error: "Text is required." }, { status: 400 });
   if (!voiceId) return NextResponse.json({ error: "Voice ID is required." }, { status: 400 });

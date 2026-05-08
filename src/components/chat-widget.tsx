@@ -43,7 +43,7 @@ type VoiceChoice = {
 type HandsFreeState = "idle" | "listening" | "processing" | "speaking" | "error";
 
 
-type WebkitSpeechRecognitionCtor = new () => {
+type BrowserSpeechRecognitionCtor = new () => {
   continuous: boolean;
   interimResults: boolean;
   lang: string;
@@ -55,13 +55,21 @@ type WebkitSpeechRecognitionCtor = new () => {
 };
 
 function canUseSpeech() {
-  return typeof window !== "undefined" && "webkitSpeechRecognition" in window;
+  if (typeof window === "undefined") return false;
+  const w = window as unknown as {
+    webkitSpeechRecognition?: BrowserSpeechRecognitionCtor;
+    SpeechRecognition?: BrowserSpeechRecognitionCtor;
+  };
+  return Boolean(w.webkitSpeechRecognition || w.SpeechRecognition);
 }
 
-function getWebkitSpeechRecognition(): WebkitSpeechRecognitionCtor | null {
+function getSpeechRecognitionCtor(): BrowserSpeechRecognitionCtor | null {
   if (typeof window === "undefined") return null;
-  const w = window as unknown as { webkitSpeechRecognition?: WebkitSpeechRecognitionCtor };
-  return w.webkitSpeechRecognition ?? null;
+  const w = window as unknown as {
+    webkitSpeechRecognition?: BrowserSpeechRecognitionCtor;
+    SpeechRecognition?: BrowserSpeechRecognitionCtor;
+  };
+  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
 function IconSpeaker({ muted = false }: { muted?: boolean }) {
@@ -371,8 +379,10 @@ export function ChatWidget() {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
+      audioRef.current.src = "";
       audioRef.current.onended = null;
       audioRef.current.onpause = null;
+      audioRef.current.onerror = null;
     }
     setAudioPaused(false);
     speakingRef.current = false;
@@ -406,11 +416,46 @@ export function ChatWidget() {
     }, 320);
   }
 
+  async function primeAudioPlaybackFromUserGesture() {
+    if (!audioRef.current || typeof window === "undefined") return false;
+    try {
+      audioRef.current.muted = true;
+      audioRef.current.volume = 0;
+      audioRef.current.src =
+        "data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA" +
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+      await audioRef.current.play();
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current.src = "";
+      audioRef.current.muted = false;
+      audioRef.current.volume = 1;
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function speakWithBrowserFallback(text: string) {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return false;
+    await new Promise<void>((resolve) => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = selectedLanguage;
+      utterance.rate = audioRate;
+      utterance.onend = () => resolve();
+      utterance.onerror = () => resolve();
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    });
+    return true;
+  }
+
   async function speakReply(reply: string, opts?: { force?: boolean }) {
     stopRecognitionOnly();
 
     const text = normalizeForSpeech(reply);
-    if ((!voiceEnabled && !opts?.force) || !text) {
+    const shouldSpeak = Boolean(opts?.force || conversationModeRef.current || voiceEnabled);
+    if (!shouldSpeak || !text) {
       scheduleHandsFreeListen();
       return;
     }
@@ -435,25 +480,41 @@ export function ChatWidget() {
       window.clearTimeout(timeout);
       if (res.ok) {
         const blob = await res.blob();
+        if (!blob.size || !(blob.type || "").includes("audio")) {
+          setVoiceError("Voice response was empty or invalid audio.");
+          if (conversationModeRef.current) setHandsFreeState("error");
+          return;
+        }
         const url = URL.createObjectURL(blob);
         if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current.playbackRate = audioRate;
-          audioRef.current.src = url;
           try {
-            await audioRef.current.play();
-          } catch {
-            setVoiceError("Audio playback blocked by browser. Tap 'Enable voice playback' below.");
-            setAwaitingVoiceUnlock(true);
-            if (conversationModeRef.current) setHandsFreeState("error");
-            return;
+            audioRef.current.pause();
+            audioRef.current.muted = false;
+            audioRef.current.volume = 1;
+            audioRef.current.playbackRate = audioRate;
+            audioRef.current.src = url;
+            try {
+              await audioRef.current.play();
+            } catch {
+              const fellBack = await speakWithBrowserFallback(text);
+              if (fellBack) {
+                setVoiceError("Audio playback blocked for ElevenLabs; using browser voice fallback.");
+              } else {
+                setVoiceError("Audio playback blocked by browser. Tap 'Enable voice playback' below.");
+                setAwaitingVoiceUnlock(true);
+                if (conversationModeRef.current) setHandsFreeState("error");
+                return;
+              }
+            }
+            await new Promise<void>((resolve) => {
+              if (!audioRef.current) return resolve();
+              audioRef.current.onended = () => resolve();
+              audioRef.current.onpause = () => resolve();
+              audioRef.current.onerror = () => resolve();
+            });
+          } finally {
+            URL.revokeObjectURL(url);
           }
-          await new Promise<void>((resolve) => {
-            if (!audioRef.current) return resolve();
-            audioRef.current.onended = () => resolve();
-            audioRef.current.onpause = () => resolve();
-            audioRef.current.onerror = () => resolve();
-          });
         }
         return;
       }
@@ -465,10 +526,28 @@ export function ChatWidget() {
         // ignore JSON parse errors
       }
       setVoiceError(`ElevenLabs voice unavailable right now.${detail}`);
-      if (conversationModeRef.current) setHandsFreeState("error");
+      if (conversationModeRef.current) {
+        const fellBack = await speakWithBrowserFallback(text);
+        if (fellBack) {
+          setVoiceError("ElevenLabs unavailable; using browser voice fallback.");
+          setHandsFreeState("speaking");
+        } else {
+          setHandsFreeState("error");
+        }
+      }
     } catch {
-      setVoiceError("ElevenLabs voice unavailable right now.");
-      if (conversationModeRef.current) setHandsFreeState("error");
+      if (conversationModeRef.current) {
+        const fellBack = await speakWithBrowserFallback(text);
+        if (fellBack) {
+          setVoiceError("Voice service unavailable; using browser voice fallback.");
+          setHandsFreeState("speaking");
+        } else {
+          setVoiceError("ElevenLabs voice unavailable right now.");
+          setHandsFreeState("error");
+        }
+      } else {
+        setVoiceError("ElevenLabs voice unavailable right now.");
+      }
     } finally {
       speakingRef.current = false;
       setSpeaking(false);
@@ -510,15 +589,6 @@ export function ChatWidget() {
         if (
           handsFreeRef.current &&
           conversationModeRef.current &&
-          speakingRef.current &&
-          level > 0.12 &&
-          now - lastBargeTriggerRef.current > 1000
-        ) {
-          lastBargeTriggerRef.current = now;
-          interruptAndListen();
-        } else if (
-          handsFreeRef.current &&
-          conversationModeRef.current &&
           !speakingRef.current &&
           !typingRef.current &&
           !recognitionRef.current &&
@@ -527,6 +597,16 @@ export function ChatWidget() {
         ) {
           lastVADTriggerRef.current = now;
           startListening(true);
+        } else if (
+          handsFreeRef.current &&
+          conversationModeRef.current &&
+          speakingRef.current &&
+          level > 0.12 &&
+          now - lastBargeTriggerRef.current > 1000
+        ) {
+          // Auto-barge-in disabled to avoid assistant audio being mistaken
+          // for user speech on speakers/open mics.
+          lastBargeTriggerRef.current = now;
         }
 
         micRafRef.current = window.requestAnimationFrame(loop);
@@ -557,15 +637,13 @@ export function ChatWidget() {
   }
 
   async function unlockVoicePlayback() {
-    if (!audioRef.current) return;
-    try {
-      await audioRef.current.play();
-      setAwaitingVoiceUnlock(false);
-      setVoiceError("");
-      if (conversationModeRef.current && !typingRef.current) setHandsFreeState("speaking");
-    } catch {
+    const unlocked = await primeAudioPlaybackFromUserGesture();
+    if (!unlocked) {
       setVoiceError("Still blocked. Check browser site sound/autoplay permissions, then try again.");
+      return;
     }
+    setAwaitingVoiceUnlock(false);
+    setVoiceError("");
   }
 
   function togglePauseSpeaking() {
@@ -579,6 +657,10 @@ export function ChatWidget() {
       setAudioPaused(true);
       setHandsFreeState("idle");
     }
+  }
+
+  function runVoicePlaybackTest() {
+    void speakReply("Hello from Access Stamp. Voice playback test successful.", { force: true });
   }
 
   async function send(text: string, opts?: { skipUserEcho?: boolean }) {
@@ -613,6 +695,7 @@ export function ChatWidget() {
           message: t,
           page,
           voiceMode: voiceMode || voiceTurnContext,
+          mode: conversationModeRef.current ? "hands-free" : "text",
           history,
         }),
       });
@@ -686,6 +769,7 @@ export function ChatWidget() {
     setConversationMode(true);
     setVoiceEnabled(true);
     setHandsFreeState("idle");
+    void primeAudioPlaybackFromUserGesture();
     if (autoListen && !typingRef.current && !speakingRef.current && !recognitionRef.current) {
       // Entering voice mode should immediately start listening.
       window.setTimeout(() => startListening(true), 220);
@@ -693,19 +777,21 @@ export function ChatWidget() {
   }
 
   function startHandsFreeGreeting() {
-    const lastAssistant = [...msgs].reverse().find((m) => m.role === "assistant")?.text?.trim();
-    const greeting = lastAssistant || "Hi, I'm Access Stamp voice. How can I help today?";
-    // Speak the greeting without appending a duplicate transcript bubble.
+    const greeting = "Hi, I'm here. What would you like help with today?";
+    // Speak a stable greeting without appending a transcript bubble.
     void speakReply(greeting, { force: true });
   }
 
   function setHandsFreeMode(next: boolean) {
     setHandsFree(next);
     if (!next) {
+      stopRecognitionOnly();
+      stopAllSpeech();
       stopMicMonitor();
       setHandsFreeState("idle");
       return;
     }
+    setVoiceError("");
     // Voice-first default: keep text hidden during live hands-free turns.
     setShowCaptions(false);
 
@@ -752,7 +838,7 @@ export function ChatWidget() {
     if (typingRef.current) return;
     if (speakingRef.current) return;
     if (recognitionRef.current) return;
-    const Rec = getWebkitSpeechRecognition();
+    const Rec = getSpeechRecognitionCtor();
     if (!Rec) return;
     const rec = new Rec();
     recognitionRef.current = rec;
@@ -892,9 +978,7 @@ export function ChatWidget() {
         : handsFreeState === "speaking"
           ? "Speaking..."
           : handsFreeState === "error"
-            ? voiceError.includes("Microphone")
-              ? "Microphone unavailable"
-              : "Voice unavailable"
+            ? voiceError || "Voice unavailable"
             : "Ready";
 
   return (
@@ -918,7 +1002,7 @@ export function ChatWidget() {
               <div className="flex flex-col gap-3 border-b border-[#dde4ef] bg-[#0d4bb3] px-4 py-3 text-white">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="text-sm font-semibold">Voice conversation</div>
+                    <div className="text-sm font-semibold">Hands-free mode</div>
                     <div className="text-xs text-blue-100" aria-live="polite">
                       <span
                         className={cn(
@@ -965,7 +1049,8 @@ export function ChatWidget() {
                     className="h-4 w-4 shrink-0 rounded border-white/40"
                   />
                   <span>
-                    <span className="font-semibold">Hands-free</span> — after the assistant finishes speaking, the mic turns back on automatically (push-to-talk when off).
+                    <span className="font-semibold">Speak naturally with the assistant.</span> It will listen,
+                    reply, and talk back. After each reply, listening restarts automatically.
                   </span>
                 </label>
               </div>
@@ -1008,17 +1093,27 @@ export function ChatWidget() {
                           }
                         />
                       </div>
-                      {!listening ? (
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        {!listening ? (
+                          <button
+                            id="handsfree-start-listening"
+                            type="button"
+                            className="rounded-[10px] border border-[#d8e1ef] bg-white px-3 py-2 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                            onClick={() => startListening(true)}
+                            aria-label="Start listening"
+                          >
+                            Start listening
+                          </button>
+                        ) : null}
                         <button
-                          id="handsfree-start-listening"
                           type="button"
                           className="rounded-[10px] border border-[#d8e1ef] bg-white px-3 py-2 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
-                          onClick={() => startListening(true)}
-                          aria-label="Start listening"
+                          onClick={runVoicePlaybackTest}
+                          aria-label="Test voice playback"
                         >
-                          Start listening
+                          Test voice
                         </button>
-                      ) : null}
+                      </div>
                       <div className="w-full max-w-xl space-y-2 text-left">
                         {showCaptions ? (
                           <>
@@ -1113,6 +1208,14 @@ export function ChatWidget() {
                   </button>
                   <button type="button" className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
                     Stop speaking
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                    aria-pressed={!voiceEnabled}
+                    onClick={() => setVoiceEnabled((v) => !v)}
+                  >
+                    {voiceEnabled ? "Mute voice replies" : "Unmute voice replies"}
                   </button>
                   {speaking ? (
                     <button
@@ -1289,7 +1392,7 @@ export function ChatWidget() {
                     onClick={() => setHoverReadEnabled((v) => !v)}
                     aria-pressed={hoverReadEnabled}
                   >
-                    {hoverReadEnabled ? "Hover read: on" : "Hover read: off"}
+                    {hoverReadEnabled ? "Read text on hover: on" : "Read text on hover: off"}
                   </button>
                   <button
                     type="button"
@@ -1300,7 +1403,17 @@ export function ChatWidget() {
                     onClick={() => setVoiceEnabled((v) => !v)}
                     aria-pressed={voiceEnabled}
                   >
-                    {voiceEnabled ? "Voice playback: on" : "Voice playback: off"}
+                    {voiceEnabled ? "Voice replies (chat mode): on" : "Voice replies (chat mode): off"}
+                  </button>
+                  <p className="mt-2 text-[10px] text-[#c0d0e2]">
+                    Hands-free mode always speaks replies and uses ElevenLabs first.
+                  </p>
+                  <button
+                    type="button"
+                    className="mt-2 w-full rounded-[var(--radius-ui)] bg-white/10 px-2 py-1 text-left text-xs font-semibold cursor-pointer hover:bg-white/20"
+                    onClick={runVoicePlaybackTest}
+                  >
+                    Test voice now
                   </button>
                   <button
                     type="button"
@@ -1442,7 +1555,7 @@ export function ChatWidget() {
           </div>
 
           <div className="border-t border-[#dde4ef] bg-white px-4 pb-3 pt-3">
-            <audio ref={audioRef} className="hidden" />
+            <audio ref={audioRef} className="hidden" playsInline preload="auto" />
             <div className="mb-3 flex min-h-8 gap-2 overflow-auto pb-1">
               {quick.map((t) => (
                 <button

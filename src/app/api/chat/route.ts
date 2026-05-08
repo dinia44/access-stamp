@@ -8,6 +8,7 @@ type Req = {
   message: string;
   page?: PageContext;
   voiceMode?: boolean;
+  mode?: "hands-free" | "text";
   history?: Array<{ role: "user" | "assistant"; text: string }>;
 };
 type LlmShape = {
@@ -85,7 +86,12 @@ function pageSummary(page: PageContext) {
   return "No specific page context.";
 }
 
-function buildLlmUserPrompt(message: string, page: PageContext, history?: Req["history"]) {
+function buildLlmUserPrompt(
+  message: string,
+  page: PageContext,
+  history?: Req["history"],
+  voiceMode?: boolean,
+) {
   const venues = SAMPLE_VENUES.slice(0, 8)
     .map((v) => `${v.name} (${v.location}) — ${v.tags.join(", ")}`)
     .join("\n");
@@ -109,6 +115,9 @@ function buildLlmUserPrompt(message: string, page: PageContext, history?: Req["h
     cards,
     "Recent conversation:",
     historyText,
+    voiceMode
+      ? "Hands-free mode is active. Keep replies short, conversational, and easy to speak aloud. Ask one follow-up question at a time."
+      : "Text mode is active. Keep answers concise and practical.",
     "Answer the user's question directly first.",
     "Only suggest help cards when the user explicitly asks for a card/template/checklist/download.",
     "If the user is off-topic for Access Stamp (for example recipes), refuse briefly and redirect to Access Stamp topics.",
@@ -119,7 +128,12 @@ function buildLlmUserPrompt(message: string, page: PageContext, history?: Req["h
   ].join("\n\n");
 }
 
-async function callLlm(message: string, page: PageContext, history?: Req["history"]): Promise<LlmShape | null> {
+async function callLlm(
+  message: string,
+  page: PageContext,
+  history?: Req["history"],
+  voiceMode?: boolean,
+): Promise<LlmShape | null> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return null;
   const model = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
@@ -135,7 +149,7 @@ async function callLlm(message: string, page: PageContext, history?: Req["histor
         temperature: 0.4,
         messages: [
           { role: "system", content: ACCESS_STAMP_SYSTEM_PROMPT },
-          { role: "user", content: buildLlmUserPrompt(message, page, history) },
+          { role: "user", content: buildLlmUserPrompt(message, page, history, voiceMode) },
         ],
       }),
     });
@@ -210,7 +224,7 @@ export async function POST(req: Request) {
   const body = (await req.json()) as Req;
   const msg = (body.message ?? "").trim();
   const page = body.page ?? { kind: "none" };
-  const voice = Boolean(body.voiceMode);
+  const voice = Boolean(body.voiceMode || body.mode === "hands-free");
 
   if (!msg) {
     return NextResponse.json({ reply: "What would you like help with?" });
@@ -276,7 +290,7 @@ export async function POST(req: Request) {
     });
   }
 
-  const llm = await callLlm(msg, page, body.history);
+  const llm = await callLlm(msg, page, body.history, voice);
   if (llm) {
     return NextResponse.json({
       reply: voice ? short(llm.reply) : llm.reply,
