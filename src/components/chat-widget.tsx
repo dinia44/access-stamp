@@ -464,7 +464,8 @@ export function ChatWidget() {
     stopRecognitionOnly();
 
     const text = normalizeForSpeech(reply);
-    const shouldSpeak = Boolean(opts?.force || conversationModeRef.current || voiceEnabled);
+    // Voice output is exclusively routed through hands-free mode.
+    const shouldSpeak = Boolean(opts?.force || (conversationModeRef.current && handsFreeRef.current && voiceEnabled));
     if (!shouldSpeak || !text) {
       scheduleHandsFreeListen();
       return;
@@ -780,6 +781,7 @@ export function ChatWidget() {
   function endConversation() {
     conversationModeRef.current = false;
     setConversationMode(false);
+    setHandsFree(false);
     stopResponse();
     stopAllSpeech();
     try {
@@ -797,6 +799,7 @@ export function ChatWidget() {
   function startConversationMode(autoListen = true) {
     conversationModeRef.current = true;
     setConversationMode(true);
+    setHandsFree(true);
     setVoiceEnabled(true);
     setHandsFreeState("idle");
     void primeAudioPlaybackFromUserGesture();
@@ -813,8 +816,10 @@ export function ChatWidget() {
   }
 
   async function setHandsFreeMode(next: boolean) {
-    setHandsFree(next);
     if (!next) {
+      setHandsFree(false);
+      conversationModeRef.current = false;
+      setConversationMode(false);
       stopRecognitionOnly();
       stopAllSpeech();
       stopMicMonitor();
@@ -822,6 +827,7 @@ export function ChatWidget() {
       setHandsFreeState("idle");
       return;
     }
+    setHandsFree(true);
     const unlocked = await primeAudioPlaybackFromUserGesture();
     if (!unlocked) {
       setVoiceError("Sound is blocked. Tap 'Enable voice playback' to continue hands-free mode.");
@@ -1395,10 +1401,10 @@ export function ChatWidget() {
                       )}
                       onClick={() => {
                         if (conversationMode) endConversation();
-                        else startConversationMode();
+                        else void setHandsFreeMode(true);
                       }}
                     >
-                      {conversationMode ? "End voice mode" : "Start listening"}
+                      {conversationMode ? "End hands-free mode" : "Start hands-free mode"}
                     </button>
                     <button
                       type="button"
@@ -1442,7 +1448,7 @@ export function ChatWidget() {
                     onClick={() => setVoiceEnabled((v) => !v)}
                     aria-pressed={voiceEnabled}
                   >
-                    {voiceEnabled ? "Voice replies (chat mode): on" : "Voice replies (chat mode): off"}
+                    {voiceEnabled ? "Hands-free voice: on" : "Hands-free voice: muted"}
                   </button>
                   <p className="mt-2 text-[10px] text-[#c0d0e2]">
                     Hands-free mode always speaks replies and uses ElevenLabs first.
