@@ -220,7 +220,7 @@ export function ChatWidget() {
       return ["Help me describe access features", "What should I include?", "Is this venue suitable?"];
     if (page.kind === "advice-article")
       return ["Summarise this article", "What should I do next?", "Related topics"];
-    return ["Find accessible venues", "Explain PIP", "Wheelchair services near me", "I’m new to disability"];
+    return ["Open Venue Finder", "Explain PIP", "Wheelchair services near me", "I’m new to disability"];
   }, [page.kind]);
 
   const [quickOverride, setQuickOverride] = useState<{

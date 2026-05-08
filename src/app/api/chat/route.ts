@@ -52,12 +52,28 @@ function normalizeAssistantReply(reply: string) {
   return reply.replace(/\]\(\/venues([^)]*)\)/gi, "](/venue-finder$1)");
 }
 
+function normalizeVenueActionLabel(label: string) {
+  if (/venue\s*finder/i.test(label)) return "Open Venue Finder";
+  if (/(find|search|more).*(venue|venues)/i.test(label)) return "Open Venue Finder";
+  if (/(venue|venues).*(find|search|more)/i.test(label)) return "Open Venue Finder";
+  return label;
+}
+
+function normalizeQuickActions(actions?: string[]) {
+  if (!actions?.length) return undefined;
+  return actions.map((a) => normalizeVenueActionLabel(a));
+}
+
 function normalizeAssistantLinks(links?: Array<{ label: string; href: string }>) {
   if (!links?.length) return [];
-  return links.map((l) => ({
-    ...l,
-    href: normalizeVenueHref(l.href),
-  }));
+  return links.map((l) => {
+    const href = normalizeVenueHref(l.href);
+    return {
+      ...l,
+      label: href.startsWith("/venue-finder") ? "Open Venue Finder" : l.label,
+      href,
+    };
+  });
 }
 
 function pageSummary(page: PageContext) {
@@ -124,7 +140,9 @@ async function callLlm(message: string, page: PageContext): Promise<LlmShape | n
     if (!parsed.reply || typeof parsed.reply !== "string") return null;
     return {
       reply: normalizeAssistantReply(parsed.reply),
-      quickActions: Array.isArray(parsed.quickActions) ? parsed.quickActions.slice(0, 4) : undefined,
+      quickActions: normalizeQuickActions(
+        Array.isArray(parsed.quickActions) ? parsed.quickActions.slice(0, 4) : undefined,
+      ),
       links: normalizeAssistantLinks(Array.isArray(parsed.links) ? parsed.links.slice(0, 3) : undefined),
     };
   } catch {
@@ -199,7 +217,7 @@ export async function POST(req: Request) {
       "I can only help with Access Stamp topics like disability access, venues, support, benefits, rights, transport, education, work adjustments, and care planning. Ask me one of those and I’ll give you a direct answer.";
     return NextResponse.json({
       reply: voice ? short(reply) : reply,
-      quickActions: ["Find an accessible venue", "Explain PIP simply", "Reasonable adjustments at work"],
+      quickActions: ["Open Venue Finder", "Explain PIP simply", "Reasonable adjustments at work"],
     });
   }
 
@@ -274,6 +292,7 @@ export async function POST(req: Request) {
         location: v.location,
         tags: v.tags,
       })),
+      links: [{ label: "Open Venue Finder", href: "/venue-finder" }],
       quickActions: [
         "Step-free + accessible toilet",
         "Blue Badge parking",
