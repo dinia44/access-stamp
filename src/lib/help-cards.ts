@@ -31,6 +31,8 @@ export const HELP_CARD_CONCERNS = [
   "Service provider discrimination",
   "Housing accessibility refusal",
   "Making a formal complaint",
+  "PIP mandatory reconsideration",
+  "NHS communication adjustments",
 ] as const;
 
 export const HELP_CARDS: HelpCard[] = [
@@ -737,6 +739,74 @@ export const HELP_CARDS: HelpCard[] = [
     keyLine:
       "I am submitting a formal disability access complaint with supporting evidence and a clear remedy request. Please confirm receipt and response deadline.",
     tags: ["Complaint", "Evidence", "Escalation", "Tribunal prep"],
+  },
+  {
+    slug: "pip-mandatory-reconsideration-basics-card",
+    title: "PIP and benefit decision challenge card",
+    category: "Rights",
+    summary:
+      "Practical prompts when a disability benefit decision looks wrong — from mandatory reconsideration to what to put in writing.",
+    whenToUse: [
+      "You have received a decision letter you disagree with.",
+      "You need to act before appeal deadlines pass.",
+    ],
+    mustAsk: [
+      "What is the exact deadline for mandatory reconsideration or appeal?",
+      "Which points in the decision letter are factually wrong or miss evidence?",
+    ],
+    checklist: [
+      "Read the decision letter and note each disputed point with evidence references.",
+      "Request a written statement of reasons if the letter is unclear.",
+      "Submit mandatory reconsideration with a short chronology and key documents.",
+      "Request reasonable adjustments for any further assessment (format, time, breaks).",
+      "Diarise deadlines and keep proof of delivery for all submissions.",
+    ],
+    documentsToCarry: [
+      "Decision letter and any assessment report.",
+      "Medical or therapy letters that match the descriptors you are claiming.",
+      "Your submission and proof of sending.",
+    ],
+    escalateIf: [
+      "Deadlines are imminent and you cannot gather evidence alone — seek advice the same week.",
+      "You experience discrimination in how the assessment or communication is handled.",
+    ],
+    keyLine:
+      "I am challenging this decision because it does not reflect my functional needs and evidence. Please confirm receipt and the review process, including reasonable adjustments for any further contact.",
+    tags: ["PIP", "Mandatory reconsideration", "Appeal", "DWP"],
+  },
+  {
+    slug: "nhs-communication-reasonable-adjustments-card",
+    title: "NHS appointments and communication adjustments card",
+    category: "Rights",
+    summary:
+      "Use with GP practices, clinics, and hospitals when booking, reminders, or consultations are inaccessible.",
+    whenToUse: [
+      "You cannot use the standard booking app or phone tree.",
+      "You need information in a different format or extra time in appointments.",
+    ],
+    mustAsk: [
+      "What accessible booking route exists besides the default app or phone queue?",
+      "Who records my communication and access needs on the clinical system?",
+    ],
+    checklist: [
+      "State the barrier (e.g. hearing, speech, cognition, pain, fatigue).",
+      "Request a reasonable adjustment (e.g. email booking, longer slot, quiet room, written summary).",
+      "Ask for a named contact or flag on the record where possible.",
+      "Follow up in writing and keep copies.",
+      "If refused, use PALS or complaints with dates and requested remedy.",
+    ],
+    documentsToCarry: [
+      "Short access needs summary (one page).",
+      "Correspondence log with dates.",
+      "Any previous agreement from the service.",
+    ],
+    escalateIf: [
+      "Essential care is delayed because no accessible booking route exists.",
+      "Repeated appointments miss recorded adjustments.",
+    ],
+    keyLine:
+      "I need a reasonable adjustment to access NHS appointments and information. Please confirm the alternative route and record my access needs for future contacts.",
+    tags: ["NHS", "GP", "Reasonable adjustments", "Communication"],
   },
 ];
 

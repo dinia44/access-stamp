@@ -1,9 +1,15 @@
 import Link from "next/link";
 import { AdviceArticleCard } from "@/components/advice/advice-article-card";
+import { RightsCommonIssuesGrid } from "@/components/advice/rights-common-issues-grid";
+import { RightsGuidesExplorer } from "@/components/advice/rights-guides-explorer";
+import { RightsPocketCards } from "@/components/advice/rights-pocket-cards";
+import { RightsSituationPaths } from "@/components/advice/rights-situation-paths";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
-import { ADVICE_ARTICLES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
+import { RIGHTS_COMMON_ISSUES } from "@/lib/rights-hub-common-issues";
+import { ADVICE_ARTICLES } from "@/lib/mock-data";
 
 const FEATURED = [
   "equality-act",
@@ -12,77 +18,136 @@ const FEATURED = [
   "advocacy",
   "eass",
   "nhs-complaints",
+  "gp-access",
+  "public-services",
 ];
 
 const START_HERE = [
-  "What benefit or right are you trying to understand?",
-  "What happened, and what do you need to change?",
-  "What evidence do you already have?",
-  "Do you need a complaint, an application, or a request for adjustment?",
+  "Name the barrier: what is harder for you than it should be, and where does it happen?",
+  "Decide what you need: a change to process, equipment, communication, timing, or access?",
+  "Put it in writing: short, dated, and with a clear request and reasonable deadline.",
+  "Keep a one-page timeline: who you spoke to, what was promised, and what actually happened.",
+  "If you are unsafe or in crisis, use urgent NHS or emergency routes first, then document.",
 ];
+
+const TRUSTED_LINKS = [
+  { label: "Citizens Advice", href: "https://www.citizensadvice.org.uk/" },
+  { label: "Acas (workplace)", href: "https://www.acas.org.uk/" },
+  { label: "Equality and Human Rights Commission", href: "https://www.equalityhumanrights.com/" },
+  { label: "Equality Advisory and Support Service (EASS)", href: "https://www.equalityadvisoryservice.com/" },
+  { label: "Legal aid checker", href: "https://www.gov.uk/check-legal-aid" },
+] as const;
+
+const URGENT = [
+  { label: "Urgent mental health help (NHS)", href: "https://www.nhs.uk/nhs-services/mental-health-services/get-urgent-help-for-mental-health/" },
+  { label: "Samaritans", href: "https://www.samaritans.org/how-we-can-help/contact-samaritan/" },
+  { label: "Emergency: 999", href: "https://www.gov.uk/contact-police" },
+] as const;
 
 export default function RightsPage() {
   const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === "rights");
   const featured = FEATURED.map((slug) => articles.find((a) => a.slug === slug)).filter(Boolean);
+  const situationCount = RIGHTS_COMMON_ISSUES.length;
 
   return (
     <div className="bg-background">
       <SetChatContext page={{ kind: "advice" }} />
       <Container className="py-10">
-        <div className="space-y-8">
-          <div className="space-y-3 max-w-4xl">
-            <Badge tone="amber">Your rights</Badge>
-            <h1 className="font-[var(--font-heading)] text-4xl text-heading">Your Rights</h1>
-            <p className="max-w-[80ch] text-muted">
-              Practical guides to legal protections, healthcare rights, complaints, advocacy, and family support.
-              Car-related rights are now grouped under Cars, and grants/equipment pathways are grouped under Equipment.
-            </p>
+        <div className="space-y-12">
+          <Breadcrumbs
+            items={[{ label: "Home", href: "/" }, { label: "Advice Hub", href: "/advice" }, { label: "Rights" }]}
+          />
+
+          <div className="relative overflow-hidden rounded-[var(--radius-ui)] border border-border bg-gradient-to-br from-blue-pale/40 via-background to-amber-pale/30 p-6 sm:p-8">
+            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue/5 blur-3xl" aria-hidden />
+            <div className="relative max-w-4xl space-y-4">
+              <Badge tone="amber">Your rights</Badge>
+              <h1 className="font-[var(--font-heading)] text-4xl text-heading md:text-[2.75rem] md:leading-tight">
+                Your rights: built around what actually goes wrong
+              </h1>
+              <p className="max-w-[80ch] text-base text-muted md:text-lg">
+                Across the UK the same friction points show up in search logs, advice centres, and community groups: reasonable
+                adjustments ignored or delayed, inaccessible booking systems, benefit decisions that do not match real life,
+                NHS pathways that are hard to navigate, housing and adaptations stuck in process, and complaints that go
+                nowhere without a clear paper trail. This hub links practical Access Stamp guides with those scenarios, pocket
+                cards you can download, and national services when you need backup.
+              </p>
+              <p className="max-w-[80ch] text-sm text-muted">
+                Access Stamp is practical information, not legal advice. For court claims, complex discrimination cases, or
+                urgent safeguarding, use specialist advisers or solicitors. External links open in a new tab.
+              </p>
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Button href="/help-cards">Help cards (download)</Button>
+                <Button href="/ai" variant="secondary">
+                  Ask the AI
+                </Button>
+                <Button href="/advice/cars" variant="ghost">
+                  Car & parking guides
+                </Button>
+                <Button href="/advice/equipment" variant="ghost">
+                  Equipment & DFG
+                </Button>
+              </div>
+            </div>
           </div>
 
-          <Card className="p-5 sm:p-6">
-            <div className="grid gap-4 lg:grid-cols-[1.4fr_.9fr] lg:items-start">
-              <div className="space-y-4">
-                <label className="block text-sm font-semibold text-muted">
-                  Search
-                  <input
-                    className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
-                    placeholder="Search PIP, Blue Badge, Motability, complaints..."
-                  />
-                </label>
-
-                <div>
-                  <div className="text-sm font-semibold text-heading">Popular guides</div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {featured.map((a) => (
-                      <Link
-                        key={a!.slug}
-                        href={`/advice/${a!.slug}`}
-                        className="rounded-full bg-blue-pale px-3 py-2 text-xs font-semibold text-blue"
-                      >
-                        {a!.title.replace(/\s*\(.+\)$/, "")}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-heading">Also see</div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Link href="/advice/cars" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-amber">
-                      Cars
-                    </Link>
-                    <Link href="/advice/equipment" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-amber">
-                      Equipment
-                    </Link>
-                    <Link href="/advice/new-to-disability" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-amber">
-                      New to Disability
-                    </Link>
-                  </div>
-                </div>
+          <Card className="border-amber/25 bg-amber-pale/40 p-4 sm:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="text-sm font-semibold text-heading">If you need help right now</div>
+                <p className="mt-1 text-sm text-muted">
+                  Rights processes matter — but safety comes first. Use urgent and emergency routes when someone is at risk.
+                </p>
               </div>
+              <div className="flex flex-wrap gap-2">
+                {URGENT.map((u) => (
+                  <a
+                    key={u.href}
+                    href={u.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-heading underline-offset-2 hover:underline"
+                  >
+                    {u.label}
+                  </a>
+                ))}
+                <Link
+                  href="/advice/mental-health-crisis"
+                  className="rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-blue underline-offset-2 hover:underline"
+                >
+                  Our crisis & rights guide →
+                </Link>
+              </div>
+            </div>
+          </Card>
 
-              <Card className="border border-border bg-background-2 p-4">
+          <section className="space-y-4">
+            <div className="max-w-3xl space-y-2">
+              <h2 className="font-[var(--font-heading)] text-2xl text-heading">Pick a situation (guided tracks)</h2>
+              <p className="text-sm text-muted md:text-base">
+                Six common “where do I even start?” paths. Each opens a hub or a strong entry guide; you can still search all
+                rights articles below.
+              </p>
+            </div>
+            <RightsSituationPaths />
+          </section>
+
+          <Card className="overflow-hidden border border-border p-0 sm:p-0">
+            <div className="grid gap-0 lg:grid-cols-[1.15fr_.85fr]">
+              <div className="space-y-5 p-5 sm:p-6 lg:p-8">
+                <div>
+                  <h2 className="font-[var(--font-heading)] text-xl font-semibold text-heading">Common sticking points</h2>
+                  <p className="mt-1 text-sm text-muted">
+                    {situationCount} topics that mirror what people search for and what advice services see under the Equality
+                    Act, NHS, housing, benefits, and public services — each links to an on-site guide (or focused hub) plus
+                    independent references where helpful.
+                  </p>
+                </div>
+                <RightsCommonIssuesGrid />
+              </div>
+              <div className="border-t border-border bg-background-2 p-5 sm:p-6 lg:border-l lg:border-t-0 lg:p-8">
                 <div className="text-sm font-semibold text-heading">Start here</div>
-                <ol className="mt-3 space-y-2 text-sm text-text">
+                <ol className="mt-3 space-y-2.5 text-sm text-text">
                   {START_HERE.map((item, idx) => (
                     <li key={item} className="flex gap-2">
                       <span className="font-semibold text-blue">{idx + 1}.</span>
@@ -90,23 +155,54 @@ export default function RightsPage() {
                     </li>
                   ))}
                 </ol>
-                <div className="mt-4">
-                  <Button href="/ai" variant="secondary">
-                    Ask the AI
-                  </Button>
+                <div className="mt-5 rounded-[var(--radius-ui)] border border-border bg-card p-4">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">National pointers</div>
+                  <ul className="mt-2 space-y-2">
+                    {TRUSTED_LINKS.map((l) => (
+                      <li key={l.href}>
+                        <a
+                          href={l.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-semibold text-blue underline-offset-2 hover:underline"
+                        >
+                          {l.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </Card>
+              </div>
             </div>
           </Card>
 
-          <section className="space-y-3">
-            <div className="flex items-end justify-between gap-3">
-              <div>
-                <h2 className="font-[var(--font-heading)] text-2xl text-heading">Featured rights topics</h2>
-                <p className="text-sm text-muted">The most useful places to begin.</p>
-              </div>
+          <section className="space-y-4">
+            <div className="max-w-3xl space-y-2">
+              <h2 className="font-[var(--font-heading)] text-2xl text-heading">Pocket cards you can carry</h2>
+              <p className="text-sm text-muted md:text-base">
+                Printable PNG cards — the same generator as our{" "}
+                <Link href="/help-cards" className="font-semibold text-blue underline-offset-2 hover:underline">
+                  Help Cards
+                </Link>{" "}
+                library — grouped for rights, work, education, health, housing, benefits, and transport. Save to your phone or
+                print at A6.
+              </p>
             </div>
+            <RightsPocketCards />
+          </section>
 
+          <section className="space-y-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="font-[var(--font-heading)] text-2xl text-heading">Featured guides</h2>
+                <p className="text-sm text-muted">
+                  Strong starting points for core protections, NHS access, complaints, advocacy, and services.
+                </p>
+              </div>
+              <Button href="/help-cards?concern=Equality%20Act%20rights" variant="ghost">
+                More Equality Act cards →
+              </Button>
+            </div>
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {featured.map((a) => (
                 <AdviceArticleCard key={a!.slug} article={a!} badgeTone="blue" />
@@ -116,15 +212,24 @@ export default function RightsPage() {
 
           <section className="space-y-3">
             <div>
-              <h2 className="font-[var(--font-heading)] text-2xl text-heading">All guides</h2>
-              <p className="text-sm text-muted">A simple list, no duplicate category panels.</p>
+              <h2 className="font-[var(--font-heading)] text-2xl text-heading">All rights guides</h2>
+              <p className="text-sm text-muted">
+                Every article in this category. Car, parking, and major vehicle topics live under{" "}
+                <Link href="/advice/cars" className="font-semibold text-blue underline-offset-2 hover:underline">
+                  Cars
+                </Link>
+                ; equipment grants under{" "}
+                <Link href="/advice/equipment" className="font-semibold text-blue underline-offset-2 hover:underline">
+                  Equipment
+                </Link>
+                ; PIP primer under{" "}
+                <Link href="/advice/new-to-disability" className="font-semibold text-blue underline-offset-2 hover:underline">
+                  New to disability
+                </Link>
+                .
+              </p>
             </div>
-
-            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-              {articles.map((a) => (
-                <AdviceArticleCard key={a.slug} article={a} badgeTone="amber" showReadCta={false} />
-              ))}
-            </div>
+            <RightsGuidesExplorer articles={articles} />
           </section>
         </div>
       </Container>
