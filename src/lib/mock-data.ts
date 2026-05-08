@@ -560,7 +560,7 @@ const BASE_ADVICE_ARTICLES: AdviceArticle[] = [
   {
     slug: "pip-in-plain-english",
     title: "PIP in plain English (what it is, who it’s for, what to do next)",
-    categorySlug: "rights",
+    categorySlug: "new-to-disability",
     updated: "2026-05-03",
     tags: ["Benefits", "PIP", "Forms"],
     sections: [

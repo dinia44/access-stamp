@@ -244,6 +244,7 @@ const RIGHTS_SEEDS: RightsSeed[] = [
   {
     slug: "dfg",
     title: "Disabled Facilities Grant (DFG): what it covers and how to apply",
+    categorySlug: "equipment",
     tags: ["DFG", "Housing", "Adaptations"],
     intro: "DFG can support major home adaptations where they are necessary and appropriate, but timelines are often long due to assessment, approvals, and contractor capacity.",
     checks: [
