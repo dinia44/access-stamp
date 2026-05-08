@@ -186,6 +186,10 @@ export function ChatWidget() {
   const [plainLanguage, setPlainLanguage] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const [showCaptions, setShowCaptions] = useState(true);
+  const [audioRate, setAudioRate] = useState(1);
+  const [audioPaused, setAudioPaused] = useState(false);
+  const [micLevel, setMicLevel] = useState(0);
   const [lastLinks, setLastLinks] = useState<Array<{ label: string; href: string }>>([]);
   const [lastVenues, setLastVenues] = useState<ApiVenue[]>([]);
   const [lastSummary, setLastSummary] = useState<StateSummary>({
@@ -212,6 +216,12 @@ export function ChatWidget() {
   const recognitionFinalRef = useRef("");
   const recognitionSentRef = useRef(false);
   const recognitionSilenceTimerRef = useRef<number | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const micRafRef = useRef<number | null>(null);
+  const lastVADTriggerRef = useRef(0);
+  const lastBargeTriggerRef = useRef(0);
   const conversationModeRef = useRef(false);
   const handsFreeRef = useRef(false);
   const speakingRef = useRef(false);
@@ -364,6 +374,7 @@ export function ChatWidget() {
       audioRef.current.onended = null;
       audioRef.current.onpause = null;
     }
+    setAudioPaused(false);
     speakingRef.current = false;
     setSpeaking(false);
     if (conversationModeRef.current && !typingRef.current) setHandsFreeState("idle");
@@ -427,6 +438,7 @@ export function ChatWidget() {
         const url = URL.createObjectURL(blob);
         if (audioRef.current) {
           audioRef.current.pause();
+          audioRef.current.playbackRate = audioRate;
           audioRef.current.src = url;
           try {
             await audioRef.current.play();
@@ -464,6 +476,86 @@ export function ChatWidget() {
     }
   }
 
+  async function startMicMonitor() {
+    if (typeof window === "undefined") return;
+    if (!handsFreeRef.current || !conversationModeRef.current) return;
+    if (mediaStreamRef.current) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStreamRef.current = stream;
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      audioCtxRef.current = ctx;
+      const source = ctx.createMediaStreamSource(stream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 512;
+      analyserRef.current = analyser;
+      source.connect(analyser);
+      const data = new Uint8Array(analyser.fftSize);
+
+      const loop = () => {
+        if (!analyserRef.current) return;
+        analyserRef.current.getByteTimeDomainData(data);
+        let sumSq = 0;
+        for (let i = 0; i < data.length; i++) {
+          const n = (data[i] - 128) / 128;
+          sumSq += n * n;
+        }
+        const rms = Math.sqrt(sumSq / data.length);
+        const level = Math.min(1, rms * 6.5);
+        setMicLevel((prev) => prev * 0.6 + level * 0.4);
+
+        const now = Date.now();
+        if (
+          handsFreeRef.current &&
+          conversationModeRef.current &&
+          speakingRef.current &&
+          level > 0.12 &&
+          now - lastBargeTriggerRef.current > 1000
+        ) {
+          lastBargeTriggerRef.current = now;
+          interruptAndListen();
+        } else if (
+          handsFreeRef.current &&
+          conversationModeRef.current &&
+          !speakingRef.current &&
+          !typingRef.current &&
+          !recognitionRef.current &&
+          level > 0.09 &&
+          now - lastVADTriggerRef.current > 900
+        ) {
+          lastVADTriggerRef.current = now;
+          startListening(true);
+        }
+
+        micRafRef.current = window.requestAnimationFrame(loop);
+      };
+      micRafRef.current = window.requestAnimationFrame(loop);
+    } catch {
+      setVoiceError("Microphone permission denied or unavailable.");
+      setHandsFreeState("error");
+    }
+  }
+
+  function stopMicMonitor() {
+    if (micRafRef.current) {
+      window.cancelAnimationFrame(micRafRef.current);
+      micRafRef.current = null;
+    }
+    if (analyserRef.current) analyserRef.current.disconnect();
+    analyserRef.current = null;
+    if (audioCtxRef.current) {
+      void audioCtxRef.current.close();
+      audioCtxRef.current = null;
+    }
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((t) => t.stop());
+      mediaStreamRef.current = null;
+    }
+    setMicLevel(0);
+  }
+
   async function unlockVoicePlayback() {
     if (!audioRef.current) return;
     try {
@@ -473,6 +565,19 @@ export function ChatWidget() {
       if (conversationModeRef.current && !typingRef.current) setHandsFreeState("speaking");
     } catch {
       setVoiceError("Still blocked. Check browser site sound/autoplay permissions, then try again.");
+    }
+  }
+
+  function togglePauseSpeaking() {
+    if (!audioRef.current) return;
+    if (audioRef.current.paused) {
+      void audioRef.current.play();
+      setAudioPaused(false);
+      setHandsFreeState("speaking");
+    } else {
+      audioRef.current.pause();
+      setAudioPaused(true);
+      setHandsFreeState("idle");
     }
   }
 
@@ -572,6 +677,7 @@ export function ChatWidget() {
     recognitionRef.current = null;
     setListening(false);
     setSpeaking(false);
+    stopMicMonitor();
     setHandsFreeState("idle");
   }
 
@@ -596,6 +702,7 @@ export function ChatWidget() {
   function setHandsFreeMode(next: boolean) {
     setHandsFree(next);
     if (!next) {
+      stopMicMonitor();
       setHandsFreeState("idle");
       return;
     }
@@ -603,10 +710,12 @@ export function ChatWidget() {
     if (!conversationModeRef.current) {
       startConversationMode(false);
       startHandsFreeGreeting();
+      void startMicMonitor();
       return;
     }
 
     startHandsFreeGreeting();
+    void startMicMonitor();
   }
 
   function interruptAndListen() {
@@ -756,6 +865,7 @@ export function ChatWidget() {
       }
       if (recognitionSilenceTimerRef.current) window.clearTimeout(recognitionSilenceTimerRef.current);
       recognitionRef.current = null;
+      stopMicMonitor();
     };
   }, [open]);
 
@@ -763,6 +873,14 @@ export function ChatWidget() {
     if (!conversationModeRef.current) return;
     endConversation();
   }, [page.kind]);
+
+  useEffect(() => {
+    if (handsFree && conversationMode) {
+      void startMicMonitor();
+    } else {
+      stopMicMonitor();
+    }
+  }, [handsFree, conversationMode]);
 
   const statusLabel =
     handsFreeState === "listening"
@@ -800,7 +918,22 @@ export function ChatWidget() {
                   <div className="min-w-0">
                     <div className="text-sm font-semibold">Voice conversation</div>
                     <div className="text-xs text-blue-100" aria-live="polite">
-                      {statusLabel}
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-2 rounded-full px-2 py-0.5 font-semibold",
+                          handsFreeState === "listening"
+                            ? "bg-emerald-500/25 text-emerald-100"
+                            : handsFreeState === "processing"
+                              ? "bg-violet-500/25 text-violet-100"
+                              : handsFreeState === "speaking"
+                                ? "bg-amber-500/25 text-amber-100"
+                                : handsFreeState === "error"
+                                  ? "bg-rose-500/25 text-rose-100"
+                                  : "bg-white/15 text-blue-100",
+                        )}
+                      >
+                        {statusLabel}
+                      </span>
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
@@ -844,6 +977,22 @@ export function ChatWidget() {
                       <div className="rounded-full border border-[#dbe4f2] bg-white px-3 py-1 text-xs font-semibold text-heading">
                         Voice: {voiceLabel}
                       </div>
+                      <div
+                        className="flex h-10 items-end gap-1 rounded-[12px] border border-[#dbe4f2] bg-white px-2 py-1"
+                        role="img"
+                        aria-label={`Microphone level ${Math.round(micLevel * 100)} percent`}
+                      >
+                        {Array.from({ length: 16 }).map((_, i) => {
+                          const h = Math.max(12, Math.round((Math.min(1, micLevel * 1.4) * (i % 5 === 0 ? 32 : 24))));
+                          return (
+                            <span
+                              key={i}
+                              className="w-[4px] rounded-full bg-blue/60 transition-all"
+                              style={{ height: `${h}px`, opacity: 0.35 + Math.min(0.65, micLevel) }}
+                            />
+                          );
+                        })}
+                      </div>
                       <div className="flex justify-center">
                         <VoiceOrb
                           state={
@@ -857,15 +1006,30 @@ export function ChatWidget() {
                           }
                         />
                       </div>
+                      {!listening ? (
+                        <button
+                          id="handsfree-start-listening"
+                          type="button"
+                          className="rounded-[10px] border border-[#d8e1ef] bg-white px-3 py-2 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                          onClick={() => startListening(true)}
+                          aria-label="Start listening"
+                        >
+                          Start listening
+                        </button>
+                      ) : null}
                       <div className="w-full max-w-xl space-y-2 text-left">
-                        <div className="rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
-                          <span className="font-semibold">You:</span>{" "}
-                          {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice input…")}
-                        </div>
-                        <div className="rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
-                          <span className="font-semibold">Assistant:</span>{" "}
-                          {typing ? "Thinking…" : lastAssistantSpokenText || "I will speak back here once we start."}
-                        </div>
+                        {showCaptions ? (
+                          <>
+                            <div className="rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
+                              <span className="font-semibold">You:</span>{" "}
+                              {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice input…")}
+                            </div>
+                            <div className="rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
+                              <span className="font-semibold">Assistant:</span>{" "}
+                              {typing ? "Thinking…" : lastAssistantSpokenText || "I will speak back here once we start."}
+                            </div>
+                          </>
+                        ) : null}
                       </div>
                       <p className="max-w-xl text-xs text-muted">
                         Keep talking naturally. After each reply, the mic turns back on automatically.
@@ -946,6 +1110,40 @@ export function ChatWidget() {
                   </button>
                   <button type="button" className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
                     Stop speaking
+                  </button>
+                  {speaking ? (
+                    <button
+                      type="button"
+                      className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                      onClick={togglePauseSpeaking}
+                    >
+                      {audioPaused ? "Resume speaking" : "Pause speaking"}
+                    </button>
+                  ) : null}
+                  <label className="inline-flex items-center gap-2 rounded border border-[#d8e1ef] px-2 py-1 text-xs font-semibold text-heading">
+                    Speed
+                    <select
+                      aria-label="Voice playback speed"
+                      className="rounded border border-[#d8e1ef] bg-white px-1 py-0.5 text-xs"
+                      value={audioRate}
+                      onChange={(e) => {
+                        const next = Number(e.target.value);
+                        setAudioRate(next);
+                        if (audioRef.current) audioRef.current.playbackRate = next;
+                      }}
+                    >
+                      <option value={0.9}>0.9x</option>
+                      <option value={1}>1.0x</option>
+                      <option value={1.1}>1.1x</option>
+                    </select>
+                  </label>
+                  <button
+                    type="button"
+                    className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                    aria-pressed={showCaptions}
+                    onClick={() => setShowCaptions((v) => !v)}
+                  >
+                    {showCaptions ? "Hide captions" : "Show captions"}
                   </button>
                   {typing ? (
                     <button
@@ -1064,11 +1262,12 @@ export function ChatWidget() {
                         handsFree ? "bg-emerald-500/25 text-emerald-100" : "bg-white/5 text-[#c0d0e2]",
                       )}
                       aria-pressed={handsFree}
+                      title={handsFree ? "Turn off hands-free mode" : "Turn on hands-free mode"}
                       onClick={() => {
                         setHandsFreeMode(!handsFree);
                       }}
                     >
-                      {handsFree ? "Hands-free: on" : "Hands-free: off"}
+                      {handsFree ? "Turn off hands-free mode" : "Turn on hands-free mode"}
                     </button>
                     <button
                       type="button"
@@ -1299,8 +1498,8 @@ export function ChatWidget() {
                 aria-label={handsFree ? "Turn off hands-free mode" : "Turn on hands-free mode"}
                 title={
                   handsFree
-                    ? "Hands-free mode is on"
-                    : "Turn on hands-free voice mode"
+                    ? "Turn off hands-free mode"
+                    : "Turn on hands-free mode"
                 }
                 onClick={() => {
                   if (!speechSupported) return;
@@ -1308,7 +1507,7 @@ export function ChatWidget() {
                 }}
                 disabled={!speechSupported}
               >
-                {handsFree ? "HF on" : "HF"}
+                {handsFree ? "HF on" : "Hands-free"}
               </button>
               <button
                 type="button"
