@@ -1,6 +1,7 @@
 import { ADVICE_EXTRA_SEEDS } from "@/lib/advice-extra-seeds";
 import { CARE_ARTICLES_DETAILED } from "@/lib/care-articles-detail";
 import { EQUIPMENT_ARTICLES_DETAILED } from "@/lib/equipment-articles-detail";
+import { RIGHTS_ARTICLES_DETAILED } from "@/lib/rights-articles-detail";
 import { TRAVEL_ARTICLES_DETAILED } from "@/lib/travel-articles-detail";
 
 export type Venue = {
@@ -623,77 +624,7 @@ const BASE_ADVICE_ARTICLES: AdviceArticle[] = [
       },
     ],
   },
-  // Rights placeholders for homepage tabbed section (add real content later)
-  ...(
-    [
-      ["blue-badge", "Blue Badge: eligibility, applying, and using it"],
-      ["motability", "Motability scheme: how it works"],
-      ["vehicle-tax-exemption", "Vehicle tax exemption and reductions"],
-      ["parking-rights", "Parking rights and enforcement (what to do when it goes wrong)"],
-      ["wavs", "Wheelchair Accessible Vehicles (WAVs): options and costs"],
-      ["licence-conditions", "Licence conditions and driving adaptations"],
-
-      ["dfg", "Disabled Facilities Grant (DFG): what it covers and how to apply"],
-      ["council-housing-priority", "Council housing priority and the medical needs process"],
-      ["equipment-through-social-services", "Getting equipment through social services"],
-      ["adapting-a-rented-property", "Adapting a rented property: your rights and the process"],
-      ["smart-home", "Smart home and assistive tech for independence"],
-      ["housing-register", "Housing register basics and realistic timelines"],
-
-      ["uc-lcwra", "Universal Credit: LCWRA and how assessments work"],
-      ["attendance-allowance", "Attendance Allowance: the essentials"],
-      ["carers-allowance", "Carer’s Allowance: eligibility and trade-offs"],
-      ["council-tax-disability-reduction", "Council Tax disability reduction"],
-      ["prescription-exemptions", "Prescription charge exemptions"],
-
-      ["equality-act", "Equality Act 2010: reasonable adjustments in practice"],
-      ["reasonable-adjustments", "Reasonable adjustments: what to ask for and how"],
-      ["formal-complaints", "How to make a formal complaint (and keep it effective)"],
-      ["eass", "When to contact EASS (Equality Advisory Support Service)"],
-      ["advocacy", "Advocacy: who can help and how to use it"],
-      ["public-services", "Accessing public services: what you can expect"],
-
-      ["nhs-wheelchair-services", "NHS wheelchair services: referral and what to expect"],
-      ["continuing-healthcare-chc", "NHS Continuing Healthcare (CHC): basics"],
-      ["gp-access", "GP and hospital accessibility rights"],
-      ["nhs-complaints", "NHS complaints: how to escalate"],
-      ["mental-health-crisis", "Mental health crisis support routes (UK)"],
-      ["traveling-with-care", "Traveling with support needs: planning and paperwork"],
-
-      ["disabled-parents", "Disabled parents: practical support and rights"],
-      ["childcare", "Childcare and accessibility: what to ask"],
-      ["childrens-benefits", "Children’s disability benefits overview"],
-      ["respite", "Respite: how to ask for it and what ‘counts’"],
-      ["family-activities", "Family activities: finding genuinely accessible places"],
-      ["pregnancy", "Pregnancy, birth, and disability: navigating appointments"],
-    ] as const
-  ).map(([slug, title]) => ({
-    slug,
-    title,
-    categorySlug: "rights" as const,
-    updated: "2026-05-03",
-    tags: ["Rights"],
-    sections: [
-      { type: "h2" as const, text: "Overview" },
-      {
-        type: "p" as const,
-        text: "This guide is being written. For now, this page is a placeholder so the site navigation works end to end.",
-      },
-      { type: "h2" as const, text: "Next steps" },
-      {
-        type: "callout" as const,
-        tone: "tip" as const,
-        title: "Tip",
-        body: "If you tell us what happened and what outcome you need, the AI can help you plan the next step and point you at the right place to escalate.",
-      },
-      {
-        type: "callout" as const,
-        tone: "warning" as const,
-        title: "Important",
-        body: "This guide is not legal advice. For complex situations, contact Citizens Advice, Disability Rights UK, EASS, or a disability solicitor.",
-      },
-    ],
-  })),
+  ...RIGHTS_ARTICLES_DETAILED,
   ...(
     [
       {
