@@ -6,12 +6,12 @@ import { ADVICE_ARTICLES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
 
 const FEATURED = [
-  "pip-in-plain-english",
-  "blue-badge",
-  "motability",
-  "reasonable-adjustments",
-  "nhs-complaints",
   "equality-act",
+  "reasonable-adjustments",
+  "formal-complaints",
+  "advocacy",
+  "eass",
+  "nhs-complaints",
 ];
 
 const START_HERE = [
@@ -34,8 +34,8 @@ export default function RightsPage() {
             <Badge tone="amber">Your rights</Badge>
             <h1 className="font-[var(--font-heading)] text-4xl text-heading">Your Rights</h1>
             <p className="max-w-[80ch] text-muted">
-              Practical guides to benefits, legal protections, healthcare, housing, driving, and family support. Start
-              with the thing you need to fix, not the category name.
+              Practical guides to legal protections, healthcare rights, complaints, advocacy, and family support.
+              Car-related rights are now grouped under Cars, and grants/equipment pathways are grouped under Equipment.
             </p>
           </div>
 
@@ -62,6 +62,20 @@ export default function RightsPage() {
                         {a!.title.replace(/\s*\(.+\)$/, "")}
                       </Link>
                     ))}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-heading">Also see</div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Link href="/advice/cars" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-amber">
+                      Cars
+                    </Link>
+                    <Link href="/advice/equipment" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-amber">
+                      Equipment
+                    </Link>
+                    <Link href="/advice/new-to-disability" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-amber">
+                      New to Disability
+                    </Link>
                   </div>
                 </div>
               </div>
