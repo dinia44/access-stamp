@@ -191,6 +191,7 @@ export function ChatWidget() {
     mustHaves: [],
   });
   const [voiceLabel, setVoiceLabel] = useState("Access Stamp Voice");
+  const [selectedVoiceId, setSelectedVoiceId] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("en-GB");
   const [msgs, setMsgs] = useState<Msg[]>([
     {
@@ -245,7 +246,10 @@ export function ChatWidget() {
         if (!res.ok) return;
         const data = (await res.json()) as { voices?: VoiceChoice[] };
         if (cancelled) return;
-        if (data.voices?.[0]?.label) setVoiceLabel(data.voices[0].label);
+        if (data.voices?.[0]?.label) {
+          setVoiceLabel(data.voices[0].label);
+          setSelectedVoiceId(data.voices[0].id);
+        }
       } catch {
         // keep default label
       }
@@ -372,19 +376,6 @@ export function ChatWidget() {
     }, 320);
   }
 
-  async function speakWithBrowser(text: string) {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    await new Promise<void>((resolve) => {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = selectedLanguage;
-      utterance.rate = 1;
-      utterance.onend = () => resolve();
-      utterance.onerror = () => resolve();
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-    });
-  }
-
   async function speakReply(reply: string) {
     stopRecognitionOnly();
 
@@ -401,7 +392,10 @@ export function ChatWidget() {
       const res = await fetch("/api/voice", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({
+          text,
+          voiceId: selectedVoiceId || undefined,
+        }),
       });
       if (res.ok) {
         const blob = await res.blob();
@@ -419,19 +413,9 @@ export function ChatWidget() {
         }
         return;
       }
-      if (conversationModeRef.current) {
-        setVoiceError("Voice service unavailable, using browser speech.");
-        await speakWithBrowser(text);
-      } else {
-        setVoiceError("Voice service unavailable right now.");
-      }
+      setVoiceError("ElevenLabs voice unavailable right now.");
     } catch {
-      if (conversationModeRef.current) {
-        setVoiceError("Voice service unavailable, using browser speech.");
-        await speakWithBrowser(text);
-      } else {
-        setVoiceError("Voice service unavailable right now.");
-      }
+      setVoiceError("ElevenLabs voice unavailable right now.");
     } finally {
       speakingRef.current = false;
       setSpeaking(false);
@@ -711,8 +695,14 @@ export function ChatWidget() {
               </div>
               <div ref={scroller} className="min-h-0 flex-1 overflow-auto bg-[#f8fafc] px-5 py-4">
                 {handsFree ? (
-                  <div className="mb-4 rounded-[14px] border border-[#d5e2f5] bg-[#f2f7ff] p-4">
-                    <div className="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">
+                  <div className="mb-4 rounded-[14px] border border-[#d5e2f5] bg-[#f2f7ff] p-5">
+                    <div className="flex flex-col items-center gap-4 text-center">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+                        Hands-free voice
+                      </div>
+                      <div className="rounded-full border border-[#dbe4f2] bg-white px-3 py-1 text-xs font-semibold text-heading">
+                        Voice: {voiceLabel}
+                      </div>
                       <div className="flex justify-center">
                         <VoiceOrb
                           state={
@@ -726,10 +716,7 @@ export function ChatWidget() {
                           }
                         />
                       </div>
-                      <div className="space-y-2">
-                        <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-                          Hands-free conversation
-                        </div>
+                      <div className="w-full max-w-xl space-y-2 text-left">
                         <div className="rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
                           <span className="font-semibold">You:</span>{" "}
                           {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice input…")}
@@ -738,30 +725,34 @@ export function ChatWidget() {
                           <span className="font-semibold">Assistant:</span>{" "}
                           {typing ? "Thinking…" : lastAssistantSpokenText || "I will speak back here once we start."}
                         </div>
-                        <p className="text-xs text-muted">
-                          Keep talking naturally. After each reply, the mic turns back on automatically.
-                        </p>
                       </div>
+                      <p className="max-w-xl text-xs text-muted">
+                        Keep talking naturally. After each reply, the mic turns back on automatically.
+                      </p>
                     </div>
                   </div>
                 ) : null}
-                <div className="mb-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
-                  <span className="font-semibold">Live input:</span>{" "}
-                  {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice or pasted text…")}
-                </div>
-                <div className="grid gap-2">
-                  {msgs.slice(-6).map((m, i) => (
-                    <div
-                      key={`${m.sentAt}-${i}`}
-                      className={cn(
-                        "rounded-[12px] border px-3 py-2 text-sm",
-                        m.role === "assistant" ? "border-[#e3e8ef] bg-white" : "border-[#d3e2ff] bg-[#e8f0ff]",
-                      )}
-                    >
-                      <ChatMessageContent text={m.text} />
+                {handsFree ? null : (
+                  <>
+                    <div className="mb-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
+                      <span className="font-semibold">Live input:</span>{" "}
+                      {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice or pasted text…")}
                     </div>
-                  ))}
-                </div>
+                    <div className="grid gap-2">
+                      {msgs.slice(-6).map((m, i) => (
+                        <div
+                          key={`${m.sentAt}-${i}`}
+                          className={cn(
+                            "rounded-[12px] border px-3 py-2 text-sm",
+                            m.role === "assistant" ? "border-[#e3e8ef] bg-white" : "border-[#d3e2ff] bg-[#e8f0ff]",
+                          )}
+                        >
+                          <ChatMessageContent text={m.text} />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
                 {voiceError ? (
                   <div className="mt-3 rounded-[12px] border border-amber bg-amber-pale px-3 py-2 text-xs text-[#7c5b16]">
                     {voiceError}
