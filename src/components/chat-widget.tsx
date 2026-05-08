@@ -272,8 +272,6 @@ export function ChatWidget() {
   }, []);
 
   const speechSupported = canUseSpeech();
-  const speechOutputSupported =
-    typeof window !== "undefined" && "speechSynthesis" in window;
 
   const defaultQuick = useMemo(() => {
     if (page.kind === "venue-finder")
@@ -911,21 +909,7 @@ export function ChatWidget() {
                     Enable voice playback
                   </button>
                 ) : null}
-                {handsFree ? (
-                  <div className="mt-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-[11px] text-muted">
-                    <span className="font-semibold text-heading">Voice health:</span>{" "}
-                    Mic input {speechSupported ? "OK" : "Unavailable"} · Output{" "}
-                    {speechOutputSupported ? "OK" : "Unavailable"} · ElevenLabs{" "}
-                    {elevenAvailable ? "Connected" : "Not configured"}
-                  </div>
-                ) : null}
-                {process.env.NODE_ENV !== "production" && handsFree ? (
-                  <div className="mt-2 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-[11px] text-muted">
-                    <span className="font-semibold text-heading">Debug:</span>{" "}
-                    state={handsFreeState} · recognitionSupported={String(speechSupported)} · muted=
-                    {String(!voiceEnabled)} · activeRequest={String(typing)}
-                  </div>
-                ) : null}
+                
               </div>
 
               <div className="border-t border-[#dde4ef] bg-white px-4 py-3">
