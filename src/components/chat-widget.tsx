@@ -685,14 +685,18 @@ export function ChatWidget() {
     void speakReply("Hello from Access Stamp. Voice playback test successful.", { force: true });
   }
 
-  async function send(text: string, opts?: { skipUserEcho?: boolean }) {
+  async function send(
+    text: string,
+    opts?: { skipUserEcho?: boolean; forceHandsFree?: boolean },
+  ) {
     const t = text.trim();
     if (!t) return;
     abortRef.current?.abort();
     abortRef.current = new AbortController();
     userStoppedRef.current = false;
     lastOutboundRef.current = t;
-    const voiceTurnContext = conversationModeRef.current || listening;
+    const handsFreeTurn = Boolean(opts?.forceHandsFree || (conversationModeRef.current && handsFreeRef.current));
+    const voiceTurnContext = handsFreeTurn || conversationModeRef.current || listening;
     stopRecognitionOnly();
     const sentNow = Date.now();
     if (!opts?.skipUserEcho) {
@@ -701,7 +705,7 @@ export function ChatWidget() {
     }
     setDraft("");
     setTyping(true);
-    if (conversationModeRef.current) setHandsFreeState("processing");
+    if (handsFreeTurn) setHandsFreeState("processing");
     setErrorText("");
     const history = [...msgs, { role: "user" as const, text: t, sentAt: sentNow }]
       .slice(-10)
@@ -717,7 +721,7 @@ export function ChatWidget() {
           message: t,
           page,
           voiceMode: voiceMode || voiceTurnContext,
-          mode: conversationModeRef.current ? "hands-free" : "text",
+          mode: handsFreeTurn ? "hands-free" : "text",
           history,
         }),
       });
@@ -752,8 +756,12 @@ export function ChatWidget() {
     setMsgs((m) => [...m, { role: "assistant", text: reply, sentAt: Date.now() }]);
     setTyping(false);
 
-    await speakReply(reply);
+    await speakReply(reply, { force: handsFreeTurn });
 
+  }
+
+  async function sendHandsFree(text: string, opts?: { skipUserEcho?: boolean }) {
+    await send(text, { ...opts, forceHandsFree: true });
   }
 
   function stopResponse() {
@@ -933,7 +941,7 @@ export function ChatWidget() {
       if (finalText && !recognitionSentRef.current) {
         recognitionSentRef.current = true;
         setDraft(finalText);
-        void send(finalText);
+        void sendHandsFree(finalText);
         liveTranscriptRef.current = "";
         recognitionFinalRef.current = "";
         return;
