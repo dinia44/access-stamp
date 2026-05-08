@@ -376,6 +376,19 @@ export function ChatWidget() {
     }, 320);
   }
 
+  async function speakWithBrowser(text: string) {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    await new Promise<void>((resolve) => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = selectedLanguage;
+      utterance.rate = 1;
+      utterance.onend = () => resolve();
+      utterance.onerror = () => resolve();
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    });
+  }
+
   async function speakReply(reply: string, opts?: { force?: boolean }) {
     stopRecognitionOnly();
 
@@ -389,21 +402,32 @@ export function ChatWidget() {
     speakingRef.current = true;
     setSpeaking(true);
     try {
+      const voiceAbort = new AbortController();
+      const timeout = window.setTimeout(() => voiceAbort.abort(), 7000);
       const res = await fetch("/api/voice", {
         method: "POST",
         headers: { "content-type": "application/json" },
+        signal: voiceAbort.signal,
         body: JSON.stringify({
           text,
           voiceId: selectedVoiceId || undefined,
         }),
       });
+      window.clearTimeout(timeout);
       if (res.ok) {
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         if (audioRef.current) {
           audioRef.current.pause();
           audioRef.current.src = url;
-          await audioRef.current.play();
+          try {
+            await audioRef.current.play();
+          } catch {
+            // If autoplay/audio policies block playback, use browser TTS as fail-safe.
+            setVoiceError("Audio playback blocked; using browser voice fallback.");
+            await speakWithBrowser(text);
+            return;
+          }
           await new Promise<void>((resolve) => {
             if (!audioRef.current) return resolve();
             audioRef.current.onended = () => resolve();
@@ -413,9 +437,19 @@ export function ChatWidget() {
         }
         return;
       }
-      setVoiceError("ElevenLabs voice unavailable right now.");
+      if (conversationModeRef.current || handsFreeRef.current) {
+        setVoiceError("ElevenLabs unavailable; using browser voice fallback.");
+        await speakWithBrowser(text);
+      } else {
+        setVoiceError("ElevenLabs voice unavailable right now.");
+      }
     } catch {
-      setVoiceError("ElevenLabs voice unavailable right now.");
+      if (conversationModeRef.current || handsFreeRef.current) {
+        setVoiceError("Voice service slow/unavailable; using browser voice fallback.");
+        await speakWithBrowser(text);
+      } else {
+        setVoiceError("ElevenLabs voice unavailable right now.");
+      }
     } finally {
       speakingRef.current = false;
       setSpeaking(false);
