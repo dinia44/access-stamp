@@ -47,6 +47,80 @@ export const TRAVEL_ARTICLES_DETAILED: AdviceArticle[] = [
         type: "p",
         text: "Bed height can make transfers impossible or unsafe. Ask if the bed can be raised/lowered, whether furniture can be moved, and whether mobile hoists can fit around the bed. Confirm socket locations for charging powerchairs, CPAP, or other equipment.",
       },
+      { type: "h2", text: "Things that may be useful (especially first time)" },
+      {
+        type: "ul",
+        items: [
+          "Ask bed height in cm from floor to top of mattress. If unknown, ask staff to measure.",
+          "Ask bathroom and bedroom door clear width in cm (clear opening, not frame width).",
+          "Ask toilet seat height in cm and transfer space on left and right.",
+          "Ask shower entry type (true roll-in vs lip/tray) and lip height in cm if present.",
+          "Ask whether shower seat is fixed, fold-down, removable, and weight-rated.",
+          "Ask lift internal size and door width, plus what happens if the lift is out of order.",
+          "Ask whether accessible rooms are ever reassigned and how they protect your booking.",
+          "Ask for the nearest truly step-free route from drop-off/parking to your room.",
+          "Ask if they can remove decorative furniture to improve turning space if needed.",
+          "Ask for photos/video from this season, not archive marketing pictures.",
+        ],
+      },
+      { type: "h2", text: "Template email: accessibility checks before booking" },
+      {
+        type: "pre",
+        text: `Subject: Accessibility checks before I book [Hotel name], [dates]
+
+Hello [Hotel team / Reservations],
+
+I am planning to stay at your hotel on [dates], and I need to confirm access details before booking.
+Could you please reply by email with answers to the questions below?
+
+Room and route
+1) Is the route from street/parking to reception and from reception to the room fully step-free?
+2) Door clear width (cm): room door ___ / bathroom door ___
+3) Lift details (if relevant): door width ___ cm, internal depth ___ cm, internal width ___ cm
+
+Bedroom
+4) Bed height from floor to top of mattress (cm): ___
+5) Can furniture be moved to allow turning space?
+6) Is there space for a mobile hoist if required?
+
+Bathroom
+7) Shower type: roll-in / tray with lip (please state lip height in cm)
+8) Toilet seat height (cm): ___
+9) Transfer space next to toilet: left side ___ cm / right side ___ cm
+10) Grab rails: positions around toilet and shower (photo helpful)
+11) Shower seat: fixed / fold-down / portable, and weight limit if known
+
+Practical
+12) Can you share recent photos or a short video of the exact room and bathroom?
+13) If the room is not as described on arrival, what is your process for relocation or cancellation?
+14) Please confirm this room will be blocked as an accessibility-required booking.
+
+Thanks very much for your help. Written confirmation helps me travel safely.
+
+Kind regards,
+[Name]
+[Phone number]
+[Booking reference if already held]`,
+      },
+      {
+        type: "callout",
+        tone: "tip",
+        title: "If you call instead of email",
+        body: "Ask for the staff member's name, then send a follow-up email saying “Thanks for confirming…” with the details listed. This creates written evidence.",
+      },
+      { type: "h2", text: "Template checklist: first-trip essentials people forget" },
+      {
+        type: "ul",
+        items: [
+          "A one-page support summary: diagnosis is optional, practical needs are essential.",
+          "Medication list with generic names, doses, and timing.",
+          "Equipment serial numbers, photos, and receipts saved offline.",
+          "Spare charger/adapters and extension lead if sockets are hard to reach.",
+          "Emergency contacts card in wallet and phone lock-screen details if appropriate.",
+          "Insurance emergency number printed (not only saved in an app).",
+          "Buffer time after arrival for setup and recovery, not a tight same-day schedule.",
+        ],
+      },
       { type: "h2", text: "Cancellation and complaints protection" },
       {
         type: "ul",
