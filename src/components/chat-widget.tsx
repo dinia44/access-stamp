@@ -382,19 +382,6 @@ export function ChatWidget() {
     }, 320);
   }
 
-  async function speakWithBrowser(text: string) {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    await new Promise<void>((resolve) => {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = selectedLanguage;
-      utterance.rate = 1;
-      utterance.onend = () => resolve();
-      utterance.onerror = () => resolve();
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-    });
-  }
-
   async function speakReply(reply: string, opts?: { force?: boolean }) {
     stopRecognitionOnly();
 
@@ -409,14 +396,7 @@ export function ChatWidget() {
     setSpeaking(true);
     try {
       if (!elevenAvailable || !selectedVoiceId) {
-        if (conversationModeRef.current || handsFreeRef.current || opts?.force) {
-          if (!speechOutputSupported) {
-            setVoiceError("No voice output available in this browser.");
-          } else {
-            setVoiceError("ElevenLabs not configured; using browser voice.");
-            await speakWithBrowser(text);
-          }
-        }
+        setVoiceError("ElevenLabs voice is not configured/connected.");
         return;
       }
 
@@ -441,9 +421,7 @@ export function ChatWidget() {
           try {
             await audioRef.current.play();
           } catch {
-            // If autoplay/audio policies block playback, use browser TTS as fail-safe.
-            setVoiceError("Audio playback blocked; using browser voice fallback.");
-            await speakWithBrowser(text);
+            setVoiceError("Audio playback blocked by browser. Please interact again and check autoplay/audio settings.");
             return;
           }
           await new Promise<void>((resolve) => {
@@ -455,19 +433,9 @@ export function ChatWidget() {
         }
         return;
       }
-      if (conversationModeRef.current || handsFreeRef.current) {
-        setVoiceError("ElevenLabs unavailable; using browser voice fallback.");
-        await speakWithBrowser(text);
-      } else {
-        setVoiceError("ElevenLabs voice unavailable right now.");
-      }
+      setVoiceError("ElevenLabs voice unavailable right now.");
     } catch {
-      if (conversationModeRef.current || handsFreeRef.current) {
-        setVoiceError("Voice service slow/unavailable; using browser voice fallback.");
-        await speakWithBrowser(text);
-      } else {
-        setVoiceError("ElevenLabs voice unavailable right now.");
-      }
+      setVoiceError("ElevenLabs voice unavailable right now.");
     } finally {
       speakingRef.current = false;
       setSpeaking(false);
