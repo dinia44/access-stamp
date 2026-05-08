@@ -1,6 +1,7 @@
 import { ADVICE_EXTRA_SEEDS } from "@/lib/advice-extra-seeds";
 import { CARE_ARTICLES_DETAILED } from "@/lib/care-articles-detail";
 import { EQUIPMENT_ARTICLES_DETAILED } from "@/lib/equipment-articles-detail";
+import { TRAVEL_ARTICLES_DETAILED } from "@/lib/travel-articles-detail";
 
 export type Venue = {
   slug: string;
@@ -891,6 +892,7 @@ const BASE_ADVICE_ARTICLES: AdviceArticle[] = [
   })),
   ...EQUIPMENT_ARTICLES_DETAILED,
   ...CARE_ARTICLES_DETAILED,
+  ...TRAVEL_ARTICLES_DETAILED,
   ...ADVICE_EXTRA_SEEDS.map(({ slug, title, categorySlug, tags, intro, steps }) => ({
     slug,
     title,

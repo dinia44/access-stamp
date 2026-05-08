@@ -231,63 +231,7 @@ export const ADVICE_EXTRA_SEEDS = [
     ],
   },
 
-  // --- Travel (leisure / holidays) ---
-  {
-    slug: "booking-accessible-accommodation",
-    title: "Booking accessible accommodation: questions that reveal reality",
-    categorySlug: "travel" as const,
-    tags: ["Travel", "Hotels", "Access"],
-    intro:
-      "Photos lie. Step counts, shower dimensions, bed height, and lift reliability matter more than the word accessible.",
-    steps: [
-      "Ask step-free routes from street to room, not only ‘ground floor’.",
-      "Ask for bathroom measurements: toilet height, shower entry, grab rails.",
-      "Ask whether lifts service all floors you will use.",
-      "Confirm cancellation policy if access is not as promised.",
-    ],
-  },
-  {
-    slug: "travel-insurance-and-medical-equipment",
-    title: "Travel insurance: equipment, medication, and disclosure",
-    categorySlug: "travel" as const,
-    tags: ["Insurance", "Travel", "Equipment"],
-    intro:
-      "Travel insurance fails when equipment or conditions are not declared. Read exclusions for mobility devices and emergency medical transfer.",
-    steps: [
-      "Declare conditions and equipment honestly — ask insurers plain questions.",
-      "Check single-item limits for wheelchairs or scooters.",
-      "Carry prescriptions and letters for medication and devices.",
-      "Keep insurer emergency numbers offline.",
-    ],
-  },
-  {
-    slug: "airports-batteries-and-spare-parts",
-    title: "Airports and mobility tech: batteries, spare parts, and hand baggage",
-    categorySlug: "travel" as const,
-    tags: ["Flying", "Batteries", "Wheelchairs"],
-    intro:
-      "Battery rules vary by chemistry and airline. Cabin approvals for essential equipment matter when holds go missing.",
-    steps: [
-      "Print airline battery guidance and highlight your battery type.",
-      "Carry tools and parts you are allowed for minor fixes.",
-      "Label devices with name and contacts.",
-      "Plan for assistance timing — assistance delays cause missed connections.",
-    ],
-  },
-  {
-    slug: "ferries-and-coaches-access",
-    title: "Ferries and coaches: lifts, evacuation, and seasickness planning",
-    categorySlug: "travel" as const,
-    tags: ["Ferries", "Coaches", "Travel"],
-    intro:
-      "Large vehicles can hide narrow corridors and evacuation limits. Ask early about lifts, wheelchair tie-downs, and onboard toilets.",
-    steps: [
-      "Ask deck access routes before booking.",
-      "Ask evacuation plans if you cannot use stairs.",
-      "Plan medication and seating for nausea if movement triggers symptoms.",
-      "Check terminal assistance links between coach and ferry.",
-    ],
-  },
+  // Travel articles now live in `src/lib/travel-articles-detail.ts`.
 
   // --- Sport & leisure ---
   {
