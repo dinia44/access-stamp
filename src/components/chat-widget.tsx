@@ -376,11 +376,11 @@ export function ChatWidget() {
     }, 320);
   }
 
-  async function speakReply(reply: string) {
+  async function speakReply(reply: string, opts?: { force?: boolean }) {
     stopRecognitionOnly();
 
     const text = normalizeForSpeech(reply);
-    if (!voiceEnabled || !text) {
+    if ((!voiceEnabled && !opts?.force) || !text) {
       scheduleHandsFreeListen();
       return;
     }
@@ -529,7 +529,7 @@ export function ChatWidget() {
     const lastAssistant = [...msgs].reverse().find((m) => m.role === "assistant")?.text?.trim();
     const greeting = lastAssistant || "Hi, I'm Access Stamp voice. How can I help today?";
     // Speak the greeting without appending a duplicate transcript bubble.
-    void speakReply(greeting);
+    void speakReply(greeting, { force: true });
   }
 
   function setHandsFreeMode(next: boolean) {
