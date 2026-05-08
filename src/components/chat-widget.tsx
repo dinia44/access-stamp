@@ -186,7 +186,7 @@ export function ChatWidget() {
   const [plainLanguage, setPlainLanguage] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [errorText, setErrorText] = useState("");
-  const [showCaptions, setShowCaptions] = useState(true);
+  const [showCaptions, setShowCaptions] = useState(false);
   const [audioRate, setAudioRate] = useState(1);
   const [audioPaused, setAudioPaused] = useState(false);
   const [micLevel, setMicLevel] = useState(0);
@@ -706,6 +706,8 @@ export function ChatWidget() {
       setHandsFreeState("idle");
       return;
     }
+    // Voice-first default: keep text hidden during live hands-free turns.
+    setShowCaptions(false);
 
     if (!conversationModeRef.current) {
       startConversationMode(false);
@@ -1033,6 +1035,7 @@ export function ChatWidget() {
                       </div>
                       <p className="max-w-xl text-xs text-muted">
                         Keep talking naturally. After each reply, the mic turns back on automatically.
+                        Transcript is still saved and visible after voice mode ends.
                       </p>
                     </div>
                   </div>
@@ -1143,7 +1146,7 @@ export function ChatWidget() {
                     aria-pressed={showCaptions}
                     onClick={() => setShowCaptions((v) => !v)}
                   >
-                    {showCaptions ? "Hide captions" : "Show captions"}
+                    {showCaptions ? "Captions: on" : "Captions: off"}
                   </button>
                   {typing ? (
                     <button
