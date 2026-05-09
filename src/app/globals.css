@@ -1,6 +1,14 @@
 @import "tailwindcss";
 
-/* Access Stamp — tokens aligned with access-stamp-build-prompt.md */
+/*
+ * Layout consistency:
+ * - Wrap advice/marketing pages in PageLayout (@/components/page-layout) for bg-background + max-width + py-10/md:py-12 + section spacing.
+ * - Prefer design tokens: border-border, text-heading/text-muted, shadow-[var(--shadow-soft)], rounded-[var(--radius-card)] or rounded-[var(--radius-ui)].
+ * Shapes & imagery:
+ * - Advice card imagery lives in AdviceMediaFrame (`aspect-[16/10]`, bg-background-2, overflow-hidden). Pair with GuideCoverImage + ADVICE_CARD_IMAGE_SIZES.
+ * - Image-led cards: put `overflow-hidden` on the Card so corners match `--radius-card`.
+ * Access Stamp — tokens aligned with access-stamp-build-prompt.md
+ */
 :root {
   --background: #f3f8ff;
   --background-2: #eaf2ff;

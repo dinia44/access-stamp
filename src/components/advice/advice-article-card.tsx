@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { AdviceArticle } from "@/lib/mock-data";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
+import { AdviceMediaFrame, ADVICE_CARD_IMAGE_SIZES } from "@/components/advice/advice-media-frame";
 import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { Badge, Card } from "@/components/ui";
 import { cn } from "@/lib/utils";
@@ -24,15 +25,15 @@ export function AdviceArticleCard({
   const img = getAdviceArticleCardImage(article);
   return (
     <Link href={`/advice/${article.slug}`} className={cn("group block h-full", className)}>
-      <Card className="flex h-full flex-col overflow-hidden border-[#dce6f4] p-0 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-background-2">
+      <Card className="flex h-full flex-col overflow-hidden border-border p-0 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
+        <AdviceMediaFrame>
           <GuideCoverImage
             src={img.src}
             alt={img.alt}
             className="object-cover transition duration-300 group-hover:scale-[1.03]"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes={ADVICE_CARD_IMAGE_SIZES}
           />
-        </div>
+        </AdviceMediaFrame>
         <div className="flex flex-1 flex-col p-5">
           <div className="line-clamp-3 text-sm font-semibold text-heading">{article.title}</div>
           {meta ?? <div className="mt-2 text-xs font-semibold text-muted">Updated: {article.updated}</div>}

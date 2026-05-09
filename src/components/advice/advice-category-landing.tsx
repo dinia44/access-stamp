@@ -1,7 +1,7 @@
 import { AdviceArticleCard } from "@/components/advice/advice-article-card";
 import { AdviceManualCard } from "@/components/advice/advice-manual-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { Container } from "@/components/container";
+import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { ADVICE_ARTICLES, type AdviceArticle } from "@/lib/mock-data";
@@ -46,27 +46,19 @@ export function AdviceCategoryLanding({
   }
 
   return (
-    <div className="bg-background">
+    <PageLayout>
       <SetChatContext page={{ kind: "advice" }} />
-      <Container className="py-10">
-        <div className="space-y-10">
-          <Breadcrumbs
-            items={[
-              { label: "Home", href: "/" },
-              { label: "Advice Hub", href: "/advice" },
-              { label: breadcrumbLabel },
-            ]}
-          />
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Advice Hub", href: "/advice" },
+          { label: breadcrumbLabel },
+        ]}
+      />
 
-          <div className="max-w-4xl space-y-4">
-            <Badge tone="amber" className="w-fit">
-              {badge}
-            </Badge>
-            <h1 className="font-[var(--font-heading)] text-4xl leading-tight text-heading sm:text-5xl">{title}</h1>
-            <p className="max-w-[82ch] text-base leading-7 text-muted">{subtitle}</p>
-          </div>
+      <PageHero badge={<Badge tone="amber">{badge}</Badge>} title={title} subtitle={subtitle} />
 
-          <Card className="border-[#dce6f4] p-6 shadow-[0_10px_24px_-16px_rgba(12,29,52,0.2)] sm:p-7">
+      <Card className="border-border p-6 shadow-[var(--shadow-soft)] sm:p-7">
             <div className="grid gap-6 lg:grid-cols-[1.3fr_.9fr]">
               <div className="space-y-5">
                 <div className="space-y-3">
@@ -80,7 +72,7 @@ export function AdviceCategoryLanding({
                   </div>
                 </div>
 
-                <div className="rounded-[var(--radius-card)] border border-[#dce6f4] bg-background-2 p-4">
+                <div className="rounded-[var(--radius-card)] border border-border bg-background-2 p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div className="text-sm font-semibold text-heading">Featured guides</div>
                     <Badge tone="blue">Popular</Badge>
@@ -136,10 +128,10 @@ export function AdviceCategoryLanding({
           </Card>
 
           <section className="space-y-3">
-            <div>
-              <h2 className="font-[var(--font-heading)] text-2xl text-heading">Explore topics</h2>
-              <p className="text-sm text-muted">Pick the area closest to your barrier — you can move between guides freely.</p>
-            </div>
+            <PageSectionTitle
+              title="Explore topics"
+              description="Pick the area closest to your barrier — you can move between guides freely."
+            />
             <div className="grid gap-3 md:grid-cols-3">
               {topicAreas.map((item) => (
                 <AdviceManualCard
@@ -156,10 +148,10 @@ export function AdviceCategoryLanding({
           </section>
 
           <section className="space-y-3">
-            <div>
-              <h2 className="font-[var(--font-heading)] text-2xl text-heading">All guides in this section</h2>
-              <p className="text-sm text-muted">Plain-language routes through transport, paperwork, and practical barriers.</p>
-            </div>
+            <PageSectionTitle
+              title="All guides in this section"
+              description="Plain-language routes through transport, paperwork, and practical barriers."
+            />
 
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {articles.map((a) => (
@@ -176,8 +168,6 @@ export function AdviceCategoryLanding({
               ))}
             </div>
           </section>
-        </div>
-      </Container>
-    </div>
+    </PageLayout>
   );
 }

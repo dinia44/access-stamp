@@ -121,7 +121,7 @@ export function HeroSearchCard() {
           <div className="grid gap-2 lg:grid-cols-[1.2fr_.9fr_240px]">
             <label
               htmlFor="hero-search"
-              className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[10px] border border-[#d8dfea] bg-white px-3"
+              className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[var(--radius-ui)] border border-[#d8dfea] bg-white px-3"
             >
               <span aria-hidden className="text-lg text-[#184080]">⌕</span>
               <div className="min-w-0">
@@ -144,7 +144,7 @@ export function HeroSearchCard() {
 
             <label
               htmlFor="hero-location-main"
-              className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[10px] border border-[#d8dfea] bg-white px-3"
+              className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[var(--radius-ui)] border border-[#d8dfea] bg-white px-3"
             >
               <span aria-hidden className="text-lg text-[#184080]">⌖</span>
               <div className="min-w-0">
@@ -163,7 +163,7 @@ export function HeroSearchCard() {
             </label>
 
             <Button
-              className="h-12 w-full justify-center gap-2 rounded-[10px] bg-[#0d4bb3] text-white hover:bg-[#0a3f97]"
+              className="h-12 w-full justify-center gap-2 rounded-[var(--radius-ui)] bg-[#0d4bb3] text-white hover:bg-[#0a3f97]"
               aria-label="Find access-checked venues"
               onClick={runSearch}
             >
@@ -218,7 +218,7 @@ export function HeroSearchCard() {
             <div className="grid gap-2">
               <label
                 htmlFor="hero-venue-type"
-                className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[10px] border border-[#d8dfea] bg-white px-3"
+                className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[var(--radius-ui)] border border-[#d8dfea] bg-white px-3"
               >
                 <span aria-hidden className="text-lg text-[#184080]">⌂</span>
                 <div className="min-w-0">
@@ -250,7 +250,7 @@ export function HeroSearchCard() {
                 prefill: mainQuery || `Find accessible venues${location ? ` in ${location}` : ""}${active.size ? ` with ${Array.from(active).join(", ")}` : ""}.`,
               })
             }
-            className="grid min-h-11 w-full grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[10px] border border-[#d8dfea] bg-white px-3 py-2 text-left hover:bg-[#f5f8ff] cursor-pointer"
+            className="grid min-h-11 w-full grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[var(--radius-ui)] border border-[#d8dfea] bg-white px-3 py-2 text-left hover:bg-[#f5f8ff] cursor-pointer"
             aria-label="Ask Access Stamp AI"
           >
             <span className="grid h-7 w-7 place-items-center rounded-full bg-blue text-xs text-white" aria-hidden>
@@ -300,7 +300,7 @@ export function HeroSearchCard() {
                     type="button"
                     onClick={() => toggle(key)}
                     className={
-                      "rounded-[10px] border px-3 py-2 text-[13px] font-medium transition-colors cursor-pointer " +
+                      "rounded-[var(--radius-ui)] border px-3 py-2 text-[13px] font-medium transition-colors cursor-pointer " +
                       (on
                         ? "border-[#0d4bb3] bg-[#e8f0ff] text-[#184080] shadow-[inset_0_0_0_1px_rgba(13,75,179,0.2)]"
                         : "border-[#d8dfea] bg-white text-[#184080] hover:bg-[#f5f8ff]")
@@ -316,7 +316,7 @@ export function HeroSearchCard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-[10px] bg-[#eef2f7] px-3 py-2 text-sm text-muted">
+          <div className="flex items-center gap-2 rounded-[var(--radius-ui)] bg-[#eef2f7] px-3 py-2 text-sm text-muted">
             <span className="text-base leading-none text-[#184080]" aria-hidden>◌</span>
             <div>
               Or describe what you need, for example:{" "}

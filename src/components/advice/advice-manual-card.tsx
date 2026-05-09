@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ADVICE_ARTICLES } from "@/lib/mock-data";
 import type { AdviceArticle } from "@/lib/mock-data";
 import { Badge, Card } from "@/components/ui";
+import { AdviceMediaFrame, ADVICE_CARD_IMAGE_SIZES } from "@/components/advice/advice-media-frame";
 import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { getAdviceArticleCardImage, getAdviceSceneImage } from "@/lib/advice-card-images";
 import { cn } from "@/lib/utils";
@@ -23,15 +24,10 @@ export function AdviceIllustratedCard({
     alt: `Illustration for: ${title}`,
   };
   return (
-    <Card className={cn("overflow-hidden border-[#dce6f4] p-0", className)}>
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-background-2">
-        <GuideCoverImage
-          src={img.src}
-          alt={img.alt}
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 33vw"
-        />
-      </div>
+    <Card className={cn("overflow-hidden border-border p-0", className)}>
+      <AdviceMediaFrame>
+        <GuideCoverImage src={img.src} alt={img.alt} className="object-cover" sizes={ADVICE_CARD_IMAGE_SIZES} />
+      </AdviceMediaFrame>
       <div className="p-5">
         <div className="text-sm font-semibold text-heading">{title}</div>
         <p className="mt-2 text-sm text-muted">{description}</p>
@@ -74,15 +70,15 @@ export function AdviceManualCard({
 
   return (
     <Link href={href} className={cn("group block h-full", className)}>
-      <Card className="flex h-full flex-col overflow-hidden border-[#dce6f4] p-0 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-background-2">
+      <Card className="flex h-full flex-col overflow-hidden border-border p-0 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
+        <AdviceMediaFrame>
           <GuideCoverImage
             src={img.src}
             alt={img.alt}
             className="object-cover transition duration-300 group-hover:scale-[1.03]"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes={ADVICE_CARD_IMAGE_SIZES}
           />
-        </div>
+        </AdviceMediaFrame>
         <div className="flex flex-1 flex-col p-5">
           {variant === "explore" ? (
             <div className="flex items-center justify-between gap-2">

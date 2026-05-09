@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 /**
- * Advice card / hero imagery. Local `.svg` covers use `unoptimized` so they always render in production.
+ * Advice card / hero imagery (typically inside `AdviceMediaFrame`). Local `.svg` covers use `unoptimized` so they always render in production.
  */
 export function GuideCoverImage({
   src,

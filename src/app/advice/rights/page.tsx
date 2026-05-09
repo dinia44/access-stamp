@@ -6,7 +6,7 @@ import { RightsGuidesExplorer } from "@/components/advice/rights-guides-explorer
 import { RightsPocketCards } from "@/components/advice/rights-pocket-cards";
 import { RightsSituationPaths } from "@/components/advice/rights-situation-paths";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { Container } from "@/components/container";
+import { PageLayout } from "@/components/page-layout";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { RIGHTS_COMMON_ISSUES } from "@/lib/rights-hub-common-issues";
@@ -51,11 +51,9 @@ export default function RightsPage() {
   const situationCount = RIGHTS_COMMON_ISSUES.length;
 
   return (
-    <div className="bg-background">
+    <PageLayout stack="relaxed">
       <SetChatContext page={{ kind: "advice" }} />
-      <Container className="py-10">
-        <div className="space-y-12">
-          <Breadcrumbs
+      <Breadcrumbs
             items={[{ label: "Home", href: "/" }, { label: "Advice Hub", href: "/advice" }, { label: "Rights" }]}
           />
 
@@ -246,8 +244,6 @@ export default function RightsPage() {
             </div>
             <RightsGuidesExplorer articles={articles} />
           </section>
-        </div>
-      </Container>
-    </div>
+    </PageLayout>
   );
 }
