@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AdviceArticleCard } from "@/components/advice/advice-article-card";
 import { RightsCommonIssuesGrid } from "@/components/advice/rights-common-issues-grid";
+import { RightsEssentials } from "@/components/advice/rights-essentials";
 import { RightsGuidesExplorer } from "@/components/advice/rights-guides-explorer";
 import { RightsPocketCards } from "@/components/advice/rights-pocket-cards";
 import { RightsSituationPaths } from "@/components/advice/rights-situation-paths";
@@ -81,6 +82,9 @@ export default function RightsPage() {
                 <Button href="/ai" variant="secondary">
                   Ask the AI
                 </Button>
+                <Button href="#rights-essentials" variant="secondary">
+                  Plain-English overview
+                </Button>
                 <Button href="/advice/cars" variant="ghost">
                   Car & parking guides
                 </Button>
@@ -120,6 +124,13 @@ export default function RightsPage() {
               </div>
             </div>
           </Card>
+
+          <section className="space-y-6 scroll-mt-8" id="rights-essentials" aria-labelledby="rights-essentials-heading">
+            <h2 id="rights-essentials-heading" className="sr-only">
+              How UK disability rights work
+            </h2>
+            <RightsEssentials />
+          </section>
 
           <section className="space-y-4">
             <div className="max-w-3xl space-y-2">
@@ -212,9 +223,13 @@ export default function RightsPage() {
 
           <section className="space-y-3">
             <div>
-              <h2 className="font-[var(--font-heading)] text-2xl text-heading">All rights guides</h2>
+              <h2 className="font-[var(--font-heading)] text-2xl text-heading">All rights guides (A–Z search)</h2>
               <p className="text-sm text-muted">
-                Every article in this category. Car, parking, and major vehicle topics live under{" "}
+                Reference library: every article in the Rights category. For context first, read the{" "}
+                <Link href="#rights-essentials" className="font-semibold text-blue underline-offset-2 hover:underline">
+                  plain-English overview
+                </Link>{" "}
+                above. Car, parking, and major vehicle topics live under{" "}
                 <Link href="/advice/cars" className="font-semibold text-blue underline-offset-2 hover:underline">
                   Cars
                 </Link>

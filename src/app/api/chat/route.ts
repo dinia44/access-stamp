@@ -20,6 +20,11 @@ type LlmShape = {
 const MUST_HAVE_TOKENS = [
   "step-free",
   "accessible toilet",
+  "accessible toilets",
+  "changing places",
+  "changing place",
+  "toilet",
+  "toilets",
   "parking",
   "blue badge",
   "turning space",
@@ -29,8 +34,10 @@ const MUST_HAVE_TOKENS = [
 ] as const;
 
 function extractLocation(t: string) {
-  const fromIn = t.match(/\bin\s+([a-z][a-z\s-]{1,30})/i)?.[1]?.trim();
-  if (fromIn) return fromIn;
+  const fromIn = t.match(/\bin\s+([A-Za-z][A-Za-z0-9\s,'-]{1,40})/)?.[1]?.trim();
+  if (fromIn) return fromIn.replace(/[.,]+$/, "");
+  const near = t.match(/\bnear\s+([A-Za-z][A-Za-z0-9\s,'-]{1,40})/i)?.[1]?.trim();
+  if (near) return near.replace(/[.,]+$/, "");
   const postcode = t.match(/\b[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}\b/i)?.[0];
   if (postcode) return postcode.toUpperCase();
   return "";
@@ -51,7 +58,12 @@ function normalizeVenueHref(href: string) {
 }
 
 function normalizeAssistantReply(reply: string) {
-  return reply.replace(/\]\(\/venues([^)]*)\)/gi, "](/venue-finder$1)");
+  let out = reply.replace(/\]\(\/venues([^)]*)\)/gi, "](/venue-finder$1)");
+  // Never imply navigation happened when we only provide a link.
+  out = out.replace(/\bI(?:'|’)?ve\s+opened\s+the\s+venue\s+finder\s+for\s+you\b\.?/gi, "Here’s a link to Venue Finder:");
+  out = out.replace(/\bI\s+opened\s+the\s+venue\s+finder\b\.?/gi, "Open Venue Finder here:");
+  out = out.replace(/\bI(?:'|’)?ve\s+opened\s+it\s+for\s+you\b\.?/gi, "You can open it here:");
+  return out;
 }
 
 function normalizeVenueActionLabel(label: string) {
@@ -195,7 +207,9 @@ function isTransferQuestion(t: string) {
 }
 
 function isVenueQuestion(t: string) {
-  return /(restaurant|cafe|café|hotel|pub|bar|cinema|museum|near me|nearby|postcode|wheelchair)/i.test(t);
+  return /(restaurant|cafe|café|hotel|pub|bar|cinema|museum|near me|nearby|postcode|wheelchair|toilet|toilets|loo|changing places|accessible toilet|venue finder|find (?:a |an )?place)/i.test(
+    t,
+  );
 }
 
 function isPipQuestion(t: string) {

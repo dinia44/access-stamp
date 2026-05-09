@@ -81,12 +81,12 @@ function accentClass(accent: (typeof PATHS)[number]["accent"]) {
 
 export function RightsSituationPaths() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2">
       {PATHS.map((path) => (
         <Link key={path.href} href={path.href} className="group block h-full">
           <Card
             className={cn(
-              "flex h-full flex-col border border-border p-5 shadow-[var(--shadow-soft)] transition",
+              "flex h-full flex-col rounded-[var(--radius-card)] border border-border p-5 shadow-[var(--shadow-soft)] transition",
               "border-l-4 hover:-translate-y-0.5 hover:shadow-[var(--shadow)]",
               accentClass(path.accent),
             )}
@@ -104,7 +104,7 @@ export function RightsSituationPaths() {
                   {path.chips.map((c) => (
                     <span
                       key={c}
-                      className="rounded-full border border-border/80 bg-card/80 px-2 py-0.5 text-[11px] font-semibold text-heading"
+                      className="rounded-full border border-border bg-card px-2 py-0.5 text-[11px] font-semibold text-heading"
                     >
                       {c}
                     </span>

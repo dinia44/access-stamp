@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useChat } from "@/components/chat/provider";
 import { ChatMessageContent } from "@/components/chat/chat-message-content";
@@ -14,6 +15,24 @@ function clockLabel(sentAt: number) {
 
 function normalizeVenueHref(href: string) {
   return href.replace(/^\/venues(?=$|[/?#])/i, "/venue-finder");
+}
+
+function dedupeLinksByHref(links: Array<{ label: string; href: string }>) {
+  const seen = new Set<string>();
+  return links.filter((l) => {
+    const h = normalizeVenueHref(l.href);
+    if (seen.has(h)) return false;
+    seen.add(h);
+    return true;
+  });
+}
+
+/** Chips that should navigate instead of posting a fake “user message” to the API. */
+function shouldNavigateChipToVenueFinder(label: string) {
+  const t = label.trim().toLowerCase();
+  if (t === "open venue finder") return true;
+  if (t.includes("venue finder") && (t.startsWith("open ") || t.includes("search"))) return true;
+  return false;
 }
 type StateSummary = {
   location: string;
@@ -181,6 +200,7 @@ function VoiceOrb({
 }
 
 export function ChatWidget() {
+  const router = useRouter();
   const { page, open, setOpen, draft, setDraft, voiceMode } = useChat();
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [listening, setListening] = useState(false);
@@ -347,14 +367,27 @@ export function ChatWidget() {
   function parseStateSummary(text: string) {
     const lower = text.toLowerCase();
     const location =
-      text.match(/\bin\s+([a-z][a-z\s-]{1,30})/i)?.[1]?.trim() ??
+      text.match(/\bin\s+([A-Za-z][A-Za-z0-9\s,'-]{1,40})/)?.[1]?.trim().replace(/[.,]+$/, "") ??
+      text.match(/\bnear\s+([A-Za-z][A-Za-z0-9\s,'-]{1,40})/i)?.[1]?.trim().replace(/[.,]+$/, "") ??
       text.match(/\b[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}\b/i)?.[0] ??
       "";
-    const venueType =
-      /(restaurant|cafe|café|hotel|shopping|leisure|arts|pub|bar)/i.exec(text)?.[1] ?? lastSummary.venueType;
+    const venueTypeMatch = /(restaurant|cafe|café|hotel|shopping|leisure|arts|pub|bar|cinema|museum|library)/i.exec(text);
+    const toiletIntent = /\b(toilet|toilets|loo|changing places|changing place|accessible toilet)\b/i.test(lower);
+    let venueType: string;
+    if (venueTypeMatch?.[1]) {
+      const raw = venueTypeMatch[1];
+      venueType = raw[0].toUpperCase() + raw.slice(1).toLowerCase();
+    } else if (toiletIntent) {
+      venueType = "Any";
+    } else {
+      venueType = lastSummary.venueType;
+    }
     const mustHaves = [
       "step-free",
       "accessible toilet",
+      "changing places",
+      "toilet",
+      "toilets",
       "parking",
       "blue badge",
       "turning space",
@@ -364,9 +397,18 @@ export function ChatWidget() {
     ].filter((token) => lower.includes(token));
     return {
       location: location || lastSummary.location,
-      venueType: venueType ? venueType[0].toUpperCase() + venueType.slice(1) : "Any",
+      venueType,
       mustHaves: mustHaves.length ? mustHaves : lastSummary.mustHaves,
     };
+  }
+
+  function handleQuickChip(label: string) {
+    if (shouldNavigateChipToVenueFinder(label)) {
+      router.push("/venue-finder");
+      return;
+    }
+    setDraft(label);
+    void send(label);
   }
 
   function stopAllSpeech() {
@@ -460,21 +502,27 @@ export function ChatWidget() {
     stopRecognitionOnly();
 
     const text = normalizeForSpeech(reply);
-    // Voice output is exclusively routed through hands-free mode.
     const shouldSpeak = Boolean(opts?.force || (conversationModeRef.current && handsFreeRef.current && voiceEnabled));
     if (!shouldSpeak || !text) {
       scheduleHandsFreeListen();
       return;
     }
 
+    const endSpeakingCycle = () => {
+      speakingRef.current = false;
+      setSpeaking(false);
+      scheduleHandsFreeListen();
+    };
+
     setVoiceError("");
     setAwaitingVoiceUnlock(false);
     speakingRef.current = true;
     setSpeaking(true);
     if (conversationModeRef.current) setHandsFreeState("speaking");
+
     try {
       const voiceAbort = new AbortController();
-      const timeout = window.setTimeout(() => voiceAbort.abort(), 7000);
+      const fetchTimeout = window.setTimeout(() => voiceAbort.abort(), 7000);
       const res = await fetch("/api/tts", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -484,70 +532,81 @@ export function ChatWidget() {
           voiceId: selectedVoiceId || undefined,
         }),
       });
-      window.clearTimeout(timeout);
+      window.clearTimeout(fetchTimeout);
+
       if (res.ok) {
         const blob = await res.blob();
         if (!blob.size || !(blob.type || "").includes("audio")) {
-          setVoiceError("Voice response was empty or invalid audio.");
+          setVoiceError("Voice response was empty or invalid audio. You can read the reply in the transcript and type your next message.");
           if (conversationModeRef.current) setHandsFreeState("error");
+          endSpeakingCycle();
           return;
         }
+
         const url = URL.createObjectURL(blob);
+        playbackAudioRef.current?.pause();
+        const playbackAudio = new Audio(url);
+        playbackAudio.setAttribute("playsinline", "true");
+        playbackAudio.preload = "auto";
+        playbackAudio.muted = false;
+        playbackAudio.volume = 1;
+        playbackAudio.playbackRate = audioRate;
+        playbackAudioRef.current = playbackAudio;
+
         try {
-          playbackAudioRef.current?.pause();
-          const playbackAudio = new Audio(url);
-          playbackAudio.setAttribute("playsinline", "true");
-          playbackAudio.preload = "auto";
-          playbackAudio.muted = false;
-          playbackAudio.volume = 1;
-          playbackAudio.playbackRate = audioRate;
-          playbackAudioRef.current = playbackAudio;
-          try {
-            await playbackAudio.play();
-          } catch {
-            const fellBack = await speakWithBrowserFallback(text);
-            if (fellBack) {
-              setVoiceError("Audio playback blocked for ElevenLabs; using browser voice fallback.");
-            } else {
-              setVoiceError("Audio playback blocked by browser. Tap 'Enable voice playback' below.");
-              setAwaitingVoiceUnlock(true);
-              if (conversationModeRef.current) setHandsFreeState("error");
-              return;
-            }
-          }
-          const startedAt = Date.now();
-          const playbackResult = await new Promise<"ended" | "paused" | "error">((resolve) => {
-            playbackAudio.onended = () => resolve("ended");
-            playbackAudio.onpause = () => resolve("paused");
-            playbackAudio.onerror = () => resolve("error");
-          });
-          const elapsed = Date.now() - startedAt;
-          // Chrome can occasionally resolve play() but immediately pause at 0s with no sound.
-          // Treat that as a failed playback attempt and use fallback voice.
-          if (
-            playbackResult !== "ended" &&
-            (playbackAudio.currentTime < 0.05 || elapsed < 180)
-          ) {
-            const fellBack = await speakWithBrowserFallback(text);
-            if (fellBack) {
-              setVoiceError("ElevenLabs audio did not play in browser; using voice fallback.");
-            } else {
-              setVoiceError("Voice playback failed. Tap 'Enable voice playback' and try again.");
-              setAwaitingVoiceUnlock(true);
-              if (conversationModeRef.current) setHandsFreeState("error");
-              return;
-            }
-          }
-        } finally {
+          await playbackAudio.play();
+        } catch {
           URL.revokeObjectURL(url);
-          if (playbackAudioRef.current) {
-            playbackAudioRef.current.onended = null;
-            playbackAudioRef.current.onpause = null;
-            playbackAudioRef.current.onerror = null;
+          if (playbackAudioRef.current === playbackAudio) playbackAudioRef.current = null;
+          const fellBack = await speakWithBrowserFallback(text);
+          if (fellBack) {
+            setVoiceError("Browser blocked ElevenLabs audio; used browser voice instead.");
+          } else {
+            setVoiceError("Sound is blocked in this browser. Tap Enable voice playback (below) or use the text box.");
+            setAwaitingVoiceUnlock(true);
+            if (conversationModeRef.current) setHandsFreeState("error");
           }
+          endSpeakingCycle();
+          return;
         }
+
+        let finished = false;
+        const finishPlayback = (opts?: { markError?: boolean }) => {
+          if (finished) return;
+          finished = true;
+          window.clearTimeout(watchdog);
+          URL.revokeObjectURL(url);
+          if (playbackAudioRef.current === playbackAudio) {
+            playbackAudio.onended = null;
+            playbackAudio.onerror = null;
+            playbackAudioRef.current = null;
+          }
+          endSpeakingCycle();
+          if (conversationModeRef.current) {
+            if (opts?.markError) setHandsFreeState("error");
+            else setHandsFreeState("idle");
+          }
+        };
+
+        const watchdog = window.setTimeout(() => {
+          try {
+            playbackAudio.pause();
+          } catch {
+            // ignore
+          }
+          setVoiceError("Voice playback took too long and was stopped. You can keep chatting by text or tap Start listening.");
+          finishPlayback({ markError: true });
+        }, 120_000);
+
+        playbackAudio.onended = () => finishPlayback();
+        playbackAudio.onerror = () => {
+          setVoiceError("Voice playback stopped unexpectedly. The transcript below still has the full reply.");
+          finishPlayback({ markError: true });
+        };
+
         return;
       }
+
       let detail = "";
       try {
         const err = (await res.json()) as { error?: string };
@@ -555,33 +614,31 @@ export function ChatWidget() {
       } catch {
         // ignore JSON parse errors
       }
-      setVoiceError(`ElevenLabs voice unavailable right now.${detail}`);
+      setVoiceError(`ElevenLabs voice unavailable right now.${detail} You can still use text.`);
       if (conversationModeRef.current) {
         const fellBack = await speakWithBrowserFallback(text);
         if (fellBack) {
-          setVoiceError("ElevenLabs unavailable; using browser voice fallback.");
-          setHandsFreeState("speaking");
+          setVoiceError("ElevenLabs unavailable; used short browser voice instead.");
+          setHandsFreeState("idle");
         } else {
           setHandsFreeState("error");
         }
       }
+      endSpeakingCycle();
     } catch {
       if (conversationModeRef.current) {
         const fellBack = await speakWithBrowserFallback(text);
         if (fellBack) {
-          setVoiceError("Voice service unavailable; using browser voice fallback.");
-          setHandsFreeState("speaking");
+          setVoiceError("Voice service unavailable; used browser voice for this reply.");
+          setHandsFreeState("idle");
         } else {
-          setVoiceError("ElevenLabs voice unavailable right now.");
+          setVoiceError("Voice is unavailable. Use the text box below — your messages still work.");
           setHandsFreeState("error");
         }
       } else {
         setVoiceError("ElevenLabs voice unavailable right now.");
       }
-    } finally {
-      speakingRef.current = false;
-      setSpeaking(false);
-      scheduleHandsFreeListen();
+      endSpeakingCycle();
     }
   }
 
@@ -643,7 +700,10 @@ export function ChatWidget() {
       };
       micRafRef.current = window.requestAnimationFrame(loop);
     } catch {
-      setVoiceError("Microphone permission denied or unavailable.");
+      setVoiceError(
+        "Microphone blocked or unavailable. Allow mic access in your browser site settings, or type in the text box below.",
+      );
+      setShowCaptions(true);
       setHandsFreeState("error");
     }
   }
@@ -688,11 +748,16 @@ export function ChatWidget() {
     if (playbackAudioRef.current.paused) {
       void playbackAudioRef.current.play();
       setAudioPaused(false);
+      speakingRef.current = true;
+      setSpeaking(true);
       setHandsFreeState("speaking");
     } else {
       playbackAudioRef.current.pause();
       setAudioPaused(true);
+      speakingRef.current = false;
+      setSpeaking(false);
       setHandsFreeState("idle");
+      scheduleHandsFreeListen();
     }
   }
 
@@ -855,8 +920,7 @@ export function ChatWidget() {
     }
     setAwaitingVoiceUnlock(false);
     setVoiceError("");
-    // Voice-first default: keep text hidden during live hands-free turns.
-    setShowCaptions(false);
+    setShowCaptions(true);
 
     startHandsFreeGreeting();
     void startMicMonitor();
@@ -982,7 +1046,12 @@ export function ChatWidget() {
       }
       const code = String((err as { error?: string })?.error ?? "");
       if (fromConversation || conversationModeRef.current) {
-        setVoiceError(code === "not-allowed" ? "Microphone permission denied." : "Microphone unavailable.");
+        setVoiceError(
+          code === "not-allowed"
+            ? "Microphone permission denied. Tap the lock icon in your browser address bar to allow the mic, or type your message below."
+            : "Microphone unavailable in this browser. Use the text box to continue.",
+        );
+        setShowCaptions(true);
         setHandsFreeState("error");
       }
     };
@@ -1093,22 +1162,37 @@ export function ChatWidget() {
                   <div className="min-w-0">
                     <div className="text-sm font-semibold">Hands-free mode</div>
                     <div className="text-xs text-blue-100" aria-live="polite">
-                      <span
-                        className={cn(
-                          "inline-flex items-center gap-2 rounded-full px-2 py-0.5 font-semibold",
-                          handsFreeState === "listening"
-                            ? "bg-emerald-500/25 text-emerald-100"
-                            : handsFreeState === "processing"
-                              ? "bg-violet-500/25 text-violet-100"
-                              : handsFreeState === "speaking"
-                                ? "bg-amber-500/25 text-amber-100"
-                                : handsFreeState === "error"
-                                  ? "bg-rose-500/25 text-rose-100"
-                                  : "bg-white/15 text-blue-100",
-                        )}
-                      >
-                        {statusLabel}
-                      </span>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className={cn(
+                            "inline-flex items-center gap-2 rounded-full px-2 py-0.5 font-semibold",
+                            handsFreeState === "listening"
+                              ? "bg-emerald-500/25 text-emerald-100"
+                              : handsFreeState === "processing"
+                                ? "bg-violet-500/25 text-violet-100"
+                                : handsFreeState === "speaking"
+                                  ? "bg-amber-500/25 text-amber-100"
+                                  : handsFreeState === "error"
+                                    ? "bg-rose-500/25 text-rose-100"
+                                    : "bg-white/15 text-blue-100",
+                          )}
+                        >
+                          {statusLabel}
+                        </span>
+                        {awaitingVoiceUnlock ||
+                        /sound is blocked|playback blocked|enable voice/i.test(voiceError) ? (
+                          <button
+                            type="button"
+                            className="rounded-full border border-white/40 bg-white/20 px-3 py-1 text-[11px] font-bold text-white hover:bg-white/30"
+                            onClick={() => void unlockVoicePlayback()}
+                          >
+                            Enable sound
+                          </button>
+                        ) : null}
+                      </div>
+                      <div className="mt-1 text-[10px] font-medium uppercase tracking-wide text-blue-200/90">
+                        Pipeline: {handsFreeState} · Mic: {listening ? "on" : "off"} · TTS: {speaking ? "playing" : "idle"}
+                      </div>
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
@@ -1207,24 +1291,63 @@ export function ChatWidget() {
                         {showCaptions ? (
                           <>
                             <div className="rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
-                              <span className="font-semibold">You:</span>{" "}
+                              <span className="font-semibold">Live (voice):</span>{" "}
                               {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice input…")}
                             </div>
                             <div className="rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
-                              <span className="font-semibold">Assistant:</span>{" "}
-                              {typing ? "Thinking…" : lastAssistantSpokenText || "I will speak back here once we start."}
+                              <span className="font-semibold">Latest reply:</span>{" "}
+                              {typing ? "Thinking…" : lastAssistantSpokenText || "—"}
                             </div>
                           </>
-                        ) : null}
+                        ) : (
+                          <button
+                            type="button"
+                            className="text-xs font-semibold text-blue underline-offset-2 hover:underline"
+                            onClick={() => setShowCaptions(true)}
+                          >
+                            Show live captions
+                          </button>
+                        )}
                       </div>
                       <p className="max-w-xl text-xs text-muted">
-                        Keep talking naturally. After each reply, the mic turns back on automatically.
-                        Transcript is still saved and visible after voice mode ends.
+                        Full transcript stays below while you speak — you are not limited to voice; type anytime.
                       </p>
                     </div>
                   </div>
                 ) : null}
-                {handsFree ? null : (
+                {handsFree ? (
+                  <div
+                    className="mb-4"
+                    role="log"
+                    aria-live="polite"
+                    aria-relevant="additions text"
+                    aria-label="Full conversation transcript"
+                  >
+                    <div className="mb-2 text-xs font-semibold text-heading">Conversation transcript</div>
+                    <div className="grid gap-2">
+                      {msgs.map((m, i) => (
+                        <div
+                          key={`${m.sentAt}-${i}`}
+                          className={cn(
+                            "rounded-[12px] border px-3 py-2 text-sm",
+                            m.role === "assistant" ? "border-[#e3e8ef] bg-white" : "border-[#d3e2ff] bg-[#e8f0ff]",
+                          )}
+                        >
+                          <div className="text-[11px] font-semibold text-muted">
+                            {m.role === "assistant" ? "Assistant" : "You"} · {clockLabel(m.sentAt)}
+                          </div>
+                          <ChatMessageContent text={m.text} />
+                        </div>
+                      ))}
+                      {typing ? (
+                        <div className="rounded-[12px] border border-[#e3ded6] bg-white px-3 py-2 text-sm text-muted">
+                          Assistant is thinking…
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
+                {!handsFree ? (
                   <>
                     <div className="mb-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
                       <span className="font-semibold">Live input:</span>{" "}
@@ -1244,7 +1367,7 @@ export function ChatWidget() {
                       ))}
                     </div>
                   </>
-                )}
+                ) : null}
                 {voiceError ? (
                   <div className="mt-3 rounded-[12px] border border-amber bg-amber-pale px-3 py-2 text-xs text-[#7c5b16]">
                     {voiceError}
@@ -1618,9 +1741,9 @@ export function ChatWidget() {
               ) : null}
               {lastLinks.length ? (
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {lastLinks.map((link) => (
+                  {dedupeLinksByHref(lastLinks).map((link) => (
                     <Link
-                      key={`${link.label}-${link.href}`}
+                      key={link.href}
                       href={normalizeVenueHref(link.href)}
                       className="rounded-[var(--radius-ui)] border border-border bg-white px-3 py-1 text-xs font-semibold text-blue"
                     >
@@ -1668,10 +1791,7 @@ export function ChatWidget() {
                     "rounded-full px-3 py-1 text-xs font-semibold cursor-pointer whitespace-nowrap transition-colors",
                     "border border-[#d8e1ef] bg-white text-[#184080] hover:bg-[#f5f8ff]",
                   )}
-                  onClick={() => {
-                    setDraft(t);
-                    void send(t);
-                  }}
+                  onClick={() => handleQuickChip(t)}
                 >
                   {t}
                 </button>
