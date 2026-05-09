@@ -232,7 +232,7 @@ export function ChatWidget() {
   const [msgs, setMsgs] = useState<Msg[]>([
     {
       role: "assistant",
-      text: "Hi, I'm Access Stamp AI. How can I help you today?",
+      text: "Hi, I'm Access Stamp AI. I can help with all your disability-related questions",
       sentAt: Date.now(),
     },
   ]);
@@ -688,12 +688,18 @@ export function ChatWidget() {
           handsFreeRef.current &&
           conversationModeRef.current &&
           speakingRef.current &&
-          level > 0.12 &&
-          now - lastBargeTriggerRef.current > 1000
+          !typingRef.current &&
+          !recognitionRef.current &&
+          level > 0.17 &&
+          now - lastBargeTriggerRef.current > 1300
         ) {
-          // Auto-barge-in disabled to avoid assistant audio being mistaken
-          // for user speech on speakers/open mics.
+          // Barge-in: user speech stops TTS so they can interrupt hands-free replies.
+          // Threshold/debounce reduce false triggers from speaker bleed; use headphones if possible.
           lastBargeTriggerRef.current = now;
+          stopAllSpeech();
+          setVoiceError("");
+          setHandsFreeState("listening");
+          window.setTimeout(() => startListening(true), 200);
         }
 
         micRafRef.current = window.requestAnimationFrame(loop);
@@ -995,7 +1001,14 @@ export function ChatWidget() {
       return;
     }
     if (typingRef.current) return;
-    if (speakingRef.current) return;
+    if (speakingRef.current) {
+      if (conversationModeRef.current && handsFreeRef.current) {
+        stopAllSpeech();
+        setHandsFreeState("listening");
+      } else {
+        return;
+      }
+    }
     if (recognitionRef.current) return;
     const Rec = getSpeechRecognitionCtor();
     if (!Rec) return;
@@ -1310,7 +1323,9 @@ export function ChatWidget() {
                         )}
                       </div>
                       <p className="max-w-xl text-xs text-muted">
-                        Full transcript stays below while you speak — you are not limited to voice; type anytime.
+                        You can <strong className="font-semibold text-heading">interrupt</strong> the assistant while it is
+                        talking — start speaking, or tap <strong className="font-semibold text-heading">Interrupt &amp; listen</strong>.
+                        Full transcript stays below; you can type anytime.
                       </p>
                     </div>
                   </div>
@@ -1393,18 +1408,20 @@ export function ChatWidget() {
                     className={cn(
                       "rounded border px-3 py-1 text-xs font-semibold",
                       listening ? "border-amber bg-amber-pale text-[#92400e]" : "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]",
-                      (speaking || typing) && "cursor-not-allowed opacity-60",
+                      typing && "cursor-not-allowed opacity-60",
                     )}
-                    disabled={speaking || typing}
+                    disabled={typing}
                     title={
-                      speaking
-                        ? "Wait for speech to finish, or tap Interrupt"
-                        : typing
-                          ? "Wait for the reply"
-                        : "Push-to-talk — tap Start listening"
+                      typing
+                        ? "Wait for the reply"
+                        : speaking
+                          ? "Interrupt — stops the assistant and listens to you"
+                          : listening
+                            ? "Stop listening"
+                            : "Start listening (or speak to interrupt while the assistant talks)"
                     }
                     onClick={() => {
-                      if (speaking || typing) return;
+                      if (typing) return;
                       if (listening) {
                         try {
                           recognitionRef.current?.stop?.();
@@ -1412,11 +1429,12 @@ export function ChatWidget() {
                           // ignore
                         }
                       } else {
+                        if (speaking) stopAllSpeech();
                         startListening(true);
                       }
                     }}
                   >
-                    {listening ? "Stop listening" : "Start listening"}
+                    {listening ? "Stop listening" : speaking ? "Interrupt & listen" : "Start listening"}
                   </button>
                   <button type="button" className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
                     Stop speaking
