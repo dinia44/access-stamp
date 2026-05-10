@@ -28,7 +28,7 @@ const PILLARS: Pillar[] = [
   {
     emoji: "💬",
     title: "AI Assistant",
-    desc: "Chat or speak. Venues, rights, equipment, trained on real detail.",
+    desc: "Chat or speak — asks the questions generic AI skips, grounded in verified listings and UK routes.",
     href: "/ai",
     highlight: true,
   },

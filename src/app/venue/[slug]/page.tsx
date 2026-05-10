@@ -9,6 +9,7 @@ import { SetChatContext } from "@/components/chat/set-context";
 import { VenueDetailActions } from "@/components/venue-detail-actions";
 import { VenuePhotoGallery } from "@/components/venue-photo-gallery";
 import { VenueVisitPlanActions } from "@/components/venue-visit-plan-actions";
+import { WillItFitCard } from "@/components/venue/will-it-fit-card";
 
 const ACCESS_AREAS = [
   {
@@ -224,6 +225,8 @@ export default async function VenueDetailPage({
               <VenuePhotoGallery photos={v.photos} />
             </Card>
           ) : null}
+
+          <WillItFitCard venue={v} />
 
           <div className="grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
             <Card className="p-5">

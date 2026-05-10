@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import type { PageContext } from "@/components/chat/provider";
+import type { Venue } from "@/lib/mock-data";
 import { ADVICE_ARTICLES, SAMPLE_VENUES } from "@/lib/mock-data";
+import {
+  assessChairAgainstVenue,
+  formatVenueAuditContextForPrompt,
+  parseUserChairDimensions,
+} from "@/lib/venue-fit";
 import { ACCESS_STAMP_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 import { HELP_CARDS } from "@/lib/help-cards";
 
@@ -103,6 +109,7 @@ function buildLlmUserPrompt(
   page: PageContext,
   history?: Req["history"],
   voiceMode?: boolean,
+  venueForPage?: Venue,
 ) {
   const venues = SAMPLE_VENUES.slice(0, 8)
     .map((v) => `${v.name} (${v.location}) — ${v.tags.join(", ")}`)
@@ -116,9 +123,18 @@ function buildLlmUserPrompt(
           .map((h) => `${h.role === "user" ? "User" : "Assistant"}: ${h.text}`)
           .join("\n")
       : "No prior turns.";
+  const venueAuditBlock =
+    venueForPage && page.kind === "venue"
+      ? [
+          "Current venue listing (verified fields — use only this for measurements/features for this venue; do not invent numbers):",
+          formatVenueAuditContextForPrompt(venueForPage),
+        ].join("\n")
+      : "";
+
   return [
     `User message: ${message}`,
     `Page context: ${pageSummary(page)}`,
+    venueAuditBlock ? `${venueAuditBlock}\n` : "",
     "Sample venue data:",
     venues,
     "Sample advice guides:",
@@ -133,6 +149,9 @@ function buildLlmUserPrompt(
         ? "Hands-free (voice) mode: keep replies short (easy to hear), conversational, one follow-up question at a time — same substance as text, tighter wording."
         : "Text mode: concise and practical; you may use a little more structure than voice when it helps scanning.",
     ].join("\n"),
+    venueForPage
+      ? "This user is on a specific venue page — prioritise the venue listing block above over generic venue examples when answering about doors, toilets, or verification."
+      : "",
     "Answer the user's question directly first.",
     "Only suggest help cards when the user explicitly asks for a card/template/checklist/download.",
     "If the user is off-topic for Access Stamp (for example recipes), refuse briefly and redirect to Access Stamp topics.",
@@ -140,7 +159,9 @@ function buildLlmUserPrompt(
     "Limit quickActions to max 4 short suggestions.",
     "Use Markdown in reply sparingly: **bold** for emphasis, bullet lists when listing steps. Never output raw broken Markdown.",
     "For more venues, link only to `/venue-finder` (never `/venues`). Match quick-action wording to link labels (e.g. both say Open Venue Finder).",
-  ].join("\n\n");
+  ]
+    .filter((part) => part !== "")
+    .join("\n\n");
 }
 
 async function callLlm(
@@ -148,6 +169,7 @@ async function callLlm(
   page: PageContext,
   history?: Req["history"],
   voiceMode?: boolean,
+  venueForPage?: Venue,
 ): Promise<LlmShape | null> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return null;
@@ -164,7 +186,7 @@ async function callLlm(
         temperature: 0.4,
         messages: [
           { role: "system", content: ACCESS_STAMP_SYSTEM_PROMPT },
-          { role: "user", content: buildLlmUserPrompt(message, page, history, voiceMode) },
+          { role: "user", content: buildLlmUserPrompt(message, page, history, voiceMode, venueForPage) },
         ],
       }),
     });
@@ -237,11 +259,22 @@ function crisisSignal(t: string) {
   return /(suicide|kill myself|self-harm|end my life|can't go on)/i.test(t);
 }
 
+function wantsWillItFitIntent(message: string): boolean {
+  return (
+    /\b(will\s+it\s+fit|fit\s+through|get\s+through|too\s+narrow|clear\s+opening|door\s+width|won'?t\s+fit|narrow\s+door)\b/i.test(
+      message,
+    ) ||
+    /\b(my\s+chair|wheelchair|power\s?chair|mobility\s+scooter|scooter)\b/i.test(message) ||
+    /\bouter\s+width|overall\s+width\b/i.test(message)
+  );
+}
+
 export async function POST(req: Request) {
   const body = (await req.json()) as Req;
   const msg = (body.message ?? "").trim();
   const page = body.page ?? { kind: "none" };
   const voice = Boolean(body.voiceMode || body.mode === "hands-free");
+  const venueRecord = page.kind === "venue" ? SAMPLE_VENUES.find((v) => v.slug === page.slug) : undefined;
 
   if (!msg) {
     return NextResponse.json({ reply: "What would you like help with?" });
@@ -307,7 +340,24 @@ export async function POST(req: Request) {
     });
   }
 
-  const llm = await callLlm(msg, page, body.history, voice);
+  if (venueRecord) {
+    const dims = parseUserChairDimensions(msg);
+    if (dims.overallWidthCm != null && wantsWillItFitIntent(msg)) {
+      const { summary, detailLines } = assessChairAgainstVenue(dims, venueRecord);
+      const reply = [summary, ...detailLines].filter(Boolean).join("\n\n");
+      return NextResponse.json({
+        reply: voice ? short(reply) : reply,
+        quickActions: [
+          "What should I ask when I phone?",
+          "Find venues with measured doors",
+          "Reasonable adjustments if refused entry",
+        ],
+        links: [{ label: "Open Venue Finder", href: "/venue-finder" }],
+      });
+    }
+  }
+
+  const llm = await callLlm(msg, page, body.history, voice, venueRecord);
   if (llm) {
     return NextResponse.json({
       reply: voice ? short(llm.reply) : llm.reply,
@@ -346,10 +396,10 @@ export async function POST(req: Request) {
   // If on a specific venue page, respond in venue-context.
   if (page.kind === "venue") {
     const reply =
-      `You’re looking at ${page.name}. Tell me what matters most for you (toilet, door width, parking, seating, noise), and I’ll help you work out whether this venue is likely to be usable, and what to ask before you go.`;
+      `You’re looking at ${page.name}. Tell me what matters for you — chair width, transfer needs, sensory limits, travelling alone or with someone — or use **Will it fit?** on this page with your chair’s outer width (cm). I’ll match what we know from this listing and suggest what to confirm before you travel.`;
     return NextResponse.json({
       reply: voice ? short(reply) : reply,
-      quickActions: ["Is the toilet usable?", "Is the entrance step-free?", "What should I ask the venue?"],
+      quickActions: ["Will my chair fit the doors?", "Sensory-friendly visit tips", "What should I ask the venue?"],
     });
   }
 
