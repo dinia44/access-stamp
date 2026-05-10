@@ -33,6 +33,8 @@ export type Venue = {
     label: string;
     measurement?: string;
   }>;
+  /** Optional map or area snapshot for the Location snapshot card on venue pages */
+  locationSnapshot?: { src: string; alt: string };
 };
 
 export const SAMPLE_VENUES: Venue[] = [
@@ -110,6 +112,10 @@ export const SAMPLE_VENUES: Venue[] = [
         label: "Full report",
       },
     ],
+    locationSnapshot: {
+      src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778451836/8819d7d9-417c-49ce-9923-421d287d3e5d_pfvjhq.png",
+      alt: "Map snapshot of Liverpool city centre showing Harbour Kitchen and surrounding streets",
+    },
   },
   {
     slug: "gallery-cafe-manchester",

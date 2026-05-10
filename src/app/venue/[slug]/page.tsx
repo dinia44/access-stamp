@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -264,9 +265,21 @@ export default async function VenueDetailPage({
 
             <Card className="p-5">
               <div className="text-sm font-semibold text-heading">Location snapshot</div>
-              <div className="mt-3 grid h-44 place-items-center rounded-[var(--radius-card)] border border-border bg-background text-sm font-semibold text-muted">
-                Map preview coming soon
-              </div>
+              {v.locationSnapshot ? (
+                <div className="relative mt-3 aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)] border border-border bg-background">
+                  <Image
+                    src={v.locationSnapshot.src}
+                    alt={v.locationSnapshot.alt}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 1024px) 100vw, 400px"
+                  />
+                </div>
+              ) : (
+                <div className="mt-3 grid h-44 place-items-center rounded-[var(--radius-card)] border border-border bg-background text-sm font-semibold text-muted">
+                  Map preview coming soon
+                </div>
+              )}
               <p className="mt-3 text-xs text-muted">
                 Address area: <span className="font-semibold text-heading">{v.location}</span>. Use this with your route planner and
                 check Blue Badge options or drop-off points before leaving.
