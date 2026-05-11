@@ -12,6 +12,10 @@ import { VenuePhotoGallery } from "@/components/venue-photo-gallery";
 import { VenueVisitPlanActions } from "@/components/venue-visit-plan-actions";
 import { WillItFitCard } from "@/components/venue/will-it-fit-card";
 
+export function generateStaticParams() {
+  return SAMPLE_VENUES.map((v) => ({ slug: v.slug }));
+}
+
 const ACCESS_AREAS = [
   {
     title: "Entrance & approach",
