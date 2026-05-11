@@ -37,6 +37,41 @@ export default function AboutPage() {
               </div>
             </div>
           </Card>
+
+          <div id="listings" className="scroll-mt-24">
+            <Card className="p-6">
+              <div className="text-sm font-semibold text-heading">Listings &amp; verification</div>
+              <p className="mt-2 max-w-[85ch] text-sm leading-7 text-muted">
+                Venue pages combine structured feature checks with photos and measurements where we have them. Labels describe how
+                strong the evidence is—not whether a place is &quot;good&quot; or &quot;bad.&quot;
+              </p>
+              <ul className="mt-4 grid gap-3 text-sm leading-7 text-text md:grid-cols-3">
+                <li className="rounded-[var(--radius-ui)] border border-border bg-background p-4">
+                  <span className="font-semibold text-heading">Access Stamp checked</span>
+                  <span className="mt-1 block text-muted">
+                    Reviewed against our field-style checklist; priority for filters like &quot;verified venues only.&quot;
+                  </span>
+                </li>
+                <li className="rounded-[var(--radius-ui)] border border-border bg-background p-4">
+                  <span className="font-semibold text-heading">Community reported</span>
+                  <span className="mt-1 block text-muted">
+                    Submitted or corroborated detail from disabled people and allies—useful, but treat opening hours and layout as
+                    worth confirming.
+                  </span>
+                </li>
+                <li className="rounded-[var(--radius-ui)] border border-border bg-background p-4">
+                  <span className="font-semibold text-heading">Not yet verified</span>
+                  <span className="mt-1 block text-muted">
+                    Early or partial information—still worth a look, especially if you phone ahead or visit off-peak.
+                  </span>
+                </li>
+              </ul>
+              <p className="mt-4 text-sm text-muted">
+                Open listings include <strong className="font-semibold text-heading">Will it fit?</strong> where measurements exist,
+                and the AI uses the same listing context when you chat from that page.
+              </p>
+            </Card>
+          </div>
         </div>
       </Container>
     </div>

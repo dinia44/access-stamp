@@ -188,7 +188,7 @@ function VoiceOrb({
         )}
         style={{ animationDuration: "5.2s", animationDirection: "reverse" }}
       />
-      <div className="absolute inset-[32px] rounded-full bg-[#0e1f3a]/92 backdrop-blur-[1px]" />
+      <div className="absolute inset-[32px] rounded-full bg-navy/92 backdrop-blur-[1px]" />
       <div className="relative z-10 text-center text-white">
         <div className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-100">
           {state === "listening" ? "Listening" : state === "speaking" ? "Speaking" : state === "thinking" ? "Thinking" : "Ready"}
@@ -1157,7 +1157,7 @@ export function ChatWidget() {
       {!open ? (
         <button
           type="button"
-          className="relative grid h-[58px] w-[58px] place-items-center rounded-[16px] bg-blue text-white shadow-[var(--shadow)] transition-transform hover:scale-[1.03] cursor-pointer"
+          className="relative grid h-[58px] w-[58px] place-items-center rounded-[var(--radius-card)] bg-blue text-white shadow-[var(--shadow)] transition-transform hover:scale-[1.03] cursor-pointer"
           aria-label="Open chat"
           onClick={() => setOpen(true)}
         >
@@ -1168,9 +1168,9 @@ export function ChatWidget() {
         </button>
       ) : (
         conversationMode ? (
-          <div className="fixed inset-0 z-[70] bg-[#071224]/75 p-3 backdrop-blur-[2px]">
-            <div className="mx-auto flex h-full w-full max-w-3xl flex-col overflow-hidden rounded-[18px] border border-[#d8dfea] bg-white shadow-[0_24px_60px_-20px_rgba(12,29,52,0.45)]">
-              <div className="flex flex-col gap-3 border-b border-[#dde4ef] bg-[#0d4bb3] px-4 py-3 text-white">
+          <div className="fixed inset-0 z-[70] bg-navy/75 p-3 backdrop-blur-[2px]">
+            <div className="mx-auto flex h-full w-full max-w-3xl flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-card shadow-[var(--shadow)]">
+              <div className="flex flex-col gap-3 border-b border-white/20 bg-gradient-to-r from-blue to-navy px-4 py-3 text-white">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="text-sm font-semibold">Hands-free mode</div>
@@ -1240,18 +1240,18 @@ export function ChatWidget() {
                   </span>
                 </label>
               </div>
-              <div ref={scroller} className="min-h-0 flex-1 overflow-auto bg-[#f8fafc] px-5 py-4">
+              <div ref={scroller} className="min-h-0 flex-1 overflow-auto bg-background px-5 py-4">
                 {handsFree ? (
-                  <div className="mb-4 rounded-[14px] border border-[#d5e2f5] bg-[#f2f7ff] p-5">
+                  <div className="mb-4 rounded-[var(--radius-card)] border border-border bg-blue-pale p-5">
                     <div className="flex flex-col items-center gap-4 text-center">
                       <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
                         Hands-free voice
                       </div>
-                      <div className="rounded-full border border-[#dbe4f2] bg-white px-3 py-1 text-xs font-semibold text-heading">
+                      <div className="rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-heading">
                         Voice: {voiceLabel}
                       </div>
                       <div
-                        className="flex h-10 items-end gap-1 rounded-[12px] border border-[#dbe4f2] bg-white px-2 py-1"
+                        className="flex h-10 items-end gap-1 rounded-[var(--radius-ui)] border border-border bg-card px-2 py-1"
                         role="img"
                         aria-label={`Microphone level ${Math.round(micLevel * 100)} percent`}
                       >
@@ -1284,7 +1284,7 @@ export function ChatWidget() {
                           <button
                             id="handsfree-start-listening"
                             type="button"
-                            className="rounded-[10px] border border-[#d8e1ef] bg-white px-3 py-2 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                            className="rounded-[var(--radius-ui)] border border-border bg-card px-3 py-2 text-xs font-semibold text-heading hover:bg-blue-pale"
                             onClick={() => startListening(true)}
                             aria-label="Start listening"
                           >
@@ -1293,7 +1293,7 @@ export function ChatWidget() {
                         ) : null}
                         <button
                           type="button"
-                          className="rounded-[10px] border border-[#d8e1ef] bg-white px-3 py-2 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                          className="rounded-[var(--radius-ui)] border border-border bg-card px-3 py-2 text-xs font-semibold text-heading hover:bg-blue-pale"
                           onClick={runVoicePlaybackTest}
                           aria-label="Test voice playback"
                         >
@@ -1303,11 +1303,11 @@ export function ChatWidget() {
                       <div className="w-full max-w-xl space-y-2 text-left">
                         {showCaptions ? (
                           <>
-                            <div className="rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
+                            <div className="rounded-[var(--radius-ui)] border border-border bg-white px-3 py-2 text-sm text-heading">
                               <span className="font-semibold">Live (voice):</span>{" "}
                               {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice input…")}
                             </div>
-                            <div className="rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
+                            <div className="rounded-[var(--radius-ui)] border border-border bg-white px-3 py-2 text-sm text-heading">
                               <span className="font-semibold">Latest reply:</span>{" "}
                               {typing ? "Thinking…" : lastAssistantSpokenText || "—"}
                             </div>
@@ -1344,8 +1344,8 @@ export function ChatWidget() {
                         <div
                           key={`${m.sentAt}-${i}`}
                           className={cn(
-                            "rounded-[12px] border px-3 py-2 text-sm",
-                            m.role === "assistant" ? "border-[#e3e8ef] bg-white" : "border-[#d3e2ff] bg-[#e8f0ff]",
+                            "rounded-[var(--radius-ui)] border px-3 py-2 text-sm",
+                            m.role === "assistant" ? "border-border bg-card" : "border-border bg-blue-pale",
                           )}
                         >
                           <div className="text-[11px] font-semibold text-muted">
@@ -1355,7 +1355,7 @@ export function ChatWidget() {
                         </div>
                       ))}
                       {typing ? (
-                        <div className="rounded-[12px] border border-[#e3ded6] bg-white px-3 py-2 text-sm text-muted">
+                        <div className="rounded-[var(--radius-ui)] border border-border bg-card px-3 py-2 text-sm text-muted">
                           Assistant is thinking…
                         </div>
                       ) : null}
@@ -1364,7 +1364,7 @@ export function ChatWidget() {
                 ) : null}
                 {!handsFree ? (
                   <>
-                    <div className="mb-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-sm text-heading">
+                    <div className="mb-3 rounded-[var(--radius-ui)] border border-border bg-card px-3 py-2 text-sm text-heading">
                       <span className="font-semibold">Live input:</span>{" "}
                       {draft.trim() || (listening ? "Speak now…" : "Waiting for your voice or pasted text…")}
                     </div>
@@ -1373,8 +1373,8 @@ export function ChatWidget() {
                         <div
                           key={`${m.sentAt}-${i}`}
                           className={cn(
-                            "rounded-[12px] border px-3 py-2 text-sm",
-                            m.role === "assistant" ? "border-[#e3e8ef] bg-white" : "border-[#d3e2ff] bg-[#e8f0ff]",
+                            "rounded-[var(--radius-ui)] border px-3 py-2 text-sm",
+                            m.role === "assistant" ? "border-border bg-card" : "border-border bg-blue-pale",
                           )}
                         >
                           <ChatMessageContent text={m.text} />
@@ -1384,14 +1384,14 @@ export function ChatWidget() {
                   </>
                 ) : null}
                 {voiceError ? (
-                  <div className="mt-3 rounded-[12px] border border-amber bg-amber-pale px-3 py-2 text-xs text-[#7c5b16]">
+                  <div className="mt-3 rounded-[var(--radius-ui)] border border-amber bg-amber-pale px-3 py-2 text-xs text-amber">
                     {voiceError}
                   </div>
                 ) : null}
                 {awaitingVoiceUnlock ? (
                   <button
                     type="button"
-                    className="mt-2 rounded-[10px] border border-[#d8e1ef] bg-white px-3 py-2 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                    className="mt-2 rounded-[var(--radius-ui)] border border-border bg-white px-3 py-2 text-xs font-semibold text-heading hover:bg-blue-pale"
                     onClick={() => void unlockVoicePlayback()}
                     aria-label="Enable voice playback"
                   >
@@ -1401,13 +1401,13 @@ export function ChatWidget() {
                 
               </div>
 
-              <div className="border-t border-[#dde4ef] bg-white px-4 py-3">
+              <div className="border-t border-border bg-white px-4 py-3">
                 <div className="mb-2 flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     className={cn(
                       "rounded border px-3 py-1 text-xs font-semibold",
-                      listening ? "border-amber bg-amber-pale text-[#92400e]" : "border-[#d8e1ef] text-heading hover:bg-[#f5f8ff]",
+                      listening ? "border-amber bg-amber-pale text-amber" : "border-border text-heading hover:bg-blue-pale",
                       typing && "cursor-not-allowed opacity-60",
                     )}
                     disabled={typing}
@@ -1436,12 +1436,12 @@ export function ChatWidget() {
                   >
                     {listening ? "Stop listening" : speaking ? "Interrupt & listen" : "Start listening"}
                   </button>
-                  <button type="button" className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]" onClick={stopAllSpeech}>
+                  <button type="button" className="rounded border border-border px-3 py-1 text-xs font-semibold text-heading hover:bg-blue-pale" onClick={stopAllSpeech}>
                     Stop speaking
                   </button>
                   <button
                     type="button"
-                    className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                    className="rounded border border-border px-3 py-1 text-xs font-semibold text-heading hover:bg-blue-pale"
                     aria-pressed={!voiceEnabled}
                     onClick={() => setVoiceEnabled((v) => !v)}
                   >
@@ -1449,14 +1449,14 @@ export function ChatWidget() {
                   </button>
                   <button
                     type="button"
-                    className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                    className="rounded border border-border px-3 py-1 text-xs font-semibold text-heading hover:bg-blue-pale"
                     onClick={downloadConversationTxt}
                   >
                     Download transcript (.txt)
                   </button>
                   <button
                     type="button"
-                    className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                    className="rounded border border-border px-3 py-1 text-xs font-semibold text-heading hover:bg-blue-pale"
                     onClick={downloadConversationDoc}
                   >
                     Download transcript (.doc)
@@ -1464,17 +1464,17 @@ export function ChatWidget() {
                   {speaking ? (
                     <button
                       type="button"
-                      className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                      className="rounded border border-border px-3 py-1 text-xs font-semibold text-heading hover:bg-blue-pale"
                       onClick={togglePauseSpeaking}
                     >
                       {audioPaused ? "Resume speaking" : "Pause speaking"}
                     </button>
                   ) : null}
-                  <label className="inline-flex items-center gap-2 rounded border border-[#d8e1ef] px-2 py-1 text-xs font-semibold text-heading">
+                  <label className="inline-flex items-center gap-2 rounded border border-border px-2 py-1 text-xs font-semibold text-heading">
                     Speed
                     <select
                       aria-label="Voice playback speed"
-                      className="rounded border border-[#d8e1ef] bg-white px-1 py-0.5 text-xs"
+                      className="rounded border border-border bg-white px-1 py-0.5 text-xs"
                       value={audioRate}
                       onChange={(e) => {
                         const next = Number(e.target.value);
@@ -1489,7 +1489,7 @@ export function ChatWidget() {
                   </label>
                   <button
                     type="button"
-                    className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                    className="rounded border border-border px-3 py-1 text-xs font-semibold text-heading hover:bg-blue-pale"
                     aria-pressed={showCaptions}
                     onClick={() => setShowCaptions((v) => !v)}
                   >
@@ -1498,7 +1498,7 @@ export function ChatWidget() {
                   {typing ? (
                     <button
                       type="button"
-                      className="rounded border border-[#d8e1ef] px-3 py-1 text-xs font-semibold text-heading hover:bg-[#f5f8ff]"
+                      className="rounded border border-border px-3 py-1 text-xs font-semibold text-heading hover:bg-blue-pale"
                       onClick={stopResponse}
                     >
                       Stop response
@@ -1511,11 +1511,11 @@ export function ChatWidget() {
                     onChange={(e) => setDraft(e.target.value)}
                     rows={2}
                     placeholder="Paste text (e.g. email) and press Send…"
-                    className="min-h-11 flex-1 resize-y rounded-[12px] border border-[#d8e1ef] bg-white px-3 py-2 text-sm text-heading"
+                    className="min-h-11 flex-1 resize-y rounded-[var(--radius-ui)] border border-border bg-white px-3 py-2 text-sm text-heading"
                   />
                   <button
                     type="button"
-                    className="rounded-[12px] bg-[#0d4bb3] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0a3f97]"
+                    className="rounded-[var(--radius-ui)] bg-blue px-4 py-2 text-sm font-semibold text-white hover:brightness-110"
                     onClick={() => void send(draft)}
                   >
                     Send
@@ -1525,13 +1525,8 @@ export function ChatWidget() {
             </div>
           </div>
         ) : (
-        <div className="flex h-[min(640px,calc(100vh-18px))] w-[min(440px,calc(100vw-12px))] flex-col overflow-hidden rounded-[16px] border border-[#d8dfea] bg-white shadow-[0_24px_54px_-26px_rgba(12,29,52,0.35)]">
-          <div
-            className="relative flex items-center justify-between gap-3 border-b border-white/15 px-4 py-3 text-white"
-            style={{
-              background: "linear-gradient(90deg, #0d4bb3 0%, #0b3f9f 100%)",
-            }}
-          >
+        <div className="flex h-[min(640px,calc(100vh-18px))] w-[min(440px,calc(100vw-12px))] flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-card shadow-[var(--shadow)]">
+          <div className="relative flex items-center justify-between gap-3 border-b border-white/15 bg-gradient-to-r from-blue to-navy px-4 py-3 text-white">
             <div className="min-w-0">
               <div className="text-2sm font-semibold">Ask Access Stamp AI</div>
               <div className="text-xs text-blue-100">
@@ -1572,7 +1567,7 @@ export function ChatWidget() {
                 <IconChevronDown />
               </button>
               {settingsOpen ? (
-                <div className="absolute right-4 top-12 z-10 w-56 rounded-[var(--radius-card)] border border-white/30 bg-[#142138] p-2 text-white shadow-[var(--shadow)]">
+                <div className="absolute right-4 top-12 z-10 w-56 rounded-[var(--radius-card)] border border-white/30 bg-navy p-2 text-white shadow-[var(--shadow)]">
                   <div className="mb-2 rounded-[var(--radius-ui)] bg-white/10 px-2 py-2 text-xs font-semibold text-white">
                     Voice style: {voiceLabel}
                   </div>
@@ -1591,12 +1586,12 @@ export function ChatWidget() {
                     </select>
                   </label>
                   <div className="mb-2 border-t border-white/10 pt-2">
-                    <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[#8eb4dc]">Conversation</div>
+                    <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-blue-pale">Conversation</div>
                     <button
                       type="button"
                       className={cn(
                         "mb-1 w-full rounded-[var(--radius-ui)] px-2 py-1 text-left text-xs font-semibold cursor-pointer",
-                        conversationMode ? "bg-white/20 text-white" : "bg-white/5 text-[#c0d0e2]",
+                        conversationMode ? "bg-white/20 text-white" : "bg-white/5 text-white/70",
                       )}
                       onClick={() => {
                         if (conversationMode) endConversation();
@@ -1609,7 +1604,7 @@ export function ChatWidget() {
                       type="button"
                       className={cn(
                         "mb-1 w-full rounded-[var(--radius-ui)] px-2 py-1 text-left text-xs font-semibold cursor-pointer",
-                        handsFree ? "bg-emerald-500/25 text-emerald-100" : "bg-white/5 text-[#c0d0e2]",
+                        handsFree ? "bg-emerald-500/25 text-emerald-100" : "bg-white/5 text-white/70",
                       )}
                       aria-pressed={handsFree}
                       title={handsFree ? "Turn off hands-free mode" : "Turn on hands-free mode"}
@@ -1631,7 +1626,7 @@ export function ChatWidget() {
                     type="button"
                     className={cn(
                       "mb-2 w-full rounded-[var(--radius-ui)] px-2 py-1 text-left text-xs font-semibold cursor-pointer",
-                      hoverReadEnabled ? "bg-white/20" : "bg-white/5 text-[#c0d0e2]",
+                      hoverReadEnabled ? "bg-white/20" : "bg-white/5 text-white/70",
                     )}
                     onClick={() => setHoverReadEnabled((v) => !v)}
                     aria-pressed={hoverReadEnabled}
@@ -1642,14 +1637,14 @@ export function ChatWidget() {
                     type="button"
                     className={cn(
                       "w-full rounded-[var(--radius-ui)] px-2 py-1 text-left text-xs font-semibold cursor-pointer",
-                      voiceEnabled ? "bg-white/20" : "bg-white/5 text-[#c0d0e2]",
+                      voiceEnabled ? "bg-white/20" : "bg-white/5 text-white/70",
                     )}
                     onClick={() => setVoiceEnabled((v) => !v)}
                     aria-pressed={voiceEnabled}
                   >
                     {voiceEnabled ? "Hands-free voice: on" : "Hands-free voice: muted"}
                   </button>
-                  <p className="mt-2 text-[10px] text-[#c0d0e2]">
+                  <p className="mt-2 text-[10px] text-white/70">
                     Hands-free mode always speaks replies and uses ElevenLabs first.
                   </p>
                   <button
@@ -1663,7 +1658,7 @@ export function ChatWidget() {
                     type="button"
                     className={cn(
                       "mt-2 w-full rounded-[var(--radius-ui)] px-2 py-1 text-left text-xs font-semibold cursor-pointer",
-                      plainLanguage ? "bg-white/20" : "bg-white/5 text-[#c0d0e2]",
+                      plainLanguage ? "bg-white/20" : "bg-white/5 text-white/70",
                     )}
                     onClick={() => setPlainLanguage((v) => !v)}
                     aria-pressed={plainLanguage}
@@ -1684,13 +1679,13 @@ export function ChatWidget() {
 
           <div
             ref={scroller}
-            className="min-h-0 flex-1 overflow-auto bg-[#f7faff] px-5 py-4"
+            className="min-h-0 flex-1 overflow-auto bg-background px-5 py-4"
             role="log"
             aria-live="polite"
             aria-relevant="additions text"
             aria-label="Chat transcript"
           >
-            <p className="mb-3 rounded-[12px] border border-[#dbe4f2] bg-white px-3 py-2 text-xs text-muted">
+            <p className="mb-3 rounded-[var(--radius-ui)] border border-border bg-white px-3 py-2 text-xs text-muted">
               Ask about venues, equipment, benefits, rights, travel, school, work, or care support.
             </p>
             <div className="grid gap-2">
@@ -1702,25 +1697,25 @@ export function ChatWidget() {
                 return (
                   <div key={`${m.sentAt}-${i}`} className={cn("flex items-end gap-2", m.role === "user" && "justify-end")}>
                     {m.role === "assistant" ? (
-                      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#0d4bb3] text-white text-xs">
+                      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-blue text-white text-xs">
                         <IconRobot />
                       </div>
                     ) : null}
                     <div
                       className={cn(
-                        "max-w-[78%] rounded-[16px] border px-4 py-3 shadow-[0_8px_18px_-16px_rgba(12,29,52,0.28)]",
+                        "max-w-[78%] rounded-[var(--radius-card)] border px-4 py-3 shadow-[0_8px_18px_-16px_rgba(12,29,52,0.28)]",
                         m.role === "assistant"
-                          ? "border-[#e3e8ef] bg-white text-heading"
-                          : "border-[#d3e2ff] bg-[#e8f0ff] text-heading",
+                          ? "border-border bg-card text-heading"
+                          : "border-border bg-blue-pale text-heading",
                       )}
                     >
                       <ChatMessageContent text={m.text} />
                       {showTime ? (
-                        <div className="mt-2 border-t border-[#e8ecf3] pt-2 text-[11px] text-muted">{clockLabel(m.sentAt)}</div>
+                        <div className="mt-2 border-t border-border pt-2 text-[11px] text-muted">{clockLabel(m.sentAt)}</div>
                       ) : null}
                     </div>
                     {m.role === "user" ? (
-                      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#0d4bb3] text-white text-xs">
+                      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-blue text-white text-xs">
                         <IconUser />
                       </div>
                     ) : null}
@@ -1728,7 +1723,7 @@ export function ChatWidget() {
                 );
               })}
               {typing ? (
-                <div className="max-w-[90%] justify-self-start rounded-[14px] border border-[#e3ded6] bg-white px-3 py-2 text-sm text-muted">
+                <div className="max-w-[90%] justify-self-start rounded-[var(--radius-card)] border border-border bg-card px-3 py-2 text-sm text-muted">
                   <span aria-busy="true">Typing…</span>
                   <span className="mt-1 block text-[11px] text-muted">If this hangs, you can stop and retry.</span>
                 </div>
@@ -1736,7 +1731,7 @@ export function ChatWidget() {
               {lastVenues.length ? (
                 <div className="mt-1 grid gap-2">
                   {lastVenues.map((v) => (
-                    <div key={v.slug} className="rounded-[var(--radius-ui)] border border-[#e3ded6] bg-white p-2 shadow-[0_1px_3px_rgba(12,29,52,0.06)]">
+                    <div key={v.slug} className="rounded-[var(--radius-ui)] border border-border bg-card p-2 shadow-[var(--shadow-soft)]">
                       <div className="text-sm font-semibold text-heading">{v.name}</div>
                       <div className="text-xs text-muted">{v.location}</div>
                       <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] font-semibold">
@@ -1771,12 +1766,12 @@ export function ChatWidget() {
                 </div>
               ) : null}
               {errorText ? (
-                <div className="rounded-[var(--radius-ui)] border border-[#fecaca] bg-[#fef2f2] p-3 text-xs text-[#991b1b]">
+                <div className="rounded-[var(--radius-ui)] border border-red-200 bg-red-50 p-3 text-xs text-red-800">
                   <p>{errorText}</p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     <button
                       type="button"
-                      className="rounded-[var(--radius-ui)] bg-[#991b1b] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#7f1d1d]"
+                      className="rounded-[var(--radius-ui)] bg-red-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-800"
                       onClick={() => {
                         const retry = lastOutboundRef.current.trim();
                         if (!retry) return;
@@ -1786,10 +1781,10 @@ export function ChatWidget() {
                     >
                       Retry
                     </button>
-                    <Link href="/venue-finder" className="inline-flex items-center rounded-[var(--radius-ui)] border border-[#fecaca] px-3 py-1.5 text-xs font-semibold hover:bg-white">
+                    <Link href="/venue-finder" className="inline-flex items-center rounded-[var(--radius-ui)] border border-red-200 px-3 py-1.5 text-xs font-semibold hover:bg-card">
                       Open Venue Finder
                     </Link>
-                    <Link href="/advice" className="inline-flex items-center rounded-[var(--radius-ui)] border border-[#fecaca] px-3 py-1.5 text-xs font-semibold hover:bg-white">
+                    <Link href="/advice" className="inline-flex items-center rounded-[var(--radius-ui)] border border-red-200 px-3 py-1.5 text-xs font-semibold hover:bg-card">
                       Browse advice
                     </Link>
                   </div>
@@ -1798,7 +1793,7 @@ export function ChatWidget() {
             </div>
           </div>
 
-          <div className="border-t border-[#dde4ef] bg-white px-4 pb-3 pt-3">
+          <div className="border-t border-border bg-white px-4 pb-3 pt-3">
             <audio ref={audioRef} className="hidden" playsInline preload="auto" />
             <div className="mb-3 flex min-h-8 gap-2 overflow-auto pb-1">
               {quick.map((t) => (
@@ -1807,7 +1802,7 @@ export function ChatWidget() {
                   type="button"
                   className={cn(
                     "rounded-full px-3 py-1 text-xs font-semibold cursor-pointer whitespace-nowrap transition-colors",
-                    "border border-[#d8e1ef] bg-white text-[#184080] hover:bg-[#f5f8ff]",
+                    "border border-border bg-white text-blue hover:bg-blue-pale",
                   )}
                   onClick={() => handleQuickChip(t)}
                 >
@@ -1817,7 +1812,7 @@ export function ChatWidget() {
             </div>
 
             {hasUserMessage && summaryChipText() ? (
-              <div className="mb-2 flex flex-wrap items-center gap-2 rounded-[12px] border border-[#dbe4f2] bg-[#f4f8ff] px-3 py-2 text-[11px] text-heading">
+              <div className="mb-2 flex flex-wrap items-center gap-2 rounded-[var(--radius-ui)] border border-border bg-blue-pale px-3 py-2 text-[11px] text-heading">
                 <span className="font-semibold text-muted">Search context</span>
                 <span className="min-w-0 flex-1 font-medium">{summaryChipText()}</span>
                 <Link href="/venue-finder" className="shrink-0 font-semibold text-blue underline-offset-2 hover:underline">
@@ -1837,7 +1832,7 @@ export function ChatWidget() {
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   placeholder="Ask about a venue or accessibility feature..."
-                  className="h-12 w-full rounded-[12px] border border-[#d8e1ef] bg-white px-4 text-sm text-heading shadow-[inset_0_1px_2px_rgba(12,29,52,0.04)]"
+                  className="h-12 w-full rounded-[var(--radius-ui)] border border-border bg-white px-4 text-sm text-heading shadow-[inset_0_1px_2px_rgba(12,29,52,0.04)]"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") send(draft);
                   }}
@@ -1846,11 +1841,11 @@ export function ChatWidget() {
               <button
                 type="button"
                 className={cn(
-                  "h-12 rounded-[12px] border px-3 text-xs font-semibold transition-colors",
+                  "h-12 rounded-[var(--radius-ui)] border px-3 text-xs font-semibold transition-colors",
                   handsFree
                     ? "border-emerald-300 bg-emerald-50 text-emerald-800"
-                    : "border-[#d8e1ef] bg-white text-heading hover:bg-[#f5f8ff]",
-                  !speechSupported && "cursor-not-allowed border-[#e6ebf3] bg-[#f6f8fb] text-muted hover:bg-[#f6f8fb]",
+                    : "border-border bg-white text-heading hover:bg-blue-pale",
+                  !speechSupported && "cursor-not-allowed border-border/70 bg-background-2 text-muted hover:bg-background-2",
                 )}
                 aria-label={handsFree ? "Turn off hands-free mode" : "Turn on hands-free mode"}
                 title={
@@ -1869,9 +1864,9 @@ export function ChatWidget() {
               <button
                 type="button"
                 className={cn(
-                  "grid h-12 w-12 place-items-center rounded-[12px] border border-[#d8e1ef] bg-white text-[#0d4bb3] cursor-pointer transition-colors hover:bg-[#f5f8ff]",
+                  "grid h-12 w-12 place-items-center rounded-[var(--radius-ui)] border border-border bg-white text-blue cursor-pointer transition-colors hover:bg-blue-pale",
                   listening && "border-amber bg-amber-pale",
-                  (!speechSupported || speaking || typing) && "cursor-not-allowed border-[#e6ebf3] bg-[#f6f8fb] text-muted hover:bg-[#f6f8fb]",
+                  (!speechSupported || speaking || typing) && "cursor-not-allowed border-border/70 bg-background-2 text-muted hover:bg-background-2",
                 )}
                 aria-label={listening ? "Stop voice input" : "Start voice input"}
                 onClick={() => {
@@ -1902,8 +1897,8 @@ export function ChatWidget() {
               <button
                 type="button"
                 className={cn(
-                  "grid h-12 min-w-12 place-items-center rounded-[12px] bg-[#0d4bb3] px-3 text-white cursor-pointer transition-colors hover:bg-[#0a3f97]",
-                  typing && "bg-[#b45309] hover:bg-[#92400e]",
+                  "grid h-12 min-w-12 place-items-center rounded-[var(--radius-ui)] bg-blue px-3 text-white cursor-pointer transition-colors hover:brightness-110",
+                  typing && "bg-amber hover:bg-amber/90",
                 )}
                 aria-label={typing ? "Stop response" : "Send message"}
                 title={typing ? "Stop the current reply" : "Send message"}

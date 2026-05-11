@@ -159,6 +159,14 @@ function VenueFinderPageInner() {
               Filter venues by real details, like door width, turning space, toilets, and parking. If you’re not sure
               what a feature means, ask the AI.
             </p>
+            <p className="max-w-[75ch] text-sm text-muted">
+              <span className="font-semibold text-heading">Verification:</span> &quot;Access Stamp checked&quot; means we&apos;ve
+              applied our structured review; &quot;Community reported&quot; is first-hand or crowd detail; &quot;Not yet
+              verified&quot; may still be useful—confirm before you travel.{" "}
+              <Link href="/about#listings" className="font-semibold text-blue hover:underline">
+                How we label listings
+              </Link>
+            </p>
             <p className="text-sm text-muted">
               Know a place we should list?{" "}
               <Link href="/submit-venue" className="font-semibold text-blue hover:underline">
