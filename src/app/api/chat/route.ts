@@ -245,6 +245,10 @@ function isHelpCardIntent(t: string) {
   return /(help card|access card|flashcard|flash card|download.*card|print.*card|template card|checklist card)/i.test(t);
 }
 
+function isFundingAdvisorIntent(t: string) {
+  return /(funding|grant|dfg|motability|nhs wheelchair|access to work|equipment fund|pay for|afford|how.*get.*chair|funded|free wheelchair)/i.test(t);
+}
+
 function isOutOfScope(t: string) {
   const low = t.toLowerCase();
   const domainSignal =
@@ -330,6 +334,21 @@ export async function POST(req: Request) {
   }
 
   const matchedCards = matchHelpCards(msg);
+  if (isFundingAdvisorIntent(msg)) {
+    const reply =
+      "We have a **funding advisor tool** that walks you through UK routes like NHS wheelchair services, DFG, Motability, Access to Work, and charity grants — based on what you need and your current benefits. You can also tell me your situation and I'll help you work out eligibility.";
+    return NextResponse.json({
+      reply: voice ? short(reply) : reply,
+      links: [{ label: "Open funding advisor", href: "/advice/equipment" }],
+      quickActions: [
+        "I need a wheelchair",
+        "Home adaptation funding",
+        "Am I eligible for Motability?",
+        "Access to Work explained",
+      ],
+    });
+  }
+
   if (matchedCards.length && isHelpCardIntent(msg)) {
     const reply =
       "I found help cards that match what you asked for. Open one and use 'Tailor with AI' if you want it adapted to your situation.";

@@ -67,11 +67,11 @@ const VENUE_COPY: Record<
   },
   "botanical-gardens-manchester": {
     about:
-      "Botanical Gardens is popular for low-noise daytime visits and flatter pathways compared with many older parks. The main route from the visitor centre to the central garden loop is typically easier for powered chairs and mobility scooters.",
+      "Botanical Gardens has mostly flat tarmac paths on the main loop with several sheltered rest areas. The visitor centre has ramp access and an accessible toilet. Gravel side paths and steeper slopes exist but are avoidable if you stick to the marked accessible route.",
     beforeYouGo: [
-      "Ask which entrances are staffed on the day you plan to visit.",
-      "Check if temporary event setups are blocking wider paths.",
-      "Plan rest stops if fatigue or pain increases on longer outdoor routes.",
+      "Check the weather — paths can be slippery in wet conditions and powered chairs may lose traction on gravel edges.",
+      "Ask at the visitor centre for the accessible route map if signage is unclear.",
+      "Plan rest stops — the full loop is roughly 800 m with benches every 150–200 m.",
     ],
   },
   "gluckberry-woods-cafe-liverpool": {
@@ -81,6 +81,24 @@ const VENUE_COPY: Record<
       "Call ahead for the best time window if you need more space around tables.",
       "Confirm where the nearest Blue Badge spaces are that day.",
       "Ask staff to reserve a table with clear turning space if possible.",
+    ],
+  },
+  "gallery-cafe-manchester": {
+    about:
+      "Gallery Café is a smaller independent venue with level access via the side entrance. The main limitation is tight turning space near the counter—staff can often move tables to help, but it is worth asking when you arrive or calling ahead.",
+    beforeYouGo: [
+      "Use the side entrance for level access — the front step is too high for most chairs.",
+      "Ask staff to move the table nearest the counter if you need more turning room.",
+      "Accessible toilet status is unconfirmed — phone ahead or have a backup plan.",
+    ],
+  },
+  "riverside-cinema-leeds": {
+    about:
+      "Riverside Cinema is one of the stronger Access Stamp checked venues. Automatic doors, lift to every screen, clearly marked wheelchair spaces with companion seating, and a hearing loop in all auditoriums. The accessible toilet is on the ground floor near the main foyer.",
+    beforeYouGo: [
+      "Book wheelchair spaces online or by phone — walk-up availability depends on showtime.",
+      "If you use a powered chair wider than 70 cm, confirm the wheelchair space width matches your needs.",
+      "Hearing loop coverage varies by seat position — ask the box office which rows work best.",
     ],
   },
 };

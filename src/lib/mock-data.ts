@@ -142,6 +142,33 @@ export const SAMPLE_VENUES: Venue[] = [
       "Quiet environment": "yes",
       "Staff disability awareness": "unknown",
     },
+    photos: [
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070383/gallery-cafe-overview_placeholder.png",
+        alt: "Gallery Café exterior showing side entrance approach",
+        label: "Venue overview",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070411/gallery-cafe-entrance_placeholder.png",
+        alt: "Side entrance of Gallery Café with level threshold",
+        label: "Entrance",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070373/gallery-cafe-counter_placeholder.png",
+        alt: "Counter area showing tight turning radius between tables",
+        label: "Counter area",
+        measurement: "Turning space near counter: approx 120cm",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070402/gallery-cafe-seating_placeholder.png",
+        alt: "Main seating area with moveable tables and chairs",
+        label: "Seating",
+      },
+    ],
+    locationSnapshot: {
+      src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778451836/gallery-cafe-map_placeholder.png",
+      alt: "Map snapshot of Manchester city centre showing Gallery Café location",
+    },
   },
   {
     slug: "riverside-cinema-leeds",
@@ -167,6 +194,45 @@ export const SAMPLE_VENUES: Venue[] = [
       "Lift access": "yes",
       "Quiet environment": "unknown",
       "Staff disability awareness": "yes",
+    },
+    photos: [
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070383/riverside-cinema-overview_placeholder.png",
+        alt: "Riverside Cinema front elevation with automatic doors visible",
+        label: "Venue overview",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070411/riverside-cinema-entrance_placeholder.png",
+        alt: "Automatic doors at Riverside Cinema main entrance",
+        label: "Entrance",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070373/riverside-cinema-doorway_placeholder.png",
+        alt: "Main corridor doorway with measurement arrow",
+        label: "Corridor doorway",
+        measurement: "Door width measured: 105cm",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070380/riverside-cinema-toilet_placeholder.png",
+        alt: "Accessible toilet with grab rails and emergency cord",
+        label: "Accessible toilet",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070402/riverside-cinema-screen_placeholder.png",
+        alt: "Screen room showing wheelchair spaces and transfer-friendly seating",
+        label: "Screen room",
+        measurement: "Wheelchair space width: 95cm, turning circle nearby: 170cm+",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070410/riverside-cinema-lift_placeholder.png",
+        alt: "Lift with tactile buttons and wide doors",
+        label: "Lift",
+        measurement: "Lift door width: 90cm, internal depth: 140cm",
+      },
+    ],
+    locationSnapshot: {
+      src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778451836/riverside-cinema-map_placeholder.png",
+      alt: "Map snapshot of Leeds city centre showing Riverside Cinema",
     },
   },
   {
@@ -271,6 +337,39 @@ export const SAMPLE_VENUES: Venue[] = [
       "Lift access": "unknown",
       "Quiet environment": "yes",
       "Staff disability awareness": "yes",
+    },
+    photos: [
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070383/botanical-gardens-overview_placeholder.png",
+        alt: "Main entrance area of Botanical Gardens with ramped path",
+        label: "Venue overview",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070411/botanical-gardens-path_placeholder.png",
+        alt: "Flat tarmac garden path with bench rest point visible",
+        label: "Main path",
+        measurement: "Path width: 180cm+, firm tarmac surface",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070373/botanical-gardens-rest-area_placeholder.png",
+        alt: "Sheltered rest area with bench and wheelchair pull-in space",
+        label: "Rest area",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070380/botanical-gardens-toilet_placeholder.png",
+        alt: "Accessible toilet near the visitor centre",
+        label: "Accessible toilet",
+      },
+      {
+        src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070402/botanical-gardens-visitor-centre_placeholder.png",
+        alt: "Visitor centre entrance with ramp and wide doors",
+        label: "Visitor centre",
+        measurement: "Visitor centre door width: 110cm",
+      },
+    ],
+    locationSnapshot: {
+      src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778451836/botanical-gardens-map_placeholder.png",
+      alt: "Map snapshot of Manchester showing Botanical Gardens location",
     },
   },
   {

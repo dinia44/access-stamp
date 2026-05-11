@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AdviceArticleCard } from "@/components/advice/advice-article-card";
 import { AdviceManualCard } from "@/components/advice/advice-manual-card";
+import { EquipmentFundingAdvisor } from "@/components/advice/equipment-funding-advisor";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
@@ -126,6 +127,8 @@ export default function EquipmentPage() {
               </div>
             </div>
           </Card>
+
+          <EquipmentFundingAdvisor />
 
           <section className="space-y-3">
             <div>
