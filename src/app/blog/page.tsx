@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { Badge, Card } from "@/components/ui";
+
+export const metadata: Metadata = {
+  title: "Blog",
+  description: "Updates, explainers, and walkthroughs from the Access Stamp team \u2014 clear, practical, no charity tone.",
+};
 
 const POSTS = [
   {

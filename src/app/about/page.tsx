@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import { Container } from "@/components/container";
+
+export const metadata: Metadata = {
+  title: "About Access Stamp",
+  description: "Who we are, how we verify venue listings, and why Access Stamp exists \u2014 built from lived experience.",
+};
 import { SiteLogo } from "@/components/site-logo";
 import { Badge, Card } from "@/components/ui";
 

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdviceArticleJsonLd } from "@/components/advice-article-jsonld";
@@ -11,6 +12,18 @@ import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { LAWS_GUIDANCE_LINKS } from "@/lib/laws-guidance";
 import { SetChatContext } from "@/components/chat/set-context";
 import { cn } from "@/lib/utils";
+
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const a = ADVICE_ARTICLES.find((x) => x.slug === params.slug);
+  if (!a) return {};
+  const firstParagraph = a.sections.find((s) => s.type === "p");
+  const description = firstParagraph && "text" in firstParagraph ? firstParagraph.text.slice(0, 160) : a.title;
+  return {
+    title: a.title,
+    description,
+    openGraph: { title: a.title, description },
+  };
+}
 
 function relatedFor(slug: string, categorySlug: string, limit = 4) {
   return ADVICE_ARTICLES.filter((x) => x.slug !== slug && x.categorySlug === categorySlug).slice(0, limit);

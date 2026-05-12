@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useFocusTrap } from "@/lib/use-focus-trap";
 import { useChat } from "@/components/chat/provider";
 import { ChatMessageContent } from "@/components/chat/chat-message-content";
 
@@ -202,6 +203,7 @@ function VoiceOrb({
 export function ChatWidget() {
   const router = useRouter();
   const { page, open, setOpen, draft, setDraft, voiceMode } = useChat();
+  const chatTrapRef = useFocusTrap<HTMLDivElement>(open);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [listening, setListening] = useState(false);
   const [conversationMode, setConversationMode] = useState(false);
@@ -1153,7 +1155,7 @@ export function ChatWidget() {
             : "Ready";
 
   return (
-    <div className="fixed bottom-5 right-5 z-[60] print:hidden">
+    <div ref={chatTrapRef} className="fixed bottom-5 right-5 z-[60] print:hidden" role={open ? "dialog" : undefined} aria-modal={open ? true : undefined} aria-label={open ? "Chat assistant" : undefined}>
       {!open ? (
         <button
           type="button"
@@ -1168,7 +1170,7 @@ export function ChatWidget() {
         </button>
       ) : (
         conversationMode ? (
-          <div className="fixed inset-0 z-[70] bg-navy/75 p-3 backdrop-blur-[2px]">
+          <div className="fixed inset-0 z-[70] bg-navy/75 p-3 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-label="Hands-free voice assistant">
             <div className="mx-auto flex h-full w-full max-w-3xl flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-card shadow-[var(--shadow)]">
               <div className="flex flex-col gap-3 border-b border-white/20 bg-gradient-to-r from-blue to-navy px-4 py-3 text-white">
                 <div className="flex items-start justify-between gap-3">

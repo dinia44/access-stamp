@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Advice hub",
+  description: "Practical accessibility guides covering rights, equipment, transport, education, care, and more \u2014 UK-focused and jargon-free.",
+};
 import { AdviceMediaFrame, ADVICE_CARD_IMAGE_SIZES } from "@/components/advice/advice-media-frame";
 import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { PageLayout } from "@/components/page-layout";

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useFocusTrap } from "@/lib/use-focus-trap";
 
 type VenuePhoto = {
   src: string;
@@ -15,6 +16,7 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
   const [active, setActive] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [broken, setBroken] = useState<Record<number, boolean>>({});
+  const trapRef = useFocusTrap<HTMLDivElement>(expanded);
   const current = photos[active];
 
   function cloudinary(src: string, transform: string) {
@@ -119,7 +121,7 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
       </div>
 
       {expanded ? (
-        <div className="fixed inset-0 z-[120] bg-black/85 p-4 sm:p-8" role="dialog" aria-modal="true">
+        <div ref={trapRef} className="fixed inset-0 z-[120] bg-black/85 p-4 sm:p-8" role="dialog" aria-modal="true" aria-label="Photo gallery">
           <button
             type="button"
             className="absolute right-4 top-4 cursor-pointer rounded-full bg-white/15 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/25"
