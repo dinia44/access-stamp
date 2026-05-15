@@ -360,21 +360,14 @@ export default async function VenueDetailPage({
 
           <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
             <Card className="p-5">
-              <div className="text-sm font-semibold text-heading">Contact details</div>
-              <div className="mt-3 grid gap-2 text-sm text-muted">
-                <div>
-                  <span className="font-semibold text-heading">Address area:</span> {v.location}
-                </div>
-                <div>
-                  <span className="font-semibold text-heading">Phone:</span> Coming soon
-                </div>
-                <div>
-                  <span className="font-semibold text-heading">Website:</span> Coming soon
-                </div>
-                <div>
-                  <span className="font-semibold text-heading">Opening hours:</span> Coming soon
-                </div>
-              </div>
+              <div className="text-sm font-semibold text-heading">Contact &amp; updates</div>
+              <p className="mt-2 text-sm text-muted">
+                We do not host venue phone numbers or opening hours yet. Area shown:{" "}
+                <span className="font-semibold text-heading">{v.location}</span>.
+              </p>
+              <p className="mt-2 text-sm text-muted">
+                Spotted something wrong or missing? Tell us what you found on site — measurements and photos help most.
+              </p>
               <div className="mt-4">
                 <Button href={`/submit-venue?suggested=${encodeURIComponent(v.slug)}`} variant="secondary">
                   Suggest an update
@@ -385,12 +378,16 @@ export default async function VenueDetailPage({
             <Card className="p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="text-sm font-semibold text-heading">Reviews</div>
+                  <div className="text-sm font-semibold text-heading">Community access notes</div>
                   <p className="mt-1 text-sm text-muted">
-                    Reviews coming soon (Phase 2). For now, this listing combines community reports and practical checks.
+                    This listing is built from{" "}
+                    {v.verification === "Access Stamp checked"
+                      ? "an Access Stamp audit"
+                      : v.verification.toLowerCase()}
+                    . We do not run star ratings or user reviews yet — practical feature checks instead.
                   </p>
                 </div>
-                <Link href="/venue-finder" className="text-sm font-semibold text-blue">
+                <Link href="/venue-finder" className="shrink-0 text-sm font-semibold text-blue">
                   Back to search →
                 </Link>
               </div>

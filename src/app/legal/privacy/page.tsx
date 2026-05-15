@@ -42,9 +42,9 @@ export default function PrivacyPage() {
                   publish it.
                 </li>
                 <li>
-                  <strong>Analytics</strong> &mdash; we use privacy-friendly, cookie-free analytics
-                  (Vercel Web Analytics) to understand which pages are visited. No personal data
-                  is collected through analytics.
+                  <strong>Usage data</strong> &mdash; our host may collect basic, aggregated request
+                  logs for security and performance. We do not run advertising trackers or sell
+                  browsing data.
                 </li>
                 <li>
                   <strong>Device preferences</strong> &mdash; accessibility settings (text size,
@@ -100,10 +100,10 @@ export default function PrivacyPage() {
                 delete personal data we hold about you. Since we store minimal data, in most cases
                 there is nothing to delete. If you have questions, contact us at{" "}
                 <a
-                  href="mailto:privacy@accessstamp.co.uk"
+                  href="mailto:hello@accessstamp.co.uk"
                   className="font-semibold text-blue underline-offset-2 hover:underline"
                 >
-                  privacy@accessstamp.co.uk
+                  hello@accessstamp.co.uk
                 </a>
                 .
               </p>

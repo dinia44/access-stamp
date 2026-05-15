@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeWaitlistForm } from "@/components/home-waitlist-form";
 import { SiteLogo } from "@/components/site-logo";
 import { SetChatContext } from "@/components/chat/set-context";
 import { Container } from "@/components/container";
@@ -927,19 +928,7 @@ export default function HomePage() {
               <p className="mx-auto mt-2 max-w-[520px] text-[15px] leading-[1.7] text-text">
                 Get practical accessibility updates, new guides, and early access to venue search features.
               </p>
-              <div className="mx-auto mt-5 flex w-full max-w-[400px] gap-2">
-                <input
-                  className="h-11 flex-1 rounded-[var(--radius-ui)] border border-border bg-background px-3 text-sm text-heading"
-                  placeholder="Your email address"
-                />
-                <button
-                  type="button"
-                  aria-label="Join waitlist coming soon"
-                  className="inline-flex items-center justify-center rounded-[var(--radius-ui)] bg-amber px-4 py-2 text-sm font-semibold text-navy opacity-80"
-                >
-                  Join the waitlist (Coming soon)
-                </button>
-              </div>
+              <HomeWaitlistForm />
             </Card>
           </FadeIn>
         </Container>

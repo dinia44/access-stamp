@@ -1,61 +1,32 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Container } from "@/components/container";
 import { Badge, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
-
-type Entry = {
-  name: string;
-  category: string;
-  area: string;
-  phone?: string;
-  website?: string;
-  notes?: string;
-};
-
-const ENTRIES: Entry[] = [
-  {
-    name: "Wheelchair Services (Example)",
-    category: "Wheelchair services",
-    area: "North West",
-    phone: "Coming soon",
-    website: "Coming soon",
-    notes: "Regional directory entry preview. Full provider list and filters are being added.",
-  },
-  {
-    name: "PA Payroll (Example)",
-    category: "PA payroll",
-    area: "UK",
-    notes: "Directory entry preview.",
-  },
-  {
-    name: "Legal Advice (Example)",
-    category: "Legal advice",
-    area: "UK",
-    notes: "Directory entry preview.",
-  },
-];
+import { DIRECTORY_ENTRIES } from "@/lib/directory-entries";
 
 export default function DirectoryPage() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("All");
 
   const categories = useMemo(() => {
-    const set = new Set<string>(ENTRIES.map((e) => e.category));
+    const set = new Set<string>(DIRECTORY_ENTRIES.map((e) => e.category));
     return ["All", ...Array.from(set).sort()];
   }, []);
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
-    return ENTRIES.filter((e) => {
+    return DIRECTORY_ENTRIES.filter((e) => {
       if (cat !== "All" && e.category !== cat) return false;
       if (!term) return true;
       return (
         e.name.toLowerCase().includes(term) ||
         e.category.toLowerCase().includes(term) ||
         e.area.toLowerCase().includes(term) ||
-        (e.notes ?? "").toLowerCase().includes(term)
+        (e.notes ?? "").toLowerCase().includes(term) ||
+        (e.phone ?? "").toLowerCase().includes(term)
       );
     });
   }, [q, cat]);
@@ -67,12 +38,24 @@ export default function DirectoryPage() {
         <div className="space-y-6">
           <div className="space-y-2">
             <Badge tone="amber">Directory</Badge>
-            <h1 className="font-[var(--font-heading)] text-4xl text-heading">Contacts directory</h1>
+            <h1 className="font-[var(--font-heading)] text-4xl text-heading">Useful contacts</h1>
             <p className="max-w-[85ch] text-muted">
-              Searchable contacts (wheelchair services by region, local authority teams, PA agencies, equipment repair,
-              legal advice, and more).
+              UK-wide helplines and services we often point people to. Access Stamp is not affiliated
+              with these organisations — always check their sites for the latest hours and eligibility.
             </p>
           </div>
+
+          <Card className="border-blue-pale bg-blue-pale/30 p-4 text-sm text-text">
+            Missing a service?{" "}
+            <Link href="/submit-venue" className="font-semibold text-blue underline-offset-2 hover:underline">
+              Suggest a venue
+            </Link>{" "}
+            for access listings, or ask the{" "}
+            <Link href="/ai" className="font-semibold text-blue underline-offset-2 hover:underline">
+              AI assistant
+            </Link>{" "}
+            for advice links.
+          </Card>
 
           <Card className="p-5">
             <div className="grid gap-3 md:grid-cols-[1fr_260px]">
@@ -113,17 +96,36 @@ export default function DirectoryPage() {
                   <Badge tone="blue">{e.category}</Badge>
                 </div>
                 {e.notes ? <p className="mt-3 text-sm text-muted">{e.notes}</p> : null}
-                <div className="mt-3 text-sm text-muted">
-                  <div>
-                    <span className="font-semibold text-heading">Phone:</span> {e.phone ?? "—"}
-                  </div>
-                  <div>
-                    <span className="font-semibold text-heading">Website:</span> {e.website ?? "—"}
-                  </div>
-                </div>
+                <dl className="mt-3 space-y-1 text-sm text-muted">
+                  {e.phone ? (
+                    <div>
+                      <dt className="inline font-semibold text-heading">Phone: </dt>
+                      <dd className="inline">{e.phone}</dd>
+                    </div>
+                  ) : null}
+                  {e.website ? (
+                    <div>
+                      <dt className="inline font-semibold text-heading">Website: </dt>
+                      <dd className="inline">
+                        <a
+                          href={e.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-semibold text-blue underline-offset-2 hover:underline"
+                        >
+                          {new URL(e.website).hostname.replace(/^www\./, "")}
+                        </a>
+                      </dd>
+                    </div>
+                  ) : null}
+                </dl>
               </Card>
             ))}
           </div>
+
+          {filtered.length === 0 ? (
+            <p className="text-sm text-muted">No matches. Try a different search or category.</p>
+          ) : null}
         </div>
       </Container>
     </div>

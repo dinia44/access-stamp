@@ -35,7 +35,8 @@ export default async function SubmitVenuePage({
             <h1 className="font-[var(--font-heading)] text-4xl text-heading">Suggest a venue</h1>
             <p className="max-w-[85ch] text-muted">
               Help grow Access Stamp by telling us about a place you&apos;ve visited. We review suggestions before
-              publishing listings.
+              publishing listings. Submissions are sent to our team when configured; otherwise they are saved in your
+              browser until we connect delivery.
             </p>
           </div>
 

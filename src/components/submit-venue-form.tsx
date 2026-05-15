@@ -7,34 +7,71 @@ import { saveSubmission } from "@/lib/submission-store";
 export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: string }) {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+  const [deliveredToTeam, setDeliveredToTeam] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
     const form = new FormData(e.currentTarget);
     const name = String(form.get("name") ?? "").trim();
     const location = String(form.get("location") ?? "").trim();
     const type = String(form.get("type") ?? "").trim();
+    const features = String(form.get("features") ?? "").trim();
+    const notes = String(form.get("notes") ?? "").trim();
+    const contactEmail = String(form.get("contactEmail") ?? "").trim();
+
     if (!name || !location || !type) {
       setError("Please fill in venue name, location, and venue type.");
       return;
     }
-    saveSubmission({
-      name,
-      location,
-      type,
-      features: String(form.get("features") ?? "").trim(),
-      notes: String(form.get("notes") ?? "").trim(),
-    });
+
+    setSubmitting(true);
+    let apiDelivered = false;
+
+    try {
+      const res = await fetch("/api/submit-venue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          location,
+          type,
+          features,
+          notes,
+          contactEmail: contactEmail || undefined,
+        }),
+      });
+      const data = (await res.json()) as { ok?: boolean; delivered?: boolean; error?: string };
+      if (!res.ok) {
+        setError(data.error ?? "Could not send your suggestion. Please try again.");
+        setSubmitting(false);
+        return;
+      }
+      apiDelivered = Boolean(data.delivered);
+    } catch {
+      saveSubmission({ name, location, type, features, notes });
+      setDeliveredToTeam(false);
+      setSent(true);
+      setSubmitting(false);
+      return;
+    } finally {
+      setSubmitting(false);
+    }
+
+    saveSubmission({ name, location, type, features, notes });
+    setDeliveredToTeam(apiDelivered);
     setSent(true);
   }
 
   if (sent) {
     return (
       <div className="space-y-3 text-center">
-        <p className="font-semibold text-heading">Thanks — we&apos;ve noted your suggestion.</p>
+        <p className="font-semibold text-heading">Thanks — we&apos;ve received your suggestion.</p>
         <p className="text-sm text-muted">
-          Your submission is now in the moderation queue with status: Pending review.
+          {deliveredToTeam
+            ? "It was sent to the Access Stamp team for review. We aim to triage within 3 working days."
+            : "It is saved on this device and logged on our server for review. Email hello@accessstamp.co.uk with the venue name if you need a faster response."}
         </p>
       </div>
     );
@@ -42,6 +79,11 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
 
   return (
     <form className="grid gap-5" onSubmit={onSubmit}>
+      <p className="text-sm text-muted">
+        Submissions are reviewed before publishing. Optional email lets us follow up if we need
+        clarification.
+      </p>
+
       <label className="grid gap-1 text-sm font-semibold text-heading">
         Venue name
         <input
@@ -112,6 +154,17 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
       </label>
 
       <label className="grid gap-1 text-sm font-semibold text-heading">
+        Your email (optional)
+        <input
+          name="contactEmail"
+          type="email"
+          autoComplete="email"
+          className="h-11 rounded-[var(--radius-ui)] border border-border bg-card px-3 font-normal text-text"
+          placeholder="So we can ask a quick follow-up"
+        />
+      </label>
+
+      <label className="grid gap-1 text-sm font-semibold text-heading">
         Photo (optional)
         <input
           name="photo"
@@ -119,14 +172,11 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
           accept="image/*"
           className="text-sm text-muted file:mr-3 file:rounded-[var(--radius-ui)] file:border file:border-border file:bg-background-2 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-heading"
         />
-        <span className="text-xs font-normal text-muted">Attachments will connect when uploads go live.</span>
+        <span className="text-xs font-normal text-muted">Photo uploads are not wired yet — describe access in text for now.</span>
       </label>
 
-      <div className="rounded-[var(--radius-ui)] border border-border bg-background-2 px-3 py-2 text-xs text-muted">
-        Submissions are triaged within 3 working days. High-impact venue updates are prioritized.
-      </div>
-      {error ? <p className="text-sm font-semibold text-amber">{error}</p> : null}
-      <Button type="submit">Submit suggestion</Button>
+      {error ? <p className="text-sm font-semibold text-amber" role="alert">{error}</p> : null}
+      <Button type="submit">{submitting ? "Sending…" : "Submit suggestion"}</Button>
     </form>
   );
 }
