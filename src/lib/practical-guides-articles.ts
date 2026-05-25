@@ -780,4 +780,211 @@ Carer strain: [hours, sleep loss]`,
       { label: "Employing a PA basics", href: "/advice/employing-a-personal-assistant-basics" },
     ],
   }),
+
+  buildGuide({
+    slug: "attendance-allowance-application-guide",
+    title: "Attendance Allowance: How to Apply and What to Include",
+    seoTitle: "Attendance Allowance: how to apply and what to include",
+    metaDescription:
+      "Apply for UK Attendance Allowance: who qualifies, day/night rates, evidence, form tips, and what to do if refused.",
+    excerpt:
+      "For people over State Pension age who need help with personal care. Impact on daily living matters more than your diagnosis.",
+    readTimeMinutes: 10,
+    categorySlug: "rights",
+    tags: ["Attendance Allowance", "Benefits", "Older people", "Care"],
+    summary:
+      "Attendance Allowance (AA) is a tax-free benefit for people over State Pension age who need help with personal care because of illness or disability. It is not based on income in the same way as means-tested benefits, but you must meet the care needs rules. AA does not cover mobility needs (that is a different benefit territory for under-66s).",
+    who: [
+      "People over State Pension age who need care or supervision with personal tasks.",
+      "People with physical or mental disabilities, including dementia, where care needs are present.",
+      "Claimants who already receive other benefits — check interaction rules (AA may affect other benefits).",
+    ],
+    whatAvailable: [
+      "Lower or higher rate depending on whether care/supervision is needed by day, night, or both.",
+      "Help with extra costs of care (it is paid to the person, not the carer directly).",
+      "Possible eligibility for other linked support — check current GOV.UK rules before claiming.",
+    ],
+    evidence: [
+      "Completed AA1 claim form (or online claim where available).",
+      "List of care needs by time of day: washing, dressing, eating, medication, safety supervision.",
+      "GP or nurse letter describing care needs (functional, not diagnosis only).",
+      "Carer or family statement of what help is given daily.",
+      "Hospital discharge or social care letters if they describe ongoing care needs.",
+    ],
+    steps: [
+      "Check State Pension age and current benefit position on GOV.UK before applying.",
+      "Request form AA1 or apply online if the service is available to you.",
+      "Describe care needs for day and night separately — AA rates depend on this pattern.",
+      "Use examples of when supervision is needed for safety (falls risk, confusion, seizures).",
+      "Send copies of supporting letters; keep originals unless asked otherwise.",
+      "Note the date you submitted the claim for your records.",
+      "If awarded, read how payment affects other benefits and report changes in care needs.",
+    ],
+    mistakes: [
+      "Describing mobility problems only without personal care or supervision needs.",
+      "Writing “my partner helps me” without explaining tasks and frequency.",
+      "Claiming AA while not over State Pension age (wrong benefit — check PIP or other routes).",
+      "Not reporting changes if care needs increase or decrease later.",
+    ],
+    templateTitle: "Day vs night care summary (for your draft)",
+    templateBody: `Daytime: I need help with [washing / meals / meds] about [X] times per week. Without help, [risk].
+
+Night: I need [supervision / turning / toileting help] because [reason]. Without help, [risk].
+
+Supervision: [describe when you could hurt yourself or others if alone]`,
+    ifRefused: [
+      "Request written decision and reasons.",
+      "Consider asking for a reconsideration or challenging the decision using the route on your letter — get advice before deadlines.",
+      "Contact Citizens Advice or Age UK for benefits help if you need support reapplying.",
+    ],
+    officialLinks: [
+      { label: "GOV.UK — Attendance Allowance", href: "https://www.gov.uk/attendance-allowance" },
+      { label: "GOV.UK — How to claim", href: "https://www.gov.uk/attendance-allowance/how-to-claim" },
+      { label: "Age UK — Attendance Allowance", href: "https://www.ageuk.org.uk/information-advice/money-legal/benefits-entitlements/attendance-allowance/" },
+    ],
+    relatedLinks: [
+      { label: "Care needs assessment", href: "/advice/care-needs-assessment-social-services" },
+      { label: "Carers UK — assessments", href: "https://www.carersuk.org/help-and-advice/getting-support/local-support/assessments/" },
+    ],
+  }),
+
+  buildGuide({
+    slug: "nhs-continuing-healthcare-chc-screening",
+    title: "NHS Continuing Healthcare: Screening and Eligibility Basics",
+    seoTitle: "NHS continuing healthcare (CHC): screening and eligibility",
+    metaDescription:
+      "How NHS continuing healthcare works in England: checklist, fast-track, disputes, and how it differs from social care funding.",
+    excerpt:
+      "CHC can fund care when needs are primarily health-related. The checklist and decision support tool are where many disputes start.",
+    readTimeMinutes: 12,
+    categorySlug: "care",
+    tags: ["CHC", "NHS", "Social care", "Funding"],
+    summary:
+      "NHS continuing healthcare (CHC) means the NHS funds care and support for people with intense health needs, including in their own home or a care home. In England the process uses a checklist, then a decision support tool (DST) in most cases, or fast-track for rapidly deteriorating conditions. CHC is separate from local authority social care funding — getting one does not automatically mean you get the other.",
+    who: [
+      "Adults with long-term complex health needs in England (Scotland, Wales, and NI have different systems).",
+      "People leaving hospital who may need joint health and social care planning.",
+      "Families where care costs are high and health needs dominate daily support.",
+    ],
+    whatAvailable: [
+      "Full cost of care at home or in a care home if eligible (package depends on assessed needs).",
+      "Fast-track CHC for end-of-life rapid deterioration in some cases.",
+      "NHS-funded nursing care contribution in some care home situations if CHC is not awarded (different rules).",
+    ],
+    evidence: [
+      "Checklist completed by a trained health or social care professional.",
+      "DST with multi-disciplinary input and evidence from professionals involved in care.",
+      "Care plans, hospital letters, nursing notes, therapy reports.",
+      "24-hour care logs showing health needs across the day.",
+      "Medication charts and treatment schedules.",
+    ],
+    steps: [
+      "Ask the NHS (ward team, GP, or continuing healthcare team) to complete the checklist if needs may qualify.",
+      "If checklist passes, request full assessment and DST — keep copies of all paperwork.",
+      "For fast-track, ask whether terminal or rapidly deteriorating health criteria apply (professional decision).",
+      "If eligible, agree care package and funding responsibilities in writing.",
+      "If not eligible, ask for reasons and whether NHS-funded nursing care contribution applies instead.",
+      "If disputed, use local resolution process then request independent review and appeal routes on your letter.",
+    ],
+    mistakes: [
+      "Assuming social care means test outcomes decide CHC (different legal tests).",
+      "Letting checklist be completed without you or your representative present to add examples.",
+      "Not keeping a daily log during assessment periods.",
+      "Paying care home top-ups without checking if CHC should cover fees first.",
+    ],
+    templateTitle: "24-hour health needs log (sample lines)",
+    templateBody: `06:00 — [medication / turning / catheter care / pain management]
+12:00 — [feeding support / diabetes monitoring / wound care]
+18:00 — [mobility transfers with health risk / oxygen / seizures]
+02:00 — [night positioning / monitoring / incontinence linked to condition]`,
+    ifRefused: [
+      "Request written decision with checklist and DST scores where applicable.",
+      "Ask for local resolution meeting within the timeframe on your letter.",
+      "Contact Beacon CHC advocacy (where available) or specialist solicitors for appeal advice before deadlines.",
+      "Parallel: still pursue social care assessment if daily living support is needed.",
+    ],
+    officialLinks: [
+      { label: "GOV.UK — NHS continuing healthcare", href: "https://www.gov.uk/nhs-continuing-healthcare" },
+      { label: "NHS England — CHC public information", href: "https://www.england.nhs.uk/commissioning/comm-healthcare-services/" },
+      { label: "Beacon — CHC advocacy", href: "https://www.beaconchc.co.uk/" },
+    ],
+    relatedLinks: [
+      { label: "Care needs assessment", href: "/advice/care-needs-assessment-social-services" },
+      { label: "PIP mandatory reconsideration", href: "/advice/pip-mandatory-reconsideration" },
+    ],
+  }),
+
+  buildGuide({
+    slug: "pip-tribunal-appeal-guide",
+    title: "PIP Tribunal Appeals: Preparing Your Case",
+    seoTitle: "PIP tribunal appeals: preparing your case",
+    metaDescription:
+      "Appeal a PIP decision to the tribunal: deadlines, evidence bundles, hearings, and what to expect. UK-focused practical steps.",
+    excerpt:
+      "After mandatory reconsideration, a tribunal is often where detailed evidence matters. Preparation beats volume of medical letters.",
+    readTimeMinutes: 13,
+    categorySlug: "rights",
+    tags: ["PIP", "Tribunal", "Appeals", "Benefits"],
+    summary:
+      "If mandatory reconsideration does not change a PIP decision you disagree with, you can usually appeal to the First-tier Tribunal (Social Security and Child Support). Tribunals are independent of DWP. Many people represent themselves, but welfare rights advice can help. Success often depends on clear functional examples and responding to DWP’s reasons point by point.",
+    who: [
+      "People who received a mandatory reconsideration notice that did not change the award as they hoped.",
+      "Claimants within the appeal time limit on their decision letter (extensions sometimes possible with good reason — get advice).",
+      "Supporters helping someone prepare a tribunal bundle with consent.",
+    ],
+    whatAvailable: [
+      "Independent review of the PIP decision by a tribunal panel.",
+      "Hearing in person, by video, or on paper (paper hearings depend on availability and rules).",
+      "Outcome that can increase, decrease, or maintain an award — prepare for either direction.",
+    ],
+    evidence: [
+      "Mandatory reconsideration notice and original decision letter.",
+      "DWP’s response to appeal (often includes their evidence bundle).",
+      "Your impact diary covering typical and bad days.",
+      "Witness statement from someone who sees daily impact.",
+      "Professional letters tied to specific PIP activities (not generic diagnosis).",
+      "Photos or lists of aids used — linked to activities.",
+    ],
+    steps: [
+      "Read the MR notice — note appeal deadline and how to appeal (HMCTS).",
+      "Submit appeal form (SSCS1 or online route — confirm current process on GOV.UK/HMCTS).",
+      "Start a tribunal bundle index: your statement, diary, letters, decision letters.",
+      "When DWP’s bundle arrives, read their reasons and draft responses per activity.",
+      "Request a hearing if you want to explain variability in person (or request paper if that suits you).",
+      "Attend early, bring copies, answer questions plainly with examples.",
+      "Wait for written decision — it may arrive weeks after the hearing.",
+    ],
+    mistakes: [
+      "Missing the appeal deadline without requesting an extension properly.",
+      "Sending hundreds of pages of medical history without linking to descriptors.",
+      "Contradicting your PIP form answers without explaining change in condition or clearer understanding.",
+      "Not reading DWP’s bundle before the hearing.",
+      "Letting someone speak for you without checking their statement matches your experience.",
+    ],
+    templateTitle: "Witness statement opening (adapt)",
+    templateBody: `I am [name], [relationship] of [claimant]. I see their daily routine regularly.
+
+I have read their PIP claim and disagree with DWP’s conclusion about [activity] because:
+
+Example 1 (date/typical day): [what happens]
+Example 2: [help needed / risk]
+
+I understand the tribunal may ask me questions. This statement is true to the best of my knowledge.`,
+    ifRefused: [
+      "If tribunal upholds DWP, check whether there are further appeal routes on your letter (upper tribunal only on legal grounds in some cases — specialist advice needed).",
+      "Request statement of reasons if not included.",
+      "If award reduced, understand when new rate starts and seek advice urgently.",
+      "Consider fresh evidence and change of circumstances rules only if appropriate — do not confuse with reopening without advice.",
+    ],
+    officialLinks: [
+      { label: "GOV.UK — Appeal a PIP decision", href: "https://www.gov.uk/mandatory-reconsideration" },
+      { label: "HMCTS — Social Security appeals", href: "https://www.gov.uk/courts-tribunals/first-tier-tribunal-social-security-child-support" },
+      { label: "Citizens Advice — Appealing a benefits decision", href: "https://www.citizensadvice.org.uk/benefits/sick-or-disabled-people-and-carers/sick-or-disabled-benefits-appeals/" },
+    ],
+    relatedLinks: [
+      { label: "PIP mandatory reconsideration", href: "/advice/pip-mandatory-reconsideration" },
+      { label: "PIP renewal form guide", href: "/advice/pip-renewal-form-what-to-write" },
+      { label: "PIP in plain English", href: "/advice/pip-in-plain-english" },
+    ],
+  }),
 ];
