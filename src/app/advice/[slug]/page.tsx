@@ -11,6 +11,7 @@ import { ADVICE_ARTICLES, ADVICE_CATEGORIES } from "@/lib/mock-data";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { LAWS_GUIDANCE_LINKS } from "@/lib/laws-guidance";
 import { SetChatContext } from "@/components/chat/set-context";
+import { ArticleCompanion } from "@/components/ai-toolkit/article-companion";
 import { cn } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -237,8 +238,17 @@ export default async function AdviceArticlePage({
                 })}
               </article>
 
+              <ArticleCompanion
+                articleSlug={a.slug}
+                articleTitle={a.title}
+                sectionHeadings={a.sections
+                  .filter((s): s is { type: "h2"; text: string } => s.type === "h2")
+                  .map((s) => s.text)}
+              />
+
               <div className="mt-8 grid gap-3 border-t border-border pt-6 print:hidden">
                 <div className="flex flex-wrap gap-2">
+                  <Button href="/ai-toolkit">AI Toolkit</Button>
                   <Button href="/?openChat=1">Open AI Assistant</Button>
                   {a.slug === "employing-a-personal-assistant-basics" ? (
                     <>

@@ -3,7 +3,11 @@ import { AdviceMediaFrame, ADVICE_CARD_IMAGE_SIZES } from "@/components/advice/a
 import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { Badge, Card } from "@/components/ui";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
-import { FEATURED_MORE_GUIDE_SLUGS, FEATURED_PRACTICAL_GUIDE_SLUGS } from "@/lib/featured-practical-guides";
+import {
+  FEATURED_BATCH_3_SLUGS,
+  FEATURED_MORE_GUIDE_SLUGS,
+  FEATURED_PRACTICAL_GUIDE_SLUGS,
+} from "@/lib/featured-practical-guides";
 import { ADVICE_ARTICLES, ADVICE_CATEGORIES, type AdviceArticle } from "@/lib/mock-data";
 
 function categoryLabel(categorySlug: string) {
@@ -62,8 +66,9 @@ export function FeaturedPracticalGuides({ limit }: { limit?: number }) {
   const primarySlugs = limit ? FEATURED_PRACTICAL_GUIDE_SLUGS.slice(0, limit) : [...FEATURED_PRACTICAL_GUIDE_SLUGS];
   const primary = resolveArticles(primarySlugs);
   const more = limit ? [] : resolveArticles(FEATURED_MORE_GUIDE_SLUGS);
+  const batch3 = limit ? [] : resolveArticles(FEATURED_BATCH_3_SLUGS);
 
-  if (!primary.length && !more.length) return null;
+  if (!primary.length && !more.length && !batch3.length) return null;
 
   return (
     <div className="space-y-10">
@@ -93,6 +98,20 @@ export function FeaturedPracticalGuides({ limit }: { limit?: number }) {
             </p>
           </div>
           <GuideCardGrid articles={more} />
+        </section>
+      ) : null}
+
+      {batch3.length ? (
+        <section className="space-y-4" aria-labelledby="featured-batch3-guides-heading">
+          <div className="space-y-2">
+            <h2 id="featured-batch3-guides-heading" className="font-[var(--font-heading)] text-2xl text-heading">
+              Carers, children, and Universal Credit health
+            </h2>
+            <p className="max-w-[80ch] text-sm text-muted">
+              Support for unpaid carers, DLA for children, and work capability on Universal Credit.
+            </p>
+          </div>
+          <GuideCardGrid articles={batch3} />
         </section>
       ) : null}
 

@@ -32,6 +32,13 @@ const corePages: SearchItem[] = [
     url: "/advice",
   },
   {
+    title: "AI Toolkit",
+    description: "Guided tools for action plans, letters, evidence checklists, and venue questions.",
+    category: "AI Assistant",
+    tags: ["toolkit", "letter", "checklist", "evidence", "action plan"],
+    url: "/ai-toolkit",
+  },
+  {
     title: "Ask Access Stamp AI",
     description: "Get practical help with venues, rights, equipment, and support routes.",
     category: "AI Assistant",

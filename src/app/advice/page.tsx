@@ -82,6 +82,10 @@ export default function AdviceHubPage() {
               </Link>
             </li>
             <li>
+              <Link className="text-blue" href="/ai-toolkit">
+                AI Toolkit
+              </Link>
+              {" · "}
               <Link className="text-blue" href="/ai">
                 Or ask our AI →
               </Link>

@@ -6,6 +6,7 @@ const PLATFORM_LINKS = [
   { label: "Venue Finder", href: "/venue-finder" },
   { label: "Suggest a venue", href: "/submit-venue" },
   { label: "Advice Hub", href: "/advice" },
+  { label: "AI Toolkit", href: "/ai-toolkit" },
   { label: "AI Assistant", href: "/ai" },
   { label: "Help Cards", href: "/help-cards" },
 ] as const;

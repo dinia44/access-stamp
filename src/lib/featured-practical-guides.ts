@@ -14,3 +14,10 @@ export const FEATURED_MORE_GUIDE_SLUGS = [
   "nhs-continuing-healthcare-chc-screening",
   "attendance-allowance-application-guide",
 ] as const;
+
+/** Third row: carers, children, and UC health elements. */
+export const FEATURED_BATCH_3_SLUGS = [
+  "carers-assessment-request-guide",
+  "dla-for-children-claim-guide",
+  "universal-credit-lcwra-work-capability",
+] as const;

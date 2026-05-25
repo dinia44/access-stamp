@@ -987,4 +987,333 @@ I understand the tribunal may ask me questions. This statement is true to the be
       { label: "PIP in plain English", href: "/advice/pip-in-plain-english" },
     ],
   }),
+
+  buildGuide({
+    slug: "carers-assessment-request-guide",
+    title: "Carer's Assessment: How to Request Support for Yourself",
+    seoTitle: "Carer's assessment: how to request support",
+    metaDescription:
+      "Request a carer's assessment from your council: eligibility, what support may be available, and what to do if refused.",
+    excerpt:
+      "If you care for someone, you may be entitled to your own assessment — separate from the person you support. Describe carer strain plainly.",
+    readTimeMinutes: 10,
+    categorySlug: "care",
+    tags: ["Carers", "Social care", "Assessment", "Support"],
+    summary:
+      "A carer's assessment looks at your needs as someone providing care — breaks, training, equipment, and wellbeing. It is run by the local authority and is separate from the cared-for person's needs assessment. You can often request one even if the person you care for has refused social care for themselves.",
+    who: [
+      "Adults caring for a family member or friend who is disabled, ill, or older.",
+      "Carers providing regular care without being paid as a professional care worker.",
+      "Young carers may have different routes — check local young carer services.",
+    ],
+    whatAvailable: [
+      "Respite breaks or replacement care so you can rest.",
+      "Carer training or advice sessions.",
+      "Equipment to help with caring tasks.",
+      "Signposting to local carer organisations.",
+      "Direct payments in some areas for carer needs (check local policy).",
+    ],
+    evidence: [
+      "Your description of caring hours and tasks (day and night).",
+      "Impact on your health, sleep, work, and relationships.",
+      "Employment situation if you reduced hours or stopped work.",
+      "GP letter about stress, injury from caring, or mental health impact (optional but useful).",
+    ],
+    steps: [
+      "Contact adult social care at the council for the area where the person you care for lives (or your own area — confirm local rule).",
+      "Request a carer's assessment in writing with your contact details.",
+      "Prepare examples: tasks you do, time per week, what happens if you cannot care.",
+      "Attend assessment (phone, video, or home visit) with honest worst-week examples.",
+      "Read the support plan — ask what is funded and any charges.",
+      "Review after a few months if caring intensity increases.",
+    ],
+    mistakes: [
+      "Only describing the cared-for person's needs without your own strain.",
+      "Underreporting hours because care feels 'normal'.",
+      "Assuming you must live with the person to qualify.",
+      "Not following up when promised respite never materialises.",
+    ],
+    templateTitle: "Carer strain log (one week)",
+    templateBody: `Mon — hours: [ ] Tasks: [medication, washing, night watch…] Sleep lost: [ ]
+Tue — …
+Work impact: [missed shifts / reduced hours]
+Health impact: [pain, anxiety, injury]
+What would help most: [respite / training / equipment]`,
+    ifRefused: [
+      "Ask for written reasons if no support is offered.",
+      "Contact Carers UK or local carers centre for advocacy.",
+      "Complain through council complaints process if assessment delayed unreasonably.",
+      "Check whether the cared-for person's needs assessment should be reopened in parallel.",
+    ],
+    officialLinks: [
+      { label: "GOV.UK — Carer's assessments", href: "https://www.gov.uk/carers-assessment" },
+      { label: "Carers UK — Assessments", href: "https://www.carersuk.org/help-and-advice/getting-support/local-support/assessments/" },
+    ],
+    relatedLinks: [
+      { label: "Care needs assessment", href: "/advice/care-needs-assessment-social-services" },
+      { label: "Carer's Allowance guide", href: "/advice/carers-allowance-application-guide" },
+    ],
+  }),
+
+  buildGuide({
+    slug: "carers-allowance-application-guide",
+    title: "Carer's Allowance: Eligibility and How to Apply",
+    seoTitle: "Carer's Allowance: eligibility and how to apply",
+    metaDescription:
+      "Carer's Allowance rules: 35-hour care test, earnings limit, impact on other benefits, and how to apply in the UK.",
+    excerpt:
+      "You must meet care hours, earnings rules, and the person you care for must receive a qualifying disability benefit. Check interactions before you claim.",
+    readTimeMinutes: 9,
+    categorySlug: "care",
+    tags: ["Carers", "Benefits", "Carer's Allowance"],
+    summary:
+      "Carer's Allowance is a benefit for people who care for someone at least 35 hours a week and meet earnings rules. The person you care for must receive certain disability benefits. Claiming can affect other benefits for you or the person you care for — check the interaction rules on GOV.UK before applying.",
+    who: [
+      "Carers aged 16+ caring at least 35 hours per week for someone on a qualifying benefit.",
+      "People juggling part-time work who must stay under the earnings limit.",
+      "Not professional care workers paid by an agency for the same caring role.",
+    ],
+    whatAvailable: [
+      "Weekly Carer's Allowance payment if eligible.",
+      "Possible National Insurance credits.",
+      "Access to other linked support in some circumstances — verify current rules.",
+    ],
+    evidence: [
+      "National Insurance number and bank details.",
+      "Details of the person you care for and their qualifying benefit award.",
+      "Payslips or self-assessment info for earnings check.",
+      "Dates you started caring 35+ hours per week.",
+    ],
+    steps: [
+      "Confirm the person you care for receives a qualifying benefit (check current list on GOV.UK).",
+      "Check earnings are below the limit after allowable expenses.",
+      "Use the online application or form CA1.",
+      "Report changes promptly if hours, earnings, or benefits change.",
+      "Request carer's assessment in parallel for non-financial support.",
+    ],
+    mistakes: [
+      "Claiming while earning over the limit after allowable deductions are applied incorrectly.",
+      "Not reporting breaks in caring over 35 hours.",
+      "Assuming Carer's Allowance automatically gives other benefits.",
+      "Missing that the cared-for person may lose a severe disability premium — get advice first.",
+    ],
+    templateTitle: "Weekly care hours record",
+    templateBody: `Week of [date]:
+Mon [hours] — tasks: …
+…
+Total hours: [must be 35+]
+Qualifying benefit of cared-for person: [PIP/DLA etc.]
+Net earnings this month: [approx]`,
+    ifRefused: [
+      "Read decision letter and challenge using the route shown.",
+      "Get benefits advice from Citizens Advice or Carers UK before mandatory reconsideration deadlines.",
+    ],
+    officialLinks: [
+      { label: "GOV.UK — Carer's Allowance", href: "https://www.gov.uk/carers-allowance" },
+      { label: "GOV.UK — How to claim", href: "https://www.gov.uk/carers-allowance/how-to-claim" },
+    ],
+    relatedLinks: [
+      { label: "Carer's assessment", href: "/advice/carers-assessment-request-guide" },
+    ],
+  }),
+
+  buildGuide({
+    slug: "universal-credit-lcwra-work-capability",
+    title: "Universal Credit: Limited Capability for Work-Related Activity (LCWRA)",
+    seoTitle: "Universal Credit LCWRA: work capability guide",
+    metaDescription:
+      "Universal Credit health element and LCWRA: work capability assessment, descriptors, evidence, and what to do if found fit for work.",
+    excerpt:
+      "The work capability assessment decides whether you have LCWRA, LCW, or fit for work. Your answers and supporting evidence must match functional limits.",
+    readTimeMinutes: 12,
+    categorySlug: "rights",
+    tags: ["Universal Credit", "Benefits", "LCWRA", "Work capability"],
+    summary:
+      "If you claim Universal Credit and health limits your ability to work, you may be sent for a work capability assessment. Outcomes affect conditionality and extra amounts. Limited Capability for Work-Related Activity (LCWRA) is the highest level of health-related support in the UC system for many claimants — it has specific rules and is not automatic.",
+    who: [
+      "Universal Credit claimants with illness or disability affecting work-related activity.",
+      "People transferring from legacy benefits with existing work capability decisions.",
+      "Self-employed UC claimants with health barriers (different evidence may be needed).",
+    ],
+    whatAvailable: [
+      "Limited capability for work (LCW) — reduced work-search conditionality in many cases.",
+      "LCWRA element — additional amount and different conditionality rules if awarded.",
+      "Fit for work finding — full work-related requirements unless other exemptions apply.",
+    ],
+    evidence: [
+      "Fit note (medical statement) from GP or clinician.",
+      "UC40 questionnaire completed carefully with examples.",
+      "List of typical week activities you cannot do reliably.",
+      "Medication side effects and variable conditions described with dates.",
+      "Hospital or specialist letters linked to functional limits (not diagnosis alone).",
+    ],
+    steps: [
+      "Submit fit notes on time while awaiting assessment.",
+      "Complete UC40 when sent — use extra sheets if needed for variability.",
+      "Attend assessment (phone, video, or in person) or request reasonable adjustments for the assessment.",
+      "Read decision letter — note which group you were placed in and reasons.",
+      "If disagree, consider mandatory reconsideration then appeal to tribunal if needed.",
+      "Report worsening health promptly if condition changes.",
+    ],
+    mistakes: [
+      "Writing you can do tasks sometimes without explaining unreliability and safety risk.",
+      "Missing assessment appointments without contacting them immediately.",
+      "Assuming a diagnosis letter alone wins LCWRA.",
+      "Not keeping copies of UC40 and decision letters.",
+    ],
+    templateTitle: "UC40-style day pattern (example)",
+    templateBody: `Typical day:
+Morning: [sleep disruption / pain / fatigue — cannot reliably start tasks until…]
+Afternoon: [can sit/stand/walk for X minutes before…]
+Evening: [concentration limit for forms/phone calls]
+Bad day (approx X per month): [cannot leave bed / need help with meals / crisis symptoms]`,
+    ifRefused: [
+      "Request mandatory reconsideration within one month of decision (check letter).",
+      "Get welfare rights help for tribunal appeal if MR fails.",
+      "Ask work coach about interim reasonable adjustments to conditionality while appealing (not guaranteed).",
+    ],
+    officialLinks: [
+      { label: "GOV.UK — Universal Credit", href: "https://www.gov.uk/universal-credit" },
+      { label: "GOV.UK — Work capability assessment", href: "https://www.gov.uk/guidance/universal-credit-and-the-work-capability-assessment" },
+      { label: "Citizens Advice — Universal Credit", href: "https://www.citizensadvice.org.uk/benefits/universal-credit/" },
+    ],
+    relatedLinks: [
+      { label: "PIP in plain English", href: "/advice/pip-in-plain-english" },
+      { label: "PIP tribunal appeals", href: "/advice/pip-tribunal-appeal-guide" },
+    ],
+  }),
+
+  buildGuide({
+    slug: "dla-for-children-claim-guide",
+    title: "DLA for Children: Claiming Disability Living Allowance",
+    seoTitle: "DLA for children: how to claim",
+    metaDescription:
+      "Claim DLA for a disabled child in the UK: care and mobility components, evidence, form tips, and renewal.",
+    excerpt:
+      "DLA for children is about care and mobility needs, not school grades or diagnosis labels. Use day-to-day examples across home, school, and community.",
+    readTimeMinutes: 11,
+    categorySlug: "education",
+    tags: ["DLA", "Children", "Benefits", "SEND"],
+    summary:
+      "Disability Living Allowance (DLA) for children can help with extra costs of care and mobility for children under 16 (check current age rules on GOV.UK). There are care and mobility components. Awards depend on how much more care or supervision a child needs than others of the same age, and mobility rules for getting around.",
+    who: [
+      "Parents or guardians of disabled children who need substantially more care or supervision.",
+      "Children with physical disabilities, learning disabilities, autism, epilepsy, and other conditions affecting daily care or walking.",
+      "Families before transfer to PIP at adulthood (different process then).",
+    ],
+    whatAvailable: [
+      "Care component at lower, middle, or higher rate.",
+      "Mobility component (lower or higher) if walking or supervision outdoors rules are met.",
+      "Possible passport to other help — check current linked benefits and concessions.",
+    ],
+    evidence: [
+      "DLA child claim form (DWP).",
+      "Parent diary for 1–2 weeks: care, night waking, safety supervision.",
+      "School SENCO letter describing needs beyond typical peers (not a substitute for your diary).",
+      "Therapy or hospital letters linked to care or mobility needs.",
+      "List of aids: sleep monitors, protective equipment, specialist seating.",
+    ],
+    steps: [
+      "Read form guidance notes before starting — gather dates and examples first.",
+      "Compare care needs to children of the same age without the condition (this is the legal test).",
+      "Describe supervision needs outdoors if child might wander or lack danger awareness.",
+      "Ask professionals for letters that describe function, not only diagnosis.",
+      "Keep copies of the submitted form and evidence.",
+      "If awarded, note renewal dates and report changes if needs increase.",
+      "Plan transition advice before 16 for PIP (separate benefit).",
+    ],
+    mistakes: [
+      "Listing diagnoses without showing extra care time compared with peers.",
+      "Only describing school needs without home and community examples.",
+      "One parent writing minimised needs to avoid stigma — use honest worst days.",
+      "Missing night care and safety supervision examples.",
+    ],
+    templateTitle: "Care compared with peers (example paragraph)",
+    templateBody: `Children of [age] without [condition] usually need [brief normal care]. Because of [child name]'s [condition], they need:
+
+- [extra time for dressing/washing/toileting]
+- [supervision at night X times per week because…]
+- [help with communication/behaviour safety]
+
+Without this care, [risk: injury / wandering / medical harm / distress].`,
+    ifRefused: [
+      "Read decision letter and consider mandatory reconsideration within deadline.",
+      "Contact Contact, IPSEA, or Citizens Advice for help with challenge wording.",
+      "Update evidence if needs have worsened since claim.",
+    ],
+    officialLinks: [
+      { label: "GOV.UK — DLA for children", href: "https://www.gov.uk/disability-living-allowance-children" },
+      { label: "Contact — DLA for children", href: "https://contact.org.uk/advice-and-support/benefits/dla-for-children/" },
+      { label: "IPSEA — SEND advice", href: "https://www.ipsea.org.uk/" },
+    ],
+    relatedLinks: [
+      { label: "School reasonable adjustments", href: "/advice/school-reasonable-adjustments" },
+      { label: "Request EHC needs assessment", href: "/advice/request-ehcp-needs-assessment" },
+    ],
+  }),
+
+  buildGuide({
+    slug: "pip-reporting-change-of-circumstances",
+    title: "PIP: Reporting a Change of Circumstances",
+    seoTitle: "PIP change of circumstances: when and how to report",
+    metaDescription:
+      "When to tell DWP about changes for PIP, how to report safely, and risks of over- or under-reporting.",
+    excerpt:
+      "Some changes must be reported promptly; others are misunderstandings. Know what affects your award before you call.",
+    readTimeMinutes: 8,
+    categorySlug: "rights",
+    tags: ["PIP", "Benefits", "Changes"],
+    summary:
+      "You must tell DWP about changes that could affect your PIP award — for better or worse. That includes health changes, going into hospital or care home for a period, leaving the country, or changes in care needs. Reporting promptly can prevent overpayments; it can also lead to reviews that increase an award if needs have worsened.",
+    who: [
+      "Current PIP claimants whose health has improved or worsened.",
+      "People entering long-term hospital or care home stays (check current rules on GOV.UK).",
+      "Claimants whose care arrangements or mobility have changed significantly.",
+    ],
+    whatAvailable: [
+      "Award increased if needs meet higher descriptors after review.",
+      "Award decreased or stopped if needs reduce.",
+      "Review or reassessment triggered by the report.",
+    ],
+    evidence: [
+      "Short dated letter describing what changed and from when.",
+      "New medical evidence if available (optional at report stage).",
+      "Your current award letter and contact details.",
+    ],
+    steps: [
+      "Check GOV.UK list of changes you must report.",
+      "Decide if change is significant enough — get advice if unsure.",
+      "Phone PIP enquiry line or write using the change of circumstances process on your letter.",
+      "Keep a note of date, time, and what you said.",
+      "Cooperate with follow-up forms or assessment if sent.",
+      "If needs worsened, prepare examples similar to renewal form style.",
+    ],
+    mistakes: [
+      "Reporting minor temporary illness without impact on care/mobility descriptors.",
+      "Not reporting major deterioration out of fear of losing award — can backfire if discovered later.",
+      "Assuming hospital stay never affects payment — check current day-count rules.",
+      "Giving vague reports without dates.",
+    ],
+    templateTitle: "Phone report script (adapt)",
+    templateBody: `I need to report a change of circumstances for my PIP.
+
+NI number: [ ]
+Change since [date]: [worsened/improved — describe functional impact]
+Affects daily living because: [examples]
+Affects mobility because: [examples]
+
+Please send any forms in large print / by email if possible.`,
+    ifRefused: [
+      "If award reduced unfairly, use mandatory reconsideration route on new decision letter.",
+      "Get welfare rights advice before accepting a reduction without challenge.",
+    ],
+    officialLinks: [
+      { label: "GOV.UK — PIP", href: "https://www.gov.uk/pip" },
+      { label: "GOV.UK — Report changes", href: "https://www.gov.uk/pip/report-changes" },
+    ],
+    relatedLinks: [
+      { label: "PIP renewal guide", href: "/advice/pip-renewal-form-what-to-write" },
+      { label: "PIP mandatory reconsideration", href: "/advice/pip-mandatory-reconsideration" },
+    ],
+  }),
 ];

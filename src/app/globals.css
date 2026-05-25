@@ -173,4 +173,14 @@ body[data-dyslexia-font="on"] {
   .advice-article-page .advice-print-title {
     color: #000 !important;
   }
+
+  .toolkit-results-print {
+    break-before: page;
+  }
+
+  .toolkit-results-print .rounded-\[var\(--radius-card\)\] {
+    break-inside: avoid-page;
+    border: 1px solid #888 !important;
+    box-shadow: none !important;
+  }
 }

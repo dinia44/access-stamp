@@ -94,6 +94,20 @@ export default function AiPage() {
             </ul>
           </Card>
 
+          <Card className="space-y-3 border-blue/20 bg-blue-pale/40 p-5">
+            <h2 className="text-lg font-semibold text-heading">AI Toolkit — structured outputs</h2>
+            <p className="text-sm text-muted">
+              Need a letter, evidence checklist, or action plan? Use guided tools that return structured cards — not a
+              blank chat.
+            </p>
+            <Link
+              href="/ai-toolkit"
+              className="inline-flex rounded-[var(--radius-ui)] bg-blue px-5 py-3 text-sm font-semibold text-white shadow-[var(--shadow-soft)] transition-colors hover:brightness-110"
+            >
+              Open AI Toolkit
+            </Link>
+          </Card>
+
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
