@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Advice hub",
-  description: "Practical accessibility guides covering rights, equipment, transport, education, care, and more \u2014 UK-focused and jargon-free.",
-};
 import { AdviceMediaFrame, ADVICE_CARD_IMAGE_SIZES } from "@/components/advice/advice-media-frame";
+import { FeaturedPracticalGuides } from "@/components/advice/featured-practical-guides";
 import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { PageLayout } from "@/components/page-layout";
 import { Badge, Card } from "@/components/ui";
 import { ADVICE_HUB_CATEGORY_IMAGES } from "@/lib/advice-card-images";
 import { ADVICE_CATEGORIES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
+
+export const metadata: Metadata = {
+  title: "Advice hub",
+  description: "Practical accessibility guides covering rights, equipment, transport, education, care, and more \u2014 UK-focused and jargon-free.",
+};
 
 export default function AdviceHubPage() {
   return (
@@ -25,6 +26,8 @@ export default function AdviceHubPage() {
           Written from lived experience.
         </p>
       </div>
+
+      <FeaturedPracticalGuides />
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {ADVICE_CATEGORIES.map((c) => {

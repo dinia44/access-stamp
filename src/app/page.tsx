@@ -6,6 +6,7 @@ import { Container } from "@/components/container";
 import { FadeIn } from "@/components/fade-in";
 import { Card, Badge, Button } from "@/components/ui";
 import { SectionLabel } from "@/components/home/section-label";
+import { FeaturedPracticalGuides } from "@/components/advice/featured-practical-guides";
 import { HeroSearchCard } from "@/components/home/hero-search";
 import { RightsTabs } from "@/components/home/rights-tabs";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
@@ -199,6 +200,14 @@ export default function HomePage() {
                 </div>
               </Card>
             </div>
+          </FadeIn>
+        </Container>
+      </section>
+
+      <section className="bg-background-2 py-20">
+        <Container>
+          <FadeIn>
+            <FeaturedPracticalGuides />
           </FadeIn>
         </Container>
       </section>

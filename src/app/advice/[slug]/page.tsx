@@ -13,15 +13,22 @@ import { LAWS_GUIDANCE_LINKS } from "@/lib/laws-guidance";
 import { SetChatContext } from "@/components/chat/set-context";
 import { cn } from "@/lib/utils";
 
+export function generateStaticParams() {
+  return ADVICE_ARTICLES.map((a) => ({ slug: a.slug }));
+}
+
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const a = ADVICE_ARTICLES.find((x) => x.slug === params.slug);
   if (!a) return {};
   const firstParagraph = a.sections.find((s) => s.type === "p");
-  const description = firstParagraph && "text" in firstParagraph ? firstParagraph.text.slice(0, 160) : a.title;
+  const fallbackDesc =
+    firstParagraph && "text" in firstParagraph ? firstParagraph.text.slice(0, 160) : a.title;
+  const title = a.seoTitle ?? a.title;
+  const description = a.metaDescription ?? a.excerpt ?? fallbackDesc;
   return {
-    title: a.title,
+    title,
     description,
-    openGraph: { title: a.title, description },
+    openGraph: { title, description },
   };
 }
 
@@ -166,6 +173,33 @@ export default async function AdviceArticlePage({
                       </ul>
                     );
                   }
+                  if (s.type === "links") {
+                    return (
+                      <ul key={idx} className="mt-3 grid gap-2 text-sm">
+                        {s.items.map((link) => {
+                          const internal = link.href.startsWith("/");
+                          return (
+                            <li key={link.href}>
+                              {internal ? (
+                                <Link href={link.href} className="font-semibold text-blue underline-offset-2 hover:underline">
+                                  {link.label}
+                                </Link>
+                              ) : (
+                                <a
+                                  href={link.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="font-semibold text-blue underline-offset-2 hover:underline"
+                                >
+                                  {link.label}
+                                </a>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    );
+                  }
                   if (s.type === "callout") {
                     const tone =
                       s.tone === "warning"
@@ -205,7 +239,7 @@ export default async function AdviceArticlePage({
 
               <div className="mt-8 grid gap-3 border-t border-border pt-6 print:hidden">
                 <div className="flex flex-wrap gap-2">
-                  <Button href="/ai">Ask the AI about this topic</Button>
+                  <Button href="/?openChat=1">Open AI Assistant</Button>
                   {a.slug === "employing-a-personal-assistant-basics" ? (
                     <>
                       <a
