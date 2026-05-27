@@ -34,6 +34,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/ai-toolkit/evidence-checklist",
     "/ai-toolkit/article-companion",
     "/ai-toolkit/venue-questions",
+    "/ai-toolkit/venue-fit-planner",
+    "/ai-toolkit/tribunal-bundle-helper",
     "/about",
     "/blog",
     "/glossary",

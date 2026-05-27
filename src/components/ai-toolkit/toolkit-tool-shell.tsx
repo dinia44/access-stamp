@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge, Button, Card } from "@/components/ui";
 import { ToolkitDisclaimer } from "@/components/ai-toolkit/toolkit-disclaimer";
+import { ToolkitTrustPanel } from "@/components/ai-toolkit/toolkit-trust-panel";
 import type { ToolkitResultSource } from "@/lib/ai-toolkit/types";
 import type { ToolkitToolMeta } from "@/lib/ai-toolkit/tools-meta";
 
@@ -58,6 +59,7 @@ export function ToolkitToolShell({
               </div>
             </div>
             {results}
+            <ToolkitTrustPanel />
             <ToolkitDisclaimer className="mt-4 border-t border-border pt-4" />
           </div>
         ) : (

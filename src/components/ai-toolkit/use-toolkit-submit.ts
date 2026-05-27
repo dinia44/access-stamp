@@ -24,6 +24,11 @@ export function useToolkitSubmit<T extends ToolkitToolId>(tool: T) {
         }
         const data = (await res.json()) as ToolkitRunResult<T>;
         setResult(data);
+        void fetch("/api/ai-toolkit/usage", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ tool, source: data.source }),
+        }).catch(() => undefined);
         return data;
       } catch (e) {
         const msg = e instanceof Error ? e.message : "Something went wrong";

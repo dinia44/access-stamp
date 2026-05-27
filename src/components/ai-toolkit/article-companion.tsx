@@ -107,6 +107,16 @@ export function ArticleCompanion({
             <ToolkitSectionCard title="Draft wording" copyText={out.draftWording}>
               <p className="whitespace-pre-wrap">{out.draftWording}</p>
             </ToolkitSectionCard>
+            {out.simpleEnglishSummary ? (
+              <ToolkitSectionCard title="Simple-English summary" copyText={out.simpleEnglishSummary}>
+                <p>{out.simpleEnglishSummary}</p>
+              </ToolkitSectionCard>
+            ) : null}
+            {out.phoneScript ? (
+              <ToolkitSectionCard title="Phone script" copyText={out.phoneScript}>
+                <p className="whitespace-pre-wrap">{out.phoneScript}</p>
+              </ToolkitSectionCard>
+            ) : null}
             {out.relatedSections?.length ? (
               <ToolkitSectionCard title="Related article sections">
                 <ul className="list-disc space-y-1 pl-5">

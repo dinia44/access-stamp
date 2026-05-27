@@ -4,7 +4,9 @@ export type ToolkitToolId =
   | "letter-builder"
   | "evidence-checklist"
   | "article-companion"
-  | "venue-questions";
+  | "venue-questions"
+  | "tribunal-bundle-helper"
+  | "venue-fit-planner";
 
 export type ToolkitGuideLink = { label: string; href: string };
 
@@ -111,6 +113,8 @@ export type ArticleCompanionOutput = {
   nextSteps: string[];
   draftWording: string;
   relatedSections: string[];
+  simpleEnglishSummary?: string;
+  phoneScript?: string;
 };
 
 // —— Venue Questions ——
@@ -145,12 +149,55 @@ export type VenueQuestionsOutput = {
   bookingNotes: string[];
 };
 
+// —— Tribunal Bundle Helper ——
+
+export type TribunalBundleInput = {
+  benefitArea: string;
+  decisionDate?: string;
+  issueSummary: string;
+  evidenceHave: string;
+  evidenceMissing: string;
+};
+
+export type TribunalBundleOutput = {
+  chronology: string[];
+  keyPointsForSubmission: string[];
+  evidenceBundleChecklist: string[];
+  likelyGaps: string[];
+  hearingDayChecklist: string[];
+  shortSubmissionOpening: string;
+  disclaimer: string;
+};
+
+// —— Venue Fit Planner (specific venue page assistant) ——
+
+export type VenueFitPlannerInput = {
+  venueName: string;
+  location: string;
+  venueSummary: string;
+  confirmedFeatures: string[];
+  unknownFeatureCount: number;
+  userNeeds: string;
+  travelContext?: string;
+};
+
+export type VenueFitPlannerOutput = {
+  fitSummary: string;
+  confidenceLevel: "low" | "medium" | "high";
+  askBeforeVisit: string[];
+  redFlags: string[];
+  backupPlan: string[];
+  shortCallScript: string;
+};
+
 export type ToolkitInputMap = {
   "access-needs-profiler": AccessNeedsProfilerInput;
   "letter-builder": LetterBuilderInput;
   "evidence-checklist": EvidenceChecklistInput;
   "article-companion": ArticleCompanionInput;
   "venue-questions": VenueQuestionsInput;
+  "tribunal-bundle-helper": TribunalBundleInput;
+  "venue-fit-planner": VenueFitPlannerInput;
 };
 
 export type ToolkitOutputMap = {
@@ -159,6 +206,8 @@ export type ToolkitOutputMap = {
   "evidence-checklist": EvidenceChecklistOutput;
   "article-companion": ArticleCompanionOutput;
   "venue-questions": VenueQuestionsOutput;
+  "tribunal-bundle-helper": TribunalBundleOutput;
+  "venue-fit-planner": VenueFitPlannerOutput;
 };
 
 /** openai = live model; mock = no API key (local preview); fallback = key set but request/parse failed */

@@ -58,6 +58,24 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
       "Create practical questions to ask a venue before visiting, based on mobility, sensory, toilet, parking, seating, or assistance needs.",
     badge: "Venues",
   },
+  {
+    id: "venue-fit-planner",
+    href: "/ai-toolkit/venue-fit-planner",
+    title: "Venue Fit Planner",
+    shortTitle: "Venue Fit Planner",
+    description:
+      "For a specific venue, generate a practical fit summary, red flags, and a short call script based on your access needs and known listing details.",
+    badge: "Venue fit",
+  },
+  {
+    id: "tribunal-bundle-helper",
+    href: "/ai-toolkit/tribunal-bundle-helper",
+    title: "Tribunal Bundle Helper",
+    shortTitle: "Tribunal Helper",
+    description:
+      "Turn a benefits dispute into a structured chronology, key submission points, and hearing-day checklist.",
+    badge: "Appeals",
+  },
 ];
 
 export function getToolkitToolMeta(id: string): ToolkitToolMeta | undefined {

@@ -3,6 +3,8 @@ import {
   mockArticleCompanion,
   mockEvidenceChecklist,
   mockLetterBuilder,
+  mockTribunalBundle,
+  mockVenueFitPlanner,
   mockVenueQuestions,
 } from "@/lib/ai-toolkit/mock";
 import { callOpenAiJson } from "@/lib/ai-toolkit/openai";
@@ -12,6 +14,8 @@ import {
   evidenceSystemPrompt,
   letterBuilderSystemPrompt,
   profilerSystemPrompt,
+  tribunalBundleSystemPrompt,
+  venueFitPlannerSystemPrompt,
   venueQuestionsSystemPrompt,
 } from "@/lib/ai-toolkit/prompts";
 import { guidesForArea } from "@/lib/ai-toolkit/related-guides";
@@ -28,8 +32,12 @@ import type {
   ToolkitOutputMap,
   ToolkitRunResult,
   ToolkitToolId,
+  TribunalBundleInput,
+  TribunalBundleOutput,
   VenueQuestionsInput,
   VenueQuestionsOutput,
+  VenueFitPlannerInput,
+  VenueFitPlannerOutput,
   ToolkitResultSource,
 } from "@/lib/ai-toolkit/types";
 
@@ -94,6 +102,24 @@ export async function runToolkitTool<T extends ToolkitToolId>(
       });
       if (llm) return { tool, source: "openai", output: llm } as ToolkitRunResult<T>;
       return { tool, source: mockSource(), output: mockVenueQuestions(typed) } as ToolkitRunResult<T>;
+    }
+    case "tribunal-bundle-helper": {
+      const typed = input as TribunalBundleInput;
+      const llm = await callOpenAiJson<TribunalBundleOutput>({
+        system: tribunalBundleSystemPrompt(),
+        user: buildUserPayload(tool, typed),
+      });
+      if (llm) return { tool, source: "openai", output: llm } as ToolkitRunResult<T>;
+      return { tool, source: mockSource(), output: mockTribunalBundle(typed) } as ToolkitRunResult<T>;
+    }
+    case "venue-fit-planner": {
+      const typed = input as VenueFitPlannerInput;
+      const llm = await callOpenAiJson<VenueFitPlannerOutput>({
+        system: venueFitPlannerSystemPrompt(),
+        user: buildUserPayload(tool, typed),
+      });
+      if (llm) return { tool, source: "openai", output: llm } as ToolkitRunResult<T>;
+      return { tool, source: mockSource(), output: mockVenueFitPlanner(typed) } as ToolkitRunResult<T>;
     }
     default: {
       const _exhaustive: never = tool;

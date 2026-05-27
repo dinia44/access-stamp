@@ -34,6 +34,24 @@ const LETTER_TYPES: LetterType[] = [
 ];
 
 const TONES: LetterTone[] = ["calm", "firm", "formal", "short"];
+const LETTER_PRESETS: Partial<Record<LetterType, { askingFor: string; evidenceExamples: string }>> = {
+  "PIP renewal": {
+    askingFor: "A fair review of my current PIP award based on my current daily living and mobility needs.",
+    evidenceExamples: "Recent care needs, support required, and examples of risks or limitations on typical days.",
+  },
+  "PIP mandatory reconsideration": {
+    askingFor: "Mandatory reconsideration of the decision, with reasons linked to my functional limitations.",
+    evidenceExamples: "Decision letter points I disagree with and supporting daily-impact examples.",
+  },
+  "Access to Work": {
+    askingFor: "Workplace support through Access to Work, including equipment or travel support where eligible.",
+    evidenceExamples: "Role duties, barriers at work, and adjustments needed to do my job safely.",
+  },
+  "Reasonable adjustments at work": {
+    askingFor: "Reasonable adjustments under the Equality Act to remove barriers in my role.",
+    evidenceExamples: "Specific tasks affected and adjustments that would reduce disadvantage.",
+  },
+};
 
 export function LetterBuilderTool() {
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -50,6 +68,12 @@ export function LetterBuilderTool() {
     e.preventDefault();
     await submit({ letterType, recipient, whatHappened, askingFor, evidenceExamples, tone });
     resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function applyPreset() {
+    const preset = LETTER_PRESETS[letterType];
+    if (!preset) return;
+    if (!askingFor.trim()) setAskingFor(preset.askingFor);
+    if (!evidenceExamples.trim()) setEvidenceExamples(preset.evidenceExamples);
   }
 
   const out = result?.output;
@@ -107,6 +131,14 @@ export function LetterBuilderTool() {
             options={LETTER_TYPES.map((t) => ({ value: t, label: t }))}
           />
         </ToolkitField>
+        {LETTER_PRESETS[letterType] ? (
+          <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3 text-xs text-muted">
+            <div className="mb-2 font-semibold text-heading">Template helper for this letter type</div>
+            <Button type="button" variant="ghost" onClick={applyPreset}>
+              Insert suggested request + evidence wording
+            </Button>
+          </div>
+        ) : null}
         <ToolkitField label="Who is it going to?" htmlFor="recipient" required>
           <ToolkitTextarea
             id="recipient"

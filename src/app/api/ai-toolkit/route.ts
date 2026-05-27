@@ -8,6 +8,8 @@ const TOOL_IDS: ToolkitToolId[] = [
   "evidence-checklist",
   "article-companion",
   "venue-questions",
+  "tribunal-bundle-helper",
+  "venue-fit-planner",
 ];
 
 type Body = {

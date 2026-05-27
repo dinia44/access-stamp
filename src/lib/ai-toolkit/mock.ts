@@ -11,6 +11,10 @@ import type {
   LetterBuilderOutput,
   VenueQuestionsInput,
   VenueQuestionsOutput,
+  TribunalBundleInput,
+  TribunalBundleOutput,
+  VenueFitPlannerInput,
+  VenueFitPlannerOutput,
 } from "@/lib/ai-toolkit/types";
 
 function clip(s: string, max = 120) {
@@ -135,6 +139,8 @@ export function mockArticleCompanion(input: ArticleCompanionInput): ArticleCompa
     ],
     draftWording: `Following the guide “${input.articleTitle}”: ${clip(input.situation, 120)} I would like ${clip(input.desiredOutcome, 100)}.`,
     relatedSections: sections,
+    simpleEnglishSummary: `You want ${clip(input.desiredOutcome, 90)}. Start with clear examples from daily life, keep dates in order, and ask for a written response.`,
+    phoneScript: `Hello, I’m calling about ${clip(input.articleTitle, 60)}. My situation is: ${clip(input.situation, 80)}. I need: ${clip(input.desiredOutcome, 80)}. Could you confirm the correct next step and what evidence I should send?`,
   };
 }
 
@@ -175,5 +181,63 @@ export function mockVenueQuestions(input: VenueQuestionsInput): VenueQuestionsOu
       "Note a named contact and direct phone number",
       "Plan arrival earlier to resolve issues before your visit starts",
     ],
+  };
+}
+
+export function mockTribunalBundle(input: TribunalBundleInput): TribunalBundleOutput {
+  return {
+    chronology: [
+      input.decisionDate ? `Decision date: ${input.decisionDate}` : "Decision date: [add date from letter]",
+      `Issue summary: ${clip(input.issueSummary, 100)}`,
+      "Requested mandatory reconsideration / challenge (if applicable)",
+      "Collected further evidence and prepared submission",
+    ],
+    keyPointsForSubmission: [
+      "What the original decision missed or misunderstood",
+      "How your daily function is affected (not diagnosis label only)",
+      "Why your evidence supports a different outcome",
+    ],
+    evidenceBundleChecklist: [
+      "Decision letter and any mandatory reconsideration notice",
+      "Medical/support letters linked to function",
+      input.evidenceHave ? `Current evidence: ${clip(input.evidenceHave, 100)}` : "Your diary and examples",
+      input.evidenceMissing ? `Priority gaps: ${clip(input.evidenceMissing, 100)}` : "Any missing reports requested from professionals",
+    ],
+    likelyGaps: [
+      "Inconsistent dates across forms and letters",
+      "Limited real-world examples of impact",
+      "No explanation of bad days vs better days",
+    ],
+    hearingDayChecklist: [
+      "Bring your notes and a copy of your submission bundle",
+      "Use clear examples for each activity or descriptor in dispute",
+      "Ask for clarification if a question is unclear",
+      "Request short breaks if needed for pain, fatigue, or distress",
+    ],
+    shortSubmissionOpening: `I am appealing because the decision does not reflect my actual daily limitations. I rely on support for: ${clip(input.issueSummary, 120)}. The attached evidence explains why a different award is more accurate.`,
+    disclaimer: TOOLKIT_DISCLAIMER,
+  };
+}
+
+export function mockVenueFitPlanner(input: VenueFitPlannerInput): VenueFitPlannerOutput {
+  return {
+    fitSummary: `${input.venueName} appears potentially workable for your needs (${clip(input.userNeeds, 100)}), but you should confirm unknown details before travel.`,
+    confidenceLevel: input.unknownFeatureCount > 2 ? "low" : input.unknownFeatureCount > 0 ? "medium" : "high",
+    askBeforeVisit: [
+      "Confirm step-free route from entrance to main area and toilet",
+      "Ask for door widths and turning space on your route",
+      "Check whether staff can reserve suitable seating",
+    ],
+    redFlags: [
+      "Staff cannot provide measurements or route photos",
+      "Accessible toilet is unavailable or used as storage",
+      "No fallback entrance if a lift/door fails",
+    ],
+    backupPlan: [
+      "Identify one nearby backup venue",
+      "Plan a flexible arrival time if access setup is uncertain",
+      "Keep transport options open in case you need to leave quickly",
+    ],
+    shortCallScript: `Hi, I’m planning to visit ${input.venueName} in ${input.location}. My access needs are ${clip(input.userNeeds, 120)}. Could you confirm step-free access, toilet access, and key measurements before I book?`,
   };
 }

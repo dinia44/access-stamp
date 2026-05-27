@@ -66,7 +66,9 @@ Schema:
   "checklist": string[],
   "nextSteps": string[3],
   "draftWording": string,
-  "relatedSections": string[]
+  "relatedSections": string[],
+  "simpleEnglishSummary": string,
+  "phoneScript": string
 }`;
 }
 
@@ -79,6 +81,33 @@ Schema:
   "redFlags": string[],
   "photosToRequest": string[],
   "bookingNotes": string[]
+}`;
+}
+
+export function tribunalBundleSystemPrompt() {
+  return `${BASE_RULES}
+Schema:
+{
+  "chronology": string[],
+  "keyPointsForSubmission": string[],
+  "evidenceBundleChecklist": string[],
+  "likelyGaps": string[],
+  "hearingDayChecklist": string[],
+  "shortSubmissionOpening": string,
+  "disclaimer": string
+}`;
+}
+
+export function venueFitPlannerSystemPrompt() {
+  return `${BASE_RULES}
+Schema:
+{
+  "fitSummary": string,
+  "confidenceLevel": "low" | "medium" | "high",
+  "askBeforeVisit": string[],
+  "redFlags": string[],
+  "backupPlan": string[],
+  "shortCallScript": string
 }`;
 }
 

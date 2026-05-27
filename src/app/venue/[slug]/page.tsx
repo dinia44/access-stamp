@@ -11,6 +11,7 @@ import { VenueDetailActions } from "@/components/venue-detail-actions";
 import { VenuePhotoGallery } from "@/components/venue-photo-gallery";
 import { VenueVisitPlanActions } from "@/components/venue-visit-plan-actions";
 import { WillItFitCard } from "@/components/venue/will-it-fit-card";
+import { VenueFitPlannerInline } from "@/components/venue/venue-fit-planner-inline";
 
 export function generateStaticParams() {
   return SAMPLE_VENUES.map((v) => ({ slug: v.slug }));
@@ -250,6 +251,13 @@ export default async function VenueDetailPage({
           ) : null}
 
           <WillItFitCard venue={v} />
+          <VenueFitPlannerInline
+            venueName={v.name}
+            location={v.location}
+            venueSummary={v.summary}
+            confirmedFeatures={confirmedFeatures}
+            unknownFeatureCount={unknownCount}
+          />
 
           <div className="grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
             <Card className="p-5">
