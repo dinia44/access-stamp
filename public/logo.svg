@@ -4,7 +4,7 @@
   <g aria-hidden="true">
     <path
       d="M23 7 L11 35 M23 7 L35 35 M13.5 24.5 H32.5"
-      stroke="#eaf2ff"
+      stroke="#0c1d34"
       stroke-width="4"
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -31,7 +31,7 @@
     font-size="15"
     font-weight="700"
     letter-spacing="-0.02em"
-    fill="#f3f7ff"
+    fill="#0c1d34"
   >
     Access
   </text>
@@ -42,7 +42,7 @@
     font-size="15"
     font-weight="700"
     letter-spacing="-0.02em"
-    fill="#f3f7ff"
+    fill="#0c1d34"
   >
     Stamp
   </text>

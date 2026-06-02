@@ -88,7 +88,7 @@ const PILLARS: Pillar[] = [
 ];
 
 function PillarIcon({ name }: { name: Pillar["icon"] }) {
-  const cls = "h-6 w-6 text-[#d9e5fb]";
+  const cls = "h-6 w-6 text-blue";
   if (name === "venue") {
     return (
       <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
@@ -293,13 +293,13 @@ export default function HomePage() {
       </section>
 
       {/* Section 3: Platform Pillars — backgrounds inline so production always picks them up (Tailwind v4 + globals ordering) */}
-      <section className="relative isolate overflow-hidden bg-background py-24">
+      <section className="relative isolate overflow-hidden py-24">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
             background:
-              "linear-gradient(168deg, #071a3b 0%, #0b2450 38%, #102f63 72%, #0b2450 100%)",
+              "linear-gradient(168deg, #fcf9f4 0%, #eef4ef 38%, #f4ece0 72%, #e9e2d5 100%)",
           }}
         />
         <div
@@ -307,7 +307,7 @@ export default function HomePage() {
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
             background:
-              "radial-gradient(ellipse 130% 85% at 12% 18%, rgba(47, 142, 245, 0.2), transparent 52%)",
+              "radial-gradient(ellipse 130% 85% at 12% 18%, rgba(109, 143, 127, 0.16), transparent 52%)",
           }}
         />
         <div
@@ -315,7 +315,7 @@ export default function HomePage() {
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
             background:
-              "radial-gradient(ellipse 110% 70% at 88% 82%, rgba(243, 190, 85, 0.16), transparent 48%)",
+              "radial-gradient(ellipse 110% 70% at 88% 82%, rgba(184, 146, 79, 0.13), transparent 48%)",
           }}
         />
         <Container className="relative z-10">
@@ -325,7 +325,7 @@ export default function HomePage() {
               <h2 className="mt-3 font-[var(--font-heading)] text-[30px] tracking-[-0.025em] text-heading">
                 Everything in one place
               </h2>
-              <p className="mt-3 text-[16px] leading-[1.7] text-[#b7c9e8]">
+              <p className="mt-3 text-[16px] leading-[1.7] text-text">
                 From accessible venues to workplace rights, plus an AI assistant that understands access needs.
               </p>
             </FadeIn>
@@ -338,16 +338,16 @@ export default function HomePage() {
                   <Card
                     className={
                       "h-full p-7 transition-all duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[3px] group-hover:shadow-[var(--shadow)] " +
-                      (c.highlight ? "border-[#f3be55] shadow-[0_0_0_1px_rgba(243,190,85,0.35)]" : "border-[#2f4f85]")
+                      (c.highlight ? "border-blue shadow-[0_0_0_1px_rgba(47,142,245,0.35)]" : "")
                     }
                   >
-                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-ui)] border border-[#375f98] bg-[#12386f]">
+                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-ui)] border border-border bg-blue-pale">
                       <PillarIcon name={c.icon} />
                     </div>
                     <div className="mt-4 font-[var(--font-heading)] text-[19px] tracking-[-0.025em] text-heading">
                       {c.title}
                     </div>
-                    <div className="mt-2 text-[14px] leading-[1.6] text-[#b7c9e8]">{c.desc}</div>
+                    <div className="mt-2 text-[14px] leading-[1.6] text-text">{c.desc}</div>
                   </Card>
                 </Link>
               </FadeIn>
