@@ -49,8 +49,11 @@ export function Navbar() {
 
   const allMobile = useMemo(() => [...NAV_ITEMS, ...MORE_ITEMS], []);
 
+  const iconBtnClass =
+    "grid h-9 w-9 place-items-center rounded-full border border-[#3f69a7] bg-[#12386f] text-[#d9e5fb] hover:bg-[#1a4682]";
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/98 shadow-[0_1px_0_rgba(15,26,43,0.06)]">
+    <header className="sticky top-0 z-50 border-b border-border bg-navy/95 shadow-[0_1px_0_rgba(0,0,0,0.32)] backdrop-blur">
       <Container>
         <div className="relative z-20 flex h-16 items-center justify-between gap-3">
           <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Access Stamp home" onClick={closeMenus}>
@@ -66,8 +69,8 @@ export function Navbar() {
                   href={item.href}
                   onClick={closeMenus}
                   className={cn(
-                    "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-heading hover:bg-background-2 lg:px-3 [touch-action:manipulation]",
-                    active && "bg-blue-pale text-blue",
+                    "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-[#d9e5fb] hover:bg-blue-pale/40 lg:px-3 [touch-action:manipulation]",
+                    active && "bg-blue-pale/60 text-white",
                   )}
                 >
                   {item.label}
@@ -79,8 +82,8 @@ export function Navbar() {
               <button
                 type="button"
                 className={cn(
-                  "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-heading hover:bg-background-2 lg:px-3 [touch-action:manipulation]",
-                  moreOpen && "bg-background-2",
+                  "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-[#d9e5fb] hover:bg-blue-pale/40 lg:px-3 [touch-action:manipulation]",
+                  moreOpen && "bg-blue-pale/50 text-white",
                 )}
                 aria-haspopup="menu"
                 aria-expanded={moreOpen}
@@ -95,14 +98,14 @@ export function Navbar() {
                 <div
                   role="menu"
                   aria-label="More"
-                  className="absolute right-0 mt-2 w-56 rounded-[var(--radius-card)] border border-border bg-card p-2 shadow-[var(--shadow)]"
+                  className="absolute right-0 mt-2 w-56 rounded-[var(--radius-card)] border border-border bg-background-2 p-2 shadow-[var(--shadow)]"
                 >
                   {MORE_ITEMS.map((item) => (
                     <Link
                       key={item.href}
                       role="menuitem"
                       href={item.href}
-                      className="block rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2"
+                      className="block rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-[#d9e5fb] hover:bg-blue-pale/40 hover:text-white"
                       onClick={closeMenus}
                     >
                       {item.label}
@@ -113,7 +116,19 @@ export function Navbar() {
             </div>
           </nav>
 
-          <div className="hidden shrink-0 items-center gap-3 md:flex">
+          <div className="hidden shrink-0 items-center gap-2 md:flex">
+            <button type="button" className={iconBtnClass} aria-label="Notifications">
+              <svg data-as-icon="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+                <path d="M15 17H5a1 1 0 0 1-1-1v-1l2-3V9a6 6 0 0 1 12 0v3l2 3v1a1 1 0 0 1-1 1h-2" />
+                <path d="M10 17a2 2 0 0 0 4 0" />
+              </svg>
+            </button>
+            <button type="button" className={iconBtnClass} aria-label="Profile">
+              <svg data-as-icon="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M5 20a7 7 0 0 1 14 0" />
+              </svg>
+            </button>
             <Button href="/venue-finder" onClick={closeMenus}>
               Start Searching
             </Button>
@@ -121,7 +136,7 @@ export function Navbar() {
 
           <button
             type="button"
-            className="shrink-0 lg:hidden rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2 [touch-action:manipulation]"
+            className="shrink-0 lg:hidden rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-[#d9e5fb] hover:bg-blue-pale/40 [touch-action:manipulation]"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
@@ -135,13 +150,13 @@ export function Navbar() {
           aria-labelledby="site-search-label"
           className="relative z-0 -mx-4 border-t border-border px-4 py-3 sm:-mx-6 sm:px-6"
           style={{
-            background: "linear-gradient(105deg, var(--blue-pale) 0%, var(--background-2) 45%, var(--amber-pale) 100%)",
+            background: "linear-gradient(105deg, #0a2857 0%, #12386f 48%, #274f8f 100%)",
           }}
         >
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
             <p
               id="site-search-label"
-              className="shrink-0 text-sm font-semibold tracking-tight text-navy"
+              className="shrink-0 text-sm font-semibold tracking-tight text-[#d9e5fb]"
             >
               Search the site
             </p>

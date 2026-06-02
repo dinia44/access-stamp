@@ -94,7 +94,7 @@ function getSpeechRecognitionCtor(): BrowserSpeechRecognitionCtor | null {
 
 function IconSpeaker({ muted = false }: { muted?: boolean }) {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+    <svg data-as-icon="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
       <path d="M11 5 6 9H3v6h3l5 4V5Z" />
       {muted ? <path d="m17 9 4 6m0-6-4 6" /> : <path d="M16 9a4 4 0 0 1 0 6m2-8a7 7 0 0 1 0 10" />}
     </svg>
@@ -103,7 +103,7 @@ function IconSpeaker({ muted = false }: { muted?: boolean }) {
 
 function IconDots() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
+    <svg data-as-icon="true" viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
       <circle cx="12" cy="5" r="2" />
       <circle cx="12" cy="12" r="2" />
       <circle cx="12" cy="19" r="2" />
@@ -113,7 +113,7 @@ function IconDots() {
 
 function IconChevronDown() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+    <svg data-as-icon="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
       <path d="m6 9 6 6 6-6" />
     </svg>
   );
@@ -121,7 +121,7 @@ function IconChevronDown() {
 
 function IconRobot() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+    <svg data-as-icon="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
       <rect x="4" y="8" width="16" height="11" rx="3" />
       <path d="M12 4v4m-3 5h.01M15 13h.01M8 19v2m8-2v2" />
     </svg>
@@ -130,7 +130,7 @@ function IconRobot() {
 
 function IconUser() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+    <svg data-as-icon="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
       <circle cx="12" cy="8" r="4" />
       <path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" />
     </svg>
@@ -139,7 +139,7 @@ function IconUser() {
 
 function IconMic() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+    <svg data-as-icon="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
       <rect x="9" y="3" width="6" height="11" rx="3" />
       <path d="M5 11a7 7 0 0 0 14 0M12 18v3m-4 0h8" />
     </svg>
@@ -148,7 +148,7 @@ function IconMic() {
 
 function IconSend() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+    <svg data-as-icon="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
       <path d="M22 2 11 13" />
       <path d="m22 2-7 20-4-9-9-4 20-7Z" />
     </svg>

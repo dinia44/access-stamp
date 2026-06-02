@@ -115,13 +115,13 @@ export function HeroSearchCard() {
   }
 
   return (
-    <Card className="overflow-hidden border border-[#d8dfea] bg-[#f7f7f8] shadow-[0_28px_64px_-20px_rgba(0,0,0,0.35)]">
+    <Card className="overflow-hidden border border-[#315d9f] bg-[#0d2a59] shadow-[0_28px_64px_-20px_rgba(0,0,0,0.52)]">
       <div className="p-4 sm:p-5">
         <div className="grid gap-3">
           <div className="grid gap-2 lg:grid-cols-[1.2fr_.9fr_240px]">
             <label
               htmlFor="hero-search"
-              className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[var(--radius-ui)] border border-[#d8dfea] bg-white px-3"
+              className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[var(--radius-ui)] border border-[#c7d5ed] bg-white px-3"
             >
               <span aria-hidden className="text-lg text-[#184080]">⌕</span>
               <div className="min-w-0">
@@ -144,7 +144,7 @@ export function HeroSearchCard() {
 
             <label
               htmlFor="hero-location-main"
-              className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[var(--radius-ui)] border border-[#d8dfea] bg-white px-3"
+              className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[var(--radius-ui)] border border-[#c7d5ed] bg-white px-3"
             >
               <span aria-hidden className="text-lg text-[#184080]">⌖</span>
               <div className="min-w-0">
@@ -163,7 +163,7 @@ export function HeroSearchCard() {
             </label>
 
             <Button
-              className="h-12 w-full justify-center gap-2 rounded-[var(--radius-ui)] bg-[#0d4bb3] text-white hover:bg-[#0a3f97]"
+              className="h-12 w-full justify-center gap-2 rounded-[var(--radius-ui)] bg-[#f3be55] text-[#071a3b] hover:bg-[#e4ad40]"
               aria-label="Find access-checked venues"
               onClick={runSearch}
             >
@@ -189,7 +189,7 @@ export function HeroSearchCard() {
                 key={item}
                 type="button"
                 onClick={() => applyRecentSearch(item)}
-                className="rounded-full border border-[#d8dfea] bg-white px-3 py-1 text-xs font-semibold text-[#184080] hover:bg-[#f5f8ff] cursor-pointer"
+                className="rounded-full border border-[#3f69a7] bg-[#143566] px-3 py-1 text-xs font-semibold text-[#d9e5fb] hover:bg-[#1c447e] cursor-pointer"
               >
                 {item}
               </button>
@@ -200,7 +200,7 @@ export function HeroSearchCard() {
             <button
               type="button"
               onClick={() => setShowMoreOptions((v) => !v)}
-              className="font-semibold text-[#184080] hover:underline cursor-pointer"
+              className="font-semibold text-[#d9e5fb] hover:underline cursor-pointer"
               aria-expanded={showMoreOptions}
             >
               {showMoreOptions ? "Hide options ˄" : "More options ˅"}
@@ -208,7 +208,7 @@ export function HeroSearchCard() {
             <button
               type="button"
               onClick={useMyLocation}
-              className="rounded-full border border-[#8fb3ef] bg-[#e8f0ff] px-3 py-1 font-semibold text-[#184080] hover:bg-[#dce9ff] cursor-pointer"
+              className="rounded-full border border-[#f0c979] bg-[#fdf0cf] px-3 py-1 font-semibold text-[#6f4f1a] hover:bg-[#f8e4b0] cursor-pointer"
             >
               {locating ? "Finding location..." : "Use my location"}
             </button>
@@ -218,7 +218,7 @@ export function HeroSearchCard() {
             <div className="grid gap-2">
               <label
                 htmlFor="hero-venue-type"
-                className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[var(--radius-ui)] border border-[#d8dfea] bg-white px-3"
+                className="grid h-12 grid-cols-[auto_1fr] items-center gap-2 rounded-[var(--radius-ui)] border border-[#c7d5ed] bg-white px-3"
               >
                 <span aria-hidden className="text-lg text-[#184080]">⌂</span>
                 <div className="min-w-0">
@@ -250,27 +250,27 @@ export function HeroSearchCard() {
                 prefill: mainQuery || `Find accessible venues${location ? ` in ${location}` : ""}${active.size ? ` with ${Array.from(active).join(", ")}` : ""}.`,
               })
             }
-            className="grid min-h-11 w-full grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[var(--radius-ui)] border border-[#d8dfea] bg-white px-3 py-2 text-left hover:bg-[#f5f8ff] cursor-pointer"
+            className="grid min-h-11 w-full grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[var(--radius-ui)] border border-[#2e5a98] bg-[#143566] px-3 py-2 text-left hover:bg-[#1c447e] cursor-pointer"
             aria-label="Ask Access Stamp AI"
           >
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-blue text-xs text-white" aria-hidden>
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-[#f3be55] text-xs text-[#071a3b]" aria-hidden>
               ✦
             </span>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-heading">Ask Access Stamp AI</span>
-                <span className="rounded-full bg-blue px-2 py-0.5 text-[10px] font-bold text-white">BETA</span>
+                <span className="text-sm font-semibold text-[#f3f7ff]">Ask Access Stamp AI</span>
+                <span className="rounded-full bg-[#f3be55] px-2 py-0.5 text-[10px] font-bold text-[#071a3b]">BETA</span>
               </div>
-              <div className="truncate text-xs text-muted">
+              <div className="truncate text-xs text-[#b7c9e8]">
                 Get help finding venues, understanding accessibility, and planning your visit.
               </div>
             </div>
-            <span className="text-[#184080]" aria-hidden>›</span>
+            <span className="text-[#f3be55]" aria-hidden>›</span>
           </button>
 
           <div>
             <div className="mb-2 flex items-center justify-between gap-2">
-              <div className="text-[11px] font-semibold tracking-[0.14em] uppercase text-[#5f6f86]">
+              <div className="text-[11px] font-semibold tracking-[0.14em] uppercase text-[#b7c9e8]">
                 Access filters ({active.size})
               </div>
               <div className="flex items-center gap-2">
@@ -278,7 +278,7 @@ export function HeroSearchCard() {
                   <button
                     type="button"
                     onClick={clearFilters}
-                    className="text-xs font-semibold text-[#184080] hover:underline cursor-pointer"
+                    className="text-xs font-semibold text-[#d9e5fb] hover:underline cursor-pointer"
                   >
                     Clear
                   </button>
@@ -286,7 +286,7 @@ export function HeroSearchCard() {
                 <button
                   type="button"
                   onClick={() => setShowAllFilters((v) => !v)}
-                  className="text-xs font-semibold text-[#184080] hover:underline cursor-pointer"
+                  className="text-xs font-semibold text-[#d9e5fb] hover:underline cursor-pointer"
                 >
                   {showAllFilters ? "Show fewer filters ˄" : "View all filters ˅"}
                 </button>
@@ -302,8 +302,8 @@ export function HeroSearchCard() {
                     className={
                       "rounded-[var(--radius-ui)] border px-3 py-2 text-[13px] font-medium transition-colors cursor-pointer " +
                       (on
-                        ? "border-[#0d4bb3] bg-[#e8f0ff] text-[#184080] shadow-[inset_0_0_0_1px_rgba(13,75,179,0.2)]"
-                        : "border-[#d8dfea] bg-white text-[#184080] hover:bg-[#f5f8ff]")
+                        ? "border-[#f3be55] bg-[#fdf0cf] text-[#6f4f1a] shadow-[inset_0_0_0_1px_rgba(243,190,85,0.3)]"
+                        : "border-[#3f69a7] bg-[#143566] text-[#d9e5fb] hover:bg-[#1c447e]")
                     }
                     aria-pressed={on}
                     aria-label={`${label} filter ${on ? "selected" : "not selected"}`}
@@ -316,11 +316,11 @@ export function HeroSearchCard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-[var(--radius-ui)] bg-[#eef2f7] px-3 py-2 text-sm text-muted">
-            <span className="text-base leading-none text-[#184080]" aria-hidden>◌</span>
+          <div className="flex items-center gap-2 rounded-[var(--radius-ui)] bg-[#143566] px-3 py-2 text-sm text-[#b7c9e8]">
+            <span className="text-base leading-none text-[#f3be55]" aria-hidden>◌</span>
             <div>
               Or describe what you need, for example:{" "}
-              <span className="italic text-[#184080]">
+              <span className="italic text-[#d9e5fb]">
                 wheelchair-friendly museum in Liverpool with accessible toilets
               </span>
             </div>

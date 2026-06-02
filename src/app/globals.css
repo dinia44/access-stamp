@@ -10,23 +10,23 @@
  * Access Stamp — tokens aligned with access-stamp-build-prompt.md
  */
 :root {
-  --background: #f3f8ff;
-  --background-2: #eaf2ff;
-  --card: #ffffff;
-  --heading: #0c1d34;
-  --text: #2c3e54;
-  --muted: #5a6e82;
+  --background: #071a3b;
+  --background-2: #0b2450;
+  --card: #0f2b5d;
+  --heading: #f3f7ff;
+  --text: #d9e5fb;
+  --muted: #a7bddf;
 
-  --navy: #0c1d34;
-  --blue: #2478d0;
-  --amber: #d4952a;
-  --amber-light: #f0c86a;
-  --amber-pale: #fdf4e3;
-  --blue-pale: #e6f0fb;
-  --border: #dbe3ef;
-  --ring: rgba(36, 120, 208, 0.35);
-  --shadow: 0 14px 40px -10px rgba(12, 29, 52, 0.12);
-  --shadow-soft: 0 2px 8px rgba(12, 29, 52, 0.06);
+  --navy: #071a3b;
+  --blue: #2f8ef5;
+  --amber: #f3be55;
+  --amber-light: #ffd98d;
+  --amber-pale: #3a2c14;
+  --blue-pale: #1a3e78;
+  --border: #28508f;
+  --ring: rgba(47, 142, 245, 0.45);
+  --shadow: 0 16px 42px -14px rgba(0, 8, 30, 0.65);
+  --shadow-soft: 0 3px 10px rgba(0, 8, 30, 0.38);
   --radius-card: 16px;
   --radius-ui: 12px;
   --page-sage-glow: rgba(36, 120, 208, 0.06);
@@ -55,11 +55,11 @@ body {
   background-color: var(--background);
   background-image: radial-gradient(
       1200px 520px at 10% -8%,
-      rgba(36, 120, 208, 0.08),
+      rgba(47, 142, 245, 0.18),
       transparent 60%
     ),
-    radial-gradient(900px 480px at 95% 5%, rgba(36, 120, 208, 0.04), transparent 58%),
-    linear-gradient(180deg, #f7fbff 0%, #edf4ff 46%, #e5eeff 100%);
+    radial-gradient(900px 480px at 95% 5%, rgba(243, 190, 85, 0.09), transparent 58%),
+    linear-gradient(180deg, #061733 0%, #071d41 44%, #082350 100%);
   color: var(--text);
   font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system,
     Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
@@ -84,7 +84,14 @@ body[data-high-contrast="on"] {
 }
 
 ::selection {
-  background: rgba(212, 149, 42, 0.28);
+  background: rgba(243, 190, 85, 0.34);
+}
+
+/* Rounded, crisp icon style inspired by mobile app chrome */
+svg[data-as-icon="true"] {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
 }
 
 /* Accessible focus ring */

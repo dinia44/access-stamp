@@ -13,7 +13,16 @@ import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { FEATURED_HELP_CARD_SLUGS, HELP_CARDS } from "@/lib/help-cards";
 
 type Pillar = {
-  emoji: string;
+  icon:
+    | "venue"
+    | "ai"
+    | "equipment"
+    | "rights"
+    | "care"
+    | "education"
+    | "transport"
+    | "work"
+    | "blog";
   title: string;
   desc: string;
   href: string;
@@ -22,61 +31,133 @@ type Pillar = {
 
 const PILLARS: Pillar[] = [
   {
-    emoji: "🔍",
+    icon: "venue",
     title: "Venue Finder",
     desc: "Search by step-free access, turning space, toilet quality, and parking.",
     href: "/venue-finder",
   },
   {
-    emoji: "💬",
+    icon: "ai",
     title: "AI Assistant",
     desc: "Chat or speak — asks the questions generic AI skips, grounded in verified listings and UK routes.",
     href: "/ai",
     highlight: true,
   },
   {
-    emoji: "🦽",
+    icon: "equipment",
     title: "Equipment",
     desc: "Wheelchairs, cushions, slide sheets, hoists, ramps.",
     href: "/advice/equipment",
   },
   {
-    emoji: "⚖️",
+    icon: "rights",
     title: "Your Rights",
     desc: "Benefits, Equality Act, legal protections.",
     href: "/advice/rights",
   },
   {
-    emoji: "🤝",
+    icon: "care",
     title: "Care & Support",
     desc: "Personal budgets, hiring PAs, templates.",
     href: "/advice/care",
   },
   {
-    emoji: "🎓",
+    icon: "education",
     title: "Education",
     desc: "DSA, EHC plans, university support.",
     href: "/advice/education",
   },
   {
-    emoji: "🚂",
+    icon: "transport",
     title: "Transport",
     desc: "Trains, buses, flying, taxis, driving.",
     href: "/advice/transport",
   },
   {
-    emoji: "💼",
+    icon: "work",
     title: "Workplace",
     desc: "Access to Work, adjustments, discrimination.",
     href: "/advice/workplace",
   },
   {
-    emoji: "📰",
+    icon: "blog",
     title: "Blog",
     desc: "Firsthand stories, tutorials, honest takes.",
     href: "/blog",
   },
 ];
+
+function PillarIcon({ name }: { name: Pillar["icon"] }) {
+  const cls = "h-6 w-6 text-[#d9e5fb]";
+  if (name === "venue") {
+    return (
+      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+        <path d="M12 22s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z" />
+        <circle cx="12" cy="10" r="2.5" />
+      </svg>
+    );
+  }
+  if (name === "ai") {
+    return (
+      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+        <rect x="4" y="8" width="16" height="11" rx="3" />
+        <path d="M12 4v4m-3 5h.01M15 13h.01M8 19v2m8-2v2" />
+      </svg>
+    );
+  }
+  if (name === "equipment") {
+    return (
+      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+        <circle cx="7" cy="17" r="3" />
+        <path d="M10 17h5l3-7h-6m-4 1 2-3h3" />
+      </svg>
+    );
+  }
+  if (name === "rights") {
+    return (
+      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+        <path d="M12 3v18M5 7h14M7 7l-3 5h6l-3-5Zm10 0-3 5h6l-3-5Z" />
+      </svg>
+    );
+  }
+  if (name === "care") {
+    return (
+      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+        <path d="M12 21s-7-4.7-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 11c0 5.3-7 10-7 10Z" />
+      </svg>
+    );
+  }
+  if (name === "education") {
+    return (
+      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+        <path d="m3 9 9-5 9 5-9 5-9-5Z" />
+        <path d="M6 11v5c0 1.8 2.7 3 6 3s6-1.2 6-3v-5" />
+      </svg>
+    );
+  }
+  if (name === "transport") {
+    return (
+      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+        <rect x="4" y="4" width="16" height="13" rx="2" />
+        <path d="M7 17v3m10-3v3M7 9h10M9 13h.01M15 13h.01" />
+      </svg>
+    );
+  }
+  if (name === "work") {
+    return (
+      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+        <rect x="3" y="7" width="18" height="13" rx="2" />
+        <path d="M9 7V5h6v2m-12 5h18" />
+      </svg>
+    );
+  }
+  return (
+    <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+      <path d="M5 5h14v14H5z" />
+      <path d="M8 9h8M8 13h8M8 17h5" />
+    </svg>
+  );
+}
 
 export default function HomePage() {
   const featured = [
@@ -107,20 +188,19 @@ export default function HomePage() {
           <div className="mx-auto max-w-[760px] text-center">
             <FadeIn>
               <span className="inline-flex items-center rounded-full border border-[#ebd7ad]/70 bg-[#fff6de] px-4 py-1 text-[11px] font-semibold tracking-[0.18em] uppercase text-[#8b6b2a]">
-                👑 UK accessibility platform
+                UK's trusted accessibility platform
               </span>
             </FadeIn>
 
             <FadeIn delayMs={120}>
               <h1 className="mt-4 font-[var(--font-heading)] text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.02] tracking-[-0.03em] text-white">
-                Find places that actually work for your access needs
+                The UK&apos;s trusted accessibility platform
               </h1>
             </FadeIn>
 
             <FadeIn delayMs={240}>
               <p className="mx-auto mt-3 max-w-[640px] text-[22px] leading-[1.35] text-[#e1e9f7]">
-                Search practical access details before you go — including step-free entry,
-                accessible toilets, parking, hearing support, lift access and more.
+                Find and share step-free venues. Access accurate. Access confident.
               </p>
             </FadeIn>
 
@@ -213,13 +293,13 @@ export default function HomePage() {
       </section>
 
       {/* Section 3: Platform Pillars — backgrounds inline so production always picks them up (Tailwind v4 + globals ordering) */}
-      <section className="relative isolate overflow-hidden py-24">
+      <section className="relative isolate overflow-hidden bg-background py-24">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
             background:
-              "linear-gradient(168deg, #fcf9f4 0%, #eef4ef 38%, #f4ece0 72%, #e9e2d5 100%)",
+              "linear-gradient(168deg, #071a3b 0%, #0b2450 38%, #102f63 72%, #0b2450 100%)",
           }}
         />
         <div
@@ -227,7 +307,7 @@ export default function HomePage() {
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
             background:
-              "radial-gradient(ellipse 130% 85% at 12% 18%, rgba(109, 143, 127, 0.16), transparent 52%)",
+              "radial-gradient(ellipse 130% 85% at 12% 18%, rgba(47, 142, 245, 0.2), transparent 52%)",
           }}
         />
         <div
@@ -235,7 +315,7 @@ export default function HomePage() {
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
             background:
-              "radial-gradient(ellipse 110% 70% at 88% 82%, rgba(184, 146, 79, 0.13), transparent 48%)",
+              "radial-gradient(ellipse 110% 70% at 88% 82%, rgba(243, 190, 85, 0.16), transparent 48%)",
           }}
         />
         <Container className="relative z-10">
@@ -245,7 +325,7 @@ export default function HomePage() {
               <h2 className="mt-3 font-[var(--font-heading)] text-[30px] tracking-[-0.025em] text-heading">
                 Everything in one place
               </h2>
-              <p className="mt-3 text-[16px] leading-[1.7] text-text">
+              <p className="mt-3 text-[16px] leading-[1.7] text-[#b7c9e8]">
                 From accessible venues to workplace rights, plus an AI assistant that understands access needs.
               </p>
             </FadeIn>
@@ -258,16 +338,16 @@ export default function HomePage() {
                   <Card
                     className={
                       "h-full p-7 transition-all duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[3px] group-hover:shadow-[var(--shadow)] " +
-                      (c.highlight ? "border-blue shadow-[0_0_0_1px_rgba(122,155,138,0.4)]" : "")
+                      (c.highlight ? "border-[#f3be55] shadow-[0_0_0_1px_rgba(243,190,85,0.35)]" : "border-[#2f4f85]")
                     }
                   >
-                    <div className="text-[28px]" aria-hidden>
-                      {c.emoji}
+                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-ui)] border border-[#375f98] bg-[#12386f]">
+                      <PillarIcon name={c.icon} />
                     </div>
                     <div className="mt-4 font-[var(--font-heading)] text-[19px] tracking-[-0.025em] text-heading">
                       {c.title}
                     </div>
-                    <div className="mt-2 text-[14px] leading-[1.6] text-text">{c.desc}</div>
+                    <div className="mt-2 text-[14px] leading-[1.6] text-[#b7c9e8]">{c.desc}</div>
                   </Card>
                 </Link>
               </FadeIn>

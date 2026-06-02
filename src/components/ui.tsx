@@ -67,10 +67,10 @@ export function Button({
     "inline-flex items-center justify-center rounded-[var(--radius-ui)] px-4 py-2 text-sm font-semibold transition-colors";
   const v =
     variant === "primary"
-      ? "bg-blue text-white hover:bg-[#1a62ad]"
+      ? "bg-blue text-white hover:bg-[#2379d8]"
       : variant === "secondary"
-        ? "bg-amber text-navy hover:bg-[#b88323]"
-        : "bg-transparent text-blue hover:bg-blue-pale";
+        ? "bg-amber text-navy hover:bg-[#dfac48]"
+        : "bg-transparent text-blue hover:bg-blue-pale/70";
 
   const cls = cn(base, v, className);
   if (href) return <Link className={cls} href={href}>{children}</Link>;
