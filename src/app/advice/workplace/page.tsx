@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
-import { ADVICE_ARTICLES } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
 
 const QUICK_ACTIONS = [
   { label: "Access to Work: what can it pay for?", href: "/advice/access-to-work-what-employer-pays-vs-grant" },
@@ -36,8 +36,8 @@ const MORE_TOPICS = [
   },
 ] as const;
 
-export default function WorkplacePage() {
-  const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === "workplace").sort((a, b) =>
+export default async function WorkplacePage() {
+  const articles = (await getAdviceArticles()).filter((a) => a.categorySlug === "workplace").sort((a, b) =>
     a.title.localeCompare(b.title),
   );
 

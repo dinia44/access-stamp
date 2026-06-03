@@ -6,7 +6,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
-import { ADVICE_ARTICLES } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
 
 const FEATURED = [
   "choosing-a-wheelchair",
@@ -55,8 +55,8 @@ const QUICK_ACTIONS = [
   },
 ] as const;
 
-export default function EquipmentPage() {
-  const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === "equipment");
+export default async function EquipmentPage() {
+  const articles = (await getAdviceArticles()).filter((a) => a.categorySlug === "equipment");
   const featured = FEATURED.map((slug) => articles.find((a) => a.slug === slug)).filter(Boolean);
 
   return (

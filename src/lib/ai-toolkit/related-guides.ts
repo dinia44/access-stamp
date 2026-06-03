@@ -1,6 +1,6 @@
 import type { ProfilerArea } from "@/lib/ai-toolkit/types";
 import type { ToolkitGuideLink } from "@/lib/ai-toolkit/types";
-import { ADVICE_ARTICLES } from "@/lib/mock-data";
+import { ADVICE_ARTICLES_STATIC as ADVICE_ARTICLES } from "@/lib/content/advice";
 
 const AREA_SLUGS: Record<ProfilerArea, string[]> = {
   Benefits: [

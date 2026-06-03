@@ -7,19 +7,26 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
-import { ADVICE_ARTICLES, ADVICE_CATEGORIES } from "@/lib/mock-data";
+import { getAdviceArticleBySlug, getAdviceArticles } from "@/lib/content/advice";
+import { ADVICE_CATEGORIES } from "@/lib/mock-data";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { LAWS_GUIDANCE_LINKS } from "@/lib/laws-guidance";
 import { SetChatContext } from "@/components/chat/set-context";
 import { ArticleCompanion } from "@/components/ai-toolkit/article-companion";
 import { cn } from "@/lib/utils";
 
-export function generateStaticParams() {
-  return ADVICE_ARTICLES.map((a) => ({ slug: a.slug }));
+export async function generateStaticParams() {
+  const articles = await getAdviceArticles();
+  return articles.map((a) => ({ slug: a.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const a = ADVICE_ARTICLES.find((x) => x.slug === params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }> | { slug: string };
+}): Promise<Metadata> {
+  const { slug } = await Promise.resolve(params);
+  const a = await getAdviceArticleBySlug(slug);
   if (!a) return {};
   const firstParagraph = a.sections.find((s) => s.type === "p");
   const fallbackDesc =
@@ -33,8 +40,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-function relatedFor(slug: string, categorySlug: string, limit = 4) {
-  return ADVICE_ARTICLES.filter((x) => x.slug !== slug && x.categorySlug === categorySlug).slice(0, limit);
+async function relatedFor(slug: string, categorySlug: string, limit = 4) {
+  const all = await getAdviceArticles();
+  return all.filter((x) => x.slug !== slug && x.categorySlug === categorySlug).slice(0, limit);
 }
 
 function slugToCategoryLabel(categorySlug: string) {
@@ -56,7 +64,7 @@ export default async function AdviceArticlePage({
   params: Promise<{ slug: string }> | { slug: string };
 }) {
   const resolved = await Promise.resolve(params);
-  const a = ADVICE_ARTICLES.find((x) => x.slug === resolved.slug);
+  const a = await getAdviceArticleBySlug(resolved.slug);
   if (!a) return notFound();
 
   /** Matches hub cards: explicit hero in data, else pooled image for this slug/category */
@@ -65,7 +73,7 @@ export default async function AdviceArticlePage({
     : getAdviceArticleCardImage(a);
 
   const categoryLabel = slugToCategoryLabel(a.categorySlug);
-  const related = relatedFor(a.slug, a.categorySlug);
+  const related = await relatedFor(a.slug, a.categorySlug);
   const toc = a.sections
     .filter((s) => s.type === "h2")
     .map((s) => ({

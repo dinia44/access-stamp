@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
-import { ADVICE_ARTICLES } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
 
-export function CategoryPage({
+export async function CategoryPage({
   categorySlug,
   title,
   description,
@@ -15,7 +15,8 @@ export function CategoryPage({
   description: string;
   tabs?: Array<{ label: string; articleSlugs: string[] }>;
 }) {
-  const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === categorySlug);
+  const all = await getAdviceArticles();
+  const articles = all.filter((a) => a.categorySlug === categorySlug);
 
   return (
     <div className="bg-background">
@@ -60,7 +61,7 @@ export function CategoryPage({
                     <div className="text-sm font-semibold text-heading">{t.label}</div>
                     <div className="mt-2 grid gap-3 md:grid-cols-2">
                       {t.articleSlugs.map((slug) => {
-                        const a = ADVICE_ARTICLES.find((x) => x.slug === slug);
+                        const a = all.find((x) => x.slug === slug);
                         if (!a) return null;
                         return (
                           <Link key={a.slug} href={`/advice/${a.slug}`}>

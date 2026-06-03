@@ -4,7 +4,7 @@ import { AdviceManualCard } from "@/components/advice/advice-manual-card";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
-import { ADVICE_ARTICLES } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
 
 const PRIORITIES = [
   {
@@ -40,8 +40,8 @@ const QUICK_LINKS = [
   ["Emergency help", "/advice/emergency"],
 ] as const;
 
-export default function NewToDisabilityPage() {
-  const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === "new-to-disability");
+export default async function NewToDisabilityPage() {
+  const articles = (await getAdviceArticles()).filter((a) => a.categorySlug === "new-to-disability");
 
   return (
     <PageLayout>

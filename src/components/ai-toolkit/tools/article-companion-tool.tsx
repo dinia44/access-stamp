@@ -13,7 +13,7 @@ import {
 } from "@/components/ai-toolkit/toolkit-tool-shell";
 import { useToolkitSubmit } from "@/components/ai-toolkit/use-toolkit-submit";
 import { articleBySlug } from "@/lib/ai-toolkit/related-guides";
-import { ADVICE_ARTICLES } from "@/lib/mock-data";
+import { ADVICE_ARTICLES_STATIC } from "@/lib/content/advice";
 import { getToolkitToolMeta } from "@/lib/ai-toolkit/tools-meta";
 
 const meta = getToolkitToolMeta("article-companion")!;
@@ -22,7 +22,7 @@ export function ArticleCompanionTool() {
   const resultsRef = useRef<HTMLDivElement>(null);
   const { submit, loading, error, result, reset } = useToolkitSubmit("article-companion");
 
-  const [articleSlug, setArticleSlug] = useState(ADVICE_ARTICLES[0]?.slug ?? "");
+  const [articleSlug, setArticleSlug] = useState(ADVICE_ARTICLES_STATIC[0]?.slug ?? "");
   const [situation, setSituation] = useState("");
   const [desiredOutcome, setDesiredOutcome] = useState("");
   const [alreadyTried, setAlreadyTried] = useState("");
@@ -103,7 +103,7 @@ export function ArticleCompanionTool() {
             id="articleSlug"
             value={articleSlug}
             onChange={setArticleSlug}
-            options={ADVICE_ARTICLES.map((a) => ({
+            options={ADVICE_ARTICLES_STATIC.map((a) => ({
               value: a.slug,
               label: a.title.length > 60 ? `${a.title.slice(0, 57)}…` : a.title,
             }))}

@@ -15,7 +15,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
-import { ADVICE_ARTICLES } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
 
 const FEATURED = [
   "personal-budgets-and-direct-payments",
@@ -124,8 +124,8 @@ export const metadata: Metadata = {
     "Personal budgets, employing PAs, Care Act assessments, respite, advocacy, and escalation when social care fails — UK-focused guides.",
 };
 
-export default function CarePage() {
-  const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === "care").sort((a, b) =>
+export default async function CarePage() {
+  const articles = (await getAdviceArticles()).filter((a) => a.categorySlug === "care").sort((a, b) =>
     a.title.localeCompare(b.title),
   );
   const featured = FEATURED.map((slug) => articles.find((a) => a.slug === slug)).filter(Boolean);

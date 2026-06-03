@@ -1,15 +1,13 @@
 import type { MetadataRoute } from "next";
-import { ADVICE_ARTICLES, SAMPLE_VENUES } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
+import { getBlogPosts } from "@/lib/content/blog";
+import { SAMPLE_VENUES } from "@/lib/mock-data";
 
-const BLOG_SLUGS = [
-  "what-i-wish-id-known",
-  "wheelchair-basics-daily-transfers",
-  "why-accessible-means-nothing",
-] as const;
-
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "https://access-stamp-mxao.vercel.app";
   const now = new Date();
+
+  const [articles, posts] = await Promise.all([getAdviceArticles(), getBlogPosts()]);
 
   const staticRoutes = [
     "",
@@ -49,14 +47,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: now,
   }));
 
-  const blogRoutes = BLOG_SLUGS.map((slug) => ({
-    url: `${base}/blog/${slug}`,
+  const blogRoutes = posts.map((post) => ({
+    url: `${base}/blog/${post.slug}`,
     lastModified: now,
   }));
 
-  const adviceRoutes = ADVICE_ARTICLES.map((article) => ({
+  const adviceRoutes = articles.map((article) => ({
     url: `${base}/advice/${article.slug}`,
-    lastModified: now,
+    lastModified: article.updated ? new Date(article.updated) : now,
   }));
 
   const venueRoutes = SAMPLE_VENUES.map((venue) => ({

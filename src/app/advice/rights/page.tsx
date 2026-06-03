@@ -10,7 +10,7 @@ import { PageLayout } from "@/components/page-layout";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { RIGHTS_COMMON_ISSUES } from "@/lib/rights-hub-common-issues";
-import { ADVICE_ARTICLES } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
 
 const FEATURED = [
   "equality-act",
@@ -45,8 +45,8 @@ const URGENT = [
   { label: "Emergency: 999", href: "https://www.gov.uk/contact-police" },
 ] as const;
 
-export default function RightsPage() {
-  const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === "rights");
+export default async function RightsPage() {
+  const articles = (await getAdviceArticles()).filter((a) => a.categorySlug === "rights");
   const featured = FEATURED.map((slug) => articles.find((a) => a.slug === slug)).filter(Boolean);
   const situationCount = RIGHTS_COMMON_ISSUES.length;
 

@@ -3,7 +3,7 @@ import { AdviceArticleCard } from "@/components/advice/advice-article-card";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
-import { ADVICE_ARTICLES } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
 
 const FEATURED = [
   "driving-adaptations-products-library",
@@ -14,8 +14,8 @@ const FEATURED = [
   "licence-conditions",
 ];
 
-export default function CarsPage() {
-  const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === "cars");
+export default async function CarsPage() {
+  const articles = (await getAdviceArticles()).filter((a) => a.categorySlug === "cars");
   const featured = FEATURED.map((slug) => articles.find((a) => a.slug === slug)).filter(Boolean);
 
   return (

@@ -2,37 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { Badge, Card } from "@/components/ui";
+import { getBlogPosts } from "@/lib/content/blog";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "Updates, explainers, and walkthroughs from the Access Stamp team \u2014 clear, practical, no charity tone.",
+  description: "Updates, explainers, and walkthroughs from the Access Stamp team — clear, practical, no charity tone.",
 };
 
-const POSTS = [
-  {
-    slug: "what-i-wish-id-known",
-    title: "What I wish I'd known in my first year as a wheelchair user",
-    date: "March 2026",
-    excerpt:
-      "The things nobody tells you, from choosing the right cushion to dealing with people's reactions.",
-  },
-  {
-    slug: "wheelchair-basics-daily-transfers",
-    title: "Wheelchair basics: daily transfers",
-    date: "February 2026",
-    excerpt:
-      "A practical walkthrough of transfer techniques, positioning, and building confidence.",
-  },
-  {
-    slug: "why-accessible-means-nothing",
-    title: "Why 'wheelchair accessible' means almost nothing",
-    date: "January 2026",
-    excerpt:
-      "The gap between what venues claim and what you actually find when you arrive.",
-  },
-];
+export default async function BlogPage() {
+  const posts = await getBlogPosts();
 
-export default function BlogPage() {
   return (
     <div className="bg-background">
       <Container className="py-10">
@@ -46,7 +25,7 @@ export default function BlogPage() {
           </div>
 
           <div className="grid gap-3 md:grid-cols-3">
-            {POSTS.map((p) => (
+            {posts.map((p) => (
               <Link key={p.slug} href={`/blog/${p.slug}`} className="group">
                 <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
                   <div className="text-xs font-semibold text-muted">{p.date}</div>

@@ -8,7 +8,9 @@ import {
   FEATURED_MORE_GUIDE_SLUGS,
   FEATURED_PRACTICAL_GUIDE_SLUGS,
 } from "@/lib/featured-practical-guides";
-import { ADVICE_ARTICLES, ADVICE_CATEGORIES, type AdviceArticle } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
+import type { AdviceArticle } from "@/lib/content/types";
+import { ADVICE_CATEGORIES } from "@/lib/mock-data";
 
 function categoryLabel(categorySlug: string) {
   return ADVICE_CATEGORIES.find((c) => c.href === `/advice/${categorySlug}`)?.title ?? "Advice";
@@ -56,17 +58,16 @@ function GuideCardGrid({ articles }: { articles: AdviceArticle[] }) {
   );
 }
 
-function resolveArticles(slugs: readonly string[]) {
-  return slugs
-    .map((slug) => ADVICE_ARTICLES.find((a) => a.slug === slug))
-    .filter((a): a is AdviceArticle => Boolean(a));
+function resolveArticles(all: AdviceArticle[], slugs: readonly string[]) {
+  return slugs.map((slug) => all.find((a) => a.slug === slug)).filter((a): a is AdviceArticle => Boolean(a));
 }
 
-export function FeaturedPracticalGuides({ limit }: { limit?: number }) {
+export async function FeaturedPracticalGuides({ limit }: { limit?: number }) {
+  const all = await getAdviceArticles();
   const primarySlugs = limit ? FEATURED_PRACTICAL_GUIDE_SLUGS.slice(0, limit) : [...FEATURED_PRACTICAL_GUIDE_SLUGS];
-  const primary = resolveArticles(primarySlugs);
-  const more = limit ? [] : resolveArticles(FEATURED_MORE_GUIDE_SLUGS);
-  const batch3 = limit ? [] : resolveArticles(FEATURED_BATCH_3_SLUGS);
+  const primary = resolveArticles(all, primarySlugs);
+  const more = limit ? [] : resolveArticles(all, FEATURED_MORE_GUIDE_SLUGS);
+  const batch3 = limit ? [] : resolveArticles(all, FEATURED_BATCH_3_SLUGS);
 
   if (!primary.length && !more.length && !batch3.length) return null;
 

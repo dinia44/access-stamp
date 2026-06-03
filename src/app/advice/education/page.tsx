@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
-import { ADVICE_ARTICLES } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
 
 const FEATURED = [
   "dsa-disabled-students-allowance",
@@ -53,8 +53,8 @@ const QUICK_ACTIONS = [
   },
 ] as const;
 
-export default function EducationPage() {
-  const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === "education");
+export default async function EducationPage() {
+  const articles = (await getAdviceArticles()).filter((a) => a.categorySlug === "education");
   const featured = FEATURED.map((slug) => articles.find((a) => a.slug === slug)).filter(Boolean);
 
   return (

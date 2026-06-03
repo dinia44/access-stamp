@@ -1,3 +1,4 @@
+import type { AdviceArticle } from "@/lib/content/types";
 import { ADVICE_EXTRA_SEEDS } from "@/lib/advice-extra-seeds";
 import { PRACTICAL_GUIDE_ARTICLES } from "@/lib/practical-guides-articles";
 import { CARE_ARTICLES_DETAILED } from "@/lib/care-articles-detail";
@@ -632,43 +633,7 @@ export const ADVICE_CATEGORIES = [
   },
 ];
 
-export type AdviceArticle = {
-  slug: string;
-  title: string;
-  categorySlug:
-    | "rights"
-    | "education"
-    | "transport"
-    | "workplace"
-    | "care"
-    | "equipment"
-    | "emergency"
-    | "new-to-disability"
-    | "travel"
-    | "cars"
-    | "sport";
-  updated: string;
-  tags: string[];
-  /** Card/listing blurb */
-  excerpt?: string;
-  /** Approximate reading time for cards */
-  readTimeMinutes?: number;
-  /** Optional override for document title / OG */
-  seoTitle?: string;
-  metaDescription?: string;
-  heroImage?: {
-    src: string;
-    alt: string;
-  };
-  sections: Array<
-    | { type: "h2"; text: string }
-    | { type: "p"; text: string }
-    | { type: "ul"; items: string[] }
-    | { type: "pre"; text: string }
-    | { type: "links"; items: Array<{ label: string; href: string }> }
-    | { type: "callout"; tone: "warning" | "tip" | "contact" | "steps"; title: string; body: string }
-  >;
-};
+export type { AdviceArticle };
 
 const BASE_ADVICE_ARTICLES: AdviceArticle[] = [
   {

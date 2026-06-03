@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { PageContext } from "@/components/chat/provider";
 import type { Venue } from "@/lib/mock-data";
-import { ADVICE_ARTICLES, SAMPLE_VENUES } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
+import { SAMPLE_VENUES } from "@/lib/mock-data";
 import {
   assessChairAgainstVenue,
   formatVenueAuditContextForPrompt,
@@ -107,14 +108,15 @@ function pageSummary(page: PageContext) {
 function buildLlmUserPrompt(
   message: string,
   page: PageContext,
-  history?: Req["history"],
-  voiceMode?: boolean,
-  venueForPage?: Venue,
+  history: Req["history"] | undefined,
+  voiceMode: boolean | undefined,
+  venueForPage: Venue | undefined,
+  adviceArticles: Awaited<ReturnType<typeof getAdviceArticles>>,
 ) {
   const venues = SAMPLE_VENUES.slice(0, 8)
     .map((v) => `${v.name} (${v.location}) — ${v.tags.join(", ")}`)
     .join("\n");
-  const advice = ADVICE_ARTICLES.slice(0, 10).map((a) => `${a.title} (/advice/${a.slug})`).join("\n");
+  const advice = adviceArticles.slice(0, 10).map((a) => `${a.title} (/advice/${a.slug})`).join("\n");
   const cards = HELP_CARDS.slice(0, 14).map((c) => `${c.title} (/help-cards?concern=${encodeURIComponent(c.tags[0] ?? c.title)})`).join("\n");
   const historyText =
     history?.length
@@ -167,9 +169,10 @@ function buildLlmUserPrompt(
 async function callLlm(
   message: string,
   page: PageContext,
-  history?: Req["history"],
-  voiceMode?: boolean,
-  venueForPage?: Venue,
+  history: Req["history"] | undefined,
+  voiceMode: boolean | undefined,
+  venueForPage: Venue | undefined,
+  adviceArticles: Awaited<ReturnType<typeof getAdviceArticles>>,
 ): Promise<LlmShape | null> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return null;
@@ -186,7 +189,10 @@ async function callLlm(
         temperature: 0.4,
         messages: [
           { role: "system", content: ACCESS_STAMP_SYSTEM_PROMPT },
-          { role: "user", content: buildLlmUserPrompt(message, page, history, voiceMode, venueForPage) },
+          {
+            role: "user",
+            content: buildLlmUserPrompt(message, page, history, voiceMode, venueForPage, adviceArticles),
+          },
         ],
       }),
     });
@@ -279,6 +285,7 @@ export async function POST(req: Request) {
   const page = body.page ?? { kind: "none" };
   const voice = Boolean(body.voiceMode || body.mode === "hands-free");
   const venueRecord = page.kind === "venue" ? SAMPLE_VENUES.find((v) => v.slug === page.slug) : undefined;
+  const adviceArticles = await getAdviceArticles();
 
   if (!msg) {
     return NextResponse.json({ reply: "What would you like help with?" });
@@ -314,7 +321,7 @@ export async function POST(req: Request) {
   }
 
   if (isPipQuestion(msg)) {
-    const a = ADVICE_ARTICLES.find((x) => x.slug === "pip-in-plain-english");
+    const a = adviceArticles.find((x) => x.slug === "pip-in-plain-english");
     const reply =
       "Personal Independence Payment (PIP) is a UK benefit to help with extra costs of disability. It’s based on how your condition affects you day to day, not your diagnosis. If you tell me what you struggle with (walking, fatigue, pain, cooking, washing, dressing, communication), I can help you map that to practical evidence to write down.";
     return NextResponse.json({
@@ -376,7 +383,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const llm = await callLlm(msg, page, body.history, voice, venueRecord);
+  const llm = await callLlm(msg, page, body.history, voice, venueRecord, adviceArticles);
   if (llm) {
     return NextResponse.json({
       reply: voice ? short(llm.reply) : llm.reply,

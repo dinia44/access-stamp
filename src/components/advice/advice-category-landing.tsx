@@ -4,7 +4,8 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
-import { ADVICE_ARTICLES, type AdviceArticle } from "@/lib/mock-data";
+import { getAdviceArticles } from "@/lib/content/advice";
+import type { AdviceArticle } from "@/lib/content/types";
 
 export type AdviceCategoryLandingProps = {
   categorySlug: AdviceArticle["categorySlug"];
@@ -19,7 +20,7 @@ export type AdviceCategoryLandingProps = {
   checklistItems?: string[];
 };
 
-export function AdviceCategoryLanding({
+export async function AdviceCategoryLanding({
   categorySlug,
   breadcrumbLabel,
   badge,
@@ -31,7 +32,8 @@ export function AdviceCategoryLanding({
   checklistTitle,
   checklistItems,
 }: AdviceCategoryLandingProps) {
-  const articles = ADVICE_ARTICLES.filter((a) => a.categorySlug === categorySlug);
+  const all = await getAdviceArticles();
+  const articles = all.filter((a) => a.categorySlug === categorySlug);
   const featured = featuredSlugs
     .map((slug) => articles.find((a) => a.slug === slug))
     .filter((a): a is AdviceArticle => Boolean(a));
