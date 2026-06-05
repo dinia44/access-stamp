@@ -53,7 +53,7 @@ export function Navbar() {
     "grid h-9 w-9 place-items-center rounded-full border border-border bg-card text-blue shadow-[var(--shadow-soft)] hover:bg-blue-pale";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/98 shadow-[0_1px_0_rgba(15,26,43,0.06)] backdrop-blur">
+    <header className="nav-header sticky top-0 z-50 backdrop-blur-md">
       <Container>
         <div className="relative z-20 flex h-16 items-center justify-between gap-3">
           <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Access Stamp home" onClick={closeMenus}>
@@ -70,7 +70,7 @@ export function Navbar() {
                   onClick={closeMenus}
                   className={cn(
                     "rounded-[var(--radius-ui)] px-2.5 py-2 text-sm font-semibold text-heading hover:bg-background-2 lg:px-3 [touch-action:manipulation]",
-                    active && "bg-blue-pale text-blue",
+                    active && "bg-blue-pale text-blue ring-1 ring-blue/15",
                   )}
                 >
                   {item.label}
@@ -177,7 +177,7 @@ export function Navbar() {
                     href={item.href}
                     className={cn(
                       "rounded-[var(--radius-ui)] px-3 py-2 text-sm font-semibold text-heading hover:bg-background-2",
-                      active && "bg-blue-pale text-blue",
+                      active && "bg-blue-pale text-blue ring-1 ring-blue/15",
                     )}
                     onClick={closeMenus}
                   >

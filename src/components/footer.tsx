@@ -31,7 +31,7 @@ const CONTENT_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-navy text-white print:hidden">
+    <footer className="footer-brand border-t border-white/10 text-white print:hidden">
       <Container className="py-10">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
           <div className="space-y-3">

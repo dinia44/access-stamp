@@ -17,7 +17,7 @@ export function VenueFinderPromoVideo({
   return (
     <figure
       className={cn(
-        "overflow-hidden rounded-[var(--radius-card)] border border-border bg-card shadow-[var(--shadow-soft)]",
+        "overflow-hidden rounded-[var(--radius-card)] border border-border bg-card shadow-[var(--shadow-soft)] card-accent-blue",
         className,
       )}
     >

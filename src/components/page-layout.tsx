@@ -51,9 +51,11 @@ export function PageHero({
 }) {
   return (
     <div className={cn("max-w-4xl space-y-4", className)}>
-      <div className="w-fit">{badge}</div>
-      <h1 className="font-[var(--font-heading)] text-4xl leading-tight text-heading sm:text-5xl">{title}</h1>
-      {subtitle ? <p className="max-w-[82ch] text-base leading-7 text-muted">{subtitle}</p> : null}
+      <div className="page-hero-panel max-w-3xl space-y-4 shadow-[var(--shadow-soft)]">
+        <div className="w-fit">{badge}</div>
+        <h1 className="font-[var(--font-heading)] text-4xl leading-tight text-heading sm:text-5xl">{title}</h1>
+        {subtitle ? <p className="max-w-[82ch] text-base leading-7 text-muted">{subtitle}</p> : null}
+      </div>
     </div>
   );
 }

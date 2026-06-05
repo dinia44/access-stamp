@@ -115,7 +115,10 @@ export function HeroSearchCard() {
   }
 
   return (
-    <Card className="overflow-hidden border border-[#d8dfea] bg-[#f7f7f8] shadow-[0_28px_64px_-20px_rgba(0,0,0,0.35)]">
+    <Card
+      accent="blue"
+      className="overflow-hidden border border-white/20 bg-white shadow-[0_28px_64px_-20px_rgba(0,0,0,0.35)] ring-1 ring-amber/25"
+    >
       <div className="p-4 sm:p-5">
         <div className="grid gap-3">
           <div className="grid gap-2 lg:grid-cols-[1.2fr_.9fr_240px]">

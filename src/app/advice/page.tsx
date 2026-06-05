@@ -34,7 +34,10 @@ export default function AdviceHubPage() {
           const hubImg = ADVICE_HUB_CATEGORY_IMAGES[c.href];
           return (
             <Link key={c.href} href={c.href} className="group">
-              <Card className="h-full overflow-hidden border-border p-0 transition-shadow group-hover:shadow-[var(--shadow)]">
+              <Card
+                accent={c.href.includes("rights") || c.href.includes("emergency") ? "amber" : "blue"}
+                className="h-full overflow-hidden p-0 transition-shadow group-hover:shadow-[var(--shadow)]"
+              >
                 <AdviceMediaFrame>
                   {hubImg ? (
                     <GuideCoverImage

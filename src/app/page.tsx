@@ -181,7 +181,7 @@ export default function HomePage() {
           aria-hidden
           style={{
             background:
-              "radial-gradient(980px 600px at 10% 40%, rgba(36,120,208,0.22), transparent 58%), radial-gradient(800px 500px at 90% 15%, rgba(15,38,72,0.35), transparent 62%)",
+              "radial-gradient(980px 600px at 10% 40%, rgba(36,120,208,0.28), transparent 58%), radial-gradient(700px 480px at 88% 12%, rgba(212,149,42,0.16), transparent 55%), radial-gradient(800px 500px at 90% 15%, rgba(15,38,72,0.35), transparent 62%)",
           }}
         />
 
@@ -221,7 +221,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 2: New to Disability */}
-      <section className="bg-background py-24">
+      <section className="section-band-cool py-24">
         <Container>
           <FadeIn>
             <div className="relative">
@@ -285,7 +285,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="bg-background-2 py-20">
+      <section className="section-band-warm py-20">
         <Container>
           <FadeIn>
             <FeaturedPracticalGuides />
@@ -293,32 +293,8 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Section 3: Platform Pillars — backgrounds inline so production always picks them up (Tailwind v4 + globals ordering) */}
-      <section className="relative isolate overflow-hidden py-24">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background:
-              "linear-gradient(168deg, #fcf9f4 0%, #eef4ef 38%, #f4ece0 72%, #e9e2d5 100%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background:
-              "radial-gradient(ellipse 130% 85% at 12% 18%, rgba(109, 143, 127, 0.16), transparent 52%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background:
-              "radial-gradient(ellipse 110% 70% at 88% 82%, rgba(184, 146, 79, 0.13), transparent 48%)",
-          }}
-        />
+      {/* Section 3: Platform Pillars */}
+      <section className="section-band-blend relative isolate overflow-hidden py-24">
         <Container className="relative z-10">
           <div className="mx-auto max-w-[560px] text-center">
             <FadeIn>
@@ -337,12 +313,18 @@ export default function HomePage() {
               <FadeIn key={c.href} delayMs={Math.min(idx * 50, 250)}>
                 <Link href={c.href} className="group block h-full">
                   <Card
+                    accent={c.highlight ? "blue" : idx % 2 === 0 ? "amber" : "blue"}
                     className={
                       "h-full p-7 transition-all duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[3px] group-hover:shadow-[var(--shadow)] " +
-                      (c.highlight ? "border-blue shadow-[0_0_0_1px_rgba(47,142,245,0.35)]" : "")
+                      (c.highlight ? "ring-1 ring-blue/20" : "")
                     }
                   >
-                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-ui)] border border-border bg-blue-pale">
+                    <div
+                      className={
+                        "icon-well h-11 w-11 " +
+                        (c.highlight || idx % 2 === 0 ? "icon-well-blue" : "icon-well-amber")
+                      }
+                    >
                       <PillarIcon name={c.icon} />
                     </div>
                     <div className="mt-4 font-[var(--font-heading)] text-[19px] tracking-[-0.025em] text-heading">
@@ -358,7 +340,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 4: Featured Venues */}
-      <section className="bg-background py-24">
+      <section className="section-band-cool py-24">
         <Container>
           <FadeIn>
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -514,7 +496,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 5: Education */}
-      <section className="bg-background-2 py-24">
+      <section className="section-band-warm py-24">
         <Container>
           <div className="grid gap-5 md:grid-cols-2">
             <FadeIn>
@@ -575,7 +557,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 7: Transport */}
-      <section className="bg-background py-24">
+      <section className="section-band-cool py-24">
         <Container>
           <div className="mx-auto max-w-[640px] text-center">
             <FadeIn>
@@ -665,7 +647,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 9: Equipment */}
-      <section className="bg-background-2 py-24">
+      <section className="section-band-warm py-24">
         <Container>
           <div className="flex flex-col gap-8 md:flex-row md:items-start">
             <div className="flex-1">
@@ -733,7 +715,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 10: Your Rights (Tabbed) */}
-      <section className="bg-background py-24">
+      <section className="section-band-cool py-24">
         <Container>
           <div className="mx-auto max-w-[680px] text-center">
             <FadeIn>
@@ -753,7 +735,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 11: Care & Support */}
-      <section className="bg-background-2 py-24">
+      <section className="section-band-warm py-24">
         <Container>
           <div className="mx-auto max-w-[640px] text-center">
             <FadeIn>
@@ -839,7 +821,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 13: Blog Preview */}
-      <section className="bg-background-2 py-24">
+      <section className="section-band-warm py-24">
         <Container>
           <FadeIn>
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -936,7 +918,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 14: Directory & Glossary */}
-      <section className="bg-background py-24">
+      <section className="section-band-cool py-24">
         <Container>
           <div className="grid gap-5 md:grid-cols-2">
             <FadeIn>
@@ -1050,7 +1032,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 17: Mission */}
-      <section className="bg-background py-24">
+      <section className="section-band-cool py-24">
         <Container>
           <FadeIn>
             <div className="mx-auto max-w-[640px] text-center">
