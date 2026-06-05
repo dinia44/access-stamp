@@ -7,6 +7,7 @@ import { Container } from "@/components/container";
 import { Badge, Card } from "@/components/ui";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
+import { VenueFinderPromoVideo } from "@/components/venue-finder-promo-video";
 import { VENUE_FILTERS, VenueFinderFilters } from "@/components/venue-finder-filters";
 import { useChat } from "@/components/chat/provider";
 
@@ -176,8 +177,14 @@ function VenueFinderPageInner() {
             </p>
           </div>
 
+          <VenueFinderPromoVideo showCaption={false} />
+
           <Card className="p-5 sm:p-6">
             <div className="grid gap-4">
+              <p className="text-sm text-muted">
+                <span className="font-semibold text-heading">New here?</span> Watch the video above for a quick tour of
+                Access Stamp Venue Finder, then search below.
+              </p>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <label className="text-sm font-semibold text-muted">
                   Search query

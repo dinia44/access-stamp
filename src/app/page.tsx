@@ -8,6 +8,7 @@ import { Card, Badge, Button } from "@/components/ui";
 import { SectionLabel } from "@/components/home/section-label";
 import { FeaturedPracticalGuides } from "@/components/advice/featured-practical-guides";
 import { HeroSearchCard } from "@/components/home/hero-search";
+import { VenueFinderPromoVideo } from "@/components/venue-finder-promo-video";
 import { RightsTabs } from "@/components/home/rights-tabs";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { FEATURED_HELP_CARD_SLUGS, HELP_CARDS } from "@/lib/help-cards";
@@ -376,6 +377,31 @@ export default function HomePage() {
               >
                 Search all →
               </Link>
+            </div>
+          </FadeIn>
+
+          <FadeIn delayMs={80}>
+            <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-center">
+              <VenueFinderPromoVideo />
+              <div className="space-y-4">
+                <h3 className="font-[var(--font-heading)] text-[22px] tracking-[-0.02em] text-heading">
+                  See how Access Stamp Venue Finder works
+                </h3>
+                <p className="text-[15px] leading-[1.7] text-text">
+                  This short video walks through why generic accessibility labels fail — and how Access Stamp helps you
+                  search by the practical features you need before you leave home.
+                </p>
+                <p className="text-sm text-muted">
+                  Filter by step-free entry, accessible toilets, Changing Places, Blue Badge parking, turning space, and
+                  more — then open a listing for feature-by-feature detail.
+                </p>
+                <Link
+                  href="/venue-finder"
+                  className="inline-flex items-center justify-center rounded-[var(--radius-ui)] bg-blue px-4 py-2 text-sm font-semibold text-white"
+                >
+                  Try Venue Finder
+                </Link>
+              </div>
             </div>
           </FadeIn>
 

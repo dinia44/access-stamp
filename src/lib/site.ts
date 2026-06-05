@@ -16,6 +16,14 @@ export const SITE_LOGO_SRC =
 export const SITE_LOGO_WIDTH = 190;
 export const SITE_LOGO_HEIGHT = 48;
 
+/** Access Stamp Venue Finder promo (16:9, Cloudinary). */
+export const VENUE_FINDER_PROMO_VIDEO_SRC =
+  "https://res.cloudinary.com/dtl4syjuh/video/upload/v1780700109/accessstamp_16x9_correct_end_screen_osaycc.mp4";
+
+/** First-frame poster for the Venue Finder promo video. */
+export const VENUE_FINDER_PROMO_VIDEO_POSTER =
+  "https://res.cloudinary.com/dtl4syjuh/video/upload/so_0,f_jpg,q_auto/accessstamp_16x9_correct_end_screen_osaycc.jpg";
+
 /** Primary nav — matches website build prompt */
 export const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/" },
