@@ -8,8 +8,8 @@ const PILLARS = [
     accent: "border-blue-200 bg-blue-50/50",
   },
   {
-    title: "Plan your visit",
-    description: "Check toilets, parking, routes, seating and support needs.",
+    title: "Plan visits",
+    description: "Check entrances, toilets, parking, routes and support needs.",
     href: "/ai-toolkit/venue-fit-planner",
     accent: "border-slate-200 bg-white",
   },
@@ -20,13 +20,13 @@ const PILLARS = [
     accent: "border-violet-200 bg-violet-50/40",
   },
   {
-    title: "Compare access information",
-    description: "Use access scores, reports and real-world details.",
-    href: "/venue-finder",
+    title: "Use practical guides",
+    description: "Plain-language UK advice on everyday access, care and equipment.",
+    href: "/advice",
     accent: "border-emerald-200 bg-emerald-50/40",
   },
   {
-    title: "Support for carers and families",
+    title: "Get care & support help",
     description: "Find practical information for care, planning and daily life.",
     href: "/advice/care",
     accent: "border-slate-200 bg-white",
@@ -45,10 +45,10 @@ export function PlatformPillarsGrid() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
           <h2 id="platform-helps-heading" className="text-2xl font-bold tracking-[-0.025em] text-slate-950">
-            What Access Stamp helps with
+            What you can do on Access Stamp
           </h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            One platform for finding places, planning visits, understanding rights, and improving access information.
+            One platform for finding places, planning visits, understanding rights, and getting practical support.
           </p>
         </div>
 

@@ -16,7 +16,7 @@ export function HomePopularVenues() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.04em] text-slate-500">Venue access reports</p>
             <h2 id="popular-venues-heading" className="mt-2 text-2xl font-bold tracking-[-0.025em] text-slate-900">
-              Popular venue reports
+              Featured venue reports
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
               Real listings with practical access detail — step-free routes, toilets, parking and more.

@@ -1,17 +1,11 @@
+import Link from "next/link";
 import { HeroMapGraphic } from "@/components/home/hero-map-graphic";
 
-function ValueBullet({ children }: { children: React.ReactNode }) {
-  return (
-    <li className="flex items-center gap-2 text-sm text-slate-200 sm:text-base">
-      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#22D3EE]/15 text-[#22D3EE]">
-        <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden>
-          <path d="m5 13 4 4 10-10" />
-        </svg>
-      </span>
-      {children}
-    </li>
-  );
-}
+const HERO_BTN_PRIMARY =
+  "inline-flex min-h-12 items-center justify-center rounded-xl bg-[#2563EB] px-6 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061A3A]";
+
+const HERO_BTN_SECONDARY =
+  "inline-flex min-h-12 items-center justify-center rounded-xl border border-white/20 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061A3A]";
 
 export function HomeHero() {
   return (
@@ -32,22 +26,22 @@ export function HomeHero() {
               Accessibility platform
             </p>
 
-            <h1 className="mt-4 text-4xl font-bold leading-[0.98] tracking-[-0.045em] text-white sm:text-5xl lg:text-7xl">
-              Find accessible places.
-              <span className="mt-1 block text-[#22D3EE]">Travel with confidence.</span>
+            <h1 className="mt-4 text-4xl font-bold leading-[1.02] tracking-[-0.045em] text-white sm:text-5xl lg:text-6xl">
+              Navigate accessibility with confidence.
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-200 sm:text-xl">
-              Real access reports, smart filters, and practical guidance for planning accessible trips across the UK.
+              Find accessible venues, plan visits, understand your rights, and get practical guidance across the UK.
             </p>
 
-            <ul className="mt-8 flex flex-wrap gap-4 sm:gap-6">
-              <ValueBullet>Trusted access reports</ValueBullet>
-              <ValueBullet>Step-free planning</ValueBullet>
-              <ValueBullet>Built for real life</ValueBullet>
-            </ul>
-
-            <p className="mt-6 text-sm text-[#CBD5E1]">Trusted by real users across the UK</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="#platform-search" className={HERO_BTN_PRIMARY}>
+                Search Access Stamp
+              </Link>
+              <Link href="/advice" className={HERO_BTN_SECONDARY}>
+                Explore guides
+              </Link>
+            </div>
           </div>
 
           <div className="lg:justify-self-end">

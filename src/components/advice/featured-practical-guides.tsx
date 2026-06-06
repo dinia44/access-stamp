@@ -62,7 +62,7 @@ function resolveArticles(all: AdviceArticle[], slugs: readonly string[]) {
   return slugs.map((slug) => all.find((a) => a.slug === slug)).filter((a): a is AdviceArticle => Boolean(a));
 }
 
-export async function FeaturedPracticalGuides({ limit }: { limit?: number }) {
+export async function FeaturedPracticalGuides({ limit, hideHeading }: { limit?: number; hideHeading?: boolean }) {
   const all = await getAdviceArticles();
   const primarySlugs = limit ? FEATURED_PRACTICAL_GUIDE_SLUGS.slice(0, limit) : [...FEATURED_PRACTICAL_GUIDE_SLUGS];
   const primary = resolveArticles(all, primarySlugs);
@@ -74,16 +74,18 @@ export async function FeaturedPracticalGuides({ limit }: { limit?: number }) {
   return (
     <div className="space-y-10">
       {primary.length ? (
-        <section className="space-y-4" aria-labelledby="featured-practical-guides-heading">
-          <div className="space-y-2">
-            <h2 id="featured-practical-guides-heading" className="font-[var(--font-heading)] text-2xl text-heading">
-              Popular practical guides
-            </h2>
-            <p className="max-w-[80ch] text-sm text-muted">
-              High-intent topics people search when they need urgent, practical next steps — benefits, work, travel,
-              education, and care.
-            </p>
-          </div>
+        <section className="space-y-4" aria-labelledby={hideHeading ? undefined : "featured-practical-guides-heading"}>
+          {hideHeading ? null : (
+            <div className="space-y-2">
+              <h2 id="featured-practical-guides-heading" className="font-[var(--font-heading)] text-2xl text-heading">
+                Popular practical guides
+              </h2>
+              <p className="max-w-[80ch] text-sm text-muted">
+                High-intent topics people search when they need urgent, practical next steps — benefits, work, travel,
+                education, and care.
+              </p>
+            </div>
+          )}
           <GuideCardGrid articles={primary} />
         </section>
       ) : null}
@@ -116,11 +118,13 @@ export async function FeaturedPracticalGuides({ limit }: { limit?: number }) {
         </section>
       ) : null}
 
-      <p className="text-sm text-muted">
-        <Link href="/advice" className="font-semibold text-blue underline-offset-2 hover:underline">
-          Browse all advice topics →
-        </Link>
-      </p>
+      {hideHeading ? null : (
+        <p className="text-sm text-muted">
+          <Link href="/advice" className="font-semibold text-blue underline-offset-2 hover:underline">
+            Browse all advice topics →
+          </Link>
+        </p>
+      )}
     </div>
   );
 }
