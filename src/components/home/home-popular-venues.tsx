@@ -19,8 +19,11 @@ export function HomePopularVenues() {
             <h2 id="popular-venues-heading" className="mt-2 text-2xl font-bold tracking-[-0.025em] text-[#F8FAFC]">
               Featured venue reports
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#94A3B8]">
+            <p className="mt-2 max-w-2xl text-base leading-7 text-[#CBD5E1]">
               Real listings with practical access detail — step-free routes, toilets, parking and more.
+            </p>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#94A3B8]">
+              Access scores are based on step-free route, toilet access, parking, seating, and support information.
             </p>
           </div>
           <Link href="/venue-finder" className={`${HOME_BTN_PRIMARY} shrink-0 px-5`}>

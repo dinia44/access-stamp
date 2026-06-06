@@ -86,7 +86,7 @@ export function CategoryShortcutRow() {
                   {icon}
                 </span>
                 <span className="mt-3 text-sm font-bold text-[#F8FAFC]">{title}</span>
-                <span className="mt-1 text-xs leading-5 text-[#94A3B8]">{description}</span>
+                <span className="mt-1 text-sm leading-5 text-[#CBD5E1]">{description}</span>
               </Link>
             </li>
           ))}

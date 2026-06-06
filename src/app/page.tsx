@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SetChatContext } from "@/components/chat/set-context";
 import { Container } from "@/components/container";
 import { FadeIn } from "@/components/fade-in";
@@ -6,7 +7,6 @@ import { HomePopularVenues } from "@/components/home/home-popular-venues";
 import { HomePopularGuides } from "@/components/home/home-popular-guides";
 import { HomeHero } from "@/components/home/home-hero";
 import { HomeHeader } from "@/components/home/home-header";
-import { AccessStampSearchBox } from "@/components/home/access-stamp-search-box";
 import { CategoryShortcutRow } from "@/components/home/category-shortcut-row";
 import { PlatformPillarsGrid } from "@/components/home/platform-pillars-grid";
 import { HomeVerificationSection } from "@/components/home/home-verification-section";
@@ -20,12 +20,6 @@ export default function HomePage() {
       <HomeHeader />
       <HomeHero />
 
-      <section className="relative z-20 -mt-8 sm:-mt-10">
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <AccessStampSearchBox />
-        </div>
-      </section>
-
       <CategoryShortcutRow />
       <PlatformPillarsGrid />
       <HomePopularVenues />
@@ -33,7 +27,6 @@ export default function HomePage() {
       <HomeVerificationSection />
       <HomeForVenues />
 
-      {/* Final CTA */}
       <section className="relative overflow-hidden border-t border-white/5 bg-gradient-to-b from-[#061224] to-[#030B1A] py-24 text-[#F8FAFC]">
         <div
           className="pointer-events-none absolute inset-0"
@@ -49,16 +42,16 @@ export default function HomePage() {
               <h2 className="font-[var(--font-heading)] text-[clamp(1.75rem,3.5vw,2.75rem)] leading-tight text-[#F8FAFC]">
                 Your access needs, <span className="italic text-[#22D3EE]">taken seriously</span>
               </h2>
-              <p className="mt-4 text-[17px] leading-[1.75] text-[#94A3B8]">
-                Search venues, ask our AI, explore guides, understand your rights — all in one place.
+              <p className="mt-4 text-[17px] leading-[1.75] text-[#CBD5E1]">
+                Search venues, ask our AI, explore guides, and understand your rights — all in one place.
               </p>
               <div className="mt-7 flex flex-wrap justify-center gap-3">
                 <a href="#platform-search" className={HOME_BTN_PRIMARY}>
-                  Search Access Stamp
+                  Search accessible places
                 </a>
-                <a href="/advice" className={HOME_BTN_GHOST}>
-                  Explore guides →
-                </a>
+                <Link href="/advice" className={HOME_BTN_GHOST}>
+                  Explore disability guides
+                </Link>
               </div>
             </div>
           </FadeIn>

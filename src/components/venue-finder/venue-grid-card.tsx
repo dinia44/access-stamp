@@ -182,6 +182,7 @@ export function VenueGridCard({
         <div className="mt-auto flex gap-2 pt-5">
           <Link
             href={reportHref}
+            aria-label={`View details for ${venue.name}`}
             className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border px-3 text-sm font-bold transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
             style={{ borderColor: theme.accent, color: theme.accent }}
           >
@@ -189,6 +190,7 @@ export function VenueGridCard({
           </Link>
           <Link
             href={reportHref}
+            aria-label={`View access info for ${venue.name}`}
             className={`inline-flex min-h-11 flex-1 items-center justify-center rounded-xl px-3 text-sm font-bold text-white transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200 ${theme.buttonSolid}`}
           >
             View access info

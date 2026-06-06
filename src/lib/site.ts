@@ -33,18 +33,27 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "About", href: "/about" },
 ];
 
-/** “More” dropdown — Education through Glossary */
-export const MORE_ITEMS: NavItem[] = [
-  { label: "Education", href: "/advice/education" },
-  { label: "Transport", href: "/advice/transport" },
-  { label: "Workplace", href: "/advice/workplace" },
-  { label: "Travel", href: "/advice/travel" },
-  { label: "AI Toolkit", href: "/ai-toolkit" },
-  { label: "Help Cards", href: "/help-cards" },
-  { label: "Laws & Guidance", href: "/laws-guidance" },
-  { label: "Directory", href: "/directory" },
-  { label: "Glossary", href: "/glossary" },
+/** Resources dropdown — grouped for homepage header */
+export type ResourceGroup = { label: string; items: NavItem[] };
+
+export const RESOURCE_GROUPS: ResourceGroup[] = [
+  {
+    label: "AI Tools",
+    items: [{ label: "AI Toolkit", href: "/ai-toolkit" }],
+  },
+  {
+    label: "Reference",
+    items: [
+      { label: "Help Cards", href: "/help-cards" },
+      { label: "Directory", href: "/directory" },
+      { label: "Glossary", href: "/glossary" },
+      { label: "Laws & Guidance", href: "/laws-guidance" },
+    ],
+  },
 ];
+
+/** Flat list for mobile nav */
+export const MORE_ITEMS: NavItem[] = RESOURCE_GROUPS.flatMap((group) => group.items);
 
 /** Hero background — London street scene (Unsplash, no local asset required) */
 export const HOME_HERO_IMAGE =

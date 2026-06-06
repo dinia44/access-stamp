@@ -11,51 +11,35 @@ import {
   homeTabClass,
 } from "@/components/home/home-theme";
 
-type SearchCategory = "all" | "venues" | "guides" | "rights" | "travel" | "care" | "equipment";
+type SearchMode = "venue" | "advice";
 
-const CATEGORY_TABS: { id: SearchCategory; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "venues", label: "Venues" },
-  { id: "guides", label: "Guides" },
-  { id: "rights", label: "Rights" },
-  { id: "travel", label: "Travel" },
-  { id: "care", label: "Care" },
-  { id: "equipment", label: "Equipment" },
+const SEARCH_MODES: { id: SearchMode; label: string }[] = [
+  { id: "venue", label: "Find a venue" },
+  { id: "advice", label: "Get advice" },
 ];
 
-const FILTER_CHIPS = [
+const VISIBLE_CHIPS = [
   { label: "Step-free access", key: "Step-free entrance", href: null },
   { label: "Accessible toilet", key: "Accessible toilet", href: null },
-  { label: "Travel planning", key: null, href: "/advice/travel" },
+  { label: "Blue Badge parking", key: "Blue Badge parking", href: null },
+  { label: "Travel support", key: null, href: "/advice/travel" },
   { label: "Rights & support", key: null, href: "/advice/rights" },
-  { label: "Care support", key: null, href: "/advice/care" },
   { label: "Equipment", key: null, href: "/advice/equipment" },
 ] as const;
 
-const CATEGORY_ROUTES: Record<Exclude<SearchCategory, "all" | "venues">, string> = {
-  guides: "/advice",
-  rights: "/advice/rights",
-  travel: "/advice/travel",
-  care: "/advice/care",
-  equipment: "/advice/equipment",
+type AccessStampSearchBoxProps = {
+  integrated?: boolean;
 };
 
-const CATEGORY_SEARCH_TYPES: Record<Exclude<SearchCategory, "all" | "venues">, string> = {
-  guides: "Guide",
-  rights: "Rights",
-  travel: "Transport",
-  care: "Care",
-  equipment: "Equipment",
-};
-
-export function AccessStampSearchBox() {
+export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBoxProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
-  const [category, setCategory] = useState<SearchCategory>("all");
+  const [mode, setMode] = useState<SearchMode>("venue");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
 
-  const isVenueSearch = category === "venues";
+  const isVenueSearch = mode === "venue";
 
   const toggleFilter = (key: string) => {
     setSelectedFilters((prev) => (prev.includes(key) ? prev.filter((f) => f !== key) : [...prev, key]));
@@ -73,24 +57,8 @@ export function AccessStampSearchBox() {
   const handlePlatformSearch = () => {
     const trimmed = query.trim();
 
-    if (category === "venues") {
+    if (isVenueSearch) {
       goToVenueFinder();
-      return;
-    }
-
-    if (category !== "all") {
-      const hub = CATEGORY_ROUTES[category];
-      if (trimmed) {
-        const results = searchAccessStamp(trimmed, 8);
-        const match = results.find((item) => item.category === CATEGORY_SEARCH_TYPES[category]);
-        if (match) {
-          router.push(match.url);
-          return;
-        }
-        router.push(`${hub}?q=${encodeURIComponent(trimmed)}`);
-        return;
-      }
-      router.push(hub);
       return;
     }
 
@@ -101,36 +69,47 @@ export function AccessStampSearchBox() {
         router.push(topHit.url);
         return;
       }
+      router.push(`/advice?q=${encodeURIComponent(trimmed)}`);
+      return;
     }
 
-    router.push(trimmed ? `/advice?q=${encodeURIComponent(trimmed)}` : "/advice");
+    router.push("/advice");
   };
 
   const handleMoreFilters = () => {
-    if (isVenueSearch || category === "all") {
+    if (isVenueSearch) {
       goToVenueFinder();
       return;
     }
-    router.push(CATEGORY_ROUTES[category as Exclude<SearchCategory, "all" | "venues">] ?? "/advice");
+    router.push("/advice");
   };
 
+  const panelClass = integrated
+    ? "relative z-20 scroll-mt-28 rounded-3xl border border-white/10 bg-slate-950/50 p-5 shadow-xl shadow-black/20 backdrop-blur-xl lg:p-6"
+    : `relative z-20 scroll-mt-28 ${HOME_GLASS_PANEL} p-5 lg:p-6`;
+
   return (
-    <div id="platform-search" className={`relative z-20 scroll-mt-28 ${HOME_GLASS_PANEL} p-5 lg:p-6`}>
+    <div id="platform-search" className={panelClass}>
       <div className="mb-5">
-        <p className="text-sm font-semibold text-[#F8FAFC]">Start with a place, need, or question</p>
-        <p className="mt-1 text-sm text-[#94A3B8]">
-          Search venues, guides, rights, travel support or access needs across Access Stamp.
+        <h2 className="text-base font-semibold text-[#F8FAFC] sm:text-lg">What do you need help with?</h2>
+        <p className="mt-1 text-base leading-relaxed text-[#CBD5E1]">
+          {isVenueSearch
+            ? "Search access-checked venues by place, town, or access need."
+            : "Search practical UK guidance on rights, travel, care, work, and equipment."}
         </p>
       </div>
 
-      <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
-        {CATEGORY_TABS.map(({ id, label }) => (
+      <div className="mb-4 flex gap-2" role="tablist" aria-label="Search mode">
+        {SEARCH_MODES.map(({ id, label }) => (
           <button
             key={id}
             type="button"
-            onClick={() => setCategory(id)}
-            aria-pressed={category === id}
-            className={homeTabClass(category === id)}
+            role="tab"
+            id={`search-tab-${id}`}
+            aria-selected={mode === id}
+            aria-controls={`search-panel-${id}`}
+            onClick={() => setMode(id)}
+            className={homeTabClass(mode === id)}
           >
             {label}
           </button>
@@ -138,6 +117,9 @@ export function AccessStampSearchBox() {
       </div>
 
       <form
+        role="tabpanel"
+        id={`search-panel-${mode}`}
+        aria-labelledby={`search-tab-${mode}`}
         onSubmit={(e) => {
           e.preventDefault();
           handlePlatformSearch();
@@ -147,7 +129,7 @@ export function AccessStampSearchBox() {
           className={`grid gap-3 ${isVenueSearch ? "md:grid-cols-[minmax(0,1fr)_260px_auto]" : "md:grid-cols-[minmax(0,1fr)_auto]"}`}
         >
           <div>
-            <label htmlFor="platform-search-query" className="mb-2 block text-sm font-medium text-[#CBD5E1]">
+            <label htmlFor="platform-search-query" className="mb-2 block text-base font-medium text-[#E2E8F0]">
               Search
             </label>
             <input
@@ -155,7 +137,11 @@ export function AccessStampSearchBox() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search venues, guides, rights, travel support or access needs"
+              placeholder={
+                isVenueSearch
+                  ? "Search by venue, town, or access need"
+                  : "Search PIP, travel, care, work, equipment…"
+              }
               className={HOME_INPUT}
               autoComplete="off"
             />
@@ -163,7 +149,7 @@ export function AccessStampSearchBox() {
 
           {isVenueSearch ? (
             <div>
-              <label htmlFor="platform-search-location" className="mb-2 block text-sm font-medium text-[#CBD5E1]">
+              <label htmlFor="platform-search-location" className="mb-2 block text-base font-medium text-[#E2E8F0]">
                 Location
               </label>
               <input
@@ -180,14 +166,14 @@ export function AccessStampSearchBox() {
 
           <div className="flex items-end">
             <button type="submit" className={`${HOME_BTN_PRIMARY} w-full md:w-auto`}>
-              {isVenueSearch ? "Find access-checked venues" : "Search Access Stamp"}
+              {isVenueSearch ? "Search accessible places" : "Get advice"}
             </button>
           </div>
         </div>
       </form>
 
-      <div className="mt-4 flex gap-2 overflow-x-auto pb-1 md:flex-wrap md:overflow-visible">
-        {FILTER_CHIPS.map(({ label, key, href }) => {
+      <div className="mt-4 flex flex-wrap gap-2">
+        {VISIBLE_CHIPS.map(({ label, key, href }) => {
           if (href) {
             return (
               <button key={label} type="button" onClick={() => router.push(href)} className={homeChipClass(false)}>
@@ -203,14 +189,15 @@ export function AccessStampSearchBox() {
               type="button"
               onClick={() => {
                 if (!key) return;
-                if (isVenueSearch || category === "all") {
+                if (isVenueSearch) {
                   toggleFilter(key);
                   return;
                 }
-                const nextFilters = selectedFilters.includes(key)
-                  ? selectedFilters.filter((f) => f !== key)
-                  : [...selectedFilters, key];
-                goToVenueFinder({ filters: nextFilters });
+                goToVenueFinder({
+                  filters: selectedFilters.includes(key)
+                    ? selectedFilters.filter((f) => f !== key)
+                    : [...selectedFilters, key],
+                });
               }}
               aria-pressed={active}
               className={homeChipClass(active)}
@@ -220,8 +207,33 @@ export function AccessStampSearchBox() {
           );
         })}
 
-        <button type="button" onClick={handleMoreFilters} className={homeChipClass(false)}>
-          More filters
+        {moreFiltersOpen ? (
+          <>
+            <button type="button" onClick={() => router.push("/advice/care")} className={homeChipClass(false)}>
+              Care support
+            </button>
+            <button type="button" onClick={() => router.push("/advice/workplace")} className={homeChipClass(false)}>
+              Workplace
+            </button>
+            <button type="button" onClick={() => router.push("/advice/education")} className={homeChipClass(false)}>
+              Education
+            </button>
+          </>
+        ) : null}
+
+        <button
+          type="button"
+          onClick={() => {
+            if (moreFiltersOpen) {
+              handleMoreFilters();
+              return;
+            }
+            setMoreFiltersOpen(true);
+          }}
+          className={homeChipClass(false)}
+          aria-expanded={moreFiltersOpen}
+        >
+          {moreFiltersOpen ? "Search with filters" : "More filters"}
         </button>
       </div>
     </div>
