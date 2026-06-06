@@ -2,11 +2,12 @@ import Link from "next/link";
 import { VenueResultCard } from "@/components/venue-finder/venue-result-card";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { FEATURED_VENUE_SLUGS } from "@/lib/venue-finder-featured";
-
-const POPULAR_SLUGS = FEATURED_VENUE_SLUGS.slice(0, 4);
+import { VENUE_GRID_CLASS, VENUE_GRID_SIZE } from "@/lib/venue-grid-layout";
 
 export function HomePopularVenues() {
-  const venues = POPULAR_SLUGS.map((slug) => SAMPLE_VENUES.find((v) => v.slug === slug)).filter(Boolean);
+  const venues = FEATURED_VENUE_SLUGS.map((slug) => SAMPLE_VENUES.find((v) => v.slug === slug))
+    .filter(Boolean)
+    .slice(0, VENUE_GRID_SIZE);
 
   return (
     <section className="border-b border-slate-200 bg-white py-16" aria-labelledby="popular-venues-heading">
@@ -29,7 +30,7 @@ export function HomePopularVenues() {
           </Link>
         </div>
 
-        <ul className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className={`mt-8 ${VENUE_GRID_CLASS}`}>
           {venues.map((venue, index) => (
             <VenueResultCard key={venue!.slug} venue={venue!} index={index} />
           ))}

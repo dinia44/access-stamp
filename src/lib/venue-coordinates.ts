@@ -15,6 +15,15 @@ export const VENUE_COORDINATES: Record<string, VenueCoordinates> = {
   "greenfield-shopping-village-leeds": { lat: 53.8018, lng: -1.5472 },
   "botanical-gardens-manchester": { lat: 53.4603, lng: -2.2269 },
   "gluckberry-woods-cafe-liverpool": { lat: 53.3904, lng: -2.983 },
+  "royal-armouries-leeds": { lat: 53.7915, lng: -1.5322 },
+  "brighton-pier-pavilion": { lat: 50.8168, lng: -0.1368 },
+  "central-library-birmingham": { lat: 52.4796, lng: -1.9085 },
+  "meadowhall-food-hall-sheffield": { lat: 53.4144, lng: -1.4115 },
+  "castle-view-restaurant-edinburgh": { lat: 55.9485, lng: -3.1999 },
+  "tate-st-ives-gallery": { lat: 50.2144, lng: -5.4806 },
+  "cardiff-community-hub": { lat: 51.4816, lng: -3.1791 },
+  "pump-room-tea-room-bath": { lat: 51.3811, lng: -2.359 },
+  "norwich-cathedral-refectory": { lat: 52.631, lng: 1.3014 },
 };
 
 export const UK_MAP_DEFAULT: VenueCoordinates = { lat: 53.48, lng: -2.24 };

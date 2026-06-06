@@ -1,16 +1,24 @@
 import type { Venue } from "@/lib/mock-data";
 import { SAMPLE_VENUE_CARDS, type SampleVenueCard } from "@/lib/venue-finder-samples";
 
-/** Default grid order — Harbour Kitchen first, then other listings, then examples */
+/** Default grid order — 16 venues for 4×4 homepage grid */
 export const FEATURED_VENUE_SLUGS = [
   "harbour-kitchen-liverpool",
+  "royal-armouries-leeds",
   "gallery-cafe-manchester",
-  "the-botanist-kitchen-manchester",
-  "gluckberry-woods-cafe-liverpool",
   "riverside-cinema-leeds",
+  "the-botanist-kitchen-manchester",
+  "brighton-pier-pavilion",
   "riverside-arts-centre-bristol",
+  "central-library-birmingham",
   "greenfield-shopping-village-leeds",
+  "meadowhall-food-hall-sheffield",
   "botanical-gardens-manchester",
+  "castle-view-restaurant-edinburgh",
+  "gluckberry-woods-cafe-liverpool",
+  "tate-st-ives-gallery",
+  "cardiff-community-hub",
+  "pump-room-tea-room-bath",
 ] as const;
 
 export const FEATURED_SAMPLE_IDS = ["sample-cafe", "sample-hotel", "sample-toilet"] as const;

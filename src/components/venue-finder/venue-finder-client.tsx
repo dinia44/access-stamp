@@ -16,6 +16,7 @@ import {
   type VenueFinderSearchState,
 } from "@/lib/venue-finder-params";
 import { VF_BTN_SECONDARY } from "@/lib/venue-finder-cro";
+import { VENUE_GRID_CLASS } from "@/lib/venue-grid-layout";
 import { VenueFinderActiveFiltersSummary } from "./venue-finder-active-filters";
 import { VenueFinderAiCard } from "./venue-finder-ai-card";
 import { VenueFinderFloatingBox } from "./venue-finder-floating-box";
@@ -223,14 +224,30 @@ function VenueFinderInteractive({ venues, initial }: Props) {
           />
         </div>
 
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pb-28 pt-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:px-8 lg:pb-8">
+        <div className="mx-auto max-w-7xl px-4 pb-28 pt-8 sm:px-6 lg:px-8 lg:pb-8">
+          <div className="mb-8 hidden gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_420px]">
+            <VenueFinderMapPanel
+              venues={filtered}
+              locationLabel={location}
+              selectedSlug={selectedSlug}
+              mapCenter={mapCenter}
+              onSelectVenue={setSelectedSlug}
+              onUserLocation={handleUserLocation}
+              mapHeightClass="h-[360px]"
+            />
+            <div className="space-y-4">
+              <VenueFinderSidebar venues={filtered} location={location} />
+              <VenueFinderAiCard prefill={aiPrefill} />
+            </div>
+          </div>
+
           <section
             ref={resultsRef}
             id="venue-results"
             aria-labelledby="venue-results-heading"
             aria-busy="false"
           >
-            <div className="lg:hidden">
+            <div className="mb-6 lg:hidden">
               <VenueFinderMapPanel
                 venues={filtered}
                 locationLabel={location}
@@ -259,7 +276,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
             </div>
 
             {filtered.length ? (
-              <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <ul className={`mt-6 ${VENUE_GRID_CLASS}`}>
                 {filtered.map((venue, index) => (
                   <VenueResultCard
                     key={venue.slug}
@@ -279,21 +296,6 @@ function VenueFinderInteractive({ venues, initial }: Props) {
               <VenueFinderAiCard prefill={aiPrefill} />
             </div>
           </section>
-
-          <div className="hidden space-y-4 lg:block">
-            <div className="sticky top-28 space-y-4">
-              <VenueFinderMapPanel
-                venues={filtered}
-                locationLabel={location}
-                selectedSlug={selectedSlug}
-                mapCenter={mapCenter}
-                onSelectVenue={setSelectedSlug}
-                onUserLocation={handleUserLocation}
-              />
-              <VenueFinderSidebar venues={filtered} location={location} />
-              <VenueFinderAiCard prefill={aiPrefill} />
-            </div>
-          </div>
         </div>
       </div>
 
