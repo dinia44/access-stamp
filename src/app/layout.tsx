@@ -4,7 +4,7 @@ import "./globals.css";
 import { ChatProvider } from "@/components/chat/provider";
 import { AccessibilityControls } from "@/components/accessibility-controls";
 import { Footer } from "@/components/footer";
-import { Navbar } from "@/components/navbar";
+import { SiteChrome } from "@/components/site-chrome";
 import { ChatWidget } from "@/components/chat-widget";
 
 const heading = DM_Serif_Display({
@@ -58,8 +58,9 @@ export default function RootLayout({
           Skip to main content
         </a>
         <ChatProvider>
-          <Navbar />
-          <main id="main-content" className="flex-1">{children}</main>
+          <SiteChrome>
+            <main id="main-content" className="flex-1">{children}</main>
+          </SiteChrome>
           <Footer />
           <AccessibilityControls />
           <ChatWidget />

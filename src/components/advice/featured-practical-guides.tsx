@@ -16,7 +16,8 @@ function categoryLabel(categorySlug: string) {
   return ADVICE_CATEGORIES.find((c) => c.href === `/advice/${categorySlug}`)?.title ?? "Advice";
 }
 
-function GuideCardGrid({ articles }: { articles: AdviceArticle[] }) {
+function GuideCardGrid({ articles, theme = "light" }: { articles: AdviceArticle[]; theme?: "light" | "dark" }) {
+  const isDark = theme === "dark";
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {articles.map((article) => {
@@ -24,7 +25,13 @@ function GuideCardGrid({ articles }: { articles: AdviceArticle[] }) {
         const label = categoryLabel(article.categorySlug);
         return (
           <Link key={article.slug} href={`/advice/${article.slug}`} className="group block h-full">
-            <Card className="flex h-full flex-col overflow-hidden border-border p-0 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
+            <Card
+              className={`flex h-full flex-col overflow-hidden p-0 transition-all group-hover:-translate-y-0.5 ${
+                isDark
+                  ? "border-white/10 bg-slate-900/70 shadow-xl shadow-black/20 group-hover:border-white/20 group-hover:shadow-2xl group-hover:shadow-black/30"
+                  : "border-border group-hover:shadow-[var(--shadow)]"
+              }`}
+            >
               <AdviceMediaFrame>
                 <GuideCoverImage
                   src={img.src}
@@ -37,17 +44,29 @@ function GuideCardGrid({ articles }: { articles: AdviceArticle[] }) {
                 <Badge tone="blue" className="w-fit">
                   {label}
                 </Badge>
-                <div className="mt-2 line-clamp-2 text-sm font-semibold text-heading">{article.title}</div>
+                <div
+                  className={`mt-2 line-clamp-2 text-sm font-semibold ${isDark ? "text-[#F8FAFC]" : "text-heading"}`}
+                >
+                  {article.title}
+                </div>
                 {article.excerpt ? (
-                  <p className="mt-2 line-clamp-3 text-sm text-muted">{article.excerpt}</p>
+                  <p className={`mt-2 line-clamp-3 text-sm ${isDark ? "text-[#94A3B8]" : "text-muted"}`}>
+                    {article.excerpt}
+                  </p>
                 ) : null}
                 <div className="mt-auto flex items-center justify-between gap-2 pt-4">
                   {article.readTimeMinutes ? (
-                    <span className="text-xs font-semibold text-muted">{article.readTimeMinutes} min read</span>
+                    <span className={`text-xs font-semibold ${isDark ? "text-[#64748B]" : "text-muted"}`}>
+                      {article.readTimeMinutes} min read
+                    </span>
                   ) : (
-                    <span className="text-xs font-semibold text-muted">Updated {article.updated}</span>
+                    <span className={`text-xs font-semibold ${isDark ? "text-[#64748B]" : "text-muted"}`}>
+                      Updated {article.updated}
+                    </span>
                   )}
-                  <span className="text-sm font-semibold text-blue">Read guide →</span>
+                  <span className={`text-sm font-semibold ${isDark ? "text-[#22D3EE]" : "text-blue"}`}>
+                    Read guide →
+                  </span>
                 </div>
               </div>
             </Card>
@@ -62,7 +81,15 @@ function resolveArticles(all: AdviceArticle[], slugs: readonly string[]) {
   return slugs.map((slug) => all.find((a) => a.slug === slug)).filter((a): a is AdviceArticle => Boolean(a));
 }
 
-export async function FeaturedPracticalGuides({ limit, hideHeading }: { limit?: number; hideHeading?: boolean }) {
+export async function FeaturedPracticalGuides({
+  limit,
+  hideHeading,
+  theme = "light",
+}: {
+  limit?: number;
+  hideHeading?: boolean;
+  theme?: "light" | "dark";
+}) {
   const all = await getAdviceArticles();
   const primarySlugs = limit ? FEATURED_PRACTICAL_GUIDE_SLUGS.slice(0, limit) : [...FEATURED_PRACTICAL_GUIDE_SLUGS];
   const primary = resolveArticles(all, primarySlugs);
@@ -86,7 +113,7 @@ export async function FeaturedPracticalGuides({ limit, hideHeading }: { limit?: 
               </p>
             </div>
           )}
-          <GuideCardGrid articles={primary} />
+          <GuideCardGrid articles={primary} theme={theme} />
         </section>
       ) : null}
 
@@ -100,7 +127,7 @@ export async function FeaturedPracticalGuides({ limit, hideHeading }: { limit?: 
               When decisions, care costs, or health funding need a clear next step.
             </p>
           </div>
-          <GuideCardGrid articles={more} />
+          <GuideCardGrid articles={more} theme={theme} />
         </section>
       ) : null}
 
@@ -114,7 +141,7 @@ export async function FeaturedPracticalGuides({ limit, hideHeading }: { limit?: 
               Support for unpaid carers, DLA for children, and work capability on Universal Credit.
             </p>
           </div>
-          <GuideCardGrid articles={batch3} />
+          <GuideCardGrid articles={batch3} theme={theme} />
         </section>
       ) : null}
 

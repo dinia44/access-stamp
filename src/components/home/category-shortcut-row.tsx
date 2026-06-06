@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HOME_PANEL } from "@/components/home/home-theme";
 
 const CATEGORIES = [
   {
@@ -68,7 +69,7 @@ const CATEGORIES = [
 
 export function CategoryShortcutRow() {
   return (
-    <section aria-labelledby="category-shortcuts-heading" className="bg-white pb-10 pt-6 sm:pt-8">
+    <section aria-labelledby="category-shortcuts-heading" className="border-t border-white/5 pb-12 pt-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 id="category-shortcuts-heading" className="sr-only">
           Browse by category
@@ -79,16 +80,13 @@ export function CategoryShortcutRow() {
             <li key={title}>
               <Link
                 href={href}
-                className="group flex h-full min-h-[88px] flex-col rounded-2xl border border-slate-200 bg-slate-50/80 p-4 transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-blue-200 hover:bg-white hover:shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
+                className={`group flex h-full min-h-[96px] flex-col p-4 transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-white/20 hover:bg-slate-900/80 hover:shadow-xl hover:shadow-black/25 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-500/20 ${HOME_PANEL}`}
               >
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition-colors group-hover:border-blue-200 group-hover:text-blue-700">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[#CBD5E1] transition-colors group-hover:border-cyan-400/30 group-hover:text-[#22D3EE]">
                   {icon}
                 </span>
-                <span className="mt-3 text-sm font-bold text-slate-900">{title}</span>
-                <span className="mt-1 text-xs leading-5 text-slate-600">{description}</span>
-                <span className="mt-auto pt-2 text-xs font-semibold text-blue-700 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-                  Explore →
-                </span>
+                <span className="mt-3 text-sm font-bold text-[#F8FAFC]">{title}</span>
+                <span className="mt-1 text-xs leading-5 text-[#94A3B8]">{description}</span>
               </Link>
             </li>
           ))}
