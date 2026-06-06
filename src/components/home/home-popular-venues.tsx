@@ -15,14 +15,14 @@ export function HomePopularVenues() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.04em] text-[#22D3EE]">Venue access reports</p>
-            <h2 id="popular-venues-heading" className="mt-2 text-2xl font-bold tracking-[-0.025em] text-[#E0F7FF]">
+            <p className="text-xs font-semibold uppercase tracking-[0.04em] text-[#0891B2]">Venue access reports</p>
+            <h2 id="popular-venues-heading" className="mt-2 text-2xl font-bold tracking-[-0.025em] text-[#0B1D3A]">
               Featured venue reports
             </h2>
-            <p className="mt-2 max-w-2xl text-base leading-7 text-[#BAE6FD]">
+            <p className="mt-2 max-w-2xl text-base leading-7 text-[#1E3A5F]">
               Real listings with practical access detail — step-free routes, toilets, parking and more.
             </p>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#7DD3FC]">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#3B6B9A]">
               Access scores are based on step-free route, toilet access, parking, seating, and support information.
             </p>
           </div>

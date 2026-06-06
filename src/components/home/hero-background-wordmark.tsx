@@ -4,7 +4,7 @@ export function HeroBackgroundWordmark() {
       className="pointer-events-none absolute inset-x-0 top-14 select-none text-center sm:top-16"
       aria-hidden="true"
     >
-      <p className="text-[clamp(3rem,11vw,10rem)] font-black uppercase tracking-[0.2em] text-[#22D3EE]/[0.05]">
+      <p className="text-[clamp(3rem,11vw,10rem)] font-black uppercase tracking-[0.2em] text-[#2563EB]/[0.05]">
         ACCESS STAMP
       </p>
     </div>

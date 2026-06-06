@@ -45,10 +45,10 @@ export function PlatformPillarsGrid() {
     <section className={HOME_SECTION_ALT} aria-labelledby="platform-helps-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
-          <h2 id="platform-helps-heading" className="text-2xl font-bold tracking-[-0.025em] text-[#E0F7FF]">
+          <h2 id="platform-helps-heading" className="text-2xl font-bold tracking-[-0.025em] text-[#0B1D3A]">
             What you can do on Access Stamp
           </h2>
-          <p className="mt-2 text-sm leading-6 text-[#7DD3FC]">
+          <p className="mt-2 text-sm leading-6 text-[#3B6B9A]">
             One platform for finding places, planning visits, understanding rights, and getting practical support.
           </p>
         </div>
@@ -58,10 +58,10 @@ export function PlatformPillarsGrid() {
             <Link
               key={pillar.title}
               href={pillar.href}
-              className={`group block p-5 transition-all duration-200 hover:-translate-y-1 hover:border-[#22D3EE]/35 hover:shadow-xl hover:shadow-[#030B1A]/25 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-500/20 ${HOME_PANEL} ${pillar.accent}`}
+              className={`group block p-5 transition-all duration-200 hover:-translate-y-1 hover:border-[#93C5FD] hover:shadow-xl hover:shadow-[#2563EB]/10 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#0891B2]/20 ${HOME_PANEL} ${pillar.accent}`}
             >
-              <h3 className="text-base font-bold text-[#E0F7FF] group-hover:text-[#22D3EE]">{pillar.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-[#7DD3FC]">{pillar.description}</p>
+              <h3 className="text-base font-bold text-[#0B1D3A] group-hover:text-[#2563EB]">{pillar.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-[#3B6B9A]">{pillar.description}</p>
             </Link>
           ))}
         </div>

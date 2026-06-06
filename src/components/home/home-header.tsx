@@ -13,11 +13,11 @@ function linkActive(path: string, href: string) {
   return path === href || path.startsWith(`${href}/`);
 }
 
-const PRIMARY_CTA = `inline-flex h-11 min-h-[44px] items-center justify-center rounded-full bg-blue-600 px-5 text-sm font-semibold text-[#E0F7FF] transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-lg hover:shadow-[#2563EB]/30 ${HOME_FOCUS}`;
+const PRIMARY_CTA = `inline-flex h-11 min-h-[44px] items-center justify-center rounded-full bg-blue-600 px-5 text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-lg hover:shadow-[#2563EB]/25 ${HOME_FOCUS}`;
 
-const NAV_LINK = `rounded-full px-3 py-2 text-sm font-medium text-[#BAE6FD] transition-colors hover:text-[#E0F7FF] xl:px-4 ${HOME_FOCUS}`;
+const NAV_LINK = `rounded-full px-3 py-2 text-sm font-medium text-[#1E3A5F] transition-colors hover:text-[#0B1D3A] xl:px-4 ${HOME_FOCUS}`;
 
-const NAV_ACTIVE = "bg-[#2563EB]/25 text-[#E0F7FF]";
+const NAV_ACTIVE = "bg-[#DBEAFE] text-[#0B1D3A]";
 
 export function HomeHeader() {
   const path = usePathname() || "/";
@@ -50,7 +50,7 @@ export function HomeHeader() {
   const allMobile = useMemo(() => [...NAV_ITEMS, ...MORE_ITEMS], []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#22D3EE]/15 bg-[#0A2A52]/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[#BFDBFE] bg-[#F8FBFF]/95 backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
           <Link
@@ -59,8 +59,8 @@ export function HomeHeader() {
             aria-label="Access Stamp home"
             onClick={closeMenus}
           >
-            <SiteLogo priority className="h-auto max-h-[40px] w-auto object-contain brightness-110" />
-            <span className="hidden font-[var(--font-heading)] text-lg font-bold tracking-[-0.02em] text-[#E0F7FF] sm:inline">
+            <SiteLogo priority className="h-auto max-h-[40px] w-auto object-contain" />
+            <span className="hidden font-[var(--font-heading)] text-lg font-bold tracking-[-0.02em] text-[#0B1D3A] sm:inline">
               Access Stamp
             </span>
           </Link>
@@ -94,14 +94,14 @@ export function HomeHeader() {
                 <div
                   role="menu"
                   aria-label="Resources"
-                  className="absolute right-0 mt-2 w-64 rounded-2xl border border-[#22D3EE]/20 bg-[#0D3568]/95 p-3 shadow-2xl shadow-[#030B1A]/40 backdrop-blur-xl"
+                  className="absolute right-0 mt-2 w-64 rounded-2xl border border-[#BFDBFE] bg-white p-3 shadow-xl shadow-[#2563EB]/10"
                 >
                   {RESOURCE_GROUPS.map((group, groupIndex) => (
                     <div
                       key={group.label}
-                      className={groupIndex > 0 ? "mt-3 border-t border-[#2563EB]/25 pt-3" : undefined}
+                      className={groupIndex > 0 ? "mt-3 border-t border-[#DBEAFE] pt-3" : undefined}
                     >
-                      <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#7DD3FC]">
+                      <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#3B6B9A]">
                         {group.label}
                       </p>
                       {group.items.map((item) => (
@@ -109,7 +109,7 @@ export function HomeHeader() {
                           key={item.href}
                           role="menuitem"
                           href={item.href}
-                          className={`block rounded-xl px-3 py-2.5 text-sm font-medium text-[#BAE6FD] transition-colors hover:bg-[#2563EB]/20 hover:text-[#E0F7FF] ${HOME_FOCUS}`}
+                          className={`block rounded-xl px-3 py-2.5 text-sm font-medium text-[#1E3A5F] transition-colors hover:bg-[#EFF6FF] hover:text-[#0B1D3A] ${HOME_FOCUS}`}
                           onClick={closeMenus}
                         >
                           {item.label}
@@ -130,7 +130,7 @@ export function HomeHeader() {
 
           <button
             type="button"
-            className={`inline-flex min-h-[44px] items-center rounded-full border border-[#2563EB]/30 px-4 py-2 text-sm font-semibold text-[#BAE6FD] transition-colors hover:border-[#22D3EE]/40 hover:bg-[#2563EB]/20 hover:text-[#E0F7FF] lg:hidden ${HOME_FOCUS}`}
+            className={`inline-flex min-h-[44px] items-center rounded-full border border-[#BFDBFE] px-4 py-2 text-sm font-semibold text-[#1E3A5F] transition-colors hover:border-[#93C5FD] hover:bg-[#EFF6FF] hover:text-[#0B1D3A] lg:hidden ${HOME_FOCUS}`}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
@@ -140,8 +140,8 @@ export function HomeHeader() {
         </div>
 
         {mobileOpen ? (
-          <nav className="border-t border-[#22D3EE]/15 pb-4 pt-3 lg:hidden" aria-label="Mobile">
-            <div className="grid gap-1 rounded-2xl border border-[#22D3EE]/15 bg-[#0D3568]/80 p-2 backdrop-blur-sm">
+          <nav className="border-t border-[#BFDBFE] pb-4 pt-3 lg:hidden" aria-label="Mobile">
+            <div className="grid gap-1 rounded-2xl border border-[#BFDBFE] bg-white p-2 shadow-lg shadow-[#2563EB]/5">
               {allMobile.map((item) => {
                 const active = linkActive(path, item.href);
                 return (
@@ -149,7 +149,7 @@ export function HomeHeader() {
                     key={`${item.href}-${item.label}`}
                     href={item.href}
                     className={cn(
-                      `rounded-xl px-3 py-2.5 text-sm font-medium text-[#BAE6FD] transition-colors hover:bg-[#2563EB]/20 hover:text-[#E0F7FF] ${HOME_FOCUS}`,
+                      `rounded-xl px-3 py-2.5 text-sm font-medium text-[#1E3A5F] transition-colors hover:bg-[#EFF6FF] hover:text-[#0B1D3A] ${HOME_FOCUS}`,
                       active && NAV_ACTIVE,
                     )}
                     onClick={closeMenus}

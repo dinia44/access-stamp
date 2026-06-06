@@ -8,18 +8,18 @@ export function HomePopularGuides() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.04em] text-[#22D3EE]">Practical guidance</p>
-            <h2 id="popular-guides-heading" className="mt-2 text-2xl font-bold tracking-[-0.025em] text-[#E0F7FF]">
+            <p className="text-xs font-semibold uppercase tracking-[0.04em] text-[#0891B2]">Practical guidance</p>
+            <h2 id="popular-guides-heading" className="mt-2 text-2xl font-bold tracking-[-0.025em] text-[#0B1D3A]">
               Popular practical guides
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#7DD3FC]">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#3B6B9A]">
               High-intent topics people search when they need urgent, practical next steps across rights, travel, care,
               and daily life.
             </p>
           </div>
           <Link
             href="/advice"
-            className="inline-flex min-h-[44px] shrink-0 items-center text-sm font-bold text-[#22D3EE] transition-colors hover:text-[#67E8F9] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-500/20"
+            className="inline-flex min-h-[44px] shrink-0 items-center text-sm font-bold text-[#2563EB] transition-colors hover:text-[#0891B2] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#0891B2]/20"
           >
             Browse all guides →
           </Link>

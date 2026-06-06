@@ -8,10 +8,10 @@
 :root {
   --color-navy: #071827;
   --color-ink: #0b1220;
-  --color-bg: #f8fafc;
+  --color-bg: #eff6ff;
   --color-card: #ffffff;
-  --color-muted: #475569;
-  --color-border: #e2e8f0;
+  --color-muted: #3b6b9a;
+  --color-border: #bfdbfe;
   --color-primary: #2563eb;
   --color-primary-hover: #1e40af;
   --color-gold: #d6a84f;
@@ -21,7 +21,7 @@
 
   /* Tailwind / legacy aliases */
   --background: var(--color-bg);
-  --background-2: #f1f5f9;
+  --background-2: #f8fbff;
   --card: var(--color-card);
   --heading: var(--color-ink);
   --text: var(--color-ink);
@@ -32,11 +32,11 @@
   --amber: var(--color-warning);
   --verified: var(--color-verified);
   --error: var(--color-error);
-  --blue-pale: #eff6ff;
+  --blue-pale: #dbeafe;
   --amber-pale: #fffbeb;
   --verified-pale: #f0fdfa;
   --error-pale: #fef2f2;
-  --navy-pale: #f1f5f9;
+  --navy-pale: #eef6fc;
   --border: var(--color-border);
   --ring: var(--color-gold);
   --shadow: 0 12px 32px -12px rgba(7, 24, 39, 0.12);
