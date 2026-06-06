@@ -30,23 +30,26 @@ export function SampleConfidenceBadge({ level }: { level: SampleVenueCard["confi
   );
 }
 
+const VERIFICATION_STYLES: Record<
+  "Access Stamp checked" | "Community reported" | "Not yet verified" | "Major access concern",
+  string
+> = {
+  "Access Stamp checked": "border-emerald-200 bg-emerald-50 text-emerald-800",
+  "Community reported": "border-amber-200 bg-amber-50 text-amber-800",
+  "Not yet verified": "border-slate-200 bg-slate-100 text-slate-600",
+  "Major access concern": "border-red-200 bg-red-50 text-red-800",
+};
+
 export function VenueFinderVerificationBadge({
   status,
 }: {
   status: "Access Stamp checked" | "Community reported" | "Not yet verified" | "Major access concern";
 }) {
-  const cls =
-    status === "Access Stamp checked"
-      ? "vf-badge-verified"
-      : status === "Community reported"
-        ? "vf-badge-community"
-        : status === "Major access concern"
-          ? "vf-badge-concern"
-          : "vf-badge-unverified";
-
   return (
-    <span className={`vf-badge ${cls}`}>
-      <span className="vf-badge-dot" aria-hidden="true" />
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${VERIFICATION_STYLES[status]}`}
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" aria-hidden="true" />
       {status}
     </span>
   );

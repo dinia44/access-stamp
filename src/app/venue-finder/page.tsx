@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { VenueFinderClient } from "@/components/venue-finder/venue-finder-client";
-import { VenueFinderStaticPage } from "@/components/venue-finder/venue-finder-shell";
+import { VenueFinderStaticPage } from "@/components/venue-finder/venue-finder-client";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 
 export default function VenueFinderPage() {
