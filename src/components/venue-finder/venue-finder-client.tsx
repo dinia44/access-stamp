@@ -15,15 +15,16 @@ import {
 import { VF_BTN_SECONDARY } from "@/lib/venue-finder-cro";
 import { VenueFinderActiveFiltersSummary } from "./venue-finder-active-filters";
 import { VenueFinderAiCard } from "./venue-finder-ai-card";
-import { VenueFinderFilters } from "./venue-finder-filters";
+import { VenueFinderFilterBar } from "./venue-finder-filter-bar";
 import { VenueFinderMobileBar } from "./venue-finder-mobile-bar";
 import { VenueFinderSearchBar } from "./venue-finder-search-bar";
+import { VenueFinderSidebar } from "./venue-finder-sidebar";
 import { VenueResultCard } from "./venue-result-card";
 
 type Props = {
   venues: Venue[];
   initial: VenueFinderSearchState;
-  hero: ReactNode;
+  header: ReactNode;
 };
 
 function VenueFinderEmptyState() {
@@ -59,7 +60,7 @@ function VenueFinderHistorySync({
   return null;
 }
 
-function VenueFinderInteractive({ venues, initial, hero }: Props) {
+function VenueFinderInteractive({ venues, initial, header }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const resultsRef = useRef<HTMLElement>(null);
@@ -69,6 +70,7 @@ function VenueFinderInteractive({ venues, initial, hero }: Props) {
   const [selectedFilters, setSelectedFilters] = useState<string[]>(initial.filters);
   const [locating, setLocating] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [mobileMapOpen, setMobileMapOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const syncFromHistory = useCallback((state: VenueFinderSearchState) => {
@@ -132,11 +134,11 @@ function VenueFinderInteractive({ venues, initial, hero }: Props) {
   const resultsHeading = hasSearchContext ? "Search results" : "Venues to explore";
 
   return (
-    <main className="vf-page min-h-screen bg-slate-50 pb-28 lg:pb-0">
+    <main className="vf-page min-h-screen bg-slate-50 pb-28 lg:pb-8">
       <SetChatContext page={{ kind: "venue-finder" }} />
-      {hero}
+      {header}
 
-      <div className="sticky top-0 z-30 border-y border-slate-200 bg-white/95 backdrop-blur">
+      <div className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
         <VenueFinderSearchBar
           query={query}
           location={location}
@@ -146,20 +148,12 @@ function VenueFinderInteractive({ venues, initial, hero }: Props) {
           onUseLocation={handleUseLocation}
           locating={locating}
         />
+        <div className="hidden lg:block">
+          <VenueFinderFilterBar selectedFilters={selectedFilters} onToggleFilter={toggleFilter} />
+        </div>
       </div>
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-6">
-        <aside className="hidden lg:block" aria-label="Filter sidebar">
-          <div className="sticky top-28 space-y-4">
-            <VenueFinderFilters
-              selectedFilters={selectedFilters}
-              onToggleFilter={toggleFilter}
-              onClearFilters={clearFilters}
-            />
-            <VenueFinderAiCard prefill={aiPrefill} />
-          </div>
-        </aside>
-
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:px-6">
         <section
           ref={resultsRef}
           id="venue-results"
@@ -184,7 +178,7 @@ function VenueFinderInteractive({ venues, initial, hero }: Props) {
           </div>
 
           {filtered.length ? (
-            <ul className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
+            <ul className="mt-6 flex flex-col gap-4">
               {filtered.map((venue) => (
                 <VenueResultCard key={venue.slug} venue={venue} />
               ))}
@@ -197,6 +191,18 @@ function VenueFinderInteractive({ venues, initial, hero }: Props) {
             <VenueFinderAiCard prefill={aiPrefill} />
           </div>
         </section>
+
+        <div className="space-y-4">
+          <VenueFinderSidebar
+            venues={filtered}
+            location={location}
+            mapOpen={mobileMapOpen}
+            onToggleMap={() => setMobileMapOpen((open) => !open)}
+          />
+          <div className="hidden lg:block">
+            <VenueFinderAiCard prefill={aiPrefill} />
+          </div>
+        </div>
       </div>
 
       <VenueFinderMobileBar
@@ -216,6 +222,6 @@ function VenueFinderInteractive({ venues, initial, hero }: Props) {
   );
 }
 
-export function VenueFinderClient({ venues, initial, hero }: Props) {
-  return <VenueFinderInteractive venues={venues} initial={initial} hero={hero} />;
+export function VenueFinderClient({ venues, initial, header }: Props) {
+  return <VenueFinderInteractive venues={venues} initial={initial} header={header} />;
 }

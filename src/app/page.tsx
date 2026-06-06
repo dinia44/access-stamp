@@ -7,7 +7,8 @@ import { FadeIn } from "@/components/fade-in";
 import { Card, Badge, Button } from "@/components/ui";
 import { SectionLabel } from "@/components/home/section-label";
 import { FeaturedPracticalGuides } from "@/components/advice/featured-practical-guides";
-import { HeroSearchCard } from "@/components/home/hero-search";
+import { HomeAccessCategories } from "@/components/home/home-hero-extras";
+import { PremiumHomeHero } from "@/components/home/premium-home-hero";
 import { VenueFinderPromoVideo } from "@/components/venue-finder-promo-video";
 import { ConfidenceBadge, VerificationBadge } from "@/components/verification-badge";
 import { RightsTabs } from "@/components/home/rights-tabs";
@@ -175,52 +176,8 @@ export default function HomePage() {
     <div>
       <SetChatContext page={{ kind: "home" }} />
 
-      {/* Section 1: Hero */}
-      <section className="relative overflow-hidden bg-navy text-white">
-        <div
-          className="pointer-events-none absolute inset-0"
-          aria-hidden
-          style={{
-            background:
-              "radial-gradient(980px 600px at 10% 40%, rgba(36,120,208,0.28), transparent 58%), radial-gradient(700px 480px at 88% 12%, rgba(212,149,42,0.16), transparent 55%), radial-gradient(800px 500px at 90% 15%, rgba(15,38,72,0.35), transparent 62%)",
-          }}
-        />
-
-        <Container className="relative py-12 sm:py-14">
-          <div className="mx-auto max-w-[760px] text-center">
-            <FadeIn>
-              <span className="hero-badge inline-flex items-center rounded-full px-4 py-1 text-[11px] font-semibold tracking-[0.18em] uppercase">
-                UK&apos;s trusted accessibility platform
-              </span>
-              <div className="hero-accent-line mt-4" aria-hidden />
-            </FadeIn>
-
-            <FadeIn delayMs={120}>
-              <h1 className="mt-4 font-[var(--font-heading)] text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.02] tracking-[-0.03em] text-[#f8fafc]">
-                The UK&apos;s trusted accessibility platform
-              </h1>
-            </FadeIn>
-
-            <FadeIn delayMs={240}>
-              <p className="mx-auto mt-3 max-w-[640px] text-[22px] leading-[1.35] text-[#cbd5e1]">
-                Find and share step-free venues. Access accurate. Access confident.
-              </p>
-            </FadeIn>
-
-            <FadeIn delayMs={300}>
-              <p className="mx-auto mt-3 max-w-[700px] text-sm font-medium text-[#94a3b8]">
-                Built from lived experience. Practical UK guidance. Real access detail, not vague labels.
-              </p>
-            </FadeIn>
-          </div>
-
-          <div className="mx-auto mt-6 max-w-[980px]">
-            <FadeIn delayMs={360}>
-              <HeroSearchCard />
-            </FadeIn>
-          </div>
-        </Container>
-      </section>
+      <PremiumHomeHero />
+      <HomeAccessCategories />
 
       {/* Section 2: New to Disability */}
       <section className="section-band-cool py-24">
