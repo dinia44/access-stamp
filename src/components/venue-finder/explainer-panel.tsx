@@ -8,13 +8,7 @@ const STATUS_ROWS = [
 export function ExplainerPanel({ className = "" }: { className?: string }) {
   return (
     <aside
-      className={`p-5 sm:p-6 ${className}`}
-      style={{
-        background: "var(--vf-card)",
-        border: "1px solid var(--vf-border)",
-        borderRadius: "var(--vf-radius-card)",
-        boxShadow: "var(--vf-shadow-soft)",
-      }}
+      className={`vf-explainer-panel p-5 sm:p-6 ${className}`}
       aria-labelledby="explainer-heading"
     >
       <h2

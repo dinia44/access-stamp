@@ -1,4 +1,7 @@
-import { ConfidenceBadge, VerificationBadge } from "@/components/verification-badge";
+import {
+  getCategoryAccent,
+  themeFromVenueType,
+} from "@/lib/venue-finder-category";
 import type { Venue } from "@/lib/mock-data";
 import {
   buildAccessSummary,
@@ -6,8 +9,35 @@ import {
   buildWarning,
   directionsUrl,
 } from "@/lib/venue-finder";
+import {
+  CategoryBadge,
+  VenueFinderConfidenceBadge,
+  VenueFinderVerificationBadge,
+} from "./venue-finder-badges";
+import { VenueCardImage } from "./venue-card-image";
+
+const PHOTO_LABELS: Record<string, string> = {
+  Entrance: "Step-free entrance",
+  "Venue overview": "Venue preview",
+  Doorway: "Accessible doorway",
+  Toilet: "Accessible toilet",
+  Parking: "Blue Badge parking",
+};
+
+function pickVenueImage(venue: Venue) {
+  const photo = venue.photos?.[0];
+  if (!photo) return null;
+  return {
+    src: photo.src,
+    alt: photo.alt,
+    label: PHOTO_LABELS[photo.label] ?? photo.label,
+  };
+}
 
 export function VenueCard({ venue }: { venue: Venue }) {
+  const theme = themeFromVenueType(venue.type);
+  const accent = getCategoryAccent(theme);
+  const image = pickVenueImage(venue);
   const summary = buildAccessSummary(venue);
   const bestFor = buildBestFor(venue);
   const warning = buildWarning(venue);
@@ -15,65 +45,81 @@ export function VenueCard({ venue }: { venue: Venue }) {
 
   return (
     <li>
-      <article
-        className="flex h-full flex-col p-5 sm:p-6"
-        style={{
-          background: "var(--vf-card)",
-          border: "1px solid var(--vf-border)",
-          borderRadius: "var(--vf-radius-card)",
-          boxShadow: "var(--vf-shadow-soft)",
-        }}
-      >
-        <header className="space-y-2">
-          <div className="flex flex-wrap items-start justify-between gap-2">
-            <div>
-              <h3 className="font-[var(--font-heading)] text-lg font-semibold text-[var(--color-ink)]">
+      <article className="vf-venue-card">
+        <div className="vf-venue-card-accent" style={{ background: accent.accent }} aria-hidden="true" />
+        <div className="vf-venue-card-body">
+          <VenueCardImage
+            theme={theme}
+            src={image?.src}
+            alt={image?.alt}
+            label={image?.label}
+          />
+          <div className="vf-venue-card-content">
+            <header className="space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <CategoryBadge label={venue.type} accent={accent.accent} soft={accent.soft} />
+              </div>
+              <h3
+                className="font-[var(--font-heading)] text-lg font-semibold leading-snug"
+                style={{ color: "var(--vf-ink)" }}
+              >
                 {venue.name}
               </h3>
-              <p className="text-sm text-muted">
-                <span className="font-semibold text-[var(--color-ink)]">{venue.type}</span>
+              <p className="text-sm" style={{ color: "var(--vf-muted)" }}>
+                <span className="font-semibold" style={{ color: "var(--vf-ink)" }}>
+                  {venue.type}
+                </span>
                 <span aria-hidden="true"> · </span>
                 <span>{venue.location}</span>
               </p>
+              <div className="flex flex-wrap gap-2">
+                <VenueFinderVerificationBadge status={venue.verification} />
+                <VenueFinderConfidenceBadge level={venue.confidence} />
+              </div>
+            </header>
+
+            <div className="mt-4 space-y-3 text-sm" style={{ color: "var(--vf-muted)" }}>
+              <p>
+                <span className="font-semibold" style={{ color: "var(--vf-ink)" }}>
+                  Access summary:{" "}
+                </span>
+                {summary}
+              </p>
+              <p>
+                <span className="font-semibold" style={{ color: "var(--vf-ink)" }}>
+                  Best for:{" "}
+                </span>
+                {bestFor}
+              </p>
+              {warning ? (
+                <div className="vf-warning-box">
+                  <span className="font-semibold">Check before visiting: </span>
+                  {warning.replace(/^Check before visiting:\s*/i, "")}
+                </div>
+              ) : null}
             </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <VerificationBadge status={venue.verification} />
-            <ConfidenceBadge level={venue.confidence} />
-          </div>
-        </header>
 
-        <div className="mt-4 flex-1 space-y-3 text-sm text-muted">
-          <p>
-            <span className="font-semibold text-[var(--color-ink)]">Access summary: </span>
-            {summary}
-          </p>
-          <p>
-            <span className="font-semibold text-[var(--color-ink)]">Best for: </span>
-            {bestFor}
-          </p>
-          {warning ? (
-            <p className="vf-warning-box">
-              <span className="font-semibold">Check before visiting: </span>
-              {warning.replace(/^Check before visiting:\s*/i, "")}
-            </p>
-          ) : null}
+            <footer className="mt-5 space-y-3 border-t pt-4" style={{ borderColor: "var(--vf-border)" }}>
+              <p className="text-xs" style={{ color: "var(--vf-muted)" }}>
+                Last checked {venue.lastUpdated}
+              </p>
+              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                <a
+                  href={`/venue/${venue.slug}`}
+                  className="vf-btn-primary inline-flex w-full items-center justify-center sm:w-auto"
+                >
+                  {reportLabel}
+                </a>
+                <a
+                  href={directionsUrl(venue)}
+                  className="vf-btn-secondary inline-flex w-full items-center justify-center sm:w-auto"
+                >
+                  Get directions
+                </a>
+              </div>
+            </footer>
+          </div>
         </div>
-
-        <footer className="mt-4 space-y-3 border-t border-border pt-4">
-          <p className="text-xs text-muted">Last checked {venue.lastUpdated}</p>
-          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-            <a href={`/venue/${venue.slug}`} className="vf-btn-primary inline-flex w-full items-center justify-center sm:w-auto">
-              {reportLabel}
-            </a>
-            <a
-              href={directionsUrl(venue)}
-              className="vf-btn-secondary inline-flex w-full items-center justify-center sm:w-auto"
-            >
-              Get directions to {venue.name}
-            </a>
-          </div>
-        </footer>
       </article>
     </li>
   );

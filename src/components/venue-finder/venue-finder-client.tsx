@@ -6,7 +6,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SetChatContext } from "@/components/chat/set-context";
 import type { Venue } from "@/lib/mock-data";
 import { SAMPLE_VENUE_CARDS } from "@/lib/venue-finder-samples";
-import { cn } from "@/lib/utils";
 import {
   filterVenues,
   mapIncomingFilters,
@@ -14,8 +13,7 @@ import {
   QUICK_FILTER_KEYS,
   QUICK_FILTERS,
 } from "@/lib/venue-finder";
-import { ResultsSkeleton } from "./results-skeleton";
-import { SampleVenueCardItem } from "./sample-venue-card";
+import { SampleResultsIntro, SampleVenueCardItem } from "./sample-venue-card";
 import { VenueCard } from "./venue-card";
 import { VenueFinderEmptyState, VenueFinderShell } from "./venue-finder-shell";
 
@@ -45,12 +43,14 @@ function QuickFilterChips({
       >
         {QUICK_FILTERS.map((label) => {
           const active = activeCheck(label);
+          const isVerified = label === "Verified by Access Stamp";
           return (
             <li key={label} className="shrink-0">
               <button
                 type="button"
                 className="vf-chip"
                 data-active={active ? "true" : "false"}
+                data-verified={isVerified ? "true" : undefined}
                 aria-pressed={active}
                 onClick={() => onToggle(label)}
               >
@@ -79,7 +79,6 @@ function VenueFinderInteractive({ venues }: Props) {
   const [query, setQuery] = useState(initialQuery);
   const [selectedFilters, setSelectedFilters] = useState<string[]>(initialFilters);
   const [verifiedOnly, setVerifiedOnly] = useState(initialVerifiedOnly);
-  const [isSearching, setIsSearching] = useState(false);
   const [locating, setLocating] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -139,8 +138,6 @@ function VenueFinderInteractive({ venues }: Props) {
 
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    setIsSearching(true);
-    window.setTimeout(() => setIsSearching(false), 500);
   }, []);
 
   const handleUseLocation = useCallback(() => {
@@ -156,17 +153,11 @@ function VenueFinderInteractive({ venues }: Props) {
     );
   }, []);
 
-  const resultsCount = isSearching
-    ? undefined
-    : hasActiveSearch
-      ? filtered.length
-      : SAMPLE_VENUE_CARDS.length;
+  const resultsCount = hasActiveSearch ? filtered.length : SAMPLE_VENUE_CARDS.length;
 
-  const resultsSlot = isSearching ? (
-    <ResultsSkeleton />
-  ) : hasActiveSearch ? (
+  const resultsSlot = hasActiveSearch ? (
     filtered.length ? (
-      <ul className="mt-6 grid gap-4">
+      <ul className="mt-6 grid gap-5">
         {filtered.map((venue) => (
           <VenueCard key={venue.slug} venue={venue} />
         ))}
@@ -175,16 +166,11 @@ function VenueFinderInteractive({ venues }: Props) {
       <VenueFinderEmptyState />
     )
   ) : (
-    <div className="mt-6">
-      <p className="mb-4 text-sm" style={{ color: "var(--vf-muted)" }}>
-        Example listings — search above to find venues across the UK.
-      </p>
-      <ul className="grid gap-4">
-        {SAMPLE_VENUE_CARDS.map((venue) => (
-          <SampleVenueCardItem key={venue.id} venue={venue} />
-        ))}
-      </ul>
-    </div>
+    <ul className="mt-6 grid gap-5">
+      {SAMPLE_VENUE_CARDS.map((venue) => (
+        <SampleVenueCardItem key={venue.id} venue={venue} />
+      ))}
+    </ul>
   );
 
   return (
@@ -193,6 +179,7 @@ function VenueFinderInteractive({ venues }: Props) {
       <VenueFinderShell
         resultsCount={resultsCount}
         showDefaultSamples={false}
+        resultsSubtitle={hasActiveSearch ? undefined : <SampleResultsIntro />}
         searchSlot={
           <form onSubmit={handleSearch} className="space-y-4">
             <div>
@@ -218,7 +205,7 @@ function VenueFinderInteractive({ venues }: Props) {
                 type="button"
                 onClick={handleUseLocation}
                 disabled={locating}
-                className={cn("vf-btn-secondary w-full sm:w-auto", locating && "opacity-60")}
+                className={`vf-btn-secondary w-full sm:w-auto${locating ? " opacity-60" : ""}`}
               >
                 {locating ? "Finding location…" : "Use my location"}
               </button>

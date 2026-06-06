@@ -4,33 +4,26 @@ import { SAMPLE_VENUE_CARDS } from "@/lib/venue-finder-samples";
 import { QUICK_FILTERS } from "@/lib/venue-finder";
 import { ExplainerPanel } from "./explainer-panel";
 import { HeroMobileAccent, HeroVisualPanel } from "./hero-visual-panel";
-import { SampleVenueCardItem } from "./sample-venue-card";
+import { SampleResultsIntro, SampleVenueCardItem } from "./sample-venue-card";
 
 type ShellProps = {
   resultsCount?: number;
   searchSlot: React.ReactNode;
   resultsSlot?: React.ReactNode;
   showDefaultSamples?: boolean;
+  resultsSubtitle?: React.ReactNode;
 };
 
 export function VenueFinderHero() {
   return (
     <section
       aria-labelledby="venue-finder-heading"
-      className="pb-20 pt-12 sm:pb-24 sm:pt-14"
-      style={{ background: "var(--vf-navy)" }}
+      className="vf-hero pb-20 pt-12 sm:pb-24 sm:pt-14"
     >
       <Container>
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-12">
           <div>
-            <p
-              className="inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide"
-              style={{
-                color: "var(--vf-gold)",
-                borderColor: "rgba(214, 168, 79, 0.4)",
-                background: "rgba(214, 168, 79, 0.1)",
-              }}
-            >
+            <p className="vf-hero-badge inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide">
               Access Stamp Venue Finder
             </p>
             <h1
@@ -58,19 +51,8 @@ export function VenueFinderHero() {
 
 export function VenueFinderSearchCard({ children }: { children: React.ReactNode }) {
   return (
-    <Container className="-mt-12 sm:-mt-14">
-      <div
-        className="p-5 sm:p-6 lg:p-8"
-        style={{
-          background: "var(--vf-card)",
-          border: "1px solid var(--vf-border)",
-          borderRadius: "var(--vf-radius-card)",
-          boxShadow: "var(--vf-shadow)",
-          color: "var(--vf-ink)",
-        }}
-      >
-        {children}
-      </div>
+    <Container className="relative z-10 -mt-12 sm:-mt-14">
+      <div className="vf-search-card p-5 sm:p-6 lg:p-8">{children}</div>
     </Container>
   );
 }
@@ -91,7 +73,12 @@ export function StaticQuickFilters() {
       >
         {QUICK_FILTERS.map((label) => (
           <li key={label} className="shrink-0">
-            <span className="vf-chip">{label}</span>
+            <span
+              className="vf-chip inline-flex"
+              data-verified={label === "Verified by Access Stamp" ? "true" : undefined}
+            >
+              {label}
+            </span>
           </li>
         ))}
       </ul>
@@ -101,11 +88,24 @@ export function StaticQuickFilters() {
 
 export function DefaultSampleResults() {
   return (
-    <ul className="mt-6 grid gap-4">
+    <ul className="mt-6 grid gap-5">
       {SAMPLE_VENUE_CARDS.map((venue) => (
         <SampleVenueCardItem key={venue.id} venue={venue} />
       ))}
     </ul>
+  );
+}
+
+function ResultsCount({ count }: { count: number }) {
+  return (
+    <p className="vf-results-count" aria-live="polite" aria-atomic="true">
+      <span className="vf-results-count-badge" aria-hidden="true">
+        {count}
+      </span>
+      <span>
+        venue{count === 1 ? "" : "s"} found
+      </span>
+    </p>
   );
 }
 
@@ -114,6 +114,7 @@ export function VenueFinderShell({
   searchSlot,
   resultsSlot,
   showDefaultSamples = true,
+  resultsSubtitle,
 }: ShellProps) {
   const count = resultsCount ?? SAMPLE_VENUE_CARDS.length;
 
@@ -122,24 +123,25 @@ export function VenueFinderShell({
       <VenueFinderHero />
       <VenueFinderSearchCard>{searchSlot}</VenueFinderSearchCard>
 
-      <Container className="py-10 sm:py-12">
-        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-8">
-          <main id="venue-results" className="min-w-0">
-            <p
-              className="text-sm font-semibold"
-              style={{ color: "var(--vf-ink)" }}
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {count} venue{count === 1 ? "" : "s"} found
-            </p>
+      <section className="vf-results-section py-10 sm:py-12" aria-labelledby="venue-results-heading">
+        <Container>
+          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-8">
+            <main id="venue-results" className="min-w-0">
+              <div className="vf-results-header">
+                <h2 id="venue-results-heading" className="sr-only">
+                  Venue search results
+                </h2>
+                <ResultsCount count={count} />
+                {resultsSubtitle ?? (showDefaultSamples ? <SampleResultsIntro /> : null)}
+              </div>
 
-            {resultsSlot ?? (showDefaultSamples ? <DefaultSampleResults /> : null)}
-          </main>
+              {resultsSlot ?? (showDefaultSamples ? <DefaultSampleResults /> : null)}
+            </main>
 
-          <ExplainerPanel className="mt-8 lg:mt-0 lg:sticky lg:top-6" />
-        </div>
-      </Container>
+            <ExplainerPanel className="mt-8 lg:mt-0 lg:sticky lg:top-6" />
+          </div>
+        </Container>
+      </section>
     </div>
   );
 }
@@ -153,6 +155,7 @@ export function VenueFinderEmptyState() {
         background: "var(--vf-card)",
         border: "1px solid var(--vf-border)",
         borderRadius: "var(--vf-radius-card)",
+        boxShadow: "var(--vf-shadow-soft)",
       }}
     >
       <h2
