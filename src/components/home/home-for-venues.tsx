@@ -5,7 +5,7 @@ export function HomeForVenues() {
   return (
     <section className={HOME_SECTION_ALT} aria-labelledby="for-venues-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#061A3A] via-[#04122B] to-[#0B1D46] text-[#F8FAFC] shadow-2xl shadow-black/30">
+        <div className="relative overflow-hidden rounded-3xl border border-[#22D3EE]/20 bg-gradient-to-br from-[#0D3568] via-[#0A2A52] to-[#0F3D75] text-[#E0F7FF] shadow-2xl shadow-[#030B1A]/35">
           <div
             className="pointer-events-none absolute inset-0 opacity-40"
             aria-hidden
@@ -19,7 +19,7 @@ export function HomeForVenues() {
               <h2 id="for-venues-heading" className="mt-3 text-3xl font-bold tracking-[-0.03em]">
                 Help visitors know what to expect
               </h2>
-              <p className="mt-4 max-w-2xl text-base leading-7 text-[#CBD5E1]">
+              <p className="mt-4 max-w-2xl text-base leading-7 text-[#BAE6FD]">
                 Share clearer access information, suggest a venue for listing, or work with Access Stamp to improve how
                 your venue describes step-free routes, toilets, parking and staff support.
               </p>

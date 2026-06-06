@@ -9,10 +9,10 @@ export function HomePopularGuides() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.04em] text-[#22D3EE]">Practical guidance</p>
-            <h2 id="popular-guides-heading" className="mt-2 text-2xl font-bold tracking-[-0.025em] text-[#F8FAFC]">
+            <h2 id="popular-guides-heading" className="mt-2 text-2xl font-bold tracking-[-0.025em] text-[#E0F7FF]">
               Popular practical guides
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#94A3B8]">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#7DD3FC]">
               High-intent topics people search when they need urgent, practical next steps across rights, travel, care,
               and daily life.
             </p>

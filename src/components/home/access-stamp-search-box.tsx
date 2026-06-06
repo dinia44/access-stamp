@@ -85,14 +85,14 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
   };
 
   const panelClass = integrated
-    ? "relative z-20 scroll-mt-28 rounded-3xl border border-white/10 bg-slate-950/50 p-5 shadow-xl shadow-black/20 backdrop-blur-xl lg:p-6"
+    ? "relative z-20 scroll-mt-28 rounded-3xl border border-[#22D3EE]/20 bg-[#0D3568]/70 p-5 shadow-xl shadow-[#030B1A]/25 backdrop-blur-xl lg:p-6"
     : `relative z-20 scroll-mt-28 ${HOME_GLASS_PANEL} p-5 lg:p-6`;
 
   return (
     <div id="platform-search" className={panelClass}>
       <div className="mb-5">
-        <h2 className="text-base font-semibold text-[#F8FAFC] sm:text-lg">What do you need help with?</h2>
-        <p className="mt-1 text-base leading-relaxed text-[#CBD5E1]">
+        <h2 className="text-base font-semibold text-[#E0F7FF] sm:text-lg">What do you need help with?</h2>
+        <p className="mt-1 text-base leading-relaxed text-[#BAE6FD]">
           {isVenueSearch
             ? "Search access-checked venues by place, town, or access need."
             : "Search practical UK guidance on rights, travel, care, work, and equipment."}
@@ -129,7 +129,7 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
           className={`grid gap-3 ${isVenueSearch ? "md:grid-cols-[minmax(0,1fr)_260px_auto]" : "md:grid-cols-[minmax(0,1fr)_auto]"}`}
         >
           <div>
-            <label htmlFor="platform-search-query" className="mb-2 block text-base font-medium text-[#E2E8F0]">
+            <label htmlFor="platform-search-query" className="mb-2 block text-base font-medium text-[#BAE6FD]">
               Search
             </label>
             <input
@@ -149,7 +149,7 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
 
           {isVenueSearch ? (
             <div>
-              <label htmlFor="platform-search-location" className="mb-2 block text-base font-medium text-[#E2E8F0]">
+              <label htmlFor="platform-search-location" className="mb-2 block text-base font-medium text-[#BAE6FD]">
                 Location
               </label>
               <input

@@ -27,22 +27,22 @@ export default function HomePage() {
       <HomeVerificationSection />
       <HomeForVenues />
 
-      <section className="relative overflow-hidden border-t border-white/5 bg-gradient-to-b from-[#061224] to-[#030B1A] py-24 text-[#F8FAFC]">
+      <section className="relative overflow-hidden border-t border-[#22D3EE]/10 bg-gradient-to-b from-[#0A2A52] to-[#071E3D] py-24 text-[#E0F7FF]">
         <div
           className="pointer-events-none absolute inset-0"
           aria-hidden
           style={{
             background:
-              "radial-gradient(700px 500px at 30% 50%, rgba(34,211,238,0.08), transparent 60%), radial-gradient(600px 400px at 80% 40%, rgba(37,99,235,0.1), transparent 55%)",
+              "radial-gradient(700px 500px at 30% 50%, rgba(34,211,238,0.14), transparent 60%), radial-gradient(600px 400px at 80% 40%, rgba(37,99,235,0.16), transparent 55%)",
           }}
         />
         <Container className="relative">
           <FadeIn>
             <div className="mx-auto max-w-[520px] text-center">
-              <h2 className="font-[var(--font-heading)] text-[clamp(1.75rem,3.5vw,2.75rem)] leading-tight text-[#F8FAFC]">
+              <h2 className="font-[var(--font-heading)] text-[clamp(1.75rem,3.5vw,2.75rem)] leading-tight text-[#E0F7FF]">
                 Your access needs, <span className="italic text-[#22D3EE]">taken seriously</span>
               </h2>
-              <p className="mt-4 text-[17px] leading-[1.75] text-[#CBD5E1]">
+              <p className="mt-4 text-[17px] leading-[1.75] text-[#BAE6FD]">
                 Search venues, ask our AI, explore guides, and understand your rights — all in one place.
               </p>
               <div className="mt-7 flex flex-wrap justify-center gap-3">

@@ -69,7 +69,7 @@ const CATEGORIES = [
 
 export function CategoryShortcutRow() {
   return (
-    <section aria-labelledby="category-shortcuts-heading" className="border-t border-white/5 pb-12 pt-8">
+    <section aria-labelledby="category-shortcuts-heading" className="border-t border-[#22D3EE]/10 pb-12 pt-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 id="category-shortcuts-heading" className="sr-only">
           Browse by category
@@ -80,13 +80,13 @@ export function CategoryShortcutRow() {
             <li key={title}>
               <Link
                 href={href}
-                className={`group flex h-full min-h-[96px] flex-col p-4 transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-white/20 hover:bg-slate-900/80 hover:shadow-xl hover:shadow-black/25 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-500/20 ${HOME_PANEL}`}
+                className={`group flex h-full min-h-[96px] flex-col p-4 transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-[#22D3EE]/35 hover:bg-[#134B82]/80 hover:shadow-xl hover:shadow-[#030B1A]/25 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-500/20 ${HOME_PANEL}`}
               >
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[#CBD5E1] transition-colors group-hover:border-cyan-400/30 group-hover:text-[#22D3EE]">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#2563EB]/30 bg-[#2563EB]/15 text-[#7DD3FC] transition-colors group-hover:border-[#22D3EE]/40 group-hover:text-[#22D3EE]">
                   {icon}
                 </span>
-                <span className="mt-3 text-sm font-bold text-[#F8FAFC]">{title}</span>
-                <span className="mt-1 text-sm leading-5 text-[#CBD5E1]">{description}</span>
+                <span className="mt-3 text-sm font-bold text-[#E0F7FF]">{title}</span>
+                <span className="mt-1 text-sm leading-5 text-[#7DD3FC]">{description}</span>
               </Link>
             </li>
           ))}

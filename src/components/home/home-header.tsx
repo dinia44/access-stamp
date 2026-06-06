@@ -13,9 +13,11 @@ function linkActive(path: string, href: string) {
   return path === href || path.startsWith(`${href}/`);
 }
 
-const PRIMARY_CTA = `inline-flex h-11 min-h-[44px] items-center justify-center rounded-full bg-blue-600 px-5 text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-lg ${HOME_FOCUS}`;
+const PRIMARY_CTA = `inline-flex h-11 min-h-[44px] items-center justify-center rounded-full bg-blue-600 px-5 text-sm font-semibold text-[#E0F7FF] transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-lg hover:shadow-[#2563EB]/30 ${HOME_FOCUS}`;
 
-const NAV_LINK = `rounded-full px-3 py-2 text-sm font-medium text-[#E2E8F0] transition-colors hover:text-white xl:px-4 ${HOME_FOCUS}`;
+const NAV_LINK = `rounded-full px-3 py-2 text-sm font-medium text-[#BAE6FD] transition-colors hover:text-[#E0F7FF] xl:px-4 ${HOME_FOCUS}`;
+
+const NAV_ACTIVE = "bg-[#2563EB]/25 text-[#E0F7FF]";
 
 export function HomeHeader() {
   const path = usePathname() || "/";
@@ -48,7 +50,7 @@ export function HomeHeader() {
   const allMobile = useMemo(() => [...NAV_ITEMS, ...MORE_ITEMS], []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#061A3A]/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[#22D3EE]/15 bg-[#0A2A52]/90 backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
           <Link
@@ -58,7 +60,7 @@ export function HomeHeader() {
             onClick={closeMenus}
           >
             <SiteLogo priority className="h-auto max-h-[40px] w-auto object-contain brightness-110" />
-            <span className="hidden font-[var(--font-heading)] text-lg font-bold tracking-[-0.02em] text-white sm:inline">
+            <span className="hidden font-[var(--font-heading)] text-lg font-bold tracking-[-0.02em] text-[#E0F7FF] sm:inline">
               Access Stamp
             </span>
           </Link>
@@ -71,7 +73,7 @@ export function HomeHeader() {
                   key={item.href}
                   href={item.href}
                   onClick={closeMenus}
-                  className={cn(NAV_LINK, active && "bg-white/10 text-white")}
+                  className={cn(NAV_LINK, active && NAV_ACTIVE)}
                 >
                   {item.label}
                 </Link>
@@ -81,7 +83,7 @@ export function HomeHeader() {
             <div className="relative" ref={resourcesRef}>
               <button
                 type="button"
-                className={cn(NAV_LINK, resourcesOpen && "bg-white/10 text-white")}
+                className={cn(NAV_LINK, resourcesOpen && NAV_ACTIVE)}
                 aria-haspopup="menu"
                 aria-expanded={resourcesOpen}
                 onClick={() => setResourcesOpen((v) => !v)}
@@ -92,14 +94,14 @@ export function HomeHeader() {
                 <div
                   role="menu"
                   aria-label="Resources"
-                  className="absolute right-0 mt-2 w-64 rounded-2xl border border-white/10 bg-[#04122B]/95 p-3 shadow-2xl shadow-black/40 backdrop-blur-xl"
+                  className="absolute right-0 mt-2 w-64 rounded-2xl border border-[#22D3EE]/20 bg-[#0D3568]/95 p-3 shadow-2xl shadow-[#030B1A]/40 backdrop-blur-xl"
                 >
                   {RESOURCE_GROUPS.map((group, groupIndex) => (
                     <div
                       key={group.label}
-                      className={groupIndex > 0 ? "mt-3 border-t border-white/10 pt-3" : undefined}
+                      className={groupIndex > 0 ? "mt-3 border-t border-[#2563EB]/25 pt-3" : undefined}
                     >
-                      <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#CBD5E1]">
+                      <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#7DD3FC]">
                         {group.label}
                       </p>
                       {group.items.map((item) => (
@@ -107,7 +109,7 @@ export function HomeHeader() {
                           key={item.href}
                           role="menuitem"
                           href={item.href}
-                          className={`block rounded-xl px-3 py-2.5 text-sm font-medium text-[#E2E8F0] transition-colors hover:bg-white/10 hover:text-white ${HOME_FOCUS}`}
+                          className={`block rounded-xl px-3 py-2.5 text-sm font-medium text-[#BAE6FD] transition-colors hover:bg-[#2563EB]/20 hover:text-[#E0F7FF] ${HOME_FOCUS}`}
                           onClick={closeMenus}
                         >
                           {item.label}
@@ -128,7 +130,7 @@ export function HomeHeader() {
 
           <button
             type="button"
-            className={`inline-flex min-h-[44px] items-center rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-[#E2E8F0] transition-colors hover:bg-white/10 hover:text-white lg:hidden ${HOME_FOCUS}`}
+            className={`inline-flex min-h-[44px] items-center rounded-full border border-[#2563EB]/30 px-4 py-2 text-sm font-semibold text-[#BAE6FD] transition-colors hover:border-[#22D3EE]/40 hover:bg-[#2563EB]/20 hover:text-[#E0F7FF] lg:hidden ${HOME_FOCUS}`}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
@@ -138,8 +140,8 @@ export function HomeHeader() {
         </div>
 
         {mobileOpen ? (
-          <nav className="border-t border-white/10 pb-4 pt-3 lg:hidden" aria-label="Mobile">
-            <div className="grid gap-1 rounded-2xl border border-white/10 bg-slate-950/60 p-2 backdrop-blur-sm">
+          <nav className="border-t border-[#22D3EE]/15 pb-4 pt-3 lg:hidden" aria-label="Mobile">
+            <div className="grid gap-1 rounded-2xl border border-[#22D3EE]/15 bg-[#0D3568]/80 p-2 backdrop-blur-sm">
               {allMobile.map((item) => {
                 const active = linkActive(path, item.href);
                 return (
@@ -147,8 +149,8 @@ export function HomeHeader() {
                     key={`${item.href}-${item.label}`}
                     href={item.href}
                     className={cn(
-                      `rounded-xl px-3 py-2.5 text-sm font-medium text-[#E2E8F0] transition-colors hover:bg-white/10 hover:text-white ${HOME_FOCUS}`,
-                      active && "bg-white/10 text-white",
+                      `rounded-xl px-3 py-2.5 text-sm font-medium text-[#BAE6FD] transition-colors hover:bg-[#2563EB]/20 hover:text-[#E0F7FF] ${HOME_FOCUS}`,
+                      active && NAV_ACTIVE,
                     )}
                     onClick={closeMenus}
                   >
