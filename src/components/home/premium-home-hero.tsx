@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { AskAccessStampAiButton } from "@/components/ask-access-stamp-ai-button";
 import { SAMPLE_VENUE_PHOTOS } from "@/lib/venue-finder-images";
 
 const CHECKLIST = ["Step-free access", "Accessible toilet", "Blue Badge parking"] as const;
@@ -142,6 +143,14 @@ export function PremiumHomeHero() {
                 Search venues
               </button>
             </form>
+            <AskAccessStampAiButton
+              variant="hero"
+              prefill={
+                [query, location].filter(Boolean).join(" — ")
+                  ? `Help me find accessible venues for ${[query, location].filter(Boolean).join(" in ")}.`
+                  : undefined
+              }
+            />
           </div>
         </div>
       </div>

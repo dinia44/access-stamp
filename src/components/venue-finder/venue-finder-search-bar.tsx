@@ -1,5 +1,6 @@
 "use client";
 
+import { AskAccessStampAiButton } from "@/components/ask-access-stamp-ai-button";
 import { VF_BTN_PRIMARY, VF_INPUT } from "@/lib/venue-finder-cro";
 
 type Props = {
@@ -71,6 +72,18 @@ export function VenueFinderSearchBar({
             {locating ? "Finding location…" : "Use my location"}
           </button>
         </div>
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3">
+        <AskAccessStampAiButton
+          prefill={
+            [query, location].filter(Boolean).join(" — ")
+              ? `Help me find accessible venues for ${[query, location].filter(Boolean).join(" in ")}.`
+              : "Help me find an accessible venue near me."
+          }
+        />
+        <p className="text-sm text-slate-600">
+          Or describe your access needs in plain language and get help planning your visit.
+        </p>
       </div>
     </form>
   );
