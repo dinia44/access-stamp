@@ -3,8 +3,9 @@
   --vf-navy: #071827;
   --vf-navy-soft: #0b2236;
   --vf-navy-deep: #12304a;
-  --vf-bg: #ffffff;
-  --vf-bg-alt: #ffffff;
+  --vf-bg: #ecfdf5;
+  --vf-bg-mid: #e8f4fd;
+  --vf-bg-alt: #eff6ff;
   --vf-card: #ffffff;
   --vf-ink: #0b1220;
   --vf-muted: #475569;
@@ -32,7 +33,11 @@
   --vf-radius-venue-card: 18px;
   --vf-radius-ui: 12px;
 
-  background-color: var(--vf-bg);
+  background:
+    radial-gradient(920px 540px at 8% 12%, rgba(16, 185, 129, 0.16), transparent 58%),
+    radial-gradient(880px 500px at 92% 8%, rgba(37, 99, 235, 0.14), transparent 55%),
+    radial-gradient(760px 440px at 50% 100%, rgba(125, 211, 252, 0.22), transparent 62%),
+    linear-gradient(165deg, #ecfdf5 0%, #e0f2fe 42%, #eff6ff 72%, #f0fdfa 100%);
   color: var(--vf-ink);
   min-height: 100vh;
 }
@@ -158,7 +163,7 @@
 
 /* Results section */
 .vf-results-section {
-  background: var(--vf-bg);
+  background: transparent;
 }
 
 .vf-results-header {
@@ -240,7 +245,7 @@
 }
 
 .vf-btn-secondary:hover:not(:disabled) {
-  background: var(--vf-bg-alt);
+  background: rgba(255, 255, 255, 0.82);
   border-color: var(--vf-chip-border);
 }
 
@@ -259,7 +264,7 @@
 
 .vf-chip:hover:not(:disabled) {
   border-color: #94a3b8;
-  background: var(--vf-bg-alt);
+  background: rgba(255, 255, 255, 0.78);
 }
 
 .vf-chip[data-active="true"] {
