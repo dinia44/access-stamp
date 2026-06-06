@@ -9,6 +9,7 @@ import {
   buildWarning,
   directionsUrl,
 } from "@/lib/venue-finder";
+import { getThemeFallbackPhoto } from "@/lib/venue-finder-images";
 import {
   CategoryBadge,
   VenueFinderConfidenceBadge,
@@ -24,20 +25,28 @@ const PHOTO_LABELS: Record<string, string> = {
   Parking: "Blue Badge parking",
 };
 
-function pickVenueImage(venue: Venue) {
+function pickVenueImage(venue: Venue, theme: ReturnType<typeof themeFromVenueType>) {
   const photo = venue.photos?.[0];
-  if (!photo) return null;
+  if (photo) {
+    return {
+      src: photo.src,
+      alt: photo.alt,
+      label: PHOTO_LABELS[photo.label] ?? photo.label,
+    };
+  }
+
+  const fallback = getThemeFallbackPhoto(theme);
   return {
-    src: photo.src,
-    alt: photo.alt,
-    label: PHOTO_LABELS[photo.label] ?? photo.label,
+    src: fallback.src,
+    alt: fallback.alt,
+    label: undefined,
   };
 }
 
 export function VenueCard({ venue }: { venue: Venue }) {
   const theme = themeFromVenueType(venue.type);
   const accent = getCategoryAccent(theme);
-  const image = pickVenueImage(venue);
+  const image = pickVenueImage(venue, theme);
   const summary = buildAccessSummary(venue);
   const bestFor = buildBestFor(venue);
   const warning = buildWarning(venue);

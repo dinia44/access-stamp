@@ -80,6 +80,12 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+.vf-hero-collage-block--photo {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .vf-hero-collage-block--large {
   grid-row: 1 / -1;
 }

@@ -3,27 +3,32 @@ import {
   getImageGradient,
   type VenueImageTheme,
 } from "@/lib/venue-finder-category";
+import { VENUE_FINDER_HERO_PHOTOS } from "@/lib/venue-finder-images";
 
 const COLLAGE_BLOCKS = [
   {
     label: "Step-free entrance",
     theme: "cafe" as VenueImageTheme,
     large: true,
+    photo: VENUE_FINDER_HERO_PHOTOS.stepFreeEntrance,
   },
   {
     label: "Accessible toilet",
     theme: "toilet" as VenueImageTheme,
     large: false,
+    photo: VENUE_FINDER_HERO_PHOTOS.accessibleToilet,
   },
   {
     label: "Blue Badge parking",
     theme: "hotel" as VenueImageTheme,
     large: false,
+    photo: VENUE_FINDER_HERO_PHOTOS.blueBadgeParking,
   },
   {
     label: "Venue access preview",
     theme: "attraction" as VenueImageTheme,
     large: false,
+    photo: VENUE_FINDER_HERO_PHOTOS.venuePreview,
   },
 ] as const;
 
@@ -38,9 +43,12 @@ export function HeroVisualPanel() {
           {COLLAGE_BLOCKS.map((block) => (
             <div
               key={block.label}
-              className={`vf-hero-collage-block ${block.large ? "vf-hero-collage-block--large" : ""}`}
-              style={{ background: getImageGradient(block.theme) }}
+              className={`vf-hero-collage-block vf-hero-collage-block--photo ${block.large ? "vf-hero-collage-block--large" : ""}`}
+              style={{
+                backgroundImage: `url(${block.photo.src}), ${getImageGradient(block.theme)}`,
+              }}
             >
+              <span className="sr-only">{block.photo.alt}</span>
               <span className="vf-hero-collage-label">{block.label}</span>
             </div>
           ))}

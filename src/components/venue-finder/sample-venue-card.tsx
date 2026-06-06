@@ -5,6 +5,7 @@ import {
   type VenueImageTheme,
 } from "@/lib/venue-finder-category";
 import type { SampleVenueCard } from "@/lib/venue-finder-samples";
+import { getSampleVenuePhoto } from "@/lib/venue-finder-images";
 import {
   CategoryBadge,
   SampleConfidenceBadge,
@@ -13,9 +14,9 @@ import {
 import { VenueCardImage } from "./venue-card-image";
 
 const IMAGE_LABELS: Record<VenueImageTheme, string> = {
-  cafe: "Café exterior",
-  hotel: "Hotel lobby",
-  toilet: "Accessible facility",
+  cafe: "Café",
+  hotel: "Hotel",
+  toilet: "Public toilet",
   shop: "Storefront",
   attraction: "Public venue",
 };
@@ -23,13 +24,19 @@ const IMAGE_LABELS: Record<VenueImageTheme, string> = {
 export function SampleVenueCardItem({ venue }: { venue: SampleVenueCard }) {
   const theme = venue.imageTheme ?? themeFromSampleId(venue.id);
   const accent = getCategoryAccent(theme);
+  const photo = getSampleVenuePhoto(venue.id, theme);
 
   return (
     <li>
       <article className="vf-venue-card">
         <div className="vf-venue-card-accent" style={{ background: accent.accent }} aria-hidden="true" />
         <div className="vf-venue-card-body">
-          <VenueCardImage theme={theme} label={IMAGE_LABELS[theme]} />
+          <VenueCardImage
+            theme={theme}
+            src={photo.src}
+            alt={photo.alt}
+            label={IMAGE_LABELS[theme]}
+          />
           <div className="vf-venue-card-content">
             <header className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
