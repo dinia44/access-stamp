@@ -24,27 +24,27 @@ export const VENUE_FINDER_PROMO_VIDEO_SRC =
 export const VENUE_FINDER_PROMO_VIDEO_POSTER =
   "https://res.cloudinary.com/dtl4syjuh/video/upload/so_0,f_jpg,q_auto/accessstamp_16x9_correct_end_screen_osaycc.jpg";
 
-/** Primary navigation — platform-first structure */
+/** Primary nav — matches website build prompt */
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Find venues", href: "/venue-finder" },
-  { label: "Guides & advice", href: "/advice" },
-  { label: "Plan your visit", href: "/ai-toolkit/venue-fit-planner" },
-  { label: "For venues", href: "/submit-venue" },
-  { label: "Resources", href: "/directory" },
+  { label: "Home", href: "/" },
+  { label: "Venue Finder", href: "/venue-finder" },
+  { label: "Advice Hub", href: "/advice" },
+  { label: "Blog", href: "/blog" },
+  { label: "About", href: "/about" },
 ];
 
-/** Secondary links for mobile menu and footer */
+/** “More” dropdown — Education through Glossary */
 export const MORE_ITEMS: NavItem[] = [
-  { label: "About", href: "/about" },
-  { label: "Blog", href: "/blog" },
-  { label: "AI Assistant", href: "/ai" },
+  { label: "Education", href: "/advice/education" },
+  { label: "Transport", href: "/advice/transport" },
+  { label: "Workplace", href: "/advice/workplace" },
+  { label: "Travel", href: "/advice/travel" },
   { label: "AI Toolkit", href: "/ai-toolkit" },
   { label: "Help Cards", href: "/help-cards" },
   { label: "Laws & Guidance", href: "/laws-guidance" },
+  { label: "Directory", href: "/directory" },
   { label: "Glossary", href: "/glossary" },
 ];
-
-export const SUGGEST_VENUE_HREF = "/submit-venue";
 
 /** Hero background — London street scene (Unsplash, no local asset required) */
 export const HOME_HERO_IMAGE =

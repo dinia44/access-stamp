@@ -25,7 +25,7 @@ export function HomepageHero() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#061A3A] via-[#061A3A]/60 to-transparent" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-32 sm:px-6 lg:px-8 lg:pb-32">
+      <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-10 sm:px-6 sm:pt-12 lg:px-8 lg:pb-32">
         <div className="max-w-3xl">
           <p className="mb-4 text-sm font-bold uppercase tracking-[0.14em] text-cyan-300">
             All-in-one accessibility platform
