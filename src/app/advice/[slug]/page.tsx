@@ -128,7 +128,7 @@ export default async function AdviceArticlePage({
               {a.title}
             </h1>
             <div className="flex flex-wrap items-center gap-2 print:hidden">
-              <Badge tone="amber">{categoryLabel}</Badge>
+              <Badge tone="blue">{categoryLabel}</Badge>
               {a.tags.map((t) => (
                 <Badge key={t} tone="blue">
                   {t}

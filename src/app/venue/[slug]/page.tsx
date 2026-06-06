@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Button, Card } from "@/components/ui";
+import { ConfidenceBadge, VerificationBadge } from "@/components/verification-badge";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
 import { VenueDetailActions } from "@/components/venue-detail-actions";
@@ -37,9 +38,9 @@ const ACCESS_AREAS = [
 ] as const;
 
 function statusDetails(v: "yes" | "no" | "unknown" | undefined) {
-  if (v === "yes") return { icon: "✅", label: "Available", cls: "text-[#1f7a42]" };
-  if (v === "no") return { icon: "❌", label: "Not available", cls: "text-[#8a2b2b]" };
-  return { icon: "❓", label: "Unknown", cls: "text-muted" };
+  if (v === "yes") return { icon: "✅", label: "Available", cls: "text-verified" };
+  if (v === "no") return { icon: "❌", label: "Not available", cls: "text-error" };
+  return { icon: "❓", label: "Check before visiting", cls: "text-warning" };
 }
 
 function venueEmoji(type: string) {
@@ -195,7 +196,7 @@ export default async function VenueDetailPage({
                       <div className="mt-1 flex flex-wrap items-center gap-2">
                         <span className="text-sm font-semibold text-muted">{v.location}</span>
                         <span className="rounded-full bg-blue-pale px-3 py-1 text-xs font-semibold text-blue">{v.type}</span>
-                        <span className="rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-amber">
+                        <span className="rounded-full bg-background-2 px-3 py-1 text-xs font-semibold text-muted">
                           Rating {v.rating.toFixed(1)}
                         </span>
                       </div>
@@ -209,13 +210,19 @@ export default async function VenueDetailPage({
 
             <div className="grid gap-3 px-5 py-5 text-xs sm:grid-cols-2 lg:grid-cols-4 sm:px-7">
               <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
-                <span className="font-semibold text-heading">Verification:</span> {v.verification}
+                <span className="font-semibold text-heading">Verification</span>
+                <div className="mt-2">
+                  <VerificationBadge status={v.verification} />
+                </div>
               </div>
               <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
                 <span className="font-semibold text-heading">Last updated:</span> {v.lastUpdated}
               </div>
               <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
-                <span className="font-semibold text-heading">Confidence:</span> {v.confidence}
+                <span className="font-semibold text-heading">Confidence</span>
+                <div className="mt-2">
+                  <ConfidenceBadge level={v.confidence} />
+                </div>
               </div>
               <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
                 <span className="font-semibold text-heading">Known access features:</span> {yesCount} confirmed

@@ -1186,7 +1186,7 @@ export function ChatWidget() {
                               : handsFreeState === "processing"
                                 ? "bg-violet-500/25 text-violet-100"
                                 : handsFreeState === "speaking"
-                                  ? "bg-amber-500/25 text-amber-100"
+                                  ? "bg-amber-500/25 text-warning-100"
                                   : handsFreeState === "error"
                                     ? "bg-rose-500/25 text-rose-100"
                                     : "bg-white/15 text-blue-100",
@@ -1386,7 +1386,7 @@ export function ChatWidget() {
                   </>
                 ) : null}
                 {voiceError ? (
-                  <div className="mt-3 rounded-[var(--radius-ui)] border border-amber bg-amber-pale px-3 py-2 text-xs text-amber">
+                  <div className="mt-3 rounded-[var(--radius-ui)] border border-amber bg-amber-pale px-3 py-2 text-xs text-warning">
                     {voiceError}
                   </div>
                 ) : null}
@@ -1409,7 +1409,7 @@ export function ChatWidget() {
                     type="button"
                     className={cn(
                       "rounded border px-3 py-1 text-xs font-semibold",
-                      listening ? "border-amber bg-amber-pale text-amber" : "border-border text-heading hover:bg-blue-pale",
+                      listening ? "border-amber bg-amber-pale text-warning" : "border-border text-heading hover:bg-blue-pale",
                       typing && "cursor-not-allowed opacity-60",
                     )}
                     disabled={typing}

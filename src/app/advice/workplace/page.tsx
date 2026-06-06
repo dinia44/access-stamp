@@ -49,7 +49,7 @@ export default async function WorkplacePage() {
     <PageLayout>
       <SetChatContext page={{ kind: "advice" }} />
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Advice Hub", href: "/advice" }, { label: "Workplace" }]} />
-      <PageHero badge={<Badge tone="amber">Workplace</Badge>} title="Workplace support you can actually use" />
+      <PageHero badge={<Badge tone="blue">Workplace</Badge>} title="Workplace support you can actually use" />
 
       <Card className="border-border p-6 shadow-[var(--shadow-soft)] sm:p-7">
         <div className="space-y-4">

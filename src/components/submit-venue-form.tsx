@@ -67,7 +67,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
   if (sent) {
     return (
       <div className="space-y-3 text-center">
-        <p className="font-semibold text-heading">Thanks — we&apos;ve received your suggestion.</p>
+        <p className="form-success-text text-base">Thanks — we&apos;ve received your suggestion.</p>
         <p className="text-sm text-muted">
           {deliveredToTeam
             ? "It was sent to the Access Stamp team for review. We aim to triage within 3 working days."
@@ -90,7 +90,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
           name="name"
           required
           defaultValue={defaultVenueName ?? ""}
-          className="h-11 rounded-[var(--radius-ui)] border border-border bg-card px-3 font-normal text-text"
+          className="form-input h-11 px-3 font-normal"
           placeholder="e.g. Riverside Arts Centre"
           autoComplete="organization"
         />
@@ -101,7 +101,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
         <input
           name="location"
           required
-          className="h-11 rounded-[var(--radius-ui)] border border-border bg-card px-3 font-normal text-text"
+          className="form-input h-11 px-3 font-normal"
           placeholder="Town or postcode"
           autoComplete="address-level2"
         />
@@ -111,7 +111,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
         Venue type
         <select
           name="type"
-          className="h-11 rounded-[var(--radius-ui)] border border-border bg-card px-3 font-normal text-text"
+          className="form-input h-11 px-3 font-normal"
           defaultValue=""
           required
         >
@@ -138,7 +138,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
         <textarea
           name="features"
           rows={4}
-          className="rounded-[var(--radius-ui)] border border-border bg-card px-3 py-2 font-normal text-text"
+          className="form-input px-3 py-2 font-normal"
           placeholder="Step-free entry, accessible toilet, parking, turning space, hearing loop…"
         />
       </label>
@@ -148,7 +148,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
         <textarea
           name="notes"
           rows={3}
-          className="rounded-[var(--radius-ui)] border border-border bg-card px-3 py-2 font-normal text-text"
+          className="form-input px-3 py-2 font-normal"
           placeholder="Optional context or sources"
         />
       </label>
@@ -159,7 +159,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
           name="contactEmail"
           type="email"
           autoComplete="email"
-          className="h-11 rounded-[var(--radius-ui)] border border-border bg-card px-3 font-normal text-text"
+          className="form-input h-11 px-3 font-normal"
           placeholder="So we can ask a quick follow-up"
         />
       </label>
@@ -175,7 +175,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
         <span className="text-xs font-normal text-muted">Photo uploads are not wired yet — describe access in text for now.</span>
       </label>
 
-      {error ? <p className="text-sm font-semibold text-amber" role="alert">{error}</p> : null}
+      {error ? <p className="form-error-text text-sm" role="alert">{error}</p> : null}
       <Button type="submit">{submitting ? "Sending…" : "Submit suggestion"}</Button>
     </form>
   );

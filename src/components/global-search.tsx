@@ -92,7 +92,7 @@ export function GlobalSearch({ className, inputClassName, onSelect, ariaLabelled
         aria-controls={listboxId}
         autoComplete="off"
         className={cn(
-          "box-border min-h-12 w-full appearance-none rounded-[var(--radius-ui)] border-2 border-blue/30 bg-white px-4 py-3 text-base text-heading shadow-sm outline-none placeholder:text-muted placeholder:text-[0.95rem] focus-visible:border-blue md:min-h-11 md:text-sm",
+          "form-input box-border min-h-12 w-full appearance-none px-4 py-3 text-base shadow-sm md:min-h-11 md:text-sm",
           inputClassName,
         )}
       />
@@ -117,7 +117,7 @@ export function GlobalSearch({ className, inputClassName, onSelect, ariaLabelled
                     <div key={`${item.url}-${item.title}`} role="option" aria-selected={active} className={rowClass}>
                       <div className="flex items-center justify-between gap-3">
                         <div className="text-sm font-semibold text-heading">{item.title}</div>
-                        <span className="rounded-full bg-amber-pale px-2 py-0.5 text-[11px] font-semibold text-amber">
+                        <span className="rounded-full bg-amber-pale px-2 py-0.5 text-[11px] font-semibold text-warning">
                           Coming soon
                         </span>
                       </div>

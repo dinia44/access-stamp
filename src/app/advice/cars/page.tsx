@@ -22,7 +22,7 @@ export default async function CarsPage() {
     <PageLayout>
       <SetChatContext page={{ kind: "advice" }} />
       <PageHero
-        badge={<Badge tone="amber">Cars</Badge>}
+        badge={<Badge tone="blue">Cars</Badge>}
         title="Cars, parking, and driving support"
         subtitle="Everything to do with private vehicles in one place: Blue Badge, Motability, driving adaptations, WAVs, parking enforcement, and licensing requirements."
       />
@@ -65,10 +65,10 @@ export default async function CarsPage() {
               </div>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              <Link href="/advice/transport" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-amber">
+              <Link href="/advice/transport" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-warning">
                 Also see Transport
               </Link>
-              <Link href="/advice/rights" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-amber">
+              <Link href="/advice/rights" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-warning">
                 Also see Rights
               </Link>
             </div>
@@ -111,13 +111,13 @@ export default async function CarsPage() {
       <Card className="p-5">
         <div className="text-sm font-semibold text-heading">Good next reads</div>
         <div className="mt-3 flex flex-wrap gap-2">
-          <Link href="/advice/transport" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-amber">
+          <Link href="/advice/transport" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-warning">
             Transport
           </Link>
-          <Link href="/advice/equipment" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-amber">
+          <Link href="/advice/equipment" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-warning">
             Equipment
           </Link>
-          <Link href="/advice/rights" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-amber">
+          <Link href="/advice/rights" className="rounded-full bg-amber-pale px-3 py-2 text-xs font-semibold text-warning">
             Your Rights
           </Link>
         </div>

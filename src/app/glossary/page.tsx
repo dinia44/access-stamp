@@ -26,7 +26,7 @@ export default function GlossaryPage() {
       <Container className="py-10">
         <div className="space-y-6">
           <div className="space-y-2">
-            <Badge tone="amber">Glossary</Badge>
+            <Badge tone="blue">Glossary</Badge>
             <h1 className="font-[var(--font-heading)] text-4xl text-heading">Jargon buster</h1>
             <p className="max-w-[85ch] text-muted">
               Plain-language definitions for common disability-related terms and acronyms.

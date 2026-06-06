@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { Button } from "@/components/ui";
 
 export function HomeWaitlistForm() {
   const [email, setEmail] = useState("");
@@ -33,10 +34,15 @@ export function HomeWaitlistForm() {
   }
 
   return (
-    <form className="mx-auto mt-5 w-full max-w-[400px]" onSubmit={onSubmit}>
+    <form className="mx-auto mt-5 w-full max-w-[400px]" onSubmit={onSubmit} noValidate>
       <label htmlFor="waitlist-email" className="sr-only">
         Email address for waitlist
       </label>
+      {status === "error" && message ? (
+        <div className="form-error-summary mb-3 text-left" role="alert">
+          {message}
+        </div>
+      ) : null}
       <div className="flex w-full gap-2">
         <input
           id="waitlist-email"
@@ -47,27 +53,21 @@ export function HomeWaitlistForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={status === "loading" || status === "ok"}
-          className="h-11 flex-1 rounded-[var(--radius-ui)] border border-border bg-background px-3 text-sm text-heading"
+          className="form-input h-11 flex-1 px-3 text-sm disabled:opacity-70"
           placeholder="Your email address"
+          aria-invalid={status === "error"}
         />
-        <button
-          type="submit"
-          disabled={status === "loading" || status === "ok"}
-          className="inline-flex shrink-0 items-center justify-center rounded-[var(--radius-ui)] bg-amber px-4 py-2 text-sm font-semibold text-navy transition-opacity hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
-        >
+        <Button type="submit" variant="primary" className="shrink-0" disabled={status === "loading" || status === "ok"}>
           {status === "loading" ? "Joining…" : status === "ok" ? "Joined" : "Join waitlist"}
-        </button>
+        </Button>
       </div>
-      {message ? (
-        <p
-          className={`mt-2 text-xs font-semibold ${status === "error" ? "text-amber" : "text-muted"}`}
-          role={status === "error" ? "alert" : "status"}
-        >
+      {status === "ok" && message ? (
+        <p className="form-success-text mt-2" role="status">
           {message}
         </p>
-      ) : (
+      ) : status !== "error" ? (
         <p className="mt-2 text-xs text-muted">No spam. Unsubscribe when we email you.</p>
-      )}
+      ) : null}
     </form>
   );
 }

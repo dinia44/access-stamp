@@ -59,7 +59,7 @@ function RouteCard({ route }: { route: FundingRoute }) {
         </div>
       )}
 
-      <p className="mt-3 rounded-[var(--radius-ui)] border border-amber bg-amber-pale px-3 py-2 text-xs text-amber">
+      <p className="mt-3 rounded-[var(--radius-ui)] border border-amber bg-amber-pale px-3 py-2 text-xs text-warning">
         {route.caveats}
       </p>
     </Card>

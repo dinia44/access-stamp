@@ -60,7 +60,7 @@ export default async function RightsPage() {
           <div className="relative overflow-hidden rounded-[var(--radius-ui)] border border-border bg-gradient-to-br from-blue-pale/40 via-background to-amber-pale/30 p-6 sm:p-8">
             <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue/5 blur-3xl" aria-hidden />
             <div className="relative max-w-4xl space-y-4">
-              <Badge tone="amber">Your rights</Badge>
+              <Badge tone="blue">Your rights</Badge>
               <h1 className="font-[var(--font-heading)] text-4xl text-heading md:text-[2.75rem] md:leading-tight">
                 Your rights: built around what actually goes wrong
               </h1>

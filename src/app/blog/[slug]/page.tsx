@@ -47,7 +47,7 @@ export default async function BlogPostPage({
           />
 
           <div className="space-y-2">
-            <Badge tone="amber">Blog</Badge>
+            <Badge tone="blue">Blog</Badge>
             <h1 className="font-[var(--font-heading)] text-3xl text-heading sm:text-4xl">{p.title}</h1>
             <div className="flex items-center gap-3 text-xs font-semibold text-muted">
               <span>{p.date}</span>

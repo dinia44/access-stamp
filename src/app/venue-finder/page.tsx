@@ -8,6 +8,7 @@ import { Badge, Card } from "@/components/ui";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
 import { VenueFinderPromoVideo } from "@/components/venue-finder-promo-video";
+import { ConfidenceBadge, VerificationBadge } from "@/components/verification-badge";
 import { VENUE_FILTERS, VenueFinderFilters } from "@/components/venue-finder-filters";
 import { useChat } from "@/components/chat/provider";
 
@@ -189,7 +190,7 @@ function VenueFinderPageInner() {
                 <label className="text-sm font-semibold text-muted">
                   Search query
                   <input
-                    className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
+                    className="form-input mt-1 h-11 w-full px-3"
                     placeholder="e.g. step-free restaurant with parking"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -199,7 +200,7 @@ function VenueFinderPageInner() {
                 <label className="text-sm font-semibold text-muted">
                   Location
                   <input
-                    className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
+                    className="form-input mt-1 h-11 w-full px-3"
                     placeholder="City, town, or postcode"
                     value={locationQuery}
                     onChange={(e) => setLocationQuery(e.target.value)}
@@ -210,7 +211,7 @@ function VenueFinderPageInner() {
                 <label className="text-sm font-semibold text-muted">
                   Venue type
                   <select
-                    className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
+                    className="form-input mt-1 h-11 w-full px-3"
                     value={venueType}
                     onChange={(e) => setVenueType(e.target.value)}
                   >
@@ -281,7 +282,7 @@ function VenueFinderPageInner() {
               {venueType !== "Any" ? <Badge tone="blue">Type: {venueType}</Badge> : null}
               {verifiedOnly ? <Badge tone="blue">Verified only</Badge> : null}
               {selectedFilters.map((f) => (
-                <Badge key={f} tone="amber">{f}</Badge>
+                <Badge key={f} tone="blue">{f}</Badge>
               ))}
               <button
                 type="button"
@@ -318,7 +319,7 @@ function VenueFinderPageInner() {
                       {(selectedFilters.length
                         ? selectedFilters.filter((f) => v.features[f] === "yes")
                         : v.tags).slice(0, 3).map((t) => (
-                        <Badge key={t} tone="amber" className="text-[11px]">
+                        <Badge key={t} tone="neutral" className="text-[11px]">
                           {t}
                         </Badge>
                       ))}
@@ -327,20 +328,12 @@ function VenueFinderPageInner() {
                       <span className="text-muted">Rating</span>
                       <span className="text-heading">{v.rating.toFixed(1)}</span>
                     </div>
-                    <div className="mt-3 grid gap-1 border-t border-border pt-3 text-xs text-muted">
-                      <div>
-                        <span className="font-semibold text-heading">Verification:</span> {v.verification}
-                      </div>
-                      <div>
-                        <span className="font-semibold text-heading">Last updated:</span> {v.lastUpdated}
-                      </div>
-                      <div>
-                        <span className="font-semibold text-heading">Confidence:</span> {v.confidence}
-                      </div>
-                      <div>
-                        <span className="font-semibold text-heading">Credibility score:</span>{" "}
-                        {credibilityScore(v.verification, v.confidence)}/6
-                      </div>
+                    <div className="mt-3 flex flex-wrap gap-2 border-t border-border pt-3">
+                      <VerificationBadge status={v.verification} />
+                      <ConfidenceBadge level={v.confidence} />
+                    </div>
+                    <div className="mt-2 text-xs text-muted">
+                      Updated {v.lastUpdated} · Credibility {credibilityScore(v.verification, v.confidence)}/6
                     </div>
                   </div>
                 </Card>

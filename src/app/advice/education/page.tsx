@@ -71,7 +71,7 @@ export default async function EducationPage() {
           />
 
           <div className="max-w-4xl space-y-4">
-            <Badge tone="amber" className="w-fit">
+            <Badge tone="blue" className="w-fit">
               Education
             </Badge>
             <h1 className="font-[var(--font-heading)] text-4xl leading-tight text-heading sm:text-5xl">
@@ -112,7 +112,7 @@ export default async function EducationPage() {
                 <ul className="mt-3 space-y-3 text-sm text-text">
                   {PLANNING_CHECKS.map((item, index) => (
                     <li key={item} className="flex gap-3">
-                      <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-card text-xs font-semibold text-amber">
+                      <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-card text-xs font-semibold text-warning">
                         {index + 1}
                       </span>
                       <span>{item}</span>

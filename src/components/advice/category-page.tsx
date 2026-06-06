@@ -31,7 +31,7 @@ export async function CategoryPage({
           />
 
           <div className="space-y-2">
-            <Badge tone="amber">{title}</Badge>
+            <Badge tone="blue">{title}</Badge>
             <h1 className="font-[var(--font-heading)] text-4xl text-heading">{title}</h1>
             <p className="max-w-[85ch] text-muted">{description}</p>
           </div>

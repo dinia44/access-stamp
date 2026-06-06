@@ -7,6 +7,7 @@ export const metadata: Metadata = {
 };
 import { SiteLogo } from "@/components/site-logo";
 import { Badge, Card } from "@/components/ui";
+import { VerificationBadge } from "@/components/verification-badge";
 
 export default function AboutPage() {
   return (
@@ -52,22 +53,22 @@ export default function AboutPage() {
                 strong the evidence is—not whether a place is &quot;good&quot; or &quot;bad.&quot;
               </p>
               <ul className="mt-4 grid gap-3 text-sm leading-7 text-text md:grid-cols-3">
-                <li className="rounded-[var(--radius-ui)] border border-border bg-background p-4">
-                  <span className="font-semibold text-heading">Access Stamp checked</span>
-                  <span className="mt-1 block text-muted">
+                <li className="rounded-[var(--radius-ui)] border border-border bg-verified-pale p-4">
+                  <VerificationBadge status="Access Stamp checked" />
+                  <span className="mt-2 block text-sm text-muted">
                     Reviewed against our field-style checklist; priority for filters like &quot;verified venues only.&quot;
                   </span>
                 </li>
-                <li className="rounded-[var(--radius-ui)] border border-border bg-background p-4">
-                  <span className="font-semibold text-heading">Community reported</span>
-                  <span className="mt-1 block text-muted">
+                <li className="rounded-[var(--radius-ui)] border border-border bg-blue-pale p-4">
+                  <VerificationBadge status="Community reported" />
+                  <span className="mt-2 block text-sm text-muted">
                     Submitted or corroborated detail from disabled people and allies—useful, but treat opening hours and layout as
                     worth confirming.
                   </span>
                 </li>
-                <li className="rounded-[var(--radius-ui)] border border-border bg-background p-4">
-                  <span className="font-semibold text-heading">Not yet verified</span>
-                  <span className="mt-1 block text-muted">
+                <li className="rounded-[var(--radius-ui)] border border-border bg-amber-pale p-4">
+                  <VerificationBadge status="Not yet verified" />
+                  <span className="mt-2 block text-sm text-muted">
                     Early or partial information—still worth a look, especially if you phone ahead or visit off-peak.
                   </span>
                 </li>

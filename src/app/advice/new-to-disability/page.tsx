@@ -47,7 +47,7 @@ export default async function NewToDisabilityPage() {
     <PageLayout>
       <SetChatContext page={{ kind: "advice" }} />
       <PageHero
-        badge={<Badge tone="amber">New to disability</Badge>}
+        badge={<Badge tone="blue">New to disability</Badge>}
         title="A calm starting point when everything feels too much"
         subtitle="If you are newly disabled, newly using a wheelchair, or supporting someone whose needs have changed, this page helps you get oriented without pretending the system is simple."
       />

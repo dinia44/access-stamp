@@ -84,7 +84,7 @@ export function AdviceManualCard({
             <div className="flex items-center justify-between gap-2">
               <div className="text-sm font-semibold text-heading">{title}</div>
               {badge ? (
-                <Badge tone="amber" className="shrink-0">
+                <Badge tone="blue" className="shrink-0">
                   {badge}
                 </Badge>
               ) : null}
@@ -93,7 +93,7 @@ export function AdviceManualCard({
             <div className="flex items-start justify-between gap-2">
               <div className="text-sm font-semibold uppercase tracking-wide text-muted">{title}</div>
               {badge ? (
-                <Badge tone="amber" className="shrink-0">
+                <Badge tone="blue" className="shrink-0">
                   {badge}
                 </Badge>
               ) : null}

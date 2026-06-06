@@ -54,7 +54,7 @@ function PocketCardTile({ card, openChat }: { card: HelpCard; openChat: ReturnTy
       <div className="flex flex-wrap items-center gap-2">
         <Badge tone="blue">Pocket card</Badge>
         {card.tags.slice(0, 2).map((tag) => (
-          <Badge key={tag} tone="amber" className="text-[11px]">
+          <Badge key={tag} tone="blue" className="text-[11px]">
             {tag}
           </Badge>
         ))}

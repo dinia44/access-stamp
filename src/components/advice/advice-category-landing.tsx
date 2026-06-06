@@ -58,7 +58,7 @@ export async function AdviceCategoryLanding({
         ]}
       />
 
-      <PageHero badge={<Badge tone="amber">{badge}</Badge>} title={title} subtitle={subtitle} />
+      <PageHero badge={<Badge tone="blue">{badge}</Badge>} title={title} subtitle={subtitle} />
 
       <Card className="border-border p-6 shadow-[var(--shadow-soft)] sm:p-7">
             <div className="grid gap-6 lg:grid-cols-[1.3fr_.9fr]">
@@ -103,7 +103,7 @@ export async function AdviceCategoryLanding({
                   <ul className="mt-3 space-y-3 text-sm text-text">
                     {checklistItems.map((item, index) => (
                       <li key={item} className="flex gap-3">
-                        <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-card text-xs font-semibold text-amber">
+                        <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-card text-xs font-semibold text-warning">
                           {index + 1}
                         </span>
                         <span>{item}</span>

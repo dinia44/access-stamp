@@ -37,7 +37,7 @@ export default function DirectoryPage() {
       <Container className="py-10">
         <div className="space-y-6">
           <div className="space-y-2">
-            <Badge tone="amber">Directory</Badge>
+            <Badge tone="blue">Directory</Badge>
             <h1 className="font-[var(--font-heading)] text-4xl text-heading">Useful contacts</h1>
             <p className="max-w-[85ch] text-muted">
               UK-wide helplines and services we often point people to. Access Stamp is not affiliated

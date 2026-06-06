@@ -34,7 +34,7 @@ export default async function HelpCardsPage({
               <Link href="/help-cards?concern=Equality%20Act%20rights" className="rounded-full bg-blue-pale px-3 py-1 font-semibold text-blue">
                 Equality Act cards
               </Link>
-              <Link href="/advice/rights" className="rounded-full bg-amber-pale px-3 py-1 font-semibold text-amber">
+              <Link href="/advice/rights" className="rounded-full bg-amber-pale px-3 py-1 font-semibold text-warning">
                 Rights advice hub
               </Link>
             </div>

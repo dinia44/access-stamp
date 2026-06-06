@@ -1,9 +1,7 @@
 import { cn } from "@/lib/utils";
 
-const inputClass =
-  "h-11 w-full rounded-[var(--radius-ui)] border border-border bg-card px-3 text-sm font-normal text-text";
-const textareaClass =
-  "min-h-[100px] w-full rounded-[var(--radius-ui)] border border-border bg-card px-3 py-2 text-sm font-normal text-text";
+const inputClass = "form-input h-11 w-full px-3 text-sm font-normal";
+const textareaClass = "form-input min-h-[100px] w-full px-3 py-2 text-sm font-normal";
 
 export function ToolkitField({
   label,
@@ -24,7 +22,7 @@ export function ToolkitField({
     <label htmlFor={htmlFor} className={cn("grid gap-1.5 text-sm font-semibold text-heading", className)}>
       <span>
         {label}
-        {required ? <span className="text-amber"> *</span> : null}
+        {required ? <span className="text-error"> *</span> : null}
       </span>
       {children}
       {hint ? <span className="text-xs font-normal text-muted">{hint}</span> : null}

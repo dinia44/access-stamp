@@ -84,7 +84,7 @@ export function HelpCardsHub({ initialConcern = "" }: { initialConcern?: string 
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone="blue">{card.category}</Badge>
               {card.tags.slice(0, 2).map((tag) => (
-                <Badge key={tag} tone="amber" className="text-[11px]">
+                <Badge key={tag} tone="blue" className="text-[11px]">
                   {tag}
                 </Badge>
               ))}

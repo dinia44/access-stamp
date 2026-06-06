@@ -6,6 +6,7 @@ import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { PageLayout } from "@/components/page-layout";
 import { Badge, Card } from "@/components/ui";
 import { ADVICE_HUB_CATEGORY_IMAGES } from "@/lib/advice-card-images";
+import { adviceCategoryTint } from "@/lib/colors";
 import { ADVICE_CATEGORIES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
 
@@ -19,7 +20,7 @@ export default function AdviceHubPage() {
     <PageLayout stack="hub">
       <SetChatContext page={{ kind: "advice" }} />
       <div className="space-y-2">
-        <Badge tone="amber">Advice Hub</Badge>
+        <Badge tone="navy">Advice Hub</Badge>
         <h1 className="font-[var(--font-heading)] text-4xl text-heading">Practical guides in plain language</h1>
         <p className="max-w-[80ch] text-muted">
           Practical, plain-language guides on disability rights, equipment, care, education, transport, workplace, and more.
@@ -34,10 +35,7 @@ export default function AdviceHubPage() {
           const hubImg = ADVICE_HUB_CATEGORY_IMAGES[c.href];
           return (
             <Link key={c.href} href={c.href} className="group">
-              <Card
-                accent={c.href.includes("rights") || c.href.includes("emergency") ? "amber" : "blue"}
-                className="h-full overflow-hidden p-0 transition-shadow group-hover:shadow-[var(--shadow)]"
-              >
+              <Card className="h-full overflow-hidden p-0 transition-shadow group-hover:shadow-[var(--shadow)]">
                 <AdviceMediaFrame>
                   {hubImg ? (
                     <GuideCoverImage
@@ -52,9 +50,9 @@ export default function AdviceHubPage() {
                     </div>
                   )}
                 </AdviceMediaFrame>
-                <div className="p-5">
+                <div className="p-5" style={{ backgroundColor: adviceCategoryTint(c.href) }}>
                   <div className="flex items-start gap-3">
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-blue-pale text-lg" aria-hidden>
+                    <div className="icon-well icon-well-blue h-10 w-10 shrink-0 text-lg" aria-hidden>
                       {c.icon}
                     </div>
                     <div>

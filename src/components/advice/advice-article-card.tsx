@@ -30,10 +30,7 @@ export function AdviceArticleCard({
     ADVICE_CATEGORIES.find((c) => c.href === `/advice/${article.categorySlug}`)?.title ?? "Advice";
   return (
     <Link href={`/advice/${article.slug}`} className={cn("group block h-full", className)}>
-      <Card
-        accent={badgeTone === "amber" ? "amber" : "blue"}
-        className="flex h-full flex-col overflow-hidden p-0 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]"
-      >
+      <Card className="flex h-full flex-col overflow-hidden p-0 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
         <AdviceMediaFrame>
           <GuideCoverImage
             src={img.src}

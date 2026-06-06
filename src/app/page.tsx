@@ -9,6 +9,7 @@ import { SectionLabel } from "@/components/home/section-label";
 import { FeaturedPracticalGuides } from "@/components/advice/featured-practical-guides";
 import { HeroSearchCard } from "@/components/home/hero-search";
 import { VenueFinderPromoVideo } from "@/components/venue-finder-promo-video";
+import { ConfidenceBadge, VerificationBadge } from "@/components/verification-badge";
 import { RightsTabs } from "@/components/home/rights-tabs";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { FEATURED_HELP_CARD_SLUGS, HELP_CARDS } from "@/lib/help-cards";
@@ -188,25 +189,26 @@ export default function HomePage() {
         <Container className="relative py-12 sm:py-14">
           <div className="mx-auto max-w-[760px] text-center">
             <FadeIn>
-              <span className="inline-flex items-center rounded-full border border-[#ebd7ad]/70 bg-[#fff6de] px-4 py-1 text-[11px] font-semibold tracking-[0.18em] uppercase text-[#8b6b2a]">
-                UK's trusted accessibility platform
+              <span className="hero-badge inline-flex items-center rounded-full px-4 py-1 text-[11px] font-semibold tracking-[0.18em] uppercase">
+                UK&apos;s trusted accessibility platform
               </span>
+              <div className="hero-accent-line mt-4" aria-hidden />
             </FadeIn>
 
             <FadeIn delayMs={120}>
-              <h1 className="mt-4 font-[var(--font-heading)] text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.02] tracking-[-0.03em] text-white">
+              <h1 className="mt-4 font-[var(--font-heading)] text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.02] tracking-[-0.03em] text-[#f8fafc]">
                 The UK&apos;s trusted accessibility platform
               </h1>
             </FadeIn>
 
             <FadeIn delayMs={240}>
-              <p className="mx-auto mt-3 max-w-[640px] text-[22px] leading-[1.35] text-[#e1e9f7]">
+              <p className="mx-auto mt-3 max-w-[640px] text-[22px] leading-[1.35] text-[#cbd5e1]">
                 Find and share step-free venues. Access accurate. Access confident.
               </p>
             </FadeIn>
 
             <FadeIn delayMs={300}>
-              <p className="mx-auto mt-3 max-w-[700px] text-sm font-medium text-[#e8cc8e]">
+              <p className="mx-auto mt-3 max-w-[700px] text-sm font-medium text-[#94a3b8]">
                 Built from lived experience. Practical UK guidance. Real access detail, not vague labels.
               </p>
             </FadeIn>
@@ -234,7 +236,7 @@ export default function HomePage() {
                 <div className="p-10 sm:p-12">
                   <div className="flex flex-col gap-10 md:flex-row md:items-center">
                     <div className="flex-1 space-y-3">
-                      <Badge tone="amber">🧭 Starting point</Badge>
+                      <Badge tone="warning">🧭 Starting point</Badge>
                       <h2 className="font-[var(--font-heading)] text-[30px] tracking-[-0.025em] text-heading">
                         New to disability or wheelchair use?
                       </h2>
@@ -313,18 +315,12 @@ export default function HomePage() {
               <FadeIn key={c.href} delayMs={Math.min(idx * 50, 250)}>
                 <Link href={c.href} className="group block h-full">
                   <Card
-                    accent={c.highlight ? "blue" : idx % 2 === 0 ? "amber" : "blue"}
                     className={
                       "h-full p-7 transition-all duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[3px] group-hover:shadow-[var(--shadow)] " +
-                      (c.highlight ? "ring-1 ring-blue/20" : "")
+                      (c.highlight ? "ring-1 ring-blue/25" : "")
                     }
                   >
-                    <div
-                      className={
-                        "icon-well h-11 w-11 " +
-                        (c.highlight || idx % 2 === 0 ? "icon-well-blue" : "icon-well-amber")
-                      }
-                    >
+                    <div className={"icon-well h-11 w-11 " + (c.highlight ? "icon-well-blue" : "icon-well-neutral")}>
                       <PillarIcon name={c.icon} />
                     </div>
                     <div className="mt-4 font-[var(--font-heading)] text-[19px] tracking-[-0.025em] text-heading">
@@ -413,7 +409,7 @@ export default function HomePage() {
                       </div>
                       <div className="absolute right-4 top-4">
                         <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-3 py-1 text-xs font-semibold text-heading backdrop-blur">
-                          <span className="text-amber" aria-hidden>
+                          <span className="text-warning" aria-hidden>
                             ★
                           </span>
                           {v!.rating.toFixed(1)}
@@ -440,17 +436,11 @@ export default function HomePage() {
                           </span>
                         ))}
                       </div>
-                      <div className="mt-4 grid gap-1 border-t border-border pt-3 text-xs text-muted">
-                        <div>
-                          <span className="font-semibold text-heading">Verification:</span> {v!.verification}
-                        </div>
-                        <div>
-                          <span className="font-semibold text-heading">Last updated:</span> {v!.lastUpdated}
-                        </div>
-                        <div>
-                          <span className="font-semibold text-heading">Confidence:</span> {v!.confidence}
-                        </div>
+                      <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-3">
+                        <VerificationBadge status={v!.verification} />
+                        <ConfidenceBadge level={v!.confidence} />
                       </div>
+                      <div className="mt-2 text-xs text-muted">Last updated: {v!.lastUpdated}</div>
                     </div>
                   </Card>
                 </Link>
@@ -542,7 +532,7 @@ export default function HomePage() {
                       "Common problems",
                     ].map((t, i) => (
                       <div key={t} className="flex items-center gap-3 rounded-[var(--radius-ui)] bg-background px-4 py-3">
-                        <span className="grid h-7 w-7 place-items-center rounded-full bg-amber text-white text-xs font-bold">
+                        <span className="grid h-7 w-7 place-items-center rounded-full bg-blue text-white text-xs font-bold">
                           {i + 1}
                         </span>
                         <span className="text-sm font-semibold text-heading">{t}</span>
@@ -610,8 +600,8 @@ export default function HomePage() {
           <div className="mx-auto max-w-[640px] text-center">
             <FadeIn>
               <div className="flex items-center justify-center gap-3">
-                <span className="h-[2px] w-8 bg-amber" aria-hidden />
-                <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-amber">
+                <span className="h-[2px] w-8 bg-gold" aria-hidden />
+                <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-gold">
                   Workplace
                 </span>
               </div>
@@ -654,7 +644,7 @@ export default function HomePage() {
               <FadeIn>
                 <SectionLabel>Equipment</SectionLabel>
                 <h2 className="mt-3 font-[var(--font-heading)] text-[30px] tracking-[-0.025em] text-heading">
-                  Honest, practical <span className="italic text-amber">equipment</span> advice
+                  Honest, practical <span className="italic text-blue">equipment</span> advice
                 </h2>
                 <p className="mt-3 text-[15px] leading-[1.7] text-text">
                   What works in real life, plus safety warnings when it matters.
@@ -699,7 +689,7 @@ export default function HomePage() {
                           {e}
                         </div>
                         <div className="mt-3">
-                          <span className="inline-flex rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-amber">
+                          <span className="inline-flex rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-warning">
                             {badge}
                           </span>
                         </div>
@@ -759,7 +749,7 @@ export default function HomePage() {
               <FadeIn key={t} delayMs={idx * 60}>
                 <Link href="/advice/care" className="group block">
                   <Card className="h-full p-6 transition-all duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[3px] group-hover:shadow-[var(--shadow)]">
-                    <div className="inline-flex rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-amber">
+                    <div className="inline-flex rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-warning">
                       {b}
                     </div>
                     <div className="mt-4 text-2xl" aria-hidden>
@@ -889,14 +879,14 @@ export default function HomePage() {
                         {p.kind === "video" ? "▶️" : "📝"}
                       </div>
                       <div className="absolute left-4 top-4">
-                        <span className="inline-flex rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-amber">
+                        <span className="inline-flex rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-warning">
                           {p.kind === "video" ? "Video" : "Blog"}
                         </span>
                       </div>
                     </div>
                     <div className="p-6">
                       <div className="flex items-center gap-2 text-xs font-semibold">
-                        <span className="inline-flex rounded-full bg-amber-pale px-3 py-1 text-amber">
+                        <span className="inline-flex rounded-full bg-amber-pale px-3 py-1 text-warning">
                           {p.tag}
                         </span>
                         <span className="text-[#9a9590]">{p.date}</span>
@@ -977,7 +967,7 @@ export default function HomePage() {
                     ].map((t) => (
                       <span
                         key={t}
-                        className="rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-amber"
+                        className="rounded-full bg-amber-pale px-3 py-1 text-xs font-semibold text-warning"
                       >
                         {t}
                       </span>
@@ -1004,7 +994,7 @@ export default function HomePage() {
                 inspiration posts.
               </p>
               <div className="mt-5">
-                <span className="inline-flex rounded-full bg-amber-pale px-4 py-2 text-xs font-semibold text-amber">
+                <span className="inline-flex rounded-full bg-amber-pale px-4 py-2 text-xs font-semibold text-warning">
                   Coming 2026
                 </span>
               </div>
@@ -1077,19 +1067,16 @@ export default function HomePage() {
           <FadeIn>
             <div className="mx-auto max-w-[520px] text-center">
               <h2 className="font-[var(--font-heading)] text-[clamp(1.75rem,3.5vw,2.75rem)] leading-tight text-[#e8e2d8]">
-                Your access needs, <span className="italic text-amber">taken seriously</span>
+                Your access needs, <span className="italic text-gold">taken seriously</span>
               </h2>
               <p className="mt-4 text-[17px] leading-[1.75] text-[#a0998f]">
                 Search venues, ask our AI, explore guides, understand your rights, all in one place.
               </p>
               <div className="mt-7 flex flex-wrap justify-center gap-3">
                 <Button href="/venue-finder">Search venues</Button>
-                <Link
-                  href="/advice"
-                  className="inline-flex items-center justify-center rounded-[var(--radius-ui)] border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-[#e8e2d8]"
-                >
+                <Button href="/advice" variant="premium">
                   Explore guides →
-                </Link>
+                </Button>
               </div>
             </div>
           </FadeIn>
