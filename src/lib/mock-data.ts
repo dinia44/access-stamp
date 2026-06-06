@@ -196,6 +196,7 @@ export const SAMPLE_VENUES: Venue[] = [
       "Lift access": "yes",
       "Quiet environment": "unknown",
       "Staff disability awareness": "yes",
+      "Powered wheelchair suitable": "yes",
     },
     photos: [
       {
@@ -313,6 +314,7 @@ export const SAMPLE_VENUES: Venue[] = [
       "Lift access": "yes",
       "Quiet environment": "unknown",
       "Staff disability awareness": "yes",
+      "Powered wheelchair suitable": "yes",
     },
   },
   {

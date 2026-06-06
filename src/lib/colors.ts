@@ -28,7 +28,7 @@ export function verificationBadgeMeta(status: VerificationStatus) {
     return { label: "Community reported", tone: "community" as const };
   }
   if (status === "Not yet verified") {
-    return { label: "Check before visiting", tone: "warning" as const };
+    return { label: "Not yet verified", tone: "warning" as const };
   }
   if (status === "Major access concern") {
     return { label: "Major access concern", tone: "error" as const };

@@ -1,0 +1,155 @@
+/* Venue Finder page — scoped colour system */
+.vf-page {
+  --vf-navy: #071827;
+  --vf-navy-soft: #0b2236;
+  --vf-bg: #f8fafc;
+  --vf-card: #ffffff;
+  --vf-ink: #0b1220;
+  --vf-muted: #475569;
+  --vf-border: #e2e8f0;
+  --vf-blue: #2563eb;
+  --vf-blue-hover: #1e40af;
+  --vf-blue-soft: #eff6ff;
+  --vf-gold: #d6a84f;
+  --vf-teal: #0f766e;
+  --vf-teal-soft: #f0fdfa;
+  --vf-amber: #b45309;
+  --vf-amber-soft: #fffbeb;
+  --vf-amber-text: #78350f;
+  --vf-red: #b91c1c;
+  --vf-red-soft: #fef2f2;
+  --vf-hero-subtitle: #cbd5e1;
+  --vf-hero-heading: #f8fafc;
+  --vf-shadow: 0 12px 32px -12px rgba(7, 24, 39, 0.12);
+  --vf-shadow-soft: 0 4px 16px -4px rgba(7, 24, 39, 0.08);
+  --vf-radius-card: 20px;
+  --vf-radius-ui: 12px;
+
+  background-color: var(--vf-bg);
+  color: var(--vf-ink);
+  min-height: 100vh;
+}
+
+.vf-page :where(a, button, input, textarea, select, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 3px solid var(--vf-gold);
+  outline-offset: 3px;
+}
+
+.vf-input {
+  background: var(--vf-card);
+  border: 1px solid var(--vf-border);
+  border-radius: var(--vf-radius-ui);
+  color: var(--vf-ink);
+  width: 100%;
+}
+
+.vf-input:focus {
+  border-color: var(--vf-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.vf-btn-primary {
+  background: var(--vf-blue);
+  color: #ffffff;
+  border-radius: var(--vf-radius-ui);
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.25rem;
+  transition: background-color 0.15s;
+}
+
+.vf-btn-primary:hover:not(:disabled) {
+  background: var(--vf-blue-hover);
+}
+
+.vf-btn-secondary {
+  background: var(--vf-card);
+  color: var(--vf-ink);
+  border: 1px solid var(--vf-border);
+  border-radius: var(--vf-radius-ui);
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.25rem;
+  transition: background-color 0.15s;
+}
+
+.vf-btn-secondary:hover:not(:disabled) {
+  background: var(--vf-bg);
+}
+
+.vf-chip {
+  border: 1px solid var(--vf-border);
+  background: var(--vf-card);
+  color: var(--vf-ink);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.vf-chip[data-active="true"] {
+  background: var(--vf-blue-soft);
+  border-color: var(--vf-blue);
+  color: var(--vf-blue-hover);
+}
+
+.vf-badge-verified {
+  background: var(--vf-teal-soft);
+  color: var(--vf-teal);
+  border: 1px solid #99f6e4;
+}
+
+.vf-badge-community {
+  background: var(--vf-blue-soft);
+  color: var(--vf-blue-hover);
+  border: 1px solid #bfdbfe;
+}
+
+.vf-badge-unverified {
+  background: var(--vf-amber-soft);
+  color: var(--vf-amber);
+  border: 1px solid #fde68a;
+}
+
+.vf-badge-confidence-high {
+  background: var(--vf-teal-soft);
+  color: var(--vf-teal);
+  border: 1px solid #99f6e4;
+}
+
+.vf-badge-confidence-medium {
+  background: var(--vf-amber-soft);
+  color: var(--vf-amber);
+  border: 1px solid #fde68a;
+}
+
+.vf-badge-confidence-low {
+  background: var(--vf-red-soft);
+  color: var(--vf-red);
+  border: 1px solid #fecaca;
+}
+
+.vf-warning-box {
+  background: var(--vf-amber-soft);
+  color: var(--vf-amber-text);
+  border: 1px solid #fde68a;
+  border-radius: var(--vf-radius-ui);
+  padding: 0.75rem;
+  font-size: 0.875rem;
+}
+
+@keyframes vf-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.vf-skeleton {
+  background: linear-gradient(90deg, var(--vf-border) 25%, #f1f5f9 50%, var(--vf-border) 75%);
+  background-size: 200% 100%;
+  animation: vf-shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--vf-radius-ui);
+}
