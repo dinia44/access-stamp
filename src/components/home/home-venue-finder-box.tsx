@@ -1,1 +1,1 @@
-export { AccessStampSearchBox as HomeVenueFinderBox } from "@/components/home/access-stamp-search-box";
+export { VenueFinderBox as HomeVenueFinderBox } from "@/components/home/venue-finder-box";

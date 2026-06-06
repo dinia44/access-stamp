@@ -10,8 +10,9 @@ import { HomeAccessCategories } from "@/components/home/home-hero-extras";
 import { HomeForVenues } from "@/components/home/home-for-venues";
 import { HomeGuidesPlanning } from "@/components/home/home-guides-planning";
 import { HomePopularVenues } from "@/components/home/home-popular-venues";
-import { AccessStampSearchBox } from "@/components/home/access-stamp-search-box";
+import { CategoryShortcutRow } from "@/components/home/category-shortcut-row";
 import { HomeHero } from "@/components/home/home-hero";
+import { VenueFinderBox } from "@/components/home/venue-finder-box";
 import { PlatformPillarsGrid } from "@/components/home/platform-pillars-grid";
 import { RightsTabs } from "@/components/home/rights-tabs";
 import { FEATURED_HELP_CARD_SLUGS, HELP_CARDS } from "@/lib/help-cards";
@@ -27,11 +28,13 @@ export default function HomePage() {
 
       <HomeHero />
 
-      <section className="relative z-20 -mt-14">
+      <section className="relative z-20 -mt-10 sm:-mt-14">
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <AccessStampSearchBox />
+          <VenueFinderBox />
         </div>
       </section>
+
+      <CategoryShortcutRow />
 
       <PlatformPillarsGrid />
       <HomeAccessCategories />
