@@ -21,7 +21,7 @@ const body = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://access-stamp-mxao.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://access-stamp-seven.vercel.app"),
   title: {
     default: "Access Stamp",
     template: "%s · Access Stamp",

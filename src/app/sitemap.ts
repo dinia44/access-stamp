@@ -4,7 +4,7 @@ import { getBlogPosts } from "@/lib/content/blog";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://access-stamp-mxao.vercel.app";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://access-stamp-seven.vercel.app";
   const now = new Date();
 
   const [articles, posts] = await Promise.all([getAdviceArticles(), getBlogPosts()]);
