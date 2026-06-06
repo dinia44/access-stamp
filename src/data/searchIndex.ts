@@ -150,3 +150,13 @@ export const SEARCH_INDEX: SearchItem[] = [
   ...venues,
   ...blogPosts,
 ];
+
+export function searchAccessStamp(term: string, limit = 8): SearchItem[] {
+  const t = term.trim().toLowerCase();
+  if (!t) return [];
+  return SEARCH_INDEX.filter((item) =>
+    [item.title, item.description, item.category, ...item.tags].some((field) =>
+      field.toLowerCase().includes(t),
+    ),
+  ).slice(0, limit);
+}
