@@ -14,7 +14,7 @@ export const HERO_FLOAT_CARDS = [
   {
     id: "toilet",
     title: "Accessible toilet",
-    report: "Step-free access · Wide door · L/R transfer",
+    report: "Step-free access, Wide door, L/R transfer",
     photo: {
       src: u("photo-1584622650111-993a426fbf0a", 520, "center"),
       alt: "Accessible toilet with grab rails and transfer space",
@@ -24,7 +24,7 @@ export const HERO_FLOAT_CARDS = [
   {
     id: "cafe",
     title: "Café entrance",
-    report: "Level access · Automatic door",
+    report: "Level access, Automatic door",
     photo: {
       src: u("photo-1559305616-3f99cd43e353", 520, "center"),
       alt: "Modern café storefront at night with level entrance",
@@ -34,7 +34,7 @@ export const HERO_FLOAT_CARDS = [
   {
     id: "venue",
     title: "Venue exterior",
-    report: "Step-free route · Smooth path",
+    report: "Step-free route, Smooth path",
     photo: {
       src: u("photo-1486406146926-c627a92ad1ab", 520, "center"),
       alt: "Modern brick and glass building exterior",

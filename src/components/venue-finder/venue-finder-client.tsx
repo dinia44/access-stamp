@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SetChatContext } from "@/components/chat/set-context";
+import { DEFAULT_VENUE_FILTERS, HeroSearchCard } from "@/components/home/hero-search";
 import type { Venue } from "@/lib/mock-data";
 import { SAMPLE_VENUE_CARDS } from "@/lib/venue-finder-samples";
 import {
@@ -11,10 +11,9 @@ import {
   mapIncomingFilters,
   mapQueryToFilters,
 } from "@/lib/venue-finder";
-import { SampleResultsIntro, SampleVenueCardItem } from "./sample-venue-card";
+import { SampleVenueCardItem } from "./sample-venue-card";
 import { VenueCard } from "./venue-card";
 import { VenueFinderEmptyState, VenueFinderShell } from "./venue-finder-shell";
-import { VenueFinderSearchForm } from "./venue-finder-search";
 
 type Props = {
   venues: Venue[];
@@ -29,7 +28,17 @@ function VenueFinderInteractive({ venues }: Props) {
   const initialLocation = searchParams.get("location") ?? "";
   const requestedFilters = mapIncomingFilters(searchParams.get("filters") ?? searchParams.get("features") ?? "");
   const inferredFromQuery = mapQueryToFilters(initialQuery);
-  const initialFilters = requestedFilters.length ? requestedFilters : inferredFromQuery.slice(0, 3);
+  const hasUrlParams = Boolean(
+    initialQuery.trim() ||
+      initialLocation.trim() ||
+      requestedFilters.length ||
+      searchParams.get("verified") === "1",
+  );
+  const initialFilters = requestedFilters.length
+    ? requestedFilters
+    : inferredFromQuery.length
+      ? inferredFromQuery.slice(0, 3)
+      : [...DEFAULT_VENUE_FILTERS];
   const initialVerifiedOnly = searchParams.get("verified") === "1";
 
   const [query, setQuery] = useState(initialQuery);
@@ -39,9 +48,7 @@ function VenueFinderInteractive({ venues }: Props) {
   const [locating, setLocating] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const hasActiveSearch = Boolean(
-    query.trim() || location.trim() || selectedFilters.length || verifiedOnly,
-  );
+  const hasActiveSearch = Boolean(query.trim() || location.trim() || verifiedOnly);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -110,7 +117,7 @@ function VenueFinderInteractive({ venues }: Props) {
       <VenueFinderEmptyState />
     )
   ) : (
-    <ul className="vf-sample-grid mt-8">
+    <ul className="vf-sample-grid">
       {SAMPLE_VENUE_CARDS.map((venue) => (
         <SampleVenueCardItem key={venue.id} venue={venue} />
       ))}
@@ -124,28 +131,19 @@ function VenueFinderInteractive({ venues }: Props) {
         resultsCount={resultsCount}
         showDefaultSamples={false}
         compactResults={hasActiveSearch}
-        resultsSubtitle={hasActiveSearch ? undefined : <SampleResultsIntro />}
         searchSlot={
-          <>
-            <VenueFinderSearchForm
-              query={query}
-              onQueryChange={setQuery}
-              location={location}
-              onLocationChange={setLocation}
-              selectedFilters={selectedFilters}
-              onToggleFilter={toggleFilter}
-              onClearFilters={clearFilters}
-              onSearch={() => undefined}
-              onUseLocation={handleUseLocation}
-              locating={locating}
-            />
-            <p className="mt-4 text-sm" style={{ color: "var(--vf-muted)" }}>
-              Know a place we should list?{" "}
-              <Link href="/submit-venue" className="font-semibold hover:underline" style={{ color: "var(--vf-blue)" }}>
-                Suggest a venue
-              </Link>
-            </p>
-          </>
+          <HeroSearchCard
+            embedded
+            query={query}
+            onQueryChange={setQuery}
+            location={location}
+            onLocationChange={setLocation}
+            activeFilters={selectedFilters}
+            onToggleFilter={toggleFilter}
+            onClearFilters={clearFilters}
+            onUseLocation={handleUseLocation}
+            locating={locating}
+          />
         }
         resultsSlot={resultsSlot}
       />

@@ -1,16 +1,16 @@
 import Link from "next/link";
+import { HeroSearchCard } from "@/components/home/hero-search";
 import { Container } from "@/components/container";
 import { SAMPLE_VENUE_CARDS } from "@/lib/venue-finder-samples";
 import { ExplainerPanel } from "./explainer-panel";
 import { HeroMobileAccent, HeroVisualPanel } from "./hero-visual-panel";
-import { SampleResultsIntro, SampleVenueCardItem } from "./sample-venue-card";
+import { SampleVenueCardItem } from "./sample-venue-card";
 
 type ShellProps = {
   resultsCount?: number;
   searchSlot: React.ReactNode;
   resultsSlot?: React.ReactNode;
   showDefaultSamples?: boolean;
-  resultsSubtitle?: React.ReactNode;
   compactResults?: boolean;
 };
 
@@ -18,32 +18,33 @@ export function VenueFinderHero() {
   return (
     <section
       aria-labelledby="venue-finder-heading"
-      className="vf-hero pb-24 pt-12 sm:pb-28 sm:pt-14"
+      className="vf-hero relative overflow-hidden pb-24 pt-12 sm:pb-28 sm:pt-14"
     >
-      <Container>
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-10">
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden
+        style={{
+          background:
+            "radial-gradient(980px 600px at 10% 40%, rgba(36,120,208,0.28), transparent 58%), radial-gradient(700px 480px at 88% 12%, rgba(212,149,42,0.16), transparent 55%), radial-gradient(800px 500px at 90% 15%, rgba(15,38,72,0.35), transparent 62%)",
+        }}
+      />
+      <Container className="relative">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8">
           <div>
-            <p className="vf-hero-badge inline-flex rounded-full px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.18em]">
+            <p className="hero-badge inline-flex items-center rounded-full px-4 py-1 text-[11px] font-semibold tracking-[0.18em] uppercase">
               UK&apos;s trusted accessibility platform
             </p>
-            <div className="vf-hero-accent-line mt-4" aria-hidden />
+            <div className="hero-accent-line mt-4 !mx-0" aria-hidden />
             <h1
               id="venue-finder-heading"
-              className="mt-4 max-w-2xl font-[var(--font-heading)] text-[clamp(2rem,4vw,2.75rem)] font-semibold leading-[1.05] tracking-[-0.03em]"
-              style={{ color: "var(--vf-hero-heading)" }}
+              className="mt-4 max-w-2xl font-[var(--font-heading)] text-[clamp(2.2rem,4vw,3.25rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-[#f8fafc]"
             >
               The UK&apos;s trusted accessibility platform
             </h1>
-            <p
-              className="mt-4 max-w-xl text-[1.25rem] leading-[1.35]"
-              style={{ color: "var(--vf-hero-subtitle)" }}
-            >
+            <p className="mt-3 max-w-xl text-[22px] leading-[1.35] text-[#cbd5e1]">
               Find and share step-free venues. Access accurate. Access confident.
             </p>
-            <p
-              className="mt-3 max-w-xl text-sm font-medium"
-              style={{ color: "#94a3b8" }}
-            >
+            <p className="mt-3 max-w-xl text-sm font-medium text-[#94a3b8]">
               Built from lived experience. Practical UK guidance. Real access detail, not vague labels.
             </p>
             <HeroMobileAccent />
@@ -57,15 +58,15 @@ export function VenueFinderHero() {
 
 export function VenueFinderSearchCard({ children }: { children: React.ReactNode }) {
   return (
-    <Container className="relative z-10 -mt-14 sm:-mt-16">
-      <div className="vf-search-card p-4 sm:p-5 lg:p-6">{children}</div>
+    <Container className="relative z-10 -mt-12 sm:-mt-14">
+      <div className="mx-auto max-w-[980px]">{children}</div>
     </Container>
   );
 }
 
 export function DefaultSampleResults() {
   return (
-    <ul className="vf-sample-grid mt-8">
+    <ul className="vf-sample-grid">
       {SAMPLE_VENUE_CARDS.map((venue) => (
         <SampleVenueCardItem key={venue.id} venue={venue} />
       ))}
@@ -91,7 +92,6 @@ export function VenueFinderShell({
   searchSlot,
   resultsSlot,
   showDefaultSamples = true,
-  resultsSubtitle,
   compactResults = false,
 }: ShellProps) {
   const count = resultsCount ?? SAMPLE_VENUE_CARDS.length;
@@ -104,14 +104,13 @@ export function VenueFinderShell({
 
       <section className="vf-results-section py-10 sm:py-12" aria-labelledby="venue-results-heading">
         <Container>
-          <div className={showingSamples ? "" : "lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-8"}>
+          <div className={`mx-auto max-w-[980px] ${showingSamples ? "" : "lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-8"}`}>
             <main id="venue-results" className="min-w-0">
               <div className="vf-results-header">
                 <h2 id="venue-results-heading" className="sr-only">
                   Venue search results
                 </h2>
                 {compactResults ? <ResultsCount count={count} /> : null}
-                {resultsSubtitle ?? (showingSamples ? <SampleResultsIntro /> : null)}
               </div>
 
               {resultsSlot ?? (showDefaultSamples ? <DefaultSampleResults /> : null)}
@@ -158,31 +157,7 @@ export function VenueFinderEmptyState() {
 export function VenueFinderStaticPage() {
   return (
     <VenueFinderShell
-      searchSlot={
-        <form action="/venue-finder" method="get" className="vf-search-form space-y-4">
-          <div className="vf-search-row">
-            <label htmlFor="vf-search-static" className="vf-search-field">
-              <span className="vf-search-field-icon" aria-hidden>
-                ⌕
-              </span>
-              <span className="vf-search-field-inner">
-                <span className="vf-search-field-label">Search for a venue, place, or access need</span>
-                <input
-                  id="vf-search-static"
-                  name="q"
-                  type="search"
-                  className="vf-search-field-input"
-                  placeholder="e.g. Step-free restaurant in Leeds with parking"
-                  autoComplete="off"
-                />
-              </span>
-            </label>
-            <button type="submit" className="vf-btn-primary vf-search-submit">
-              Find access-checked venues
-            </button>
-          </div>
-        </form>
-      }
+      searchSlot={<HeroSearchCard />}
     />
   );
 }

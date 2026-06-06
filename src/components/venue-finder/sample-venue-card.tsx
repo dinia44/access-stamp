@@ -6,13 +6,13 @@ import type { SampleVenueCard } from "@/lib/venue-finder-samples";
 import { getSampleVenuePhoto } from "@/lib/venue-finder-images";
 import { SampleVerificationBadge } from "./venue-finder-badges";
 
-function FeatureIcon({ feature }: { feature: string }) {
+function FeatureRow({ feature }: { feature: string }) {
   const lower = feature.toLowerCase();
   const icon =
-    lower.includes("toilet") ? "🚻" : lower.includes("hearing") ? "👂" : lower.includes("lift") ? "🛗" : lower.includes("parking") ? "🅿️" : "♿";
+    lower.includes("toilet") ? "🚻" : lower.includes("hearing") ? "👂" : lower.includes("lift") ? "🛗" : "♿";
 
   return (
-    <span className="vf-sample-feature" title={feature}>
+    <span className="vf-sample-feature">
       <span aria-hidden="true">{icon}</span>
       <span>{feature}</span>
     </span>
@@ -32,7 +32,7 @@ export function SampleVenueCardItem({ venue }: { venue: SampleVenueCard }) {
           <img src={photo.src} alt={photo.alt} className="vf-sample-card-photo" />
           <span
             className="vf-sample-card-category"
-            style={{ color: accent.accent, background: accent.soft, borderColor: `${accent.accent}33` }}
+            style={{ color: accent.accent, background: accent.soft, borderColor: `${accent.accent}40` }}
           >
             {venue.categoryLabel.toUpperCase()}
           </span>
@@ -50,7 +50,7 @@ export function SampleVenueCardItem({ venue }: { venue: SampleVenueCard }) {
 
           <div className="vf-sample-card-features">
             {venue.features.map((feature) => (
-              <FeatureIcon key={feature} feature={feature} />
+              <FeatureRow key={feature} feature={feature} />
             ))}
           </div>
 
@@ -58,7 +58,7 @@ export function SampleVenueCardItem({ venue }: { venue: SampleVenueCard }) {
 
           <button
             type="button"
-            className="vf-btn-primary vf-sample-card-cta"
+            className="vf-sample-card-cta"
             aria-label={`View access report for ${venue.name}`}
           >
             View access report
@@ -66,13 +66,5 @@ export function SampleVenueCardItem({ venue }: { venue: SampleVenueCard }) {
         </div>
       </article>
     </li>
-  );
-}
-
-export function SampleResultsIntro() {
-  return (
-    <p className="vf-results-subtitle">
-      Example access reports — search above to find venues across the UK.
-    </p>
   );
 }
