@@ -11,7 +11,7 @@ const CATEGORIES = [
 
 export function HomeAccessCategories() {
   return (
-    <section aria-labelledby="home-access-categories" className="border-b border-slate-200 bg-white pb-10 pt-14">
+    <section aria-labelledby="home-access-categories" className="border-b border-slate-200 bg-white pb-10 pt-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>

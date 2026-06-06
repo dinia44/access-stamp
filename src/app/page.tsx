@@ -6,168 +6,17 @@ import { Container } from "@/components/container";
 import { FadeIn } from "@/components/fade-in";
 import { Card, Badge, Button } from "@/components/ui";
 import { SectionLabel } from "@/components/home/section-label";
-import { FeaturedPracticalGuides } from "@/components/advice/featured-practical-guides";
 import { HomeAccessCategories } from "@/components/home/home-hero-extras";
-import { PremiumHomeHero } from "@/components/home/premium-home-hero";
-import { VenueFinderPromoVideo } from "@/components/venue-finder-promo-video";
-import { ConfidenceBadge, VerificationBadge } from "@/components/verification-badge";
+import { HomeForVenues } from "@/components/home/home-for-venues";
+import { HomeGuidesPlanning } from "@/components/home/home-guides-planning";
+import { HomePlatformPillars } from "@/components/home/home-platform-pillars";
+import { HomePopularVenues } from "@/components/home/home-popular-venues";
+import { HomeVenueFinderBox } from "@/components/home/home-venue-finder-box";
+import { HomepageHero } from "@/components/home/homepage-hero";
 import { RightsTabs } from "@/components/home/rights-tabs";
-import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { FEATURED_HELP_CARD_SLUGS, HELP_CARDS } from "@/lib/help-cards";
 
-type Pillar = {
-  icon:
-    | "venue"
-    | "ai"
-    | "equipment"
-    | "rights"
-    | "care"
-    | "education"
-    | "transport"
-    | "work"
-    | "blog";
-  title: string;
-  desc: string;
-  href: string;
-  highlight?: boolean;
-};
-
-const PILLARS: Pillar[] = [
-  {
-    icon: "venue",
-    title: "Venue Finder",
-    desc: "Search by step-free access, turning space, toilet quality, and parking.",
-    href: "/venue-finder",
-  },
-  {
-    icon: "ai",
-    title: "AI Assistant",
-    desc: "Chat or speak — asks the questions generic AI skips, grounded in verified listings and UK routes.",
-    href: "/ai",
-    highlight: true,
-  },
-  {
-    icon: "equipment",
-    title: "Equipment",
-    desc: "Wheelchairs, cushions, slide sheets, hoists, ramps.",
-    href: "/advice/equipment",
-  },
-  {
-    icon: "rights",
-    title: "Your Rights",
-    desc: "Benefits, Equality Act, legal protections.",
-    href: "/advice/rights",
-  },
-  {
-    icon: "care",
-    title: "Care & Support",
-    desc: "Personal budgets, hiring PAs, templates.",
-    href: "/advice/care",
-  },
-  {
-    icon: "education",
-    title: "Education",
-    desc: "DSA, EHC plans, university support.",
-    href: "/advice/education",
-  },
-  {
-    icon: "transport",
-    title: "Transport",
-    desc: "Trains, buses, flying, taxis, driving.",
-    href: "/advice/transport",
-  },
-  {
-    icon: "work",
-    title: "Workplace",
-    desc: "Access to Work, adjustments, discrimination.",
-    href: "/advice/workplace",
-  },
-  {
-    icon: "blog",
-    title: "Blog",
-    desc: "Firsthand stories, tutorials, honest takes.",
-    href: "/blog",
-  },
-];
-
-function PillarIcon({ name }: { name: Pillar["icon"] }) {
-  const cls = "h-6 w-6 text-blue";
-  if (name === "venue") {
-    return (
-      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
-        <path d="M12 22s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z" />
-        <circle cx="12" cy="10" r="2.5" />
-      </svg>
-    );
-  }
-  if (name === "ai") {
-    return (
-      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
-        <rect x="4" y="8" width="16" height="11" rx="3" />
-        <path d="M12 4v4m-3 5h.01M15 13h.01M8 19v2m8-2v2" />
-      </svg>
-    );
-  }
-  if (name === "equipment") {
-    return (
-      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
-        <circle cx="7" cy="17" r="3" />
-        <path d="M10 17h5l3-7h-6m-4 1 2-3h3" />
-      </svg>
-    );
-  }
-  if (name === "rights") {
-    return (
-      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
-        <path d="M12 3v18M5 7h14M7 7l-3 5h6l-3-5Zm10 0-3 5h6l-3-5Z" />
-      </svg>
-    );
-  }
-  if (name === "care") {
-    return (
-      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
-        <path d="M12 21s-7-4.7-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 11c0 5.3-7 10-7 10Z" />
-      </svg>
-    );
-  }
-  if (name === "education") {
-    return (
-      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
-        <path d="m3 9 9-5 9 5-9 5-9-5Z" />
-        <path d="M6 11v5c0 1.8 2.7 3 6 3s6-1.2 6-3v-5" />
-      </svg>
-    );
-  }
-  if (name === "transport") {
-    return (
-      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
-        <rect x="4" y="4" width="16" height="13" rx="2" />
-        <path d="M7 17v3m10-3v3M7 9h10M9 13h.01M15 13h.01" />
-      </svg>
-    );
-  }
-  if (name === "work") {
-    return (
-      <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
-        <rect x="3" y="7" width="18" height="13" rx="2" />
-        <path d="M9 7V5h6v2m-12 5h18" />
-      </svg>
-    );
-  }
-  return (
-    <svg data-as-icon="true" viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
-      <path d="M5 5h14v14H5z" />
-      <path d="M8 9h8M8 13h8M8 17h5" />
-    </svg>
-  );
-}
-
 export default function HomePage() {
-  const featured = [
-    "the-botanist-kitchen-manchester",
-    "riverside-arts-centre-bristol",
-    "greenfield-shopping-village-leeds",
-  ].map((slug) => SAMPLE_VENUES.find((v) => v.slug === slug)).filter(Boolean);
   const featuredCards = FEATURED_HELP_CARD_SLUGS
     .map((slug) => HELP_CARDS.find((card) => card.slug === slug))
     .filter(Boolean);
@@ -176,8 +25,19 @@ export default function HomePage() {
     <div>
       <SetChatContext page={{ kind: "home" }} />
 
-      <PremiumHomeHero />
+      <HomepageHero />
+
+      <section className="relative z-20 -mt-14">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <HomeVenueFinderBox />
+        </div>
+      </section>
+
+      <HomePlatformPillars />
       <HomeAccessCategories />
+      <HomePopularVenues />
+      <HomeGuidesPlanning />
+      <HomeForVenues />
 
       {/* Section 2: New to Disability */}
       <section className="section-band-cool py-24">
@@ -241,169 +101,6 @@ export default function HomePage() {
               </Card>
             </div>
           </FadeIn>
-        </Container>
-      </section>
-
-      <section className="section-band-warm py-20">
-        <Container>
-          <FadeIn>
-            <FeaturedPracticalGuides />
-          </FadeIn>
-        </Container>
-      </section>
-
-      {/* Section 3: Platform Pillars */}
-      <section className="section-band-blend relative isolate overflow-hidden py-24">
-        <Container className="relative z-10">
-          <div className="mx-auto max-w-[560px] text-center">
-            <FadeIn>
-              <SectionLabel>What you’ll find here</SectionLabel>
-              <h2 className="mt-3 font-[var(--font-heading)] text-[30px] tracking-[-0.025em] text-heading">
-                Everything in one place
-              </h2>
-              <p className="mt-3 text-[16px] leading-[1.7] text-text">
-                From accessible venues to workplace rights, plus an AI assistant that understands access needs.
-              </p>
-            </FadeIn>
-          </div>
-
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {PILLARS.map((c, idx) => (
-              <FadeIn key={c.href} delayMs={Math.min(idx * 50, 250)}>
-                <Link href={c.href} className="group block h-full">
-                  <Card
-                    className={
-                      "h-full p-7 transition-all duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[3px] group-hover:shadow-[var(--shadow)] " +
-                      (c.highlight ? "ring-1 ring-blue/25" : "")
-                    }
-                  >
-                    <div className={"icon-well h-11 w-11 " + (c.highlight ? "icon-well-blue" : "icon-well-neutral")}>
-                      <PillarIcon name={c.icon} />
-                    </div>
-                    <div className="mt-4 font-[var(--font-heading)] text-[19px] tracking-[-0.025em] text-heading">
-                      {c.title}
-                    </div>
-                    <div className="mt-2 text-[14px] leading-[1.6] text-text">{c.desc}</div>
-                  </Card>
-                </Link>
-              </FadeIn>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* Section 4: Featured Venues */}
-      <section className="section-band-cool py-24">
-        <Container>
-          <FadeIn>
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <div className="space-y-2">
-                <SectionLabel>Venue finder</SectionLabel>
-                <h2 className="font-[var(--font-heading)] text-[30px] tracking-[-0.025em] text-heading">
-                  Real venues, real detail
-                </h2>
-                <p className="max-w-[60ch] text-[16px] leading-[1.7] text-text">
-                  Listings focus on the things that decide whether a place is actually usable.
-                </p>
-              </div>
-              <Link
-                href="/venue-finder"
-                className="inline-flex items-center justify-center rounded-[var(--radius-ui)] bg-blue px-4 py-2 text-sm font-semibold text-white"
-              >
-                Search all →
-              </Link>
-            </div>
-          </FadeIn>
-
-          <FadeIn delayMs={80}>
-            <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-center">
-              <VenueFinderPromoVideo />
-              <div className="space-y-4">
-                <h3 className="font-[var(--font-heading)] text-[22px] tracking-[-0.02em] text-heading">
-                  See how Access Stamp Venue Finder works
-                </h3>
-                <p className="text-[15px] leading-[1.7] text-text">
-                  This short video walks through why generic accessibility labels fail — and how Access Stamp helps you
-                  search by the practical features you need before you leave home.
-                </p>
-                <p className="text-sm text-muted">
-                  Filter by step-free entry, accessible toilets, Changing Places, Blue Badge parking, turning space, and
-                  more — then open a listing for feature-by-feature detail.
-                </p>
-                <Link
-                  href="/venue-finder"
-                  className="inline-flex items-center justify-center rounded-[var(--radius-ui)] bg-blue px-4 py-2 text-sm font-semibold text-white"
-                >
-                  Try Venue Finder
-                </Link>
-              </div>
-            </div>
-          </FadeIn>
-
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {featured.map((v, idx) => (
-              <FadeIn key={v!.slug} delayMs={idx * 80}>
-                <Link href={`/venue/${v!.slug}`} className="group block">
-                  <Card className="overflow-hidden transition-all duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[3px] group-hover:shadow-[var(--shadow)]">
-                    <div
-                      className="relative grid h-[190px] place-items-center"
-                      style={{
-                        background:
-                          "linear-gradient(155deg, #f0ece5 0%, #e8f0ec 60%)",
-                      }}
-                    >
-                      <div className="text-[60px]" aria-hidden>
-                        {v!.type === "Shopping"
-                          ? "🛍️"
-                          : v!.type === "Arts & Culture"
-                            ? "🎭"
-                            : "🍽️"}
-                      </div>
-                      <div className="absolute left-4 top-4">
-                        <span className="inline-flex rounded-full bg-navy px-3 py-1 text-xs font-semibold text-[#e8e2d8]">
-                          {v!.type}
-                        </span>
-                      </div>
-                      <div className="absolute right-4 top-4">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-3 py-1 text-xs font-semibold text-heading backdrop-blur">
-                          <span className="text-warning" aria-hidden>
-                            ★
-                          </span>
-                          {v!.rating.toFixed(1)}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-7">
-                      <div className="text-[12px] font-semibold tracking-[0.06em] text-[#9a9590]">
-                        📍 {v!.location}
-                      </div>
-                      <div className="mt-2 font-[var(--font-heading)] text-[19px] leading-[1.3] tracking-[-0.025em] text-heading">
-                        {v!.name}
-                      </div>
-                      <div className="mt-2 text-[14px] leading-[1.65] text-text">{v!.summary}</div>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {v!.tags.slice(0, 3).map((t) => (
-                          <span
-                            key={t}
-                            className="inline-flex items-center gap-2 rounded-full bg-blue-pale px-3 py-1 text-xs font-semibold text-[#4a7060]"
-                          >
-                            <span aria-hidden>✓</span>
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-3">
-                        <VerificationBadge status={v!.verification} />
-                        <ConfidenceBadge level={v!.confidence} />
-                      </div>
-                      <div className="mt-2 text-xs text-muted">Last updated: {v!.lastUpdated}</div>
-                    </div>
-                  </Card>
-                </Link>
-              </FadeIn>
-            ))}
-          </div>
         </Container>
       </section>
 
