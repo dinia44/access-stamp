@@ -27,42 +27,45 @@ export function SampleVenueCardItem({ venue }: { venue: SampleVenueCard }) {
   return (
     <li>
       <article className="vf-sample-card">
-        <div className="vf-sample-card-image">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={photo.src} alt={photo.alt} className="vf-sample-card-photo" />
-          <span
-            className="vf-sample-card-category"
-            style={{ color: accent.accent, background: accent.soft, borderColor: `${accent.accent}40` }}
-          >
-            {venue.categoryLabel.toUpperCase()}
-          </span>
-        </div>
-
-        <div className="vf-sample-card-content">
-          <h3 className="vf-sample-card-title">{venue.name}</h3>
-
-          <div className="vf-sample-card-badges">
-            <SampleVerificationBadge status={venue.verification} />
-            {venue.secondaryVerification ? (
-              <SampleVerificationBadge status={venue.secondaryVerification} />
-            ) : null}
+        <div className="vf-sample-card-accent" style={{ background: accent.accent }} aria-hidden="true" />
+        <div className="vf-sample-card-body">
+          <div className="vf-sample-card-image">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={photo.src} alt={photo.alt} className="vf-sample-card-photo" />
+            <span
+              className="vf-sample-card-category"
+              style={{ color: accent.accent, background: accent.soft, borderColor: `${accent.accent}40` }}
+            >
+              {venue.categoryLabel.toUpperCase()}
+            </span>
           </div>
 
-          <div className="vf-sample-card-features">
-            {venue.features.map((feature) => (
-              <FeatureRow key={feature} feature={feature} />
-            ))}
+          <div className="vf-sample-card-content">
+            <h3 className="vf-sample-card-title">{venue.name}</h3>
+
+            <div className="vf-sample-card-badges">
+              <SampleVerificationBadge status={venue.verification} />
+              {venue.secondaryVerification ? (
+                <SampleVerificationBadge status={venue.secondaryVerification} />
+              ) : null}
+            </div>
+
+            <div className="vf-sample-card-features">
+              {venue.features.map((feature) => (
+                <FeatureRow key={feature} feature={feature} />
+              ))}
+            </div>
+
+            <p className="vf-sample-card-description">{venue.description}</p>
+
+            <button
+              type="button"
+              className="vf-sample-card-cta"
+              aria-label={`View access report for ${venue.name}`}
+            >
+              View access report
+            </button>
           </div>
-
-          <p className="vf-sample-card-description">{venue.description}</p>
-
-          <button
-            type="button"
-            className="vf-sample-card-cta"
-            aria-label={`View access report for ${venue.name}`}
-          >
-            View access report
-          </button>
         </div>
       </article>
     </li>
