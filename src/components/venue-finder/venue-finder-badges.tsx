@@ -2,7 +2,7 @@ import type { SampleVenueCard } from "@/lib/venue-finder-samples";
 
 function verificationClass(status: SampleVenueCard["verification"]) {
   if (status === "Access Stamp checked") return "vf-badge-verified";
-  if (status === "Community reported") return "vf-badge-community";
+  if (status === "Community reported") return "vf-badge-community-orange";
   return "vf-badge-unverified";
 }
 

@@ -1,25 +1,23 @@
-import Link from "next/link";
 import {
   getCategoryAccent,
   themeFromSampleId,
-  type VenueImageTheme,
 } from "@/lib/venue-finder-category";
 import type { SampleVenueCard } from "@/lib/venue-finder-samples";
 import { getSampleVenuePhoto } from "@/lib/venue-finder-images";
-import {
-  CategoryBadge,
-  SampleConfidenceBadge,
-  SampleVerificationBadge,
-} from "./venue-finder-badges";
-import { VenueCardImage } from "./venue-card-image";
+import { SampleVerificationBadge } from "./venue-finder-badges";
 
-const IMAGE_LABELS: Record<VenueImageTheme, string> = {
-  cafe: "Café",
-  hotel: "Hotel",
-  toilet: "Public toilet",
-  shop: "Storefront",
-  attraction: "Public venue",
-};
+function FeatureIcon({ feature }: { feature: string }) {
+  const lower = feature.toLowerCase();
+  const icon =
+    lower.includes("toilet") ? "🚻" : lower.includes("hearing") ? "👂" : lower.includes("lift") ? "🛗" : lower.includes("parking") ? "🅿️" : "♿";
+
+  return (
+    <span className="vf-sample-feature" title={feature}>
+      <span aria-hidden="true">{icon}</span>
+      <span>{feature}</span>
+    </span>
+  );
+}
 
 export function SampleVenueCardItem({ venue }: { venue: SampleVenueCard }) {
   const theme = venue.imageTheme ?? themeFromSampleId(venue.id);
@@ -28,66 +26,43 @@ export function SampleVenueCardItem({ venue }: { venue: SampleVenueCard }) {
 
   return (
     <li>
-      <article className="vf-venue-card">
-        <div className="vf-venue-card-accent" style={{ background: accent.accent }} aria-hidden="true" />
-        <div className="vf-venue-card-body">
-          <VenueCardImage
-            theme={theme}
-            src={photo.src}
-            alt={photo.alt}
-            label={IMAGE_LABELS[theme]}
-          />
-          <div className="vf-venue-card-content">
-            <header className="space-y-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <CategoryBadge label={accent.label} accent={accent.accent} soft={accent.soft} />
-              </div>
-              <h3
-                className="font-[var(--font-heading)] text-lg font-semibold leading-snug"
-                style={{ color: "var(--vf-ink)" }}
-              >
-                {venue.name}
-              </h3>
-              <p className="text-sm" style={{ color: "var(--vf-muted)" }}>
-                {venue.type}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <SampleVerificationBadge status={venue.verification} />
-                <SampleConfidenceBadge level={venue.confidence} />
-              </div>
-            </header>
+      <article className="vf-sample-card">
+        <div className="vf-sample-card-image">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={photo.src} alt={photo.alt} className="vf-sample-card-photo" />
+          <span
+            className="vf-sample-card-category"
+            style={{ color: accent.accent, background: accent.soft, borderColor: `${accent.accent}33` }}
+          >
+            {venue.categoryLabel.toUpperCase()}
+          </span>
+        </div>
 
-            <div className="mt-4 space-y-3 text-sm" style={{ color: "var(--vf-muted)" }}>
-              <p>
-                <span className="font-semibold" style={{ color: "var(--vf-ink)" }}>
-                  Access summary:{" "}
-                </span>
-                {venue.summary}
-              </p>
-              {venue.bestFor ? (
-                <p>
-                  <span className="font-semibold" style={{ color: "var(--vf-ink)" }}>
-                    Best for:{" "}
-                  </span>
-                  {venue.bestFor}
-                </p>
-              ) : null}
-              <div className="vf-warning-box">
-                <span className="font-semibold">Check before visiting: </span>
-                {venue.warning.replace(/^Check before visiting:\s*/i, "")}
-              </div>
-            </div>
+        <div className="vf-sample-card-content">
+          <h3 className="vf-sample-card-title">{venue.name}</h3>
 
-            <footer className="mt-5 border-t pt-4" style={{ borderColor: "var(--vf-border)" }}>
-              <button
-                type="button"
-                className="vf-btn-primary w-full sm:w-auto"
-                aria-label={`View access report for ${venue.name}`}
-              >
-                View access report
-              </button>
-            </footer>
+          <div className="vf-sample-card-badges">
+            <SampleVerificationBadge status={venue.verification} />
+            {venue.secondaryVerification ? (
+              <SampleVerificationBadge status={venue.secondaryVerification} />
+            ) : null}
           </div>
+
+          <div className="vf-sample-card-features">
+            {venue.features.map((feature) => (
+              <FeatureIcon key={feature} feature={feature} />
+            ))}
+          </div>
+
+          <p className="vf-sample-card-description">{venue.description}</p>
+
+          <button
+            type="button"
+            className="vf-btn-primary vf-sample-card-cta"
+            aria-label={`View access report for ${venue.name}`}
+          >
+            View access report
+          </button>
         </div>
       </article>
     </li>
@@ -97,23 +72,7 @@ export function SampleVenueCardItem({ venue }: { venue: SampleVenueCard }) {
 export function SampleResultsIntro() {
   return (
     <p className="vf-results-subtitle">
-      Example listings with access summaries and verification status — search above to find venues
-      across the UK.
-    </p>
-  );
-}
-
-export function SampleResultsLink() {
-  return (
-    <p className="text-sm" style={{ color: "var(--vf-muted)" }}>
-      Know a place we should list?{" "}
-      <Link
-        href="/submit-venue"
-        className="font-semibold hover:underline"
-        style={{ color: "var(--vf-blue)" }}
-      >
-        Suggest a venue
-      </Link>
+      Example access reports — search above to find venues across the UK.
     </p>
   );
 }

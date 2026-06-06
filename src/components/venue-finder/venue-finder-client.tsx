@@ -10,60 +10,15 @@ import {
   filterVenues,
   mapIncomingFilters,
   mapQueryToFilters,
-  QUICK_FILTER_KEYS,
-  QUICK_FILTERS,
 } from "@/lib/venue-finder";
 import { SampleResultsIntro, SampleVenueCardItem } from "./sample-venue-card";
 import { VenueCard } from "./venue-card";
 import { VenueFinderEmptyState, VenueFinderShell } from "./venue-finder-shell";
+import { VenueFinderSearchForm } from "./venue-finder-search";
 
 type Props = {
   venues: Venue[];
 };
-
-function QuickFilterChips({
-  activeCheck,
-  onToggle,
-  id,
-  className,
-}: {
-  activeCheck: (label: (typeof QUICK_FILTERS)[number]) => boolean;
-  onToggle: (label: (typeof QUICK_FILTERS)[number]) => void;
-  id: string;
-  className?: string;
-}) {
-  return (
-    <div className={className}>
-      <p id={id} className="text-sm font-semibold" style={{ color: "var(--vf-ink)" }}>
-        Quick filters
-      </p>
-      <ul
-        aria-labelledby={id}
-        className="mt-2 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {QUICK_FILTERS.map((label) => {
-          const active = activeCheck(label);
-          const isVerified = label === "Verified by Access Stamp";
-          return (
-            <li key={label} className="shrink-0">
-              <button
-                type="button"
-                className="vf-chip"
-                data-active={active ? "true" : "false"}
-                data-verified={isVerified ? "true" : undefined}
-                aria-pressed={active}
-                onClick={() => onToggle(label)}
-              >
-                {active ? "✓ " : ""}
-                {label}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
 
 function VenueFinderInteractive({ venues }: Props) {
   const router = useRouter();
@@ -71,19 +26,21 @@ function VenueFinderInteractive({ venues }: Props) {
   const searchParams = useSearchParams();
 
   const initialQuery = searchParams.get("q") ?? "";
-  const requestedFilters = mapIncomingFilters(searchParams.get("filters") ?? "");
+  const initialLocation = searchParams.get("location") ?? "";
+  const requestedFilters = mapIncomingFilters(searchParams.get("filters") ?? searchParams.get("features") ?? "");
   const inferredFromQuery = mapQueryToFilters(initialQuery);
   const initialFilters = requestedFilters.length ? requestedFilters : inferredFromQuery.slice(0, 3);
   const initialVerifiedOnly = searchParams.get("verified") === "1";
 
   const [query, setQuery] = useState(initialQuery);
+  const [location, setLocation] = useState(initialLocation);
   const [selectedFilters, setSelectedFilters] = useState<string[]>(initialFilters);
   const [verifiedOnly, setVerifiedOnly] = useState(initialVerifiedOnly);
   const [locating, setLocating] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const hasActiveSearch = Boolean(
-    query.trim() || selectedFilters.length || verifiedOnly,
+    query.trim() || location.trim() || selectedFilters.length || verifiedOnly,
   );
 
   useEffect(() => {
@@ -91,6 +48,7 @@ function VenueFinderInteractive({ venues }: Props) {
     debounceRef.current = setTimeout(() => {
       const params = new URLSearchParams();
       if (query.trim()) params.set("q", query.trim());
+      if (location.trim()) params.set("location", location.trim());
       if (selectedFilters.length) params.set("filters", selectedFilters.join(","));
       if (verifiedOnly) params.set("verified", "1");
 
@@ -102,42 +60,28 @@ function VenueFinderInteractive({ venues }: Props) {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [query, selectedFilters, verifiedOnly, pathname, router, searchParams]);
+  }, [query, location, selectedFilters, verifiedOnly, pathname, router, searchParams]);
 
   const filtered = useMemo(
     () =>
       filterVenues(venues, {
-        query,
+        query: [query, location].filter(Boolean).join(" "),
         selectedFilters,
         verifiedOnly,
         sortBy: "Relevance",
       }),
-    [venues, query, selectedFilters, verifiedOnly],
+    [venues, query, location, selectedFilters, verifiedOnly],
   );
 
-  const toggleQuickFilter = useCallback((label: (typeof QUICK_FILTERS)[number]) => {
-    const key = QUICK_FILTER_KEYS[label];
-    if (!key) return;
-    if (label === "Verified by Access Stamp") {
-      setVerifiedOnly((v) => !v);
-      return;
-    }
+  const toggleFilter = useCallback((key: string) => {
     setSelectedFilters((prev) =>
       prev.includes(key) ? prev.filter((f) => f !== key) : [...prev, key],
     );
   }, []);
 
-  const isQuickFilterActive = useCallback(
-    (label: (typeof QUICK_FILTERS)[number]) => {
-      const key = QUICK_FILTER_KEYS[label];
-      if (label === "Verified by Access Stamp") return verifiedOnly;
-      return key ? selectedFilters.includes(key) : false;
-    },
-    [selectedFilters, verifiedOnly],
-  );
-
-  const handleSearch = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
+  const clearFilters = useCallback(() => {
+    setSelectedFilters([]);
+    setVerifiedOnly(false);
   }, []);
 
   const handleUseLocation = useCallback(() => {
@@ -145,7 +89,7 @@ function VenueFinderInteractive({ venues }: Props) {
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       () => {
-        setQuery((q) => (q ? q : "accessible toilet near me"));
+        setLocation("Near me");
         setLocating(false);
       },
       () => setLocating(false),
@@ -166,7 +110,7 @@ function VenueFinderInteractive({ venues }: Props) {
       <VenueFinderEmptyState />
     )
   ) : (
-    <ul className="mt-6 grid gap-5">
+    <ul className="vf-sample-grid mt-8">
       {SAMPLE_VENUE_CARDS.map((venue) => (
         <SampleVenueCardItem key={venue.id} venue={venue} />
       ))}
@@ -179,49 +123,29 @@ function VenueFinderInteractive({ venues }: Props) {
       <VenueFinderShell
         resultsCount={resultsCount}
         showDefaultSamples={false}
+        compactResults={hasActiveSearch}
         resultsSubtitle={hasActiveSearch ? undefined : <SampleResultsIntro />}
         searchSlot={
-          <form onSubmit={handleSearch} className="space-y-4">
-            <div>
-              <label htmlFor="vf-search" className="text-sm font-semibold" style={{ color: "var(--vf-ink)" }}>
-                Search by place, town, postcode or venue name
-              </label>
-              <input
-                id="vf-search"
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="vf-input mt-2 h-12 px-4"
-                placeholder="Try 'café in Uckfield' or 'accessible toilet near me'"
-                autoComplete="postal-code"
-                inputMode="search"
-              />
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <button type="submit" className="vf-btn-primary w-full sm:w-auto">
-                Search
-              </button>
-              <button
-                type="button"
-                onClick={handleUseLocation}
-                disabled={locating}
-                className={`vf-btn-secondary w-full sm:w-auto${locating ? " opacity-60" : ""}`}
-              >
-                {locating ? "Finding location…" : "Use my location"}
-              </button>
-            </div>
-            <QuickFilterChips
-              id="quick-filters-search"
-              activeCheck={isQuickFilterActive}
-              onToggle={toggleQuickFilter}
+          <>
+            <VenueFinderSearchForm
+              query={query}
+              onQueryChange={setQuery}
+              location={location}
+              onLocationChange={setLocation}
+              selectedFilters={selectedFilters}
+              onToggleFilter={toggleFilter}
+              onClearFilters={clearFilters}
+              onSearch={() => undefined}
+              onUseLocation={handleUseLocation}
+              locating={locating}
             />
-            <p className="text-sm" style={{ color: "var(--vf-muted)" }}>
+            <p className="mt-4 text-sm" style={{ color: "var(--vf-muted)" }}>
               Know a place we should list?{" "}
               <Link href="/submit-venue" className="font-semibold hover:underline" style={{ color: "var(--vf-blue)" }}>
                 Suggest a venue
               </Link>
             </p>
-          </form>
+          </>
         }
         resultsSlot={resultsSlot}
       />
