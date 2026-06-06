@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { HeroSearchCard } from "@/components/home/hero-search";
 import { Container } from "@/components/container";
-import { SAMPLE_VENUE_CARDS } from "@/lib/venue-finder-samples";
+import { SAMPLE_VENUES } from "@/lib/mock-data";
+import { buildFeaturedVenueItems } from "@/lib/venue-finder-featured";
 import { ExplainerPanel } from "./explainer-panel";
+import { FeaturedVenueGrid } from "./featured-venue-card";
 import { HeroMobileAccent, HeroVisualPanel } from "./hero-visual-panel";
-import { SampleVenueCardItem } from "./sample-venue-card";
 
 type ShellProps = {
   resultsCount?: number;
@@ -65,13 +66,7 @@ export function VenueFinderSearchCard({ children }: { children: React.ReactNode 
 }
 
 export function DefaultSampleResults() {
-  return (
-    <ul className="vf-sample-grid">
-      {SAMPLE_VENUE_CARDS.map((venue) => (
-        <SampleVenueCardItem key={venue.id} venue={venue} />
-      ))}
-    </ul>
-  );
+  return <FeaturedVenueGrid items={buildFeaturedVenueItems(SAMPLE_VENUES)} />;
 }
 
 function ResultsCount({ count }: { count: number }) {
@@ -94,7 +89,7 @@ export function VenueFinderShell({
   showDefaultSamples = true,
   compactResults = false,
 }: ShellProps) {
-  const count = resultsCount ?? SAMPLE_VENUE_CARDS.length;
+  const count = resultsCount ?? buildFeaturedVenueItems(SAMPLE_VENUES).length;
   const showingSamples = showDefaultSamples && !compactResults;
 
   return (

@@ -5,13 +5,13 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SetChatContext } from "@/components/chat/set-context";
 import { DEFAULT_VENUE_FILTERS, HeroSearchCard } from "@/components/home/hero-search";
 import type { Venue } from "@/lib/mock-data";
-import { SAMPLE_VENUE_CARDS } from "@/lib/venue-finder-samples";
+import { buildFeaturedVenueItems } from "@/lib/venue-finder-featured";
 import {
   filterVenues,
   mapIncomingFilters,
   mapQueryToFilters,
 } from "@/lib/venue-finder";
-import { SampleVenueCardItem } from "./sample-venue-card";
+import { FeaturedVenueGrid } from "./featured-venue-card";
 import { VenueCard } from "./venue-card";
 import { VenueFinderEmptyState, VenueFinderShell } from "./venue-finder-shell";
 
@@ -28,12 +28,6 @@ function VenueFinderInteractive({ venues }: Props) {
   const initialLocation = searchParams.get("location") ?? "";
   const requestedFilters = mapIncomingFilters(searchParams.get("filters") ?? searchParams.get("features") ?? "");
   const inferredFromQuery = mapQueryToFilters(initialQuery);
-  const hasUrlParams = Boolean(
-    initialQuery.trim() ||
-      initialLocation.trim() ||
-      requestedFilters.length ||
-      searchParams.get("verified") === "1",
-  );
   const initialFilters = requestedFilters.length
     ? requestedFilters
     : inferredFromQuery.length
@@ -104,7 +98,9 @@ function VenueFinderInteractive({ venues }: Props) {
     );
   }, []);
 
-  const resultsCount = hasActiveSearch ? filtered.length : SAMPLE_VENUE_CARDS.length;
+  const featuredItems = useMemo(() => buildFeaturedVenueItems(venues), [venues]);
+
+  const resultsCount = hasActiveSearch ? filtered.length : featuredItems.length;
 
   const resultsSlot = hasActiveSearch ? (
     filtered.length ? (
@@ -117,11 +113,7 @@ function VenueFinderInteractive({ venues }: Props) {
       <VenueFinderEmptyState />
     )
   ) : (
-    <ul className="vf-sample-grid">
-      {SAMPLE_VENUE_CARDS.map((venue) => (
-        <SampleVenueCardItem key={venue.id} venue={venue} />
-      ))}
-    </ul>
+    <FeaturedVenueGrid items={featuredItems} />
   );
 
   return (
