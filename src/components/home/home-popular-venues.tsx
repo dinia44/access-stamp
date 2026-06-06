@@ -29,9 +29,9 @@ export function HomePopularVenues() {
           </Link>
         </div>
 
-        <ul className="mt-8 grid gap-4">
-          {venues.map((venue) => (
-            <VenueResultCard key={venue!.slug} venue={venue!} />
+        <ul className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {venues.map((venue, index) => (
+            <VenueResultCard key={venue!.slug} venue={venue!} index={index} />
           ))}
         </ul>
       </div>

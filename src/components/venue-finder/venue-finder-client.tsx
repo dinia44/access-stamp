@@ -259,11 +259,12 @@ function VenueFinderInteractive({ venues, initial }: Props) {
             </div>
 
             {filtered.length ? (
-              <ul className="mt-6 flex flex-col gap-4">
-                {filtered.map((venue) => (
+              <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
+                {filtered.map((venue, index) => (
                   <VenueResultCard
                     key={venue.slug}
                     venue={venue}
+                    index={index}
                     userCenter={mapCenter}
                     selected={selectedSlug === venue.slug}
                     onSelect={() => setSelectedSlug(venue.slug)}
