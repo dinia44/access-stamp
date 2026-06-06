@@ -116,6 +116,16 @@ function matchesFeatureFilter(venue: Venue, key: string): boolean {
   if (key === "__verified_community") return venue.verification === "Community reported";
   if (key === "__high_confidence") return venue.confidence === "High";
   if (key === "__recently_updated") return true;
+  if (key === "__wheelchair_access") {
+    return (
+      venue.features["Step-free entrance"] === "yes" ||
+      venue.features["Turning space (150cm+)"] === "yes" ||
+      venue.features["Powered wheelchair suitable"] === "yes"
+    );
+  }
+  if (key === "__hearing_loop") {
+    return venue.tags.some((tag) => /hearing\s*loop/i.test(tag));
+  }
   return venue.features[key] === "yes";
 }
 

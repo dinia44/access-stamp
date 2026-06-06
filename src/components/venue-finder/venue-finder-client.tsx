@@ -4,7 +4,10 @@ import Link from "next/link";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SetChatContext } from "@/components/chat/set-context";
+import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 import type { Venue } from "@/lib/mock-data";
+import type { VenueCoordinates } from "@/lib/venue-coordinates";
+import { parseCoordinatePair } from "@/lib/venue-geography";
 import {
   buildVenueFinderQueryString,
   getFilteredVenues,
@@ -17,6 +20,7 @@ import { VenueFinderActiveFiltersSummary } from "./venue-finder-active-filters";
 import { VenueFinderAiCard } from "./venue-finder-ai-card";
 import { VenueFinderFloatingBox } from "./venue-finder-floating-box";
 import { VenueFinderHero } from "./venue-finder-hero";
+import { VenueFinderMapPanel } from "./venue-finder-map-panel";
 import { VenueFinderMobileBar } from "./venue-finder-mobile-bar";
 import { VenueFinderSidebar } from "./venue-finder-sidebar";
 import { VenueResultCard } from "./venue-result-card";
@@ -30,17 +34,30 @@ function VenueFinderEmptyState() {
   return (
     <section
       aria-labelledby="empty-state-heading"
-      className="mt-6 rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm"
+      className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
     >
-      <h2 id="empty-state-heading" className="text-lg font-semibold text-slate-900">
-        No matching venues found
-      </h2>
-      <p className="mt-2 text-base leading-7 text-slate-600">
-        Try removing a filter, searching a nearby town, or suggest a venue for us to check.
-      </p>
-      <Link href="/submit-venue" className={`${VF_BTN_SECONDARY} mt-5 inline-flex`}>
-        Suggest a venue
-      </Link>
+      <div className="grid gap-0 md:grid-cols-[180px_minmax(0,1fr)]">
+        <div className="relative hidden min-h-[180px] md:block">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={CLOUDINARY_MEDIA.emptyState}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/20" aria-hidden="true" />
+        </div>
+        <div className="p-8 text-center md:text-left">
+          <h2 id="empty-state-heading" className="text-lg font-semibold text-slate-900">
+            No matching venues found
+          </h2>
+          <p className="mt-2 text-base leading-7 text-slate-600">
+            Try removing a filter, searching a nearby town, or suggest a venue for us to check.
+          </p>
+          <Link href="/submit-venue" className={`${VF_BTN_SECONDARY} mt-5 inline-flex`}>
+            Suggest a venue
+          </Link>
+        </div>
+      </div>
     </section>
   );
 }
@@ -67,21 +84,28 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   const [query, setQuery] = useState(initial.query);
   const [location, setLocation] = useState(initial.location);
   const [selectedFilters, setSelectedFilters] = useState<string[]>(initial.filters);
+  const [mapCenter, setMapCenter] = useState<VenueCoordinates | null>(initial.center ?? null);
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [locating, setLocating] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [mobileMapOpen, setMobileMapOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const syncFromHistory = useCallback((state: VenueFinderSearchState) => {
     setQuery(state.query);
     setLocation(state.location);
     setSelectedFilters(state.filters);
+    setMapCenter(state.center ?? null);
   }, []);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      const next = buildVenueFinderQueryString({ query, location, filters: selectedFilters });
+      const next = buildVenueFinderQueryString({
+        query,
+        location,
+        filters: selectedFilters,
+        center: mapCenter ?? undefined,
+      });
       const current =
         typeof window !== "undefined" ? window.location.search.replace(/^\?/, "") : "";
       if (next === current) return;
@@ -90,12 +114,47 @@ function VenueFinderInteractive({ venues, initial }: Props) {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [query, location, selectedFilters, pathname, router]);
+  }, [query, location, selectedFilters, mapCenter, pathname, router]);
+
+  useEffect(() => {
+    const parsed = parseCoordinatePair(location);
+    if (parsed) {
+      setMapCenter(parsed);
+      return;
+    }
+
+    if (!location.trim() || /^near me$/i.test(location.trim())) return;
+
+    let cancelled = false;
+    fetch(`/api/geocode?q=${encodeURIComponent(location.trim())}`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { lat?: number; lng?: number } | null) => {
+        if (cancelled || !data?.lat || !data?.lng) return;
+        setMapCenter({ lat: data.lat, lng: data.lng });
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [location]);
 
   const filtered = useMemo(
-    () => getFilteredVenues(venues, { query, location, filters: selectedFilters }),
-    [venues, query, location, selectedFilters],
+    () =>
+      getFilteredVenues(venues, {
+        query,
+        location,
+        filters: selectedFilters,
+        center: mapCenter ?? undefined,
+      }),
+    [venues, query, location, selectedFilters, mapCenter],
   );
+
+  useEffect(() => {
+    if (selectedSlug && !filtered.some((venue) => venue.slug === selectedSlug)) {
+      setSelectedSlug(null);
+    }
+  }, [filtered, selectedSlug]);
 
   const toggleFilter = useCallback((key: string) => {
     setSelectedFilters((prev) =>
@@ -111,13 +170,23 @@ function VenueFinderInteractive({ venues, initial }: Props) {
     if (!navigator.geolocation) return;
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
-      () => {
-        setLocation("Near me");
+      (position) => {
+        const coords = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setLocation(`${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`);
+        setMapCenter(coords);
         setLocating(false);
       },
       () => setLocating(false),
       { timeout: 8000 },
     );
+  }, []);
+
+  const handleUserLocation = useCallback((coords: VenueCoordinates) => {
+    setMapCenter(coords);
+    setLocation(`${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`);
   }, []);
 
   const handleSearch = useCallback(() => {
@@ -126,8 +195,8 @@ function VenueFinderInteractive({ venues, initial }: Props) {
 
   const aiPrefill = [query, location].filter(Boolean).join(" — ") || undefined;
   const searchState = useMemo(
-    () => ({ query, location, filters: selectedFilters }),
-    [query, location, selectedFilters],
+    () => ({ query, location, filters: selectedFilters, center: mapCenter ?? undefined }),
+    [query, location, selectedFilters, mapCenter],
   );
   const hasSearchContext = hasVenueFinderSearchContext(searchState);
   const resultsHeading = hasSearchContext ? "Search results" : "Venues to explore";
@@ -161,6 +230,17 @@ function VenueFinderInteractive({ venues, initial }: Props) {
             aria-labelledby="venue-results-heading"
             aria-busy="false"
           >
+            <div className="lg:hidden">
+              <VenueFinderMapPanel
+                venues={filtered}
+                locationLabel={location}
+                selectedSlug={selectedSlug}
+                mapCenter={mapCenter}
+                onSelectVenue={setSelectedSlug}
+                onUserLocation={handleUserLocation}
+              />
+            </div>
+
             <div>
               <h2
                 id="venue-results-heading"
@@ -181,7 +261,13 @@ function VenueFinderInteractive({ venues, initial }: Props) {
             {filtered.length ? (
               <ul className="mt-6 flex flex-col gap-4">
                 {filtered.map((venue) => (
-                  <VenueResultCard key={venue.slug} venue={venue} />
+                  <VenueResultCard
+                    key={venue.slug}
+                    venue={venue}
+                    userCenter={mapCenter}
+                    selected={selectedSlug === venue.slug}
+                    onSelect={() => setSelectedSlug(venue.slug)}
+                  />
                 ))}
               </ul>
             ) : (
@@ -193,14 +279,17 @@ function VenueFinderInteractive({ venues, initial }: Props) {
             </div>
           </section>
 
-          <div className="space-y-4">
-            <VenueFinderSidebar
-              venues={filtered}
-              location={location}
-              mapOpen={mobileMapOpen}
-              onToggleMap={() => setMobileMapOpen((open) => !open)}
-            />
-            <div className="hidden lg:block">
+          <div className="hidden space-y-4 lg:block">
+            <div className="sticky top-28 space-y-4">
+              <VenueFinderMapPanel
+                venues={filtered}
+                locationLabel={location}
+                selectedSlug={selectedSlug}
+                mapCenter={mapCenter}
+                onSelectVenue={setSelectedSlug}
+                onUserLocation={handleUserLocation}
+              />
+              <VenueFinderSidebar venues={filtered} location={location} />
               <VenueFinderAiCard prefill={aiPrefill} />
             </div>
           </div>

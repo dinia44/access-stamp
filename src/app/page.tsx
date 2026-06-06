@@ -13,6 +13,7 @@ import { HomePlatformPillars } from "@/components/home/home-platform-pillars";
 import { HomePopularVenues } from "@/components/home/home-popular-venues";
 import { HomeVenueFinderBox } from "@/components/home/home-venue-finder-box";
 import { HomepageHero } from "@/components/home/homepage-hero";
+import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 import { RightsTabs } from "@/components/home/rights-tabs";
 import { FEATURED_HELP_CARD_SLUGS, HELP_CARDS } from "@/lib/help-cards";
 
@@ -28,7 +29,16 @@ export default function HomePage() {
       <HomepageHero />
 
       <section className="relative z-20 -mt-14">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-10 mx-auto hidden h-36 max-w-5xl overflow-hidden rounded-3xl opacity-20 sm:block"
+          aria-hidden="true"
+        >
+          <div
+            className="h-full w-full bg-cover bg-center"
+            style={{ backgroundImage: `url('${CLOUDINARY_MEDIA.staticMapPreview}')` }}
+          />
+        </div>
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <HomeVenueFinderBox />
         </div>
       </section>

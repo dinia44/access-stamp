@@ -1,4 +1,7 @@
 import type { Venue } from "@/lib/mock-data";
+import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
+import { getVenueCoordinates, type VenueCoordinates } from "@/lib/venue-coordinates";
+import { formatDistanceKm, haversineDistanceKm } from "@/lib/venue-geography";
 import { themeFromVenueType } from "@/lib/venue-finder-category";
 import { getThemeFallbackPhoto } from "@/lib/venue-finder-images";
 import { credibilityScore } from "@/lib/venue-finder";
@@ -22,9 +25,21 @@ export function mockVenueDistanceKm(slug: string): string {
   return `${km.toFixed(1)} km`;
 }
 
+export function getVenueDistanceLabel(venue: Venue, userCenter?: VenueCoordinates | null): string {
+  const coords = getVenueCoordinates(venue);
+  if (userCenter && coords) {
+    return formatDistanceKm(haversineDistanceKm(userCenter, coords));
+  }
+  return mockVenueDistanceKm(venue.slug);
+}
+
 export function getVenuePhoto(venue: Venue): { src: string; alt: string } {
   if (venue.photos?.[0]) {
     return { src: venue.photos[0].src, alt: venue.photos[0].alt };
   }
-  return getThemeFallbackPhoto(themeFromVenueType(venue.type));
+  const fallback = getThemeFallbackPhoto(themeFromVenueType(venue.type));
+  return {
+    src: fallback.src || CLOUDINARY_MEDIA.placeholderVenue,
+    alt: fallback.alt || `${venue.name} placeholder image`,
+  };
 }

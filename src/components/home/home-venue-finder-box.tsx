@@ -8,9 +8,9 @@ import { filterChipClass } from "@/lib/venue-finder-cro";
 const QUICK_FILTERS = [
   { label: "Step-free entrance", key: "Step-free entrance" },
   { label: "Accessible toilet", key: "Accessible toilet" },
-  { label: "Hearing loop", key: "Staff disability awareness" },
-  { label: "Lift access", key: "Lift access" },
-  { label: "Blue Badge parking", key: "Nearby Blue Badge parking" },
+  { label: "Parking", key: "Nearby Blue Badge parking" },
+  { label: "Quiet space", key: "Quiet environment" },
+  { label: "Hearing loop", key: "__hearing_loop" },
 ] as const;
 
 const INPUT_CLASS =

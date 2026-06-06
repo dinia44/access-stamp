@@ -2,13 +2,13 @@ import type { Venue } from "@/lib/mock-data";
 import { FEATURED_VENUE_SLUGS } from "@/lib/venue-finder-featured";
 
 export const CRO_FILTER_CHIPS = [
-  { label: "Step-free access", key: "Step-free entrance" },
+  { label: "Wheelchair access", key: "__wheelchair_access" },
   { label: "Accessible toilet", key: "Accessible toilet" },
+  { label: "Step-free entrance", key: "Step-free entrance" },
   { label: "Parking", key: "Nearby Blue Badge parking" },
-  { label: "Lift access", key: "Lift access" },
-  { label: "Hearing loop", key: "Staff disability awareness" },
-  { label: "Changing Places", key: "Changing Places toilet" },
-  { label: "Verified only", key: "__verified_checked" },
+  { label: "Quiet space", key: "Quiet environment" },
+  { label: "Hearing loop", key: "__hearing_loop" },
+  { label: "Assistance available", key: "Staff disability awareness" },
 ] as const;
 
 export const VF_INPUT =

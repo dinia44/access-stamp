@@ -1,11 +1,17 @@
 import type { Venue } from "@/lib/mock-data";
 import { filterVenues, mapIncomingFilters, mapQueryToFilters } from "@/lib/venue-finder";
 import { sortVenuesFeaturedFirst } from "@/lib/venue-finder-cro";
+import {
+  getVenueCoordinates,
+  type VenueCoordinates,
+} from "@/lib/venue-coordinates";
+import { haversineDistanceKm, parseCoordinatePair } from "@/lib/venue-geography";
 
 export type VenueFinderSearchState = {
   query: string;
   location: string;
   filters: string[];
+  center?: VenueCoordinates;
 };
 
 type SearchParamsInput =
@@ -37,18 +43,32 @@ export function parseVenueFinderSearchParams(input: SearchParamsInput): VenueFin
       ? [...initialFiltersBase, "__verified_checked"]
       : initialFiltersBase;
 
-  return { query, location, filters };
+  const centerRaw = readParam(input, "center");
+  const center = parseCoordinatePair(centerRaw) ?? undefined;
+
+  return { query, location, filters, center };
 }
 
 export function getFilteredVenues(venues: Venue[], state: VenueFinderSearchState): Venue[] {
-  return sortVenuesFeaturedFirst(
+  const filtered = sortVenuesFeaturedFirst(
     filterVenues(venues, {
       query: [state.query, state.location].filter(Boolean).join(" "),
       selectedFilters: state.filters,
       verifiedOnly: false,
-      sortBy: "Relevance",
+      sortBy: state.center ? "Distance" : "Relevance",
     }),
   );
+
+  if (!state.center) return filtered;
+
+  return [...filtered].sort((a, b) => {
+    const aCoords = getVenueCoordinates(a);
+    const bCoords = getVenueCoordinates(b);
+    if (!aCoords && !bCoords) return 0;
+    if (!aCoords) return 1;
+    if (!bCoords) return -1;
+    return haversineDistanceKm(state.center!, aCoords) - haversineDistanceKm(state.center!, bCoords);
+  });
 }
 
 export function buildVenueFinderQueryString(state: VenueFinderSearchState): string {
@@ -56,6 +76,7 @@ export function buildVenueFinderQueryString(state: VenueFinderSearchState): stri
   if (state.query.trim()) params.set("q", state.query.trim());
   if (state.location.trim()) params.set("location", state.location.trim());
   if (state.filters.length) params.set("filters", state.filters.join(","));
+  if (state.center) params.set("center", `${state.center.lat},${state.center.lng}`);
   return params.toString();
 }
 
