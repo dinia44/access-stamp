@@ -23,7 +23,7 @@ export function VenueFinderActiveFiltersSummary({ selectedFilters, onRemove }: P
               <li key={key}>
                 <button
                   type="button"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-blue-700 bg-blue-700 px-3 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:ring-offset-2"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-blue-700 bg-blue-700 px-4 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:ring-offset-2"
                   aria-pressed={true}
                   onClick={() => onRemove(key)}
                 >
@@ -37,7 +37,7 @@ export function VenueFinderActiveFiltersSummary({ selectedFilters, onRemove }: P
 
           return (
             <li key={key}>
-              <span className="inline-flex min-h-11 items-center rounded-xl border border-blue-700 bg-blue-700 px-3 text-sm font-medium text-white">
+              <span className="inline-flex min-h-11 items-center rounded-full border border-blue-700 bg-blue-700 px-4 text-sm font-medium text-white">
                 {label}
               </span>
             </li>

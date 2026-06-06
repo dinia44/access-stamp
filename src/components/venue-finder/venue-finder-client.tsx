@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SetChatContext } from "@/components/chat/set-context";
 import type { Venue } from "@/lib/mock-data";
@@ -15,16 +15,15 @@ import {
 import { VF_BTN_SECONDARY } from "@/lib/venue-finder-cro";
 import { VenueFinderActiveFiltersSummary } from "./venue-finder-active-filters";
 import { VenueFinderAiCard } from "./venue-finder-ai-card";
-import { VenueFinderFilterBar } from "./venue-finder-filter-bar";
+import { VenueFinderFloatingBox } from "./venue-finder-floating-box";
+import { VenueFinderHero } from "./venue-finder-hero";
 import { VenueFinderMobileBar } from "./venue-finder-mobile-bar";
-import { VenueFinderSearchBar } from "./venue-finder-search-bar";
 import { VenueFinderSidebar } from "./venue-finder-sidebar";
 import { VenueResultCard } from "./venue-result-card";
 
 type Props = {
   venues: Venue[];
   initial: VenueFinderSearchState;
-  header: ReactNode;
 };
 
 function VenueFinderEmptyState() {
@@ -60,7 +59,7 @@ function VenueFinderHistorySync({
   return null;
 }
 
-function VenueFinderInteractive({ venues, initial, header }: Props) {
+function VenueFinderInteractive({ venues, initial }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const resultsRef = useRef<HTMLElement>(null);
@@ -134,73 +133,76 @@ function VenueFinderInteractive({ venues, initial, header }: Props) {
   const resultsHeading = hasSearchContext ? "Search results" : "Venues to explore";
 
   return (
-    <main className="vf-page min-h-screen bg-slate-50 pb-28 lg:pb-8">
+    <main className="vf-page min-h-screen">
       <SetChatContext page={{ kind: "venue-finder" }} />
-      {header}
 
-      <div className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <VenueFinderSearchBar
-          query={query}
-          location={location}
-          onQueryChange={setQuery}
-          onLocationChange={setLocation}
-          onSearch={handleSearch}
-          onUseLocation={handleUseLocation}
-          locating={locating}
-        />
-        <div className="hidden lg:block">
-          <VenueFinderFilterBar selectedFilters={selectedFilters} onToggleFilter={toggleFilter} />
-        </div>
-      </div>
+      <VenueFinderHero />
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:px-6">
-        <section
-          ref={resultsRef}
-          id="venue-results"
-          aria-labelledby="venue-results-heading"
-          aria-busy="false"
-        >
-          <div>
-            <h2
-              id="venue-results-heading"
-              className="text-2xl font-bold tracking-[-0.025em] leading-[1.15] text-slate-900"
-            >
-              {resultsHeading}
-            </h2>
-            <p className="mt-1 text-base leading-7 text-slate-600" aria-live="polite" aria-atomic="true">
-              {filtered.length} venue{filtered.length === 1 ? "" : "s"}
-              {location.trim() ? ` · ${location.trim()}` : ""}
-            </p>
-            <VenueFinderActiveFiltersSummary
-              selectedFilters={selectedFilters}
-              onRemove={toggleFilter}
-            />
-          </div>
-
-          {filtered.length ? (
-            <ul className="mt-6 flex flex-col gap-4">
-              {filtered.map((venue) => (
-                <VenueResultCard key={venue.slug} venue={venue} />
-              ))}
-            </ul>
-          ) : (
-            <VenueFinderEmptyState />
-          )}
-
-          <div className="mt-8 lg:hidden">
-            <VenueFinderAiCard prefill={aiPrefill} />
-          </div>
-        </section>
-
-        <div className="space-y-4">
-          <VenueFinderSidebar
-            venues={filtered}
+      <div className="bg-slate-50">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <VenueFinderFloatingBox
+            query={query}
             location={location}
-            mapOpen={mobileMapOpen}
-            onToggleMap={() => setMobileMapOpen((open) => !open)}
+            selectedFilters={selectedFilters}
+            locating={locating}
+            onQueryChange={setQuery}
+            onLocationChange={setLocation}
+            onToggleFilter={toggleFilter}
+            onSearch={handleSearch}
+            onUseLocation={handleUseLocation}
+            onOpenMobileFilters={() => setMobileFiltersOpen(true)}
           />
-          <div className="hidden lg:block">
-            <VenueFinderAiCard prefill={aiPrefill} />
+        </div>
+
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pb-28 pt-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:px-8 lg:pb-8">
+          <section
+            ref={resultsRef}
+            id="venue-results"
+            aria-labelledby="venue-results-heading"
+            aria-busy="false"
+          >
+            <div>
+              <h2
+                id="venue-results-heading"
+                className="text-2xl font-bold tracking-[-0.025em] leading-[1.15] text-slate-900"
+              >
+                {resultsHeading}
+              </h2>
+              <p className="mt-1 text-base leading-7 text-slate-600" aria-live="polite" aria-atomic="true">
+                {filtered.length} venue{filtered.length === 1 ? "" : "s"}
+                {location.trim() ? ` · ${location.trim()}` : ""}
+              </p>
+              <VenueFinderActiveFiltersSummary
+                selectedFilters={selectedFilters}
+                onRemove={toggleFilter}
+              />
+            </div>
+
+            {filtered.length ? (
+              <ul className="mt-6 flex flex-col gap-4">
+                {filtered.map((venue) => (
+                  <VenueResultCard key={venue.slug} venue={venue} />
+                ))}
+              </ul>
+            ) : (
+              <VenueFinderEmptyState />
+            )}
+
+            <div className="mt-8 lg:hidden">
+              <VenueFinderAiCard prefill={aiPrefill} />
+            </div>
+          </section>
+
+          <div className="space-y-4">
+            <VenueFinderSidebar
+              venues={filtered}
+              location={location}
+              mapOpen={mobileMapOpen}
+              onToggleMap={() => setMobileMapOpen((open) => !open)}
+            />
+            <div className="hidden lg:block">
+              <VenueFinderAiCard prefill={aiPrefill} />
+            </div>
           </div>
         </div>
       </div>
@@ -222,6 +224,6 @@ function VenueFinderInteractive({ venues, initial, header }: Props) {
   );
 }
 
-export function VenueFinderClient({ venues, initial, header }: Props) {
-  return <VenueFinderInteractive venues={venues} initial={initial} header={header} />;
+export function VenueFinderClient({ venues, initial }: Props) {
+  return <VenueFinderInteractive venues={venues} initial={initial} />;
 }

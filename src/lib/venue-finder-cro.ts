@@ -22,7 +22,7 @@ export const VF_BTN_SECONDARY =
 
 export function filterChipClass(active: boolean) {
   const base =
-    "inline-flex min-h-11 items-center justify-center rounded-xl border px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:ring-offset-2";
+    "inline-flex min-h-11 items-center justify-center rounded-full border px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:ring-offset-2";
   return active
     ? `${base} border-blue-700 bg-blue-700 text-white`
     : `${base} border-slate-300 bg-white text-slate-700 hover:border-slate-400`;

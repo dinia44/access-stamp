@@ -1,16 +1,19 @@
-import { VenueFinderProductHeader } from "./venue-finder-product-header";
+import { VenueFinderHero } from "./venue-finder-hero";
 
-function SearchSkeleton() {
+function FinderBoxSkeleton() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8" aria-hidden="true">
-      <div className="grid gap-3 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_auto] lg:items-end">
+    <div
+      className="relative z-20 mx-auto max-w-6xl -mt-10 rounded-3xl border border-slate-200 bg-white p-4 shadow-2xl shadow-slate-950/15 sm:p-5"
+      aria-hidden="true"
+    >
+      <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_260px_auto] md:items-end">
         <div className="h-14 animate-pulse rounded-2xl bg-slate-200" />
         <div className="h-14 animate-pulse rounded-2xl bg-slate-200" />
-        <div className="h-12 animate-pulse rounded-xl bg-slate-200" />
+        <div className="h-14 animate-pulse rounded-2xl bg-slate-200" />
       </div>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <div key={index} className="h-11 w-28 animate-pulse rounded-xl bg-slate-200" />
+      <div className="mt-4 flex gap-2 overflow-hidden border-t border-slate-200 pt-4">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <div key={index} className="h-11 w-28 shrink-0 animate-pulse rounded-full bg-slate-200" />
         ))}
       </div>
     </div>
@@ -44,31 +47,33 @@ function SidebarSkeleton() {
 
 export function VenueFinderSkeleton() {
   return (
-    <main className="vf-page min-h-screen bg-slate-50 pb-28 lg:pb-8">
-      <VenueFinderProductHeader />
+    <main className="vf-page min-h-screen">
+      <VenueFinderHero />
 
-      <div className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <SearchSkeleton />
-      </div>
+      <div className="bg-slate-50">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <FinderBoxSkeleton />
+        </div>
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:px-6">
-        <section aria-labelledby="venue-results-heading-skeleton" aria-busy="true">
-          <div>
-            <h2
-              id="venue-results-heading-skeleton"
-              className="text-2xl font-bold tracking-[-0.025em] leading-[1.15] text-slate-900"
-            >
-              Venues to explore
-            </h2>
-            <p className="mt-1 text-base leading-7 text-slate-600">Loading venue results…</p>
-          </div>
-          <ul className="mt-6 flex flex-col gap-4">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <ResultCardSkeleton key={index} />
-            ))}
-          </ul>
-        </section>
-        <SidebarSkeleton />
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pb-28 pt-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:px-8 lg:pb-8">
+          <section aria-labelledby="venue-results-heading-skeleton" aria-busy="true">
+            <div>
+              <h2
+                id="venue-results-heading-skeleton"
+                className="text-2xl font-bold tracking-[-0.025em] leading-[1.15] text-slate-900"
+              >
+                Venues to explore
+              </h2>
+              <p className="mt-1 text-base leading-7 text-slate-600">Loading venue results…</p>
+            </div>
+            <ul className="mt-6 flex flex-col gap-4">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <ResultCardSkeleton key={index} />
+              ))}
+            </ul>
+          </section>
+          <SidebarSkeleton />
+        </div>
       </div>
     </main>
   );
