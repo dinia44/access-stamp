@@ -36,8 +36,8 @@ export function HomeHero() {
       </svg>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14 xl:gap-16">
-          <div className="relative z-10">
+        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] xl:gap-12">
+          <div className="relative z-20 min-w-0">
             <h1 className="max-w-2xl font-[family-name:var(--font-heading)] text-[clamp(2.25rem,5vw,3.75rem)] font-normal leading-[1.04] tracking-[-0.03em] text-[#13201F]">
               Find accessible places with confidence.
             </h1>
@@ -52,7 +52,7 @@ export function HomeHero() {
             </div>
           </div>
 
-          <div className="relative z-10 lg:pt-4">
+          <div className="relative z-10 min-w-0 overflow-hidden lg:overflow-visible">
             <PlatformHeroGraphic />
           </div>
         </div>
