@@ -8,19 +8,19 @@ export function HomeHero() {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(240,74,22,0.1),transparent_50%),radial-gradient(circle_at_88%_12%,rgba(89,104,42,0.08),transparent_42%),radial-gradient(circle_at_12%_88%,rgba(240,74,22,0.06),transparent_45%)]"
         aria-hidden="true"
       />
-      {/* Warm map grid */}
+      {/* Subtle map texture */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.28]"
+        className="pointer-events-none absolute inset-0 opacity-[0.12]"
         aria-hidden="true"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(241,216,199,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(241,216,199,0.7) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
+            "linear-gradient(rgba(241,216,199,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(241,216,199,0.5) 1px, transparent 1px)",
+          backgroundSize: "56px 56px",
         }}
       />
-      {/* Orange route lines */}
+      {/* Faint route lines */}
       <svg
-        className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.18]"
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.1]"
         viewBox="0 0 1200 600"
         fill="none"
         preserveAspectRatio="xMidYMid slice"
@@ -29,29 +29,10 @@ export function HomeHero() {
         <path
           d="M80 480 C 280 320, 420 380, 620 220 S 920 120, 1120 80"
           stroke="#F04A16"
-          strokeWidth="2.5"
-          strokeDasharray="8 10"
+          strokeWidth="2"
+          strokeDasharray="10 12"
           strokeLinecap="round"
         />
-        <path
-          d="M40 320 C 200 280, 360 200, 540 160 S 780 100, 980 60"
-          stroke="#F04A16"
-          strokeWidth="1.5"
-          strokeDasharray="6 8"
-          strokeLinecap="round"
-          opacity="0.6"
-        />
-        {[
-          [80, 480],
-          [620, 220],
-          [1120, 80],
-          [540, 160],
-        ].map(([cx, cy]) => (
-          <g key={`${cx}-${cy}`}>
-            <circle cx={cx} cy={cy} r="10" fill="#F04A16" opacity="0.12" />
-            <circle cx={cx} cy={cy} r="5" fill="#F04A16" opacity="0.55" />
-          </g>
-        ))}
       </svg>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
