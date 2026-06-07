@@ -48,7 +48,7 @@ export function homeChipClass(active: boolean) {
 }
 
 export function homeTabClass(active: boolean) {
-  const base = `inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full px-5 text-base font-semibold transition-all duration-200 ${HOME_FOCUS}`;
+  const base = `inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 sm:px-5 sm:text-base ${HOME_FOCUS}`;
   return active
     ? `${base} bg-blue-600 text-white shadow-sm shadow-[#2563EB]/20`
     : `${base} border border-[#BFDBFE] bg-white text-[#1E3A5F] hover:border-[#93C5FD] hover:text-[#0B1D3A]`;

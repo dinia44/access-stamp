@@ -18,27 +18,27 @@ export function AskAccessStampAiButton({ prefill, variant = "compact", className
       <button
         type="button"
         onClick={() => openChat({ prefill: prefill || defaultPrefill })}
-        className={`mt-3 grid min-h-11 w-full cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-3 rounded-2xl border border-white/15 bg-[#0A2447] px-3 py-2 text-left transition-colors hover:border-white/25 hover:bg-[#0B2A52] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:ring-offset-2 focus-visible:ring-offset-[#071E3D] ${className}`}
-        aria-label="Ask Access Stamp AI"
+        className={`mt-3 grid min-h-11 w-full cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-3 rounded-2xl border border-[#93C5FD] bg-[#EFF6FF] px-3 py-2 text-left transition-colors hover:border-[#2563EB]/40 hover:bg-[#DBEAFE] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4 ${className}`}
+        aria-label="Ask the AI Access Assistant"
       >
         <span
-          className="grid h-8 w-8 place-items-center rounded-full bg-[#67E8F9]/15 text-sm text-[#67E8F9]"
+          className="grid h-8 w-8 place-items-center rounded-full bg-[#DBEAFE] text-sm text-[#0891B2]"
           aria-hidden="true"
         >
           ✦
         </span>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-semibold text-white">Ask Access Stamp AI</span>
-            <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-200">
+            <span className="text-sm font-semibold text-[#0B1D3A]">Ask the AI Access Assistant</span>
+            <span className="rounded-full border border-[#BFDBFE] bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#0891B2]">
               Beta
             </span>
           </div>
-          <p className="truncate text-xs text-slate-400">
+          <p className="truncate text-xs text-[#3B6B9A]">
             Get help finding venues, understanding access features, and planning your visit.
           </p>
         </div>
-        <span className="text-[#67E8F9]" aria-hidden="true">
+        <span className="text-[#2563EB]" aria-hidden="true">
           ›
         </span>
       </button>
