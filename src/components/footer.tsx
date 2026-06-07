@@ -2,109 +2,125 @@ import Link from "next/link";
 import { Container } from "@/components/container";
 import { SiteLogo } from "@/components/site-logo";
 
-const PLATFORM_LINKS = [
+const EXPLORE_LINKS = [
   { label: "Venue Finder", href: "/venue-finder" },
-  { label: "Suggest a venue", href: "/submit-venue" },
+  { label: "Ask AI", href: "/ai" },
   { label: "Advice Hub", href: "/advice" },
-  { label: "AI Toolkit", href: "/ai-toolkit" },
-  { label: "AI Assistant", href: "/ai" },
-  { label: "Help Cards", href: "/help-cards" },
-] as const;
-
-const LIFE_AREA_LINKS = [
-  { label: "Your Rights", href: "/advice/rights" },
-  { label: "Equipment", href: "/advice/equipment" },
-  { label: "Transport", href: "/advice/transport" },
-  { label: "Workplace", href: "/advice/workplace" },
-  { label: "Care & Support", href: "/advice/care" },
-  { label: "Education", href: "/advice/education" },
-] as const;
-
-const CONTENT_LINKS = [
+  { label: "Practical Guides", href: "/advice" },
   { label: "Blog", href: "/blog" },
-  { label: "Directory", href: "/directory" },
-  { label: "Glossary", href: "/glossary" },
-  { label: "Laws & Guidance", href: "/laws-guidance" },
-  { label: "About", href: "/about" },
-  { label: "How we verify listings", href: "/about#listings" },
 ] as const;
+
+const ABOUT_LINKS = [
+  { label: "About Us", href: "/about" },
+  { label: "Our Mission", href: "/about#mission" },
+  { label: "Our Community", href: "/about#community" },
+  { label: "Careers", href: "/about#careers" },
+  { label: "Press", href: "/about#press" },
+] as const;
+
+const RESOURCE_LINKS = [
+  { label: "Accessibility Checklist", href: "/ai-toolkit/venue-questions" },
+  { label: "For Businesses", href: "/submit-venue" },
+  { label: "Partner With Us", href: "/about#partners" },
+  { label: "API & Data", href: "/about#data" },
+  { label: "Help Centre", href: "/help-cards" },
+] as const;
+
+const LEGAL_LINKS = [
+  { label: "Terms & Conditions", href: "/legal/terms" },
+  { label: "Privacy Policy", href: "/legal/privacy" },
+  { label: "Cookie Policy", href: "/legal/privacy#cookies" },
+  { label: "Accessibility Statement", href: "/about#accessibility" },
+] as const;
+
+const SOCIAL_LINKS = [
+  { label: "Facebook", href: "https://facebook.com", icon: "FB" },
+  { label: "Instagram", href: "https://instagram.com", icon: "IG" },
+  { label: "X (Twitter)", href: "https://x.com", icon: "X" },
+  { label: "LinkedIn", href: "https://linkedin.com", icon: "LI" },
+  { label: "YouTube", href: "https://youtube.com", icon: "YT" },
+] as const;
+
+function FooterColumn({ title, links }: { title: string; links: readonly { label: string; href: string }[] }) {
+  return (
+    <div>
+      <h3 className="text-sm font-semibold text-white">{title}</h3>
+      <ul className="mt-4 space-y-2.5">
+        {links.map((link) => (
+          <li key={link.href + link.label}>
+            <Link href={link.href} className="footer-link text-sm">
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export function Footer() {
   return (
     <footer className="footer-brand text-[#f8fafc] print:hidden">
-      <Container className="py-10">
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
-          <div className="space-y-3">
+      <Container className="py-14 sm:py-16">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)_minmax(0,0.9fr)] lg:gap-12">
+          <div className="space-y-5">
             <SiteLogo className="h-auto max-h-10 w-auto object-contain brightness-0 invert" />
-            <p className="text-sm text-[#cbd5e1]">
-              Practical access information for disabled people, wheelchair users, carers, older people, and families in
-              the UK.
+            <p className="max-w-sm text-sm leading-7 text-[#cbd5e1]">
+              Your trusted platform for accessible places, practical guidance and real confidence when you go out.
             </p>
-            <p className="text-xs text-[#94a3b8]">
-              Built from lived experience. Not a charity. Not a compliance tool.
-            </p>
+            <div className="flex flex-wrap gap-2" aria-label="Social media">
+              {SOCIAL_LINKS.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-xs font-bold text-[#bae6fd] transition-colors hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4"
+                >
+                  {social.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
+            <FooterColumn title="Explore" links={EXPLORE_LINKS} />
+            <FooterColumn title="About" links={ABOUT_LINKS} />
+            <FooterColumn title="Resources" links={RESOURCE_LINKS} />
+            <FooterColumn title="Legal" links={LEGAL_LINKS} />
           </div>
 
           <div>
-            <div className="text-sm font-semibold text-[#f8fafc]">Platform</div>
-            <ul className="mt-3 space-y-2 text-sm">
-              {PLATFORM_LINKS.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="footer-link">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <div className="text-sm font-semibold text-[#f8fafc]">Life areas</div>
-            <ul className="mt-3 space-y-2 text-sm">
-              {LIFE_AREA_LINKS.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="footer-link">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <div className="text-sm font-semibold text-[#f8fafc]">Content &amp; info</div>
-            <ul className="mt-3 space-y-2 text-sm">
-              {CONTENT_LINKS.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="footer-link">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
+            <h3 className="text-sm font-semibold text-white">Get in touch</h3>
+            <ul className="mt-4 space-y-3 text-sm">
+              <li>
+                <a href="mailto:hello@accessstamp.com" className="footer-link">
+                  hello@accessstamp.com
+                </a>
+              </li>
+              <li>
+                <a href="tel:+441234567890" className="footer-link">
+                  +44 (0) 1234 567 890
+                </a>
+              </li>
+              <li className="leading-6 text-[#94a3b8]">
+                Access Stamp Ltd
+                <br />
+                Manchester, United Kingdom
+              </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-10 border-t border-white/10 pt-6">
-          <div className="flex flex-col gap-4 text-xs text-[#94a3b8] md:flex-row md:items-center md:justify-between">
-            <div>&copy; {new Date().getFullYear()} Access Stamp. All rights reserved.</div>
-            <div className="flex flex-wrap gap-4">
-              <Link href="/legal/privacy" className="footer-link">
-                Privacy policy
-              </Link>
-              <Link href="/legal/terms" className="footer-link">
-                Terms of use
-              </Link>
-              <Link href="/about" className="footer-link">
-                About
-              </Link>
-            </div>
+        <div className="mt-12 border-t border-white/10 pt-6">
+          <div className="flex flex-col gap-3 text-xs text-[#94a3b8] sm:flex-row sm:items-center sm:justify-between">
+            <p>&copy; {new Date().getFullYear()} Access Stamp Ltd. All rights reserved.</p>
+            <p className="max-w-xl leading-5">
+              Access Stamp provides practical guidance — not medical, legal, or financial advice. Always confirm details
+              before you travel.
+            </p>
           </div>
-          <p className="mt-3 max-w-[90ch] text-xs leading-5 text-[#94a3b8]">
-            Access Stamp provides practical guidance — not medical, legal, or financial advice. Always confirm details
-            with the relevant provider, council, or professional before making decisions. Venue information may change;
-            check before you travel.
-          </p>
         </div>
       </Container>
     </footer>

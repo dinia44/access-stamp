@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SAMPLE_VENUE_PHOTOS } from "@/lib/venue-finder-images";
 
 function CheckIcon({ className }: { className?: string }) {
@@ -8,33 +9,92 @@ function CheckIcon({ className }: { className?: string }) {
   );
 }
 
-const ACCESS_FEATURES = ["Step-free access", "Accessible toilet", "Parking nearby"] as const;
+function StarIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
+      <path d="M12 2l2.9 6.26 6.9.6-5.2 4.52 1.55 6.74L12 17.77l-6.15 3.35 1.55-6.74-5.2-4.52 6.9-.6L12 2z" />
+    </svg>
+  );
+}
+
+const ACCESS_FEATURES = [
+  { label: "Step-free entrance", value: "Yes" },
+  { label: "Accessible toilet", value: "Yes" },
+  { label: "Accessible parking", value: "Yes" },
+  { label: "Seating available", value: "Yes" },
+  { label: "Hearing support", value: "Induction loop" },
+] as const;
 
 const MAP_PINS = [
-  { cx: 56, cy: 118, color: "#2563EB" },
-  { cx: 128, cy: 78, color: "#0891B2" },
-  { cx: 198, cy: 52, color: "#2563EB" },
-  { cx: 268, cy: 36, color: "#0891B2" },
+  { cx: 48, cy: 108, color: "#2563EB" },
+  { cx: 118, cy: 68, color: "#0891B2" },
+  { cx: 188, cy: 44, color: "#2563EB" },
+  { cx: 258, cy: 28, color: "#0891B2" },
 ] as const;
 
 export function PlatformHeroGraphic() {
-  const venuePhoto = SAMPLE_VENUE_PHOTOS["harbour-kitchen-liverpool"];
+  const venuePhoto = SAMPLE_VENUE_PHOTOS["sample-cafe"];
+  const exteriorPhoto = SAMPLE_VENUE_PHOTOS["harbour-kitchen-liverpool"];
 
   return (
-    <div className="relative mx-auto hidden w-full max-w-[400px] lg:block" aria-hidden="true">
-      <div className="overflow-hidden rounded-3xl border border-[#93C5FD]/50 bg-white shadow-xl shadow-[#2563EB]/10">
-        {/* Map preview */}
-        <div className="relative h-[168px] overflow-hidden border-b border-[#BFDBFE] bg-[#EFF6FF]">
-          <svg viewBox="0 0 320 168" className="h-full w-full" preserveAspectRatio="xMidYMid slice">
-            <rect width="320" height="168" fill="#EFF6FF" />
-            {[0, 1, 2, 3].map((row) =>
+    <div className="relative mx-auto min-h-[420px] w-full max-w-[440px] py-6 sm:min-h-[480px] lg:max-w-none lg:py-0" aria-hidden="true">
+      {/* Background map pins & route */}
+      <svg
+        className="pointer-events-none absolute -right-6 -top-4 h-32 w-48 text-[#2563EB]/20"
+        viewBox="0 0 200 100"
+        fill="none"
+        aria-hidden
+      >
+        <path
+          d="M8 80 C 60 40, 100 70, 192 20"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeDasharray="5 7"
+          strokeLinecap="round"
+        />
+        <circle cx="8" cy="80" r="5" fill="currentColor" opacity="0.6" />
+        <circle cx="192" cy="20" r="5" fill="currentColor" opacity="0.6" />
+      </svg>
+
+      {/* Floating: step-free badge */}
+      <div className="home-float-card absolute -left-2 top-8 z-20 hidden rounded-2xl border border-[#BFDBFE] bg-white px-3 py-2.5 shadow-lg shadow-[#2563EB]/10 sm:block">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#0891B2]">Step-free entrance</p>
+        <p className="mt-0.5 text-sm font-bold text-[#0B1D3A]">Yes</p>
+      </div>
+
+      {/* Floating: parking badge */}
+      <div className="home-float-card home-float-card--delay absolute -right-1 top-24 z-20 hidden rounded-2xl border border-[#BFDBFE] bg-white px-3 py-2.5 shadow-lg shadow-[#2563EB]/10 sm:block">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#0891B2]">Accessible parking</p>
+        <p className="mt-0.5 text-sm font-bold text-[#0B1D3A]">2 bays</p>
+      </div>
+
+      {/* Floating: rating */}
+      <div className="home-float-card home-float-card--delay-2 absolute -left-4 bottom-28 z-20 rounded-2xl border border-[#BFDBFE] bg-white px-3 py-2.5 shadow-lg shadow-[#2563EB]/10">
+        <div className="flex items-center gap-1.5">
+          <span className="text-lg font-bold text-[#0B1D3A]">4.8</span>
+          <div className="flex gap-0.5 text-[#F59E0B]">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <StarIcon key={i} className="h-3 w-3" />
+            ))}
+          </div>
+        </div>
+        <p className="mt-0.5 text-[11px] font-medium text-[#3B6B9A]">126 reviews</p>
+      </div>
+
+      {/* Main access report card */}
+      <div className="relative z-10 overflow-hidden rounded-3xl border border-[#93C5FD]/50 bg-white shadow-xl shadow-[#2563EB]/12 transition-transform duration-300 hover:-translate-y-1">
+        {/* Map header strip */}
+        <div className="relative h-[120px] overflow-hidden border-b border-[#BFDBFE] bg-[#EFF6FF]">
+          <svg viewBox="0 0 320 120" className="h-full w-full" preserveAspectRatio="xMidYMid slice">
+            <rect width="320" height="120" fill="#EFF6FF" />
+            {[0, 1, 2].map((row) =>
               [0, 1, 2, 3, 4, 5].map((col) => (
                 <rect
                   key={`${row}-${col}`}
                   x={12 + col * 48}
-                  y={12 + row * 34}
+                  y={10 + row * 32}
                   width="36"
-                  height="24"
+                  height="22"
                   rx="4"
                   fill="#DBEAFE"
                   stroke="#BFDBFE"
@@ -43,69 +103,103 @@ export function PlatformHeroGraphic() {
               )),
             )}
             <path
-              d="M44 132 C 88 108, 132 72, 188 48 S 248 28, 288 20"
+              d="M36 96 C 80 72, 124 36, 180 28 S 240 18, 288 14"
               fill="none"
               stroke="#2563EB"
               strokeWidth="2.5"
               strokeLinecap="round"
-              opacity="0.5"
+              opacity="0.55"
             />
             {MAP_PINS.map(({ cx, cy, color }) => (
               <g key={`${cx}-${cy}`}>
-                <circle cx={cx} cy={cy} r="9" fill={color} opacity="0.15" />
-                <circle cx={cx} cy={cy} r="4.5" fill={color} />
-                <circle cx={cx} cy={cy - 1} r="1.5" fill="white" />
+                <circle cx={cx} cy={cy} r="8" fill={color} opacity="0.15" />
+                <circle cx={cx} cy={cy} r="4" fill={color} />
               </g>
             ))}
           </svg>
-
-          <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-[#BFDBFE] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#0891B2] shadow-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#0891B2]" aria-hidden="true" />
-            Live route
-          </div>
+          <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-[#BFDBFE] bg-white px-2.5 py-1 text-[10px] font-semibold text-[#0891B2] shadow-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#0891B2]" />
+            Verified route
+          </span>
         </div>
 
-        {/* Venue + access report — single row, no overlap */}
-        <div className="grid grid-cols-[132px_minmax(0,1fr)]">
-          <div className="border-r border-[#BFDBFE] p-3">
-            <div className="relative overflow-hidden rounded-xl border border-[#BFDBFE]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={venuePhoto.src} alt="" className="aspect-[4/3] w-full object-cover" />
-              <span className="absolute left-1.5 top-1.5 rounded-full bg-[#2563EB] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
-                Verified
-              </span>
+        <div className="p-5 sm:p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#0891B2]">Access Report</p>
+              <h3 className="mt-1 text-lg font-bold text-[#0B1D3A]">The Riverside Café</h3>
+              <p className="mt-0.5 text-sm text-[#3B6B9A]">12 River Street, Manchester M4 5AB</p>
             </div>
-            <p className="mt-2 text-xs font-bold leading-snug text-[#0B1D3A]">Harbour Kitchen</p>
-            <p className="mt-0.5 text-[11px] leading-snug text-[#3B6B9A]">Liverpool · Restaurant</p>
-          </div>
-
-          <div className="p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#0891B2]">Access Report</p>
-
-            <div className="mt-2 flex items-end gap-2">
-              <span className="text-3xl font-bold leading-none text-[#0B1D3A]">92%</span>
-              <div className="pb-0.5">
-                <span className="block text-sm font-semibold text-[#0B1D3A]">Access Score</span>
-                <span className="text-[11px] text-[#3B6B9A]">Based on verified checks</span>
+            <div className="flex shrink-0 flex-col items-center">
+              <div className="relative flex h-[72px] w-[72px] items-center justify-center rounded-full border-[5px] border-[#DBEAFE] bg-white">
+                <svg viewBox="0 0 72 72" className="absolute inset-0 -rotate-90" aria-hidden>
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#DBEAFE" strokeWidth="6" />
+                  <circle
+                    cx="36"
+                    cy="36"
+                    r="30"
+                    fill="none"
+                    stroke="#059669"
+                    strokeWidth="6"
+                    strokeLinecap="round"
+                    strokeDasharray={`${0.92 * 188.5} 188.5`}
+                  />
+                </svg>
+                <span className="relative text-xl font-bold text-[#0B1D3A]">92%</span>
               </div>
+              <span className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-[#059669]">Access Score</span>
             </div>
-
-            <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-[#DBEAFE]">
-              <div className="h-full w-[92%] rounded-full bg-gradient-to-r from-[#0891B2] to-[#2563EB]" />
-            </div>
-
-            <ul className="mt-3 space-y-1.5">
-              {ACCESS_FEATURES.map((item) => (
-                <li key={item} className="flex items-center gap-2 text-[11px] text-[#1E3A5F]">
-                  <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE] text-[#0891B2]">
-                    <CheckIcon className="h-2.5 w-2.5" />
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
           </div>
+
+          <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-[#A7F3D0] bg-[#ECFDF5] px-2.5 py-1 text-[11px] font-semibold text-[#047857]">
+            <CheckIcon className="h-3 w-3" />
+            Verified
+          </span>
+
+          <ul className="mt-4 space-y-2">
+            {ACCESS_FEATURES.map(({ label, value }) => (
+              <li key={label} className="flex items-center justify-between gap-3 text-sm">
+                <span className="flex items-center gap-2 text-[#1E3A5F]">
+                  <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE] text-[#0891B2]">
+                    <CheckIcon className="h-3 w-3" />
+                  </span>
+                  {label}
+                </span>
+                <span className="shrink-0 font-semibold text-[#0B1D3A]">{value}</span>
+              </li>
+            ))}
+          </ul>
+
+          <Link
+            href="/venue-finder"
+            tabIndex={-1}
+            className="mt-5 inline-flex min-h-[44px] w-full items-center justify-center rounded-2xl bg-[#2563EB] text-sm font-semibold text-white shadow-sm shadow-[#2563EB]/20 transition-all hover:bg-[#1D4ED8]"
+          >
+            View full report
+          </Link>
         </div>
+      </div>
+
+      {/* Small venue photo cards */}
+      <div className="absolute -right-2 bottom-4 z-20 flex gap-2 sm:-right-4">
+        <div className="home-float-card overflow-hidden rounded-xl border border-[#BFDBFE] bg-white shadow-md shadow-[#2563EB]/10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={venuePhoto.src} alt="" className="h-14 w-20 object-cover" />
+        </div>
+        <div className="home-float-card home-float-card--delay hidden overflow-hidden rounded-xl border border-[#BFDBFE] bg-white shadow-md shadow-[#2563EB]/10 sm:block">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={exteriorPhoto.src} alt="" className="h-14 w-20 object-cover" />
+        </div>
+      </div>
+
+      {/* Mini map card */}
+      <div className="home-float-card home-float-card--delay-2 absolute bottom-0 right-16 z-20 hidden overflow-hidden rounded-xl border border-[#BFDBFE] bg-white shadow-md shadow-[#2563EB]/10 sm:block">
+        <svg viewBox="0 0 80 56" className="h-14 w-20" aria-hidden>
+          <rect width="80" height="56" fill="#EFF6FF" />
+          <path d="M8 44 C 28 28, 48 36, 72 16" stroke="#2563EB" strokeWidth="2" fill="none" strokeLinecap="round" />
+          <circle cx="8" cy="44" r="3" fill="#2563EB" />
+          <circle cx="72" cy="16" r="3" fill="#0891B2" />
+        </svg>
       </div>
     </div>
   );

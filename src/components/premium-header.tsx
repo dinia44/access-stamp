@@ -14,8 +14,9 @@ function linkActive(path: string, href: string) {
   return path === href || path.startsWith(`${href}/`);
 }
 
-const NAV_LINK = `rounded-full px-3 py-2 text-sm font-medium text-[#1E3A5F] transition-colors hover:text-[#0B1D3A] xl:px-4 ${SITE_FOCUS}`;
-const NAV_ACTIVE = "bg-[#DBEAFE] text-[#0B1D3A]";
+const NAV_LINK = `relative rounded-lg px-3 py-2 text-sm font-medium text-[#1E3A5F] transition-colors hover:text-[#0B1D3A] xl:px-4 ${SITE_FOCUS}`;
+const NAV_ACTIVE_HOME = "text-[#0B1D3A] after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:rounded-full after:bg-[#2563EB] xl:after:left-4 xl:after:right-4";
+const NAV_ACTIVE_SITE = "bg-[#DBEAFE] text-[#0B1D3A] rounded-full";
 
 type PremiumHeaderProps = {
   variant?: "home" | "site";
@@ -56,13 +57,20 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
       ? { href: "#platform-search", label: "Search accessible places" }
       : { href: "/venue-finder", label: "Start searching" };
 
+  const navActiveClass = variant === "home" ? NAV_ACTIVE_HOME : NAV_ACTIVE_SITE;
+
   return (
-    <header className="nav-header sticky top-0 z-50">
+    <header className="sticky top-0 z-50 border-b border-[#BFDBFE] bg-white/95 shadow-sm shadow-[#2563EB]/5 backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
+        <div
+          className={cn(
+            "h-16 items-center gap-4 lg:h-[4.5rem]",
+            variant === "home" ? "grid grid-cols-[auto_1fr_auto] lg:grid-cols-[1fr_auto_1fr]" : "flex justify-between",
+          )}
+        >
           <Link
             href="/"
-            className="flex shrink-0 items-center gap-3"
+            className={cn("flex shrink-0 items-center gap-3", variant === "home" && "lg:justify-self-start")}
             aria-label="Access Stamp home"
             onClick={closeMenus}
           >
@@ -70,11 +78,17 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
             <span className="hidden text-lg font-bold tracking-[-0.02em] text-[#0B1D3A] sm:inline">Access Stamp</span>
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex xl:gap-2" aria-label="Primary">
+          <nav
+            className={cn(
+              "hidden items-center gap-1 lg:flex xl:gap-2",
+              variant === "home" ? "justify-self-center" : undefined,
+            )}
+            aria-label="Primary"
+          >
             {NAV_ITEMS.map((item) => {
               const active = linkActive(path, item.href);
               return (
-                <Link key={item.href} href={item.href} onClick={closeMenus} className={cn(NAV_LINK, active && NAV_ACTIVE)}>
+                <Link key={item.href} href={item.href} onClick={closeMenus} className={cn(NAV_LINK, active && navActiveClass)}>
                   {item.label}
                 </Link>
               );
@@ -83,7 +97,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
             <div className="relative" ref={resourcesRef}>
               <button
                 type="button"
-                className={cn(NAV_LINK, resourcesOpen && NAV_ACTIVE)}
+                className={cn(NAV_LINK, resourcesOpen && navActiveClass)}
                 aria-haspopup="menu"
                 aria-expanded={resourcesOpen}
                 onClick={() => setResourcesOpen((v) => !v)}
@@ -122,7 +136,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
             </div>
           </nav>
 
-          <div className="hidden shrink-0 lg:block">
+          <div className={cn("hidden shrink-0 lg:block", variant === "home" && "justify-self-end")}>
             <Link href={primaryCta.href} className={SITE_BTN_PRIMARY} onClick={closeMenus}>
               {primaryCta.label}
             </Link>
@@ -130,7 +144,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
 
           <button
             type="button"
-            className={`${SITE_BTN_SECONDARY} lg:hidden`}
+            className={cn(`${SITE_BTN_SECONDARY} lg:hidden`, variant === "home" && "justify-self-end")}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
@@ -167,7 +181,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
                     href={item.href}
                     className={cn(
                       `rounded-xl px-3 py-2.5 text-sm font-medium text-[#1E3A5F] transition-colors hover:bg-[#EFF6FF] hover:text-[#0B1D3A] ${SITE_FOCUS}`,
-                      active && NAV_ACTIVE,
+                      active && navActiveClass,
                     )}
                     onClick={closeMenus}
                   >

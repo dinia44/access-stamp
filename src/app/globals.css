@@ -286,6 +286,29 @@ svg[data-as-icon="true"] {
   color: var(--color-primary);
 }
 
+/* Homepage floating card micro-motion */
+@keyframes home-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.home-float-card {
+  animation: home-float 6s ease-in-out infinite;
+}
+
+.home-float-card--delay {
+  animation-delay: 1.5s;
+}
+
+.home-float-card--delay-2 {
+  animation-delay: 3s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0ms !important;
@@ -295,6 +318,12 @@ svg[data-as-icon="true"] {
 
   .premium-card:hover {
     transform: none;
+  }
+
+  .home-float-card,
+  .home-float-card--delay,
+  .home-float-card--delay-2 {
+    animation: none;
   }
 }
 

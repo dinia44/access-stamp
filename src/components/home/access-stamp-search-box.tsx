@@ -23,10 +23,9 @@ const SEARCH_MODES: { id: SearchMode; label: string }[] = [
 const VENUE_CHIPS = [
   { label: "Step-free access", key: "Step-free entrance", href: null },
   { label: "Accessible toilet", key: "Accessible toilet", href: null },
-  { label: "Blue Badge parking", key: "Blue Badge parking", href: null },
-  { label: "Travel support", key: null, href: "/advice/travel" },
-  { label: "Rights & support", key: null, href: "/advice/rights" },
-  { label: "Equipment", key: null, href: "/advice/equipment" },
+  { label: "Parking", key: "Nearby Blue Badge parking", href: null },
+  { label: "Seating", key: "Turning space (150cm+)", href: null },
+  { label: "Hearing support", key: null, href: "/venue-finder?filters=Hearing+loop" },
 ] as const;
 
 const AI_PROMPT_CHIPS = [
@@ -119,10 +118,18 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
 
   return (
     <div id="platform-search" className={panelClass}>
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold text-[#0B1D3A] sm:text-xl">What do you need help with?</h2>
-        <p className="mt-1.5 text-base leading-relaxed text-[#3B6B9A]">{modeDescription}</p>
-      </div>
+      {integrated ? (
+        <p id="platform-search-description" className="sr-only">
+          {modeDescription}
+        </p>
+      ) : (
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-[#0B1D3A] sm:text-xl">What do you need help with?</h2>
+          <p id="platform-search-description" className="mt-1.5 text-base leading-relaxed text-[#3B6B9A]">
+            {modeDescription}
+          </p>
+        </div>
+      )}
 
       <div className="mb-5 flex flex-wrap gap-2" role="tablist" aria-label="Search mode">
         {SEARCH_MODES.map(({ id, label }) => (
@@ -225,12 +232,10 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
             handlePlatformSearch();
           }}
         >
-          <div
-            className={`grid gap-4 ${isVenueSearch ? "lg:grid-cols-[minmax(0,1.4fr)_minmax(0,0.9fr)_auto]" : "lg:grid-cols-[minmax(0,1fr)_auto]"}`}
-          >
+          <div className={`grid gap-4 ${isVenueSearch ? "lg:grid-cols-2" : "lg:grid-cols-[minmax(0,1fr)_auto]"}`}>
             <div>
               <label htmlFor="platform-search-query" className="mb-2 block text-base font-medium text-[#1E3A5F]">
-                {isVenueSearch ? "Venue or access need" : "Search topic"}
+                {isVenueSearch ? "Search for a venue or place" : "Search topic"}
               </label>
               <input
                 id="platform-search-query"
@@ -238,38 +243,46 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={
-                  isVenueSearch
-                    ? "Search by venue, town, or access need"
-                    : "Search PIP, travel, care, work, equipment…"
+                  isVenueSearch ? "Search for a venue or place" : "Search PIP, travel, care, work, equipment…"
                 }
                 className={HOME_INPUT}
                 autoComplete="off"
+                aria-describedby="platform-search-description"
               />
             </div>
 
             {isVenueSearch ? (
               <div>
                 <label htmlFor="platform-search-location" className="mb-2 block text-base font-medium text-[#1E3A5F]">
-                  Location
+                  Location or postcode
                 </label>
                 <input
                   id="platform-search-location"
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Enter city, town or postcode"
+                  placeholder="Location or postcode"
                   className={HOME_INPUT}
                   autoComplete="postal-code"
+                  aria-describedby="platform-search-description"
                 />
               </div>
             ) : null}
 
-            <div className="flex items-end">
-              <button type="submit" className={`${HOME_BTN_PRIMARY} w-full lg:min-w-[200px]`}>
-                {isVenueSearch ? "Search accessible places" : "Get advice"}
-              </button>
-            </div>
+            {!isVenueSearch ? (
+              <div className="flex items-end">
+                <button type="submit" className={`${HOME_BTN_PRIMARY} w-full lg:min-w-[200px]`}>
+                  Get advice
+                </button>
+              </div>
+            ) : null}
           </div>
+
+          {isVenueSearch ? (
+            <button type="submit" className={`${HOME_BTN_PRIMARY} mt-4 w-full`}>
+              Search accessible places
+            </button>
+          ) : null}
         </form>
       )}
 
