@@ -1,6 +1,7 @@
-/** Shared responsive venue card grid — 4 columns on large screens (4×4 layout target) */
+/** Shared responsive venue card grid — venue finder results */
 export const VENUE_GRID_CLASS =
   "grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
 
-/** Max venues shown in a 4×4 homepage grid */
-export const VENUE_GRID_SIZE = 16;
+/** Homepage grid — 6 featured + new venues in a 3-column layout */
+export const HOME_VENUE_GRID_CLASS =
+  "grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3";
