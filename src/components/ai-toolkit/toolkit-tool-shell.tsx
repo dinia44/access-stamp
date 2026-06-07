@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { FadeIn } from "@/components/fade-in";
 import { Badge, Button, Card } from "@/components/ui";
 import { ToolkitDisclaimer } from "@/components/ai-toolkit/toolkit-disclaimer";
 import { ToolkitTrustPanel } from "@/components/ai-toolkit/toolkit-trust-panel";
@@ -22,8 +23,8 @@ export function ToolkitToolShell({
   onPrint?: () => void;
 }) {
   return (
-    <div className="bg-background">
-      <div className="mx-auto max-w-3xl px-4 py-10 md:py-12">
+    <div className="premium-section-hero min-h-screen">
+      <div className="mx-auto max-w-3xl px-4 py-12 md:py-16 lg:px-8">
         <Breadcrumbs
           items={[
             { label: "Home", href: "/" },
@@ -32,18 +33,24 @@ export function ToolkitToolShell({
           ]}
         />
 
-        <div className="mt-6 space-y-3">
-          <Badge tone="blue">{meta.badge}</Badge>
-          <h1 className="font-[var(--font-heading)] text-3xl text-heading sm:text-4xl">{meta.title}</h1>
-          <p className="text-sm text-muted">{meta.description}</p>
-        </div>
+        <FadeIn>
+          <div className="page-hero-panel mt-8 space-y-4">
+            <Badge tone="blue">{meta.badge}</Badge>
+            <h1 className="text-3xl font-bold leading-[1.05] tracking-[-0.03em] text-heading sm:text-4xl">
+              {meta.title}
+            </h1>
+            <p className="text-base leading-7 text-muted">{meta.description}</p>
+          </div>
+        </FadeIn>
 
-        <Card className="mt-8 p-5 md:p-6">{children}</Card>
+        <FadeIn delayMs={80}>
+          <Card className="mt-8 p-5 md:p-6">{children}</Card>
+        </FadeIn>
 
         {results ? (
-          <div ref={resultsRef} className="toolkit-results-print mt-8 space-y-4" aria-live="polite">
+          <div ref={resultsRef} className="toolkit-results-print mt-10 space-y-5" aria-live="polite">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="font-[var(--font-heading)] text-xl text-heading">Your results</h2>
+              <h2 className="text-2xl font-bold tracking-[-0.02em] text-heading">Your results</h2>
               <div className="flex flex-wrap gap-2 print:hidden">
                 {onPrint ? (
                   <Button variant="ghost" type="button" onClick={onPrint}>
@@ -52,7 +59,7 @@ export function ToolkitToolShell({
                 ) : null}
                 <Link
                   href="/ai-toolkit"
-                  className="inline-flex items-center justify-center rounded-[var(--radius-ui)] px-4 py-2 text-sm font-semibold text-blue hover:bg-blue-pale"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-2xl px-4 text-sm font-semibold text-blue transition-colors hover:bg-blue-pale"
                 >
                   All tools
                 </Link>

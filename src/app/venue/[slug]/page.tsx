@@ -3,7 +3,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { FadeIn } from "@/components/fade-in";
 import { Container } from "@/components/container";
+import { PageSectionTitle } from "@/components/page-layout";
 import { Button, Card } from "@/components/ui";
 import { ConfidenceBadge, VerificationBadge } from "@/components/verification-badge";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
@@ -164,11 +166,11 @@ export default async function VenueDetailPage({
   };
 
   return (
-    <div className="bg-background">
+    <div className="premium-section-hero min-h-screen">
       <SetChatContext page={{ kind: "venue", slug: v.slug, name: v.name }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <Container className="py-10">
-        <div className="space-y-8">
+      <Container className="py-12 md:py-16">
+        <div className="space-y-10">
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
@@ -177,75 +179,74 @@ export default async function VenueDetailPage({
             ]}
           />
 
-          <Card className="overflow-hidden p-0">
-            <div
-              className="border-b border-border px-5 py-6 sm:px-7"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--blue-pale) 0%, var(--background-2) 45%, var(--amber-pale) 100%)",
-              }}
-            >
-              <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <span className="grid h-12 w-12 place-items-center rounded-[var(--radius-ui)] bg-card text-2xl">
-                      {venueEmoji(v.type)}
-                    </span>
-                    <div>
-                      <h1 className="font-[var(--font-heading)] text-4xl text-heading">{v.name}</h1>
-                      <div className="mt-1 flex flex-wrap items-center gap-2">
-                        <span className="text-sm font-semibold text-muted">{v.location}</span>
-                        <span className="rounded-full bg-blue-pale px-3 py-1 text-xs font-semibold text-blue">{v.type}</span>
-                        <span className="rounded-full bg-background-2 px-3 py-1 text-xs font-semibold text-muted">
-                          Rating {v.rating.toFixed(1)}
-                        </span>
+          <FadeIn>
+            <Card className="overflow-hidden p-0">
+              <div className="border-b border-[#BFDBFE] bg-gradient-to-br from-[#DBEAFE] via-white to-[#F8FBFF] px-5 py-8 sm:px-8">
+                <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <span className="grid h-14 w-14 place-items-center rounded-2xl border border-[#BFDBFE] bg-white text-2xl shadow-[var(--shadow-soft)]">
+                        {venueEmoji(v.type)}
+                      </span>
+                      <div>
+                        <p className="page-hero-eyebrow">Access report</p>
+                        <h1 className="mt-1 text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-heading sm:text-5xl">
+                          {v.name}
+                        </h1>
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
+                          <span className="text-sm font-semibold text-muted">{v.location}</span>
+                          <span className="rounded-full bg-blue-pale px-3 py-1 text-xs font-semibold text-blue">{v.type}</span>
+                          <span className="rounded-full border border-[#BFDBFE] bg-white px-3 py-1 text-xs font-semibold text-muted">
+                            Rating {v.rating.toFixed(1)}
+                          </span>
+                        </div>
                       </div>
                     </div>
+                    <p className="max-w-[65ch] text-base leading-7 text-text">{v.summary}</p>
                   </div>
-                  <p className="max-w-[80ch] text-sm leading-6 text-text">{v.summary}</p>
+                  <VenueDetailActions slug={v.slug} venueName={v.name} />
                 </div>
-                <VenueDetailActions slug={v.slug} venueName={v.name} />
               </div>
-            </div>
 
-            <div className="grid gap-3 px-5 py-5 text-xs sm:grid-cols-2 lg:grid-cols-4 sm:px-7">
-              <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
-                <span className="font-semibold text-heading">Verification</span>
-                <div className="mt-2">
-                  <VerificationBadge status={v.verification} />
+              <div className="grid gap-3 px-5 py-5 text-xs sm:grid-cols-2 lg:grid-cols-4 sm:px-8">
+                <div className="rounded-2xl border border-border bg-background-2 p-4">
+                  <span className="font-semibold text-heading">Verification</span>
+                  <div className="mt-2">
+                    <VerificationBadge status={v.verification} />
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-border bg-background-2 p-4">
+                  <span className="font-semibold text-heading">Last updated:</span> {v.lastUpdated}
+                </div>
+                <div className="rounded-2xl border border-border bg-background-2 p-4">
+                  <span className="font-semibold text-heading">Confidence</span>
+                  <div className="mt-2">
+                    <ConfidenceBadge level={v.confidence} />
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-border bg-background-2 p-4">
+                  <span className="font-semibold text-heading">Known access features:</span> {yesCount} confirmed
+                  {confirmedFeatures.length ? (
+                    <details className="mt-2">
+                      <summary className="cursor-pointer text-[11px] font-semibold text-blue">
+                        Show all confirmed features ({confirmedFeatures.length})
+                      </summary>
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {confirmedFeatures.map((feature) => (
+                          <span
+                            key={feature}
+                            className="rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-semibold text-heading"
+                          >
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </details>
+                  ) : null}
                 </div>
               </div>
-              <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
-                <span className="font-semibold text-heading">Last updated:</span> {v.lastUpdated}
-              </div>
-              <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
-                <span className="font-semibold text-heading">Confidence</span>
-                <div className="mt-2">
-                  <ConfidenceBadge level={v.confidence} />
-                </div>
-              </div>
-              <div className="rounded-[var(--radius-ui)] border border-border bg-background p-3">
-                <span className="font-semibold text-heading">Known access features:</span> {yesCount} confirmed
-                {confirmedFeatures.length ? (
-                  <details className="mt-2">
-                    <summary className="cursor-pointer text-[11px] font-semibold text-blue">
-                      Show all confirmed features ({confirmedFeatures.length})
-                    </summary>
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {confirmedFeatures.map((feature) => (
-                        <span
-                          key={feature}
-                          className="rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-semibold text-heading"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-                  </details>
-                ) : null}
-              </div>
-            </div>
-          </Card>
+            </Card>
+          </FadeIn>
 
           {v.photos?.length ? (
             <Card className="p-5">
@@ -341,13 +342,11 @@ export default async function VenueDetailPage({
             </div>
           ) : null}
 
-          <section className="space-y-4">
-            <div>
-              <h2 className="font-[var(--font-heading)] text-2xl text-heading">Accessibility breakdown</h2>
-              <p className="mt-1 text-sm text-muted">
-                Feature-by-feature status so you can decide quickly whether this place fits your access needs.
-              </p>
-            </div>
+          <section className="space-y-6">
+            <PageSectionTitle
+              title="Accessibility breakdown"
+              description="Feature-by-feature status so you can decide quickly whether this place fits your access needs."
+            />
             <div className="grid gap-4 md:grid-cols-2">
               {ACCESS_AREAS.map((area) => (
                 <Card key={area.title} className="p-5">

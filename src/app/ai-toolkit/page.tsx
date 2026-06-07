@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AiToolkitPage() {
   return (
-    <PageLayout stack="default">
+    <PageLayout stack="relaxed" hero>
       <PageHero
         badge={<Badge tone="blue">AI Toolkit</Badge>}
         title="AI Toolkit"
@@ -43,7 +43,7 @@ export default function AiToolkitPage() {
             <Badge tone="navy" className="w-fit">
               {tool.badge}
             </Badge>
-            <h2 className="mt-3 font-[var(--font-heading)] text-xl text-heading">{tool.title}</h2>
+            <h2 className="mt-3 text-xl font-bold tracking-[-0.02em] text-heading">{tool.title}</h2>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{tool.description}</p>
             <div className="mt-4">
               <Button href={tool.href} variant="primary">

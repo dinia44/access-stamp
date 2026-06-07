@@ -35,35 +35,35 @@ export function HelpCardsHub({ initialConcern = "" }: { initialConcern?: string 
 
   return (
     <div className="space-y-5">
-      <Card className="p-5 sm:p-6">
-        <div className="grid gap-3 md:grid-cols-3">
-          <label className="text-sm font-semibold text-muted">
+      <Card className="premium-panel p-5 sm:p-6">
+        <div className="grid gap-4 md:grid-cols-3">
+          <label className="text-sm font-semibold text-heading">
             Search cards
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Section 88, interview, school, wheelchair damage..."
-              className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
+              className="form-input mt-2 h-11 w-full px-3"
             />
           </label>
-          <label className="text-sm font-semibold text-muted">
+          <label className="text-sm font-semibold text-heading">
             Category
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
+              className="form-input mt-2 h-11 w-full px-3"
             >
               {["All", "Driving", "Work", "Education", "Travel", "Care", "Rights", "Emergency"].map((option) => (
                 <option key={option}>{option}</option>
               ))}
             </select>
           </label>
-          <label className="text-sm font-semibold text-muted">
+          <label className="text-sm font-semibold text-heading">
             I am worried about...
             <select
               value={concern}
               onChange={(e) => setConcern(e.target.value)}
-              className="mt-1 h-11 w-full rounded-[var(--radius-ui)] border border-border bg-white px-3 text-heading"
+              className="form-input mt-2 h-11 w-full px-3"
             >
               <option value="">Choose a concern</option>
               {HELP_CARD_CONCERNS.map((option) => (
@@ -76,11 +76,14 @@ export function HelpCardsHub({ initialConcern = "" }: { initialConcern?: string 
         </div>
       </Card>
 
-      <div className="text-sm font-semibold text-heading">Cards available: {filtered.length}</div>
+      <div className="flex items-end justify-between gap-3">
+        <h2 className="text-2xl font-bold tracking-[-0.02em] text-heading">Curated cards</h2>
+        <p className="text-sm font-semibold text-muted">{filtered.length} available</p>
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         {filtered.map((card) => (
-          <Card key={card.slug} className="p-5">
+          <Card key={card.slug} className="flex flex-col p-6">
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone="blue">{card.category}</Badge>
               {card.tags.slice(0, 2).map((tag) => (
@@ -89,7 +92,7 @@ export function HelpCardsHub({ initialConcern = "" }: { initialConcern?: string 
                 </Badge>
               ))}
             </div>
-            <h3 className="mt-3 text-lg font-semibold text-heading">{card.title}</h3>
+            <h3 className="mt-3 text-lg font-bold leading-snug text-heading">{card.title}</h3>
             <p className="mt-2 text-sm text-muted">{card.summary}</p>
             <div className="mt-4 text-xs font-semibold uppercase tracking-wide text-muted">Checklist</div>
             <ul className="mt-2 grid gap-1 text-sm text-text">

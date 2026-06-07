@@ -41,7 +41,7 @@ export function VenueFitPlannerInline({
   return (
     <Card className="space-y-4 p-5">
       <div>
-        <h2 className="font-[var(--font-heading)] text-xl text-heading">AI venue fit planner</h2>
+        <h2 className="text-xl font-bold tracking-[-0.02em] text-heading">AI venue fit planner</h2>
         <p className="mt-1 text-sm text-muted">
           Tell us your needs and get a practical venue-fit summary, red flags, and a call script for this listing.
         </p>

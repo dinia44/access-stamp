@@ -1,8 +1,8 @@
-import { Container } from "@/components/container";
-import { Badge, Card } from "@/components/ui";
-import { HelpCardsHub } from "@/components/help-cards-hub";
-import { SetChatContext } from "@/components/chat/set-context";
 import Link from "next/link";
+import { HelpCardsHub } from "@/components/help-cards-hub";
+import { PageHero, PageLayout } from "@/components/page-layout";
+import { Badge, Card } from "@/components/ui";
+import { SetChatContext } from "@/components/chat/set-context";
 
 export default async function HelpCardsPage({
   searchParams,
@@ -12,37 +12,37 @@ export default async function HelpCardsPage({
   const sp = searchParams ? await searchParams : {};
   const concernRaw = sp.concern;
   const concern = typeof concernRaw === "string" ? concernRaw : Array.isArray(concernRaw) ? concernRaw[0] : "";
+
   return (
-    <div className="bg-background">
+    <PageLayout stack="relaxed" hero>
       <SetChatContext page={{ kind: "none" }} />
-      <Container className="py-10">
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <Badge tone="blue">Downloadable support tools</Badge>
-            <h1 className="font-[var(--font-heading)] text-4xl text-heading">Access Stamp Help Cards</h1>
-            <p className="max-w-[80ch] text-muted">
-              Free practical cards you can download and carry. Use them in interviews, school meetings, travel issues,
-              care reviews, transport complaints, and emergency situations.
-            </p>
-          </div>
+      <PageHero
+        badge={<Badge tone="blue">Downloadable support tools</Badge>}
+        title="Help cards you can carry"
+        subtitle="Practical prompts for interviews, school meetings, travel issues, care reviews, and emergencies — download, print, or tailor with AI."
+      />
 
-          <Card className="p-5">
-            <p className="text-sm text-text">
-              These cards are practical prompts, not legal advice. For formal legal disputes, use specialist support.
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2 text-xs">
-              <Link href="/help-cards?concern=Equality%20Act%20rights" className="rounded-full bg-blue-pale px-3 py-1 font-semibold text-blue">
-                Equality Act cards
-              </Link>
-              <Link href="/advice/rights" className="rounded-full bg-amber-pale px-3 py-1 font-semibold text-warning">
-                Rights advice hub
-              </Link>
-            </div>
-          </Card>
-
-          <HelpCardsHub initialConcern={concern} />
+      <Card className="p-6">
+        <p className="text-sm leading-7 text-text">
+          These cards are practical prompts, not legal advice. For formal legal disputes, use specialist support.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            href="/help-cards?concern=Equality%20Act%20rights"
+            className="inline-flex min-h-[44px] items-center rounded-full border border-[#BFDBFE] bg-white px-4 text-sm font-semibold text-[#2563EB] transition-colors hover:border-[#93C5FD] hover:bg-[#EFF6FF]"
+          >
+            Equality Act cards
+          </Link>
+          <Link
+            href="/advice/rights"
+            className="inline-flex min-h-[44px] items-center rounded-full border border-[#BFDBFE] bg-[#FFF7ED] px-4 text-sm font-semibold text-warning transition-colors hover:border-[#FDE68A]"
+          >
+            Rights advice hub
+          </Link>
         </div>
-      </Container>
-    </div>
+      </Card>
+
+      <HelpCardsHub initialConcern={concern} />
+    </PageLayout>
   );
 }

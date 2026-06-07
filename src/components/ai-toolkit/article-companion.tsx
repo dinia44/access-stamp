@@ -46,7 +46,7 @@ export function ArticleCompanion({
     <Card className="mt-8 border-blue/30 bg-gradient-to-br from-blue-pale/80 to-card p-5 md:p-6 print:hidden">
       <div className="space-y-2">
         <Badge tone="blue">AI Toolkit</Badge>
-        <h2 className="font-[var(--font-heading)] text-xl text-heading">Make this guide personal to me</h2>
+        <h2 className="text-xl font-bold tracking-[-0.02em] text-heading">Make this guide personal to me</h2>
         <p className="text-sm text-muted">
           Answer three questions to get a checklist, next steps, and draft wording based on this article — not a generic
           chat.

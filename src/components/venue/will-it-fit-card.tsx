@@ -37,7 +37,7 @@ export function WillItFitCard({ venue }: { venue: Venue }) {
 
   return (
     <Card className="p-5 sm:p-6">
-      <h2 className="font-[var(--font-heading)] text-xl text-heading">Will it fit?</h2>
+      <h2 className="text-xl font-bold tracking-[-0.02em] text-heading">Will it fit?</h2>
       <p className="mt-2 text-sm text-muted">
         Your chair&apos;s <strong className="text-heading">widest outer width</strong> (cm), compared to{" "}
         <strong className="text-heading">audited measurements</strong> on this listing where we have them — not a guarantee on the day
