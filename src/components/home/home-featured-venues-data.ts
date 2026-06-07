@@ -1,10 +1,10 @@
 /** Featured access reports shown on the homepage — maps display copy to real venue slugs. */
 export const HOME_FEATURED_ACCESS_REPORTS = [
   {
-    slug: "botanical-gardens-manchester",
-    displayName: "City Art Museum",
-    city: "Manchester",
-    score: 95,
+    slug: "harbour-kitchen-liverpool",
+    displayName: "Harbour Cafe",
+    city: "Liverpool",
+    score: 92,
     distance: "0.4 miles away",
   },
   {
