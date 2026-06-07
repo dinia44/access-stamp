@@ -74,8 +74,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
             aria-label="Access Stamp home"
             onClick={closeMenus}
           >
-            <SiteLogo priority className="h-auto max-h-[40px] w-auto object-contain" />
-            <span className="hidden text-lg font-bold tracking-[-0.02em] text-[#13201F] sm:inline">Access Stamp</span>
+            <SiteLogo priority className="h-auto max-h-[44px] w-auto object-contain sm:max-h-[48px]" />
           </Link>
 
           <nav

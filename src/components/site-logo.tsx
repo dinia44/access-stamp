@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCallback, useState } from "react";
 import { SITE_LOGO_HEIGHT, SITE_LOGO_SRC, SITE_LOGO_WIDTH } from "@/lib/site";
 
-const LOCAL_FALLBACK = "/logo.svg";
+const LOCAL_FALLBACK = "/access-stamp-logo-2026.png";
 
 function isRemoteUrl(src: string) {
   return src.startsWith("http://") || src.startsWith("https://");
