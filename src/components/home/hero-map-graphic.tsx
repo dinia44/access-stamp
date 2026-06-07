@@ -1,19 +1,10 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 
 function CheckIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
       <path d="m5 13 4 4 10-10" />
-    </svg>
-  );
-}
-
-function StarIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
-      <path d="M12 2l2.9 6.26 6.9.6-5.2 4.52 1.55 6.74L12 17.77l-6.15 3.35 1.55-6.74-5.2-4.52 6.9-.6L12 2z" />
     </svg>
   );
 }
@@ -48,16 +39,6 @@ function ScoreRing() {
       <span className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#59682A]">
         Access Score
       </span>
-    </div>
-  );
-}
-
-function FloatingBadge({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <div
-      className={`rounded-xl border border-[#F1D8C7] bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(16,33,32,0.18)] ${className ?? ""}`}
-    >
-      {children}
     </div>
   );
 }
@@ -100,7 +81,6 @@ export function PlatformHeroGraphic() {
     <div className="relative w-full min-w-0 py-2 lg:py-0" aria-hidden="true">
       <div className="ml-auto w-full max-w-[720px]">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-5 xl:gap-6">
-          {/* Access report card */}
           <div className="relative w-full min-w-0 lg:max-w-[400px]">
             <article className="rounded-[24px] border border-[#F1D8C7] bg-white p-6 shadow-[0_20px_48px_-24px_rgba(240,74,22,0.16)] sm:p-7 xl:p-8">
               <div className="flex items-start gap-4 sm:gap-5">
@@ -147,55 +127,10 @@ export function PlatformHeroGraphic() {
                 <span aria-hidden>→</span>
               </Link>
             </article>
-
-            <FloatingBadge className="absolute -bottom-4 left-4 z-10 hidden lg:block">
-              <p className="text-[11px] font-semibold leading-snug text-[#13201F]">
-                Accessible parking — <span className="text-[#59682A]">2 bays</span>
-              </p>
-            </FloatingBadge>
-
-            <div className="mt-4 flex flex-wrap gap-2 lg:hidden">
-              <FloatingBadge>
-                <p className="text-[11px] font-semibold text-[#13201F]">Step-free entrance — Yes</p>
-              </FloatingBadge>
-              <FloatingBadge>
-                <p className="text-[11px] font-semibold text-[#13201F]">Accessible parking — 2 bays</p>
-              </FloatingBadge>
-              <FloatingBadge>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-bold text-[#13201F]">4.8</span>
-                  <div className="flex gap-0.5 text-[#F04A16]">
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <StarIcon key={i} className="h-2.5 w-2.5" />
-                    ))}
-                  </div>
-                  <span className="text-[11px] text-[#5E6A66]">118 reviews</span>
-                </div>
-              </FloatingBadge>
-            </div>
           </div>
 
-          {/* Photo collage — separate column, no overlap with card */}
           <div className="relative w-full min-w-0 pt-2 lg:pt-6">
-            <FloatingBadge className="absolute -top-1 left-0 z-20 hidden lg:block xl:left-2">
-              <p className="text-[11px] font-semibold leading-snug text-[#13201F]">
-                Step-free entrance — <span className="text-[#59682A]">Yes</span>
-              </p>
-            </FloatingBadge>
-
             <HeroPhotoCollage />
-
-            <FloatingBadge className="absolute -bottom-3 right-0 z-20 hidden lg:block xl:right-2">
-              <div className="flex items-center gap-1.5">
-                <span className="text-base font-bold text-[#13201F]">4.8</span>
-                <div className="flex gap-0.5 text-[#F04A16]">
-                  {[0, 1, 2, 3, 4].map((i) => (
-                    <StarIcon key={i} className="h-3 w-3" />
-                  ))}
-                </div>
-              </div>
-              <p className="mt-0.5 text-[11px] font-medium text-[#5E6A66]">118 reviews</p>
-            </FloatingBadge>
           </div>
         </div>
       </div>
