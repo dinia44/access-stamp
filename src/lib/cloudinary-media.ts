@@ -14,7 +14,7 @@ export const CLOUDINARY_MEDIA = {
   /** Homepage hero section — wide map backdrop (pins + routes, fades left) */
   homepageHeroBackdrop:
     process.env.NEXT_PUBLIC_CLOUDINARY_HOMEPAGE_BACKDROP ??
-    "/homepage-hero/header-backdrop.png",
+    `${CLOUDINARY_BRAND}/v1780860637/ChatGPT_Image_Jun_7_2026_08_29_43_PM_e1brui.png`,
   /** Homepage hero — stylised map with route pins */
   homepageMapPreview:
     process.env.NEXT_PUBLIC_CLOUDINARY_HOMEPAGE_MAP ??
