@@ -1,39 +1,20 @@
 import { AccessStampSearchBox } from "@/components/home/access-stamp-search-box";
 import { PlatformHeroGraphic } from "@/components/home/platform-hero-graphic";
+import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 
 export function HomeHero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#FFE8D6] via-[#FFF8F1] to-[#FFF3E8] pb-16 pt-8 text-[#13201F] sm:pb-20 sm:pt-10 lg:pb-24">
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(240,74,22,0.1),transparent_50%),radial-gradient(circle_at_88%_12%,rgba(89,104,42,0.08),transparent_42%),radial-gradient(circle_at_12%_88%,rgba(240,74,22,0.06),transparent_45%)]"
-        aria-hidden="true"
-      />
-      {/* Subtle map texture */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.12]"
-        aria-hidden="true"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(241,216,199,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(241,216,199,0.5) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-        }}
-      />
-      {/* Faint route lines */}
-      <svg
-        className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.1]"
-        viewBox="0 0 1200 600"
-        fill="none"
-        preserveAspectRatio="xMidYMid slice"
-        aria-hidden
-      >
-        <path
-          d="M80 480 C 280 320, 420 380, 620 220 S 920 120, 1120 80"
-          stroke="#F04A16"
-          strokeWidth="2"
-          strokeDasharray="10 12"
-          strokeLinecap="round"
+    <section className="relative overflow-hidden bg-[#FFF8F1] pb-16 pt-8 text-[#13201F] sm:pb-20 sm:pt-10 lg:pb-24">
+      {/* Map backdrop — pins and routes in upper-right, fades to cream on the left */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={CLOUDINARY_MEDIA.homepageHeroBackdrop}
+          alt=""
+          className="absolute right-0 top-0 h-full w-[115%] max-w-none object-cover object-right-top sm:w-[95%] lg:w-[78%] xl:w-[72%]"
         />
-      </svg>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#FFF8F1] from-25% via-[#FFF8F1]/75 via-45% to-transparent to-80% sm:from-30% lg:from-20% lg:via-[#FFF8F1]/55 lg:via-40%" />
+      </div>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-8 xl:gap-10">

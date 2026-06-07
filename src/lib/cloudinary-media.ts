@@ -11,6 +11,10 @@ export const CLOUDINARY_MEDIA = {
   cityHero:
     process.env.NEXT_PUBLIC_CLOUDINARY_CITY_HERO ??
     `${CLOUDINARY}/v1778451836/8819d7d9-417c-49ce-9923-421d287d3e5d_pfvjhq.png`,
+  /** Homepage hero section — wide map backdrop (pins + routes, fades left) */
+  homepageHeroBackdrop:
+    process.env.NEXT_PUBLIC_CLOUDINARY_HOMEPAGE_BACKDROP ??
+    "/homepage-hero/header-backdrop.png",
   /** Homepage hero — stylised map with route pins */
   homepageMapPreview:
     process.env.NEXT_PUBLIC_CLOUDINARY_HOMEPAGE_MAP ??
