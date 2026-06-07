@@ -5,7 +5,7 @@ export type NavItem = { label: string; href: string };
  * Override with NEXT_PUBLIC_LOGO_URL if needed.
  */
 const CLOUDINARY_LOGO_URL =
-  "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/access-stamp/brand/access-stamp-logo-2026.png";
+  "https://res.cloudinary.com/dtl4syjuh/image/upload/q_auto/f_auto/v1780836346/access-stamp/brand/access-stamp-logo-2026.png";
 
 export const SITE_LOGO_SRC =
   typeof process.env.NEXT_PUBLIC_LOGO_URL === "string" && process.env.NEXT_PUBLIC_LOGO_URL.trim().length > 0
