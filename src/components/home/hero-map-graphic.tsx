@@ -29,7 +29,7 @@ const ACCESS_FEATURES = [
 function ScoreRing() {
   return (
     <div className="flex shrink-0 flex-col items-center">
-      <div className="relative flex h-[72px] w-[72px] items-center justify-center sm:h-[84px] sm:w-[84px]">
+      <div className="relative flex h-[76px] w-[76px] items-center justify-center xl:h-[84px] xl:w-[84px]">
         <svg viewBox="0 0 84 84" className="absolute inset-0 -rotate-90" aria-hidden>
           <circle cx="42" cy="42" r="34" fill="none" stroke="#FFE2D3" strokeWidth="7" />
           <circle
@@ -43,7 +43,7 @@ function ScoreRing() {
             strokeDasharray={`${0.92 * 213.6} 213.6`}
           />
         </svg>
-        <span className="relative text-xl font-bold tracking-tight text-[#13201F] sm:text-2xl">92%</span>
+        <span className="relative text-xl font-bold tracking-tight text-[#13201F] xl:text-2xl">92%</span>
       </div>
       <span className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#59682A]">
         Access Score
@@ -55,25 +55,17 @@ function ScoreRing() {
 function FloatingBadge({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div
-      className={`rounded-xl border border-[#F1D8C7] bg-white px-3 py-2 shadow-md shadow-[#F04A16]/8 ${className ?? ""}`}
+      className={`rounded-xl border border-[#F1D8C7] bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(16,33,32,0.18)] ${className ?? ""}`}
     >
       {children}
     </div>
   );
 }
 
-function CollagePhoto({
-  src,
-  alt,
-  className,
-}: {
-  src: string;
-  alt: string;
-  className?: string;
-}) {
+function CollagePhoto({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return (
     <div
-      className={`overflow-hidden rounded-[18px] border-[4px] border-white bg-white shadow-[0_14px_36px_-18px_rgba(16,33,32,0.3)] ${className ?? ""}`}
+      className={`overflow-hidden rounded-[16px] border-[4px] border-white bg-white shadow-[0_12px_32px_-16px_rgba(16,33,32,0.28)] ${className ?? ""}`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={alt} className="h-full w-full object-cover" loading="lazy" />
@@ -83,21 +75,21 @@ function CollagePhoto({
 
 function HeroPhotoCollage() {
   return (
-    <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div className="relative mx-auto aspect-[29/36] w-full max-w-[290px] xl:max-w-[310px]" aria-hidden="true">
       <CollagePhoto
         src={CLOUDINARY_MEDIA.homepageVenueExterior}
         alt="Modern café entrance with accessible ramp"
-        className="absolute left-[2%] top-0 z-10 h-[54%] w-[88%]"
+        className="absolute left-0 top-0 z-10 h-[52%] w-full"
       />
       <CollagePhoto
         src={CLOUDINARY_MEDIA.homepageVenueInterior}
         alt="Cozy accessible café interior with ramp to counter"
-        className="absolute bottom-[8%] right-0 z-20 h-[50%] w-[68%]"
+        className="absolute bottom-[10%] right-0 z-20 h-[46%] w-[74%]"
       />
       <CollagePhoto
         src={CLOUDINARY_MEDIA.homepageMapPreview}
         alt="Stylised map with route and access pins"
-        className="absolute bottom-0 left-0 z-30 h-[36%] w-[52%]"
+        className="absolute bottom-0 left-0 z-30 h-[32%] w-[56%]"
       />
     </div>
   );
@@ -105,43 +97,12 @@ function HeroPhotoCollage() {
 
 export function PlatformHeroGraphic() {
   return (
-    <div className="relative w-full min-w-0 py-4 lg:py-0" aria-hidden="true">
-      <div className="relative ml-auto w-full max-w-[760px] min-w-0">
-        {/* Single canvas: card left, collage right — stays inside the hero column */}
-        <div className="relative min-h-[420px] w-full sm:min-h-[460px] lg:min-h-[500px]">
-          {/* Photo collage — right half of canvas */}
-          <div className="absolute right-0 top-2 h-[min(72vw,420px)] w-[min(62%,340px)] sm:top-4 sm:h-[min(68vw,440px)] sm:w-[min(58%,360px)] lg:top-6 lg:h-[400px] lg:w-[340px] xl:h-[430px] xl:w-[370px]">
-            <HeroPhotoCollage />
-          </div>
-
-          {/* Floating badges — kept inside canvas bounds */}
-          <FloatingBadge className="absolute right-[8%] top-0 z-30 hidden max-w-[168px] lg:block xl:right-[6%]">
-            <p className="text-[11px] font-semibold leading-snug text-[#13201F]">
-              Step-free entrance — <span className="text-[#59682A]">Yes</span>
-            </p>
-          </FloatingBadge>
-
-          <FloatingBadge className="absolute bottom-[4.5rem] left-[4%] z-30 hidden lg:block xl:left-[2%]">
-            <p className="text-[11px] font-semibold leading-snug text-[#13201F]">
-              Accessible parking — <span className="text-[#59682A]">2 bays</span>
-            </p>
-          </FloatingBadge>
-
-          <FloatingBadge className="absolute bottom-8 right-[6%] z-30 hidden lg:block">
-            <div className="flex items-center gap-1.5">
-              <span className="text-base font-bold text-[#13201F]">4.8</span>
-              <div className="flex gap-0.5 text-[#F04A16]">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <StarIcon key={i} className="h-3 w-3" />
-                ))}
-              </div>
-            </div>
-            <p className="mt-0.5 text-[11px] font-medium text-[#5E6A66]">118 reviews</p>
-          </FloatingBadge>
-
-          {/* Access report card — left, overlaps collage slightly */}
-          <div className="relative z-20 w-[min(100%,420px)] pt-8 sm:w-[min(92%,440px)] lg:w-[400px] xl:w-[420px]">
-            <article className="rounded-[24px] border border-[#F1D8C7] bg-white/95 p-6 shadow-[0_20px_48px_-24px_rgba(240,74,22,0.18)] backdrop-blur-sm sm:p-7 lg:p-8">
+    <div className="relative w-full min-w-0 py-2 lg:py-0" aria-hidden="true">
+      <div className="ml-auto w-full max-w-[720px]">
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-5 xl:gap-6">
+          {/* Access report card */}
+          <div className="relative w-full min-w-0 lg:max-w-[400px]">
+            <article className="rounded-[24px] border border-[#F1D8C7] bg-white p-6 shadow-[0_20px_48px_-24px_rgba(240,74,22,0.16)] sm:p-7 xl:p-8">
               <div className="flex items-start gap-4 sm:gap-5">
                 <ScoreRing />
 
@@ -149,7 +110,7 @@ export function PlatformHeroGraphic() {
                   <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#59682A]">
                     Access Report
                   </p>
-                  <h3 className="mt-1.5 text-lg font-bold tracking-[-0.02em] text-[#13201F] sm:text-xl">
+                  <h3 className="mt-1.5 text-lg font-bold tracking-[-0.02em] text-[#13201F] xl:text-xl">
                     The Riverside Café
                   </h3>
                   <p className="mt-1 text-sm leading-6 text-[#5E6A66]">12 River Street, Manchester M4 5AB</p>
@@ -180,14 +141,19 @@ export function PlatformHeroGraphic() {
               <Link
                 href="/venue-finder"
                 tabIndex={-1}
-                className="mt-5 inline-flex h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#F04A16] text-sm font-semibold text-white shadow-sm shadow-[#F04A16]/20 transition-all duration-200 hover:bg-[#D93E10] hover:shadow-md hover:shadow-[#F04A16]/25 sm:mt-6 sm:h-[52px]"
+                className="mt-5 inline-flex h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#F04A16] text-sm font-semibold text-white shadow-sm shadow-[#F04A16]/20 transition-all duration-200 hover:bg-[#D93E10] sm:mt-6 sm:h-[52px]"
               >
                 View full report
                 <span aria-hidden>→</span>
               </Link>
             </article>
 
-            {/* Mobile-only summary chips */}
+            <FloatingBadge className="absolute -bottom-4 left-4 z-10 hidden lg:block">
+              <p className="text-[11px] font-semibold leading-snug text-[#13201F]">
+                Accessible parking — <span className="text-[#59682A]">2 bays</span>
+              </p>
+            </FloatingBadge>
+
             <div className="mt-4 flex flex-wrap gap-2 lg:hidden">
               <FloatingBadge>
                 <p className="text-[11px] font-semibold text-[#13201F]">Step-free entrance — Yes</p>
@@ -207,6 +173,29 @@ export function PlatformHeroGraphic() {
                 </div>
               </FloatingBadge>
             </div>
+          </div>
+
+          {/* Photo collage — separate column, no overlap with card */}
+          <div className="relative w-full min-w-0 pt-2 lg:pt-6">
+            <FloatingBadge className="absolute -top-1 left-0 z-20 hidden lg:block xl:left-2">
+              <p className="text-[11px] font-semibold leading-snug text-[#13201F]">
+                Step-free entrance — <span className="text-[#59682A]">Yes</span>
+              </p>
+            </FloatingBadge>
+
+            <HeroPhotoCollage />
+
+            <FloatingBadge className="absolute -bottom-3 right-0 z-20 hidden lg:block xl:right-2">
+              <div className="flex items-center gap-1.5">
+                <span className="text-base font-bold text-[#13201F]">4.8</span>
+                <div className="flex gap-0.5 text-[#F04A16]">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <StarIcon key={i} className="h-3 w-3" />
+                  ))}
+                </div>
+              </div>
+              <p className="mt-0.5 text-[11px] font-medium text-[#5E6A66]">118 reviews</p>
+            </FloatingBadge>
           </div>
         </div>
       </div>
