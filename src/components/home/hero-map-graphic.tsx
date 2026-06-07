@@ -62,24 +62,47 @@ function FloatingBadge({ children, className }: { children: ReactNode; className
   );
 }
 
-function PhotoCard({ src, alt }: { src: string; alt: string }) {
+function CollagePhoto({
+  src,
+  alt,
+  className,
+  aspectClass = "aspect-[4/3]",
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  aspectClass?: string;
+}) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#F1D8C7] bg-white shadow-md shadow-[#F04A16]/8">
+    <div
+      className={`overflow-hidden rounded-[20px] border-[5px] border-white bg-white shadow-[0_16px_40px_-20px_rgba(16,33,32,0.28)] ${className ?? ""}`}
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} className="aspect-[4/3] w-full object-cover" loading="lazy" />
+      <img src={src} alt={alt} className={`w-full object-cover ${aspectClass}`} loading="lazy" />
     </div>
   );
 }
 
-function MapPreviewCard() {
+function HeroPhotoCollage({ className }: { className?: string }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#F1D8C7] bg-white shadow-md shadow-[#F04A16]/8">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+    <div className={`relative shrink-0 ${className ?? ""}`} aria-hidden="true">
+      <CollagePhoto
+        src={CLOUDINARY_MEDIA.homepageVenueExterior}
+        alt="Modern café entrance with accessible ramp"
+        className="absolute left-0 top-0 z-10 w-[82%]"
+        aspectClass="aspect-[5/4]"
+      />
+      <CollagePhoto
+        src={CLOUDINARY_MEDIA.homepageVenueInterior}
+        alt="Cozy accessible café interior with ramp to counter"
+        className="absolute right-0 top-[36%] z-20 w-[62%]"
+        aspectClass="aspect-square"
+      />
+      <CollagePhoto
         src={CLOUDINARY_MEDIA.homepageMapPreview}
         alt="Stylised map with route and access pins"
-        className="aspect-[4/3] w-full object-cover"
-        loading="lazy"
+        className="absolute bottom-0 left-[4%] z-30 w-[46%]"
+        aspectClass="aspect-[4/3]"
       />
     </div>
   );
@@ -104,7 +127,7 @@ export function PlatformHeroGraphic() {
         />
       </svg>
 
-      <div className="relative mx-auto flex max-w-[680px] flex-col items-center gap-5 sm:gap-6 lg:mx-0 lg:max-w-none lg:flex-row lg:items-start lg:justify-end lg:gap-5 xl:gap-6">
+      <div className="relative mx-auto flex w-full max-w-[920px] flex-col items-center gap-6 sm:gap-8 lg:mx-0 lg:max-w-none lg:flex-row lg:items-start lg:justify-end lg:gap-6 xl:gap-8">
         {/* Main access report card */}
         <div className="relative w-full max-w-[455px] shrink-0 lg:w-[455px]">
           {/* Floating badges — desktop only, anchored to card edges */}
@@ -198,17 +221,11 @@ export function PlatformHeroGraphic() {
           </div>
         </div>
 
-        {/* Venue imagery + mini map — separate column, not attached to card */}
-        <div className="grid w-full max-w-[455px] grid-cols-2 gap-3 sm:grid-cols-3 lg:w-[172px] lg:max-w-none lg:grid-cols-1 lg:pt-2 xl:w-[188px]">
-          <PhotoCard
-            src={CLOUDINARY_MEDIA.homepageVenueExterior}
-            alt="Modern café entrance with accessible ramp"
-          />
-          <PhotoCard
-            src={CLOUDINARY_MEDIA.homepageVenueInterior}
-            alt="Cozy accessible café interior with ramp to counter"
-          />
-          <MapPreviewCard />
+        {/* Overlapping venue collage — matches hero mockup proportions */}
+        <HeroPhotoCollage className="hidden h-[360px] w-[340px] lg:block xl:h-[420px] xl:w-[400px]" />
+
+        <div className="relative h-[320px] w-full max-w-[440px] sm:h-[360px] lg:hidden">
+          <HeroPhotoCollage className="mx-auto h-full w-[min(100%,400px)]" />
         </div>
       </div>
     </div>
