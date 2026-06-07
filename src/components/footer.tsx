@@ -20,7 +20,7 @@ const ABOUT_LINKS = [
 
 const RESOURCE_LINKS = [
   { label: "Accessibility Checklist", href: "/ai-toolkit/venue-questions" },
-  { label: "For Businesses", href: "/submit-venue" },
+  { label: "For Venues", href: "/submit-venue" },
   { label: "Partner With Us", href: "/about#partners" },
   { label: "API & Data", href: "/about#data" },
   { label: "Help Centre", href: "/help-cards" },
@@ -64,9 +64,10 @@ export function Footer() {
       <Container className="py-14 sm:py-16">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)_minmax(0,0.9fr)] lg:gap-12">
           <div className="space-y-5">
-            <SiteLogo className="h-auto max-h-10 w-auto object-contain brightness-0 invert" />
-            <p className="max-w-sm text-sm leading-7 text-[#cbd5e1]">
-              Your trusted platform for accessible places, practical guidance and real confidence when you go out.
+            <SiteLogo className="h-auto max-h-10 w-auto object-contain" />
+            <p className="max-w-sm text-sm leading-7 text-[#c8d4d0]">
+              Your trusted platform for accessible venues, practical advice and disability confidence every step of the
+              way.
             </p>
             <div className="flex flex-wrap gap-2" aria-label="Social media">
               {SOCIAL_LINKS.map((social) => (
@@ -76,7 +77,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-xs font-bold text-[#bae6fd] transition-colors hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-xs font-bold text-[#c8d4d0] transition-colors hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-4"
                 >
                   {social.icon}
                 </a>

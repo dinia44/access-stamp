@@ -16,8 +16,15 @@ function categoryLabel(categorySlug: string) {
   return ADVICE_CATEGORIES.find((c) => c.href === `/advice/${categorySlug}`)?.title ?? "Advice";
 }
 
-function GuideCardGrid({ articles, theme = "light" }: { articles: AdviceArticle[]; theme?: "light" | "dark" }) {
+function GuideCardGrid({
+  articles,
+  theme = "light",
+}: {
+  articles: AdviceArticle[];
+  theme?: "light" | "dark" | "warm";
+}) {
   const isDark = theme === "dark";
+  const isWarm = theme === "warm";
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {articles.map((article) => {
@@ -29,7 +36,9 @@ function GuideCardGrid({ articles, theme = "light" }: { articles: AdviceArticle[
               className={`flex h-full flex-col overflow-hidden p-0 transition-all group-hover:-translate-y-0.5 ${
                 isDark
                   ? "border-white/10 bg-slate-900/70 shadow-xl shadow-black/20 group-hover:border-white/20 group-hover:shadow-2xl group-hover:shadow-black/30"
-                  : "border-border group-hover:shadow-[var(--shadow)]"
+                  : isWarm
+                    ? "border-[#F1D8C7] group-hover:border-[#E8C4A8] group-hover:shadow-[var(--shadow-lift)]"
+                    : "border-border group-hover:shadow-[var(--shadow)]"
               }`}
             >
               <AdviceMediaFrame>
@@ -41,7 +50,7 @@ function GuideCardGrid({ articles, theme = "light" }: { articles: AdviceArticle[
                 />
               </AdviceMediaFrame>
               <div className="flex flex-1 flex-col p-5">
-                <Badge tone="blue" className="w-fit">
+                <Badge tone={isWarm ? "verified" : "blue"} className="w-fit">
                   {label}
                 </Badge>
                 <div
@@ -64,7 +73,9 @@ function GuideCardGrid({ articles, theme = "light" }: { articles: AdviceArticle[
                       Updated {article.updated}
                     </span>
                   )}
-                  <span className={`text-sm font-semibold ${isDark ? "text-[#22D3EE]" : "text-blue"}`}>
+                  <span
+                    className={`text-sm font-semibold ${isDark ? "text-[#22D3EE]" : isWarm ? "text-[#59682A] group-hover:text-[#F04A16]" : "text-blue"}`}
+                  >
                     Read guide →
                   </span>
                 </div>
@@ -88,7 +99,7 @@ export async function FeaturedPracticalGuides({
 }: {
   limit?: number;
   hideHeading?: boolean;
-  theme?: "light" | "dark";
+  theme?: "light" | "dark" | "warm";
 }) {
   const all = await getAdviceArticles();
   const primarySlugs = limit ? FEATURED_PRACTICAL_GUIDE_SLUGS.slice(0, limit) : [...FEATURED_PRACTICAL_GUIDE_SLUGS];

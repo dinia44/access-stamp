@@ -14,9 +14,9 @@ function linkActive(path: string, href: string) {
   return path === href || path.startsWith(`${href}/`);
 }
 
-const NAV_LINK = `relative rounded-lg px-3 py-2 text-sm font-medium text-[#1E3A5F] transition-colors hover:text-[#0B1D3A] xl:px-4 ${SITE_FOCUS}`;
-const NAV_ACTIVE_HOME = "text-[#0B1D3A] after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:rounded-full after:bg-[#2563EB] xl:after:left-4 xl:after:right-4";
-const NAV_ACTIVE_SITE = "bg-[#DBEAFE] text-[#0B1D3A] rounded-full";
+const NAV_LINK = `relative rounded-lg px-3 py-2 text-sm font-medium text-[#2A3836] transition-colors hover:text-[#13201F] xl:px-4 ${SITE_FOCUS}`;
+const NAV_ACTIVE_HOME = "text-[#13201F] after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:rounded-full after:bg-[#F04A16] xl:after:left-4 xl:after:right-4";
+const NAV_ACTIVE_SITE = "bg-[#FFE2D3] text-[#13201F] rounded-full";
 
 type PremiumHeaderProps = {
   variant?: "home" | "site";
@@ -54,13 +54,13 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
   const allMobile = useMemo(() => [...NAV_ITEMS, ...MORE_ITEMS], []);
   const primaryCta =
     variant === "home"
-      ? { href: "#platform-search", label: "Search accessible places" }
+      ? { href: "#platform-search", label: "Search accessible places →" }
       : { href: "/venue-finder", label: "Start searching" };
 
   const navActiveClass = variant === "home" ? NAV_ACTIVE_HOME : NAV_ACTIVE_SITE;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#BFDBFE] bg-white/95 shadow-sm shadow-[#2563EB]/5 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-[#F1D8C7] bg-[#FFF8F1]/95 shadow-sm shadow-[#F04A16]/5 backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           className={cn(
@@ -75,7 +75,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
             onClick={closeMenus}
           >
             <SiteLogo priority className="h-auto max-h-[40px] w-auto object-contain" />
-            <span className="hidden text-lg font-bold tracking-[-0.02em] text-[#0B1D3A] sm:inline">Access Stamp</span>
+            <span className="hidden text-lg font-bold tracking-[-0.02em] text-[#13201F] sm:inline">Access Stamp</span>
           </Link>
 
           <nav
@@ -108,14 +108,14 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
                 <div
                   role="menu"
                   aria-label="Resources"
-                  className="absolute right-0 mt-2 w-64 rounded-2xl border border-[#BFDBFE] bg-white p-3 shadow-xl shadow-[#2563EB]/10"
+                  className="absolute right-0 mt-2 w-64 rounded-2xl border border-[#F1D8C7] bg-white p-3 shadow-xl shadow-[#F04A16]/10"
                 >
                   {RESOURCE_GROUPS.map((group, groupIndex) => (
                     <div
                       key={group.label}
-                      className={groupIndex > 0 ? "mt-3 border-t border-[#DBEAFE] pt-3" : undefined}
+                      className={groupIndex > 0 ? "mt-3 border-t border-[#F1D8C7] pt-3" : undefined}
                     >
-                      <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#3B6B9A]">
+                      <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#5E6A66]">
                         {group.label}
                       </p>
                       {group.items.map((item) => (
@@ -123,7 +123,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
                           key={item.href}
                           role="menuitem"
                           href={item.href}
-                          className={`block rounded-xl px-3 py-2.5 text-sm font-medium text-[#1E3A5F] transition-colors hover:bg-[#EFF6FF] hover:text-[#0B1D3A] ${SITE_FOCUS}`}
+                          className={`block rounded-xl px-3 py-2.5 text-sm font-medium text-[#2A3836] transition-colors hover:bg-[#FFF3E8] hover:text-[#13201F] ${SITE_FOCUS}`}
                           onClick={closeMenus}
                         >
                           {item.label}
@@ -157,10 +157,10 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
           <div
             role="search"
             aria-labelledby="site-search-label"
-            className="border-t border-[#BFDBFE] py-3"
+            className="border-t border-[#F1D8C7] py-3"
           >
             <div className="premium-panel flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
-              <p id="site-search-label" className="shrink-0 text-sm font-semibold text-[#0B1D3A]">
+              <p id="site-search-label" className="shrink-0 text-sm font-semibold text-[#13201F]">
                 Search the site
               </p>
               <div className="min-w-0 flex-1" data-access-stamp="site-search">
@@ -171,8 +171,8 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
         ) : null}
 
         {mobileOpen ? (
-          <nav className="border-t border-[#BFDBFE] pb-4 pt-3 lg:hidden" aria-label="Mobile">
-            <div className="grid gap-1 rounded-2xl border border-[#BFDBFE] bg-white p-2 shadow-lg shadow-[#2563EB]/5">
+          <nav className="border-t border-[#F1D8C7] pb-4 pt-3 lg:hidden" aria-label="Mobile">
+            <div className="grid gap-1 rounded-2xl border border-[#F1D8C7] bg-white p-2 shadow-lg shadow-[#F04A16]/5">
               {allMobile.map((item) => {
                 const active = linkActive(path, item.href);
                 return (
@@ -180,7 +180,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
                     key={`${item.href}-${item.label}`}
                     href={item.href}
                     className={cn(
-                      `rounded-xl px-3 py-2.5 text-sm font-medium text-[#1E3A5F] transition-colors hover:bg-[#EFF6FF] hover:text-[#0B1D3A] ${SITE_FOCUS}`,
+                      `rounded-xl px-3 py-2.5 text-sm font-medium text-[#2A3836] transition-colors hover:bg-[#FFF3E8] hover:text-[#13201F] ${SITE_FOCUS}`,
                       active && navActiveClass,
                     )}
                     onClick={closeMenus}

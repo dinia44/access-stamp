@@ -13,7 +13,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-card)] border border-border bg-card/95 shadow-[var(--shadow-soft)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#93C5FD] hover:shadow-[var(--shadow-lift)]",
+        "rounded-[var(--radius-card)] border border-border bg-card/95 shadow-[var(--shadow-soft)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--color-border-mid)] hover:shadow-[var(--shadow-lift)]",
         className,
       )}
     >
@@ -43,14 +43,14 @@ export function Badge({
 }) {
   const resolved = tone === "amber" ? "warning" : tone;
   const toneClass: Record<BadgeTone, string> = {
-    blue: "bg-blue-pale text-[#1d4ed8] ring-1 ring-[#bfdbfe]",
-    navy: "bg-navy-pale text-[var(--color-ink)] ring-1 ring-[var(--color-border)]",
-    neutral: "bg-[#eff6ff] text-[var(--color-muted)] ring-1 ring-[var(--color-border)]",
-    verified: "bg-verified-pale text-verified ring-1 ring-[#99f6e4]",
-    community: "bg-blue-pale text-[#1d4ed8] ring-1 ring-[#bfdbfe]",
+    blue: "bg-[#FFE2D3] text-[#D93E10] ring-1 ring-[#F1D8C7]",
+    navy: "bg-[#FFF3E8] text-[var(--color-ink)] ring-1 ring-[var(--color-border)]",
+    neutral: "bg-[#FFF3E8] text-[var(--color-muted)] ring-1 ring-[var(--color-border)]",
+    verified: "bg-[#EDF7ED] text-[#2F7D32] ring-1 ring-[#C8E6C9]",
+    community: "bg-[#FFE2D3] text-[#D93E10] ring-1 ring-[#F1D8C7]",
     warning: "bg-amber-pale text-warning ring-1 ring-[#fde68a]",
     error: "bg-error-pale text-error ring-1 ring-[#fecaca]",
-    gold: "bg-[#0b1d3a] text-[#f8fafc] ring-1 ring-[color-mix(in_srgb,var(--color-accent)_40%,transparent)]",
+    gold: "bg-[#13201F] text-[#f8fafc] ring-1 ring-[color-mix(in_srgb,var(--color-primary)_40%,transparent)]",
   };
 
   return (

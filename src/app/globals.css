@@ -2,30 +2,39 @@
 
 /*
  * Access Stamp — premium product design system
- * Navy headings · bright blue actions · pale blue surfaces · cyan accents
+ * Warm ivory surfaces · burnt orange actions · olive trust accents
  */
 :root {
-  --color-navy: #0b1d3a;
-  --color-ink: #0b1d3a;
-  --color-bg: #eff6ff;
+  --color-bg: #fff8f1;
+  --color-surface: #ffffff;
+  --color-surface-warm: #fff3e8;
+  --color-text: #13201f;
+  --color-muted: #5e6a66;
+  --color-primary: #f04a16;
+  --color-primary-hover: #d93e10;
+  --color-primary-soft: #ffe2d3;
+  --color-secondary: #59682a;
+  --color-secondary-hover: #45521f;
+  --color-success: #2f7d32;
+  --color-border: #f1d8c7;
+  --color-footer: #102120;
+
+  --color-navy: #13201f;
+  --color-ink: #13201f;
   --color-card: #ffffff;
-  --color-muted: #3b6b9a;
-  --color-border: #bfdbfe;
-  --color-border-mid: #93c5fd;
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-accent: #0891b2;
+  --color-border-mid: #e8c4a8;
+  --color-accent: #59682a;
   --color-gold: #d6a84f;
-  --color-verified: #0f766e;
+  --color-verified: #2f7d32;
   --color-warning: #b45309;
   --color-error: #b91c1c;
 
   --background: var(--color-bg);
-  --background-2: #f8fbff;
-  --background-3: #eef6fc;
+  --background-2: #fff3e8;
+  --background-3: #fff0e4;
   --card: var(--color-card);
   --heading: var(--color-ink);
-  --text: #1e3a5f;
+  --text: #2a3836;
   --muted: var(--color-muted);
   --navy: var(--color-navy);
   --blue: var(--color-primary);
@@ -33,16 +42,16 @@
   --amber: var(--color-warning);
   --verified: var(--color-verified);
   --error: var(--color-error);
-  --blue-pale: #dbeafe;
+  --blue-pale: #ffe2d3;
   --amber-pale: #fffbeb;
-  --verified-pale: #f0fdfa;
+  --verified-pale: #edf7ed;
   --error-pale: #fef2f2;
-  --navy-pale: #eef6fc;
+  --navy-pale: #fff3e8;
   --border: var(--color-border);
-  --ring: var(--color-accent);
-  --shadow: 0 16px 40px -16px rgba(37, 99, 235, 0.14);
-  --shadow-soft: 0 4px 16px -6px rgba(37, 99, 235, 0.08);
-  --shadow-lift: 0 20px 48px -20px rgba(37, 99, 235, 0.18);
+  --ring: var(--color-primary);
+  --shadow: 0 16px 40px -16px rgba(240, 74, 22, 0.12);
+  --shadow-soft: 0 4px 16px -6px rgba(240, 74, 22, 0.07);
+  --shadow-lift: 0 20px 48px -20px rgba(240, 74, 22, 0.16);
   --radius-card: 20px;
   --radius-ui: 14px;
   --radius-pill: 999px;
@@ -103,7 +112,7 @@ body[data-high-contrast="on"] {
 }
 
 ::selection {
-  background: rgba(37, 99, 235, 0.18);
+  background: rgba(240, 74, 22, 0.18);
 }
 
 svg[data-as-icon="true"] {
@@ -187,7 +196,7 @@ svg[data-as-icon="true"] {
 }
 
 .premium-section-hero {
-  background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 55%, #f8fbff 100%);
+  background: linear-gradient(180deg, #ffe8d6 0%, #fff8f1 55%, #fff3e8 100%);
 }
 
 .premium-section-alt {
@@ -214,19 +223,19 @@ svg[data-as-icon="true"] {
 }
 
 .nav-header {
-  background: rgba(248, 251, 255, 0.92);
+  background: rgba(255, 248, 241, 0.92);
   border-bottom: 1px solid var(--color-border);
-  box-shadow: 0 1px 0 rgba(37, 99, 235, 0.04);
+  box-shadow: 0 1px 0 rgba(240, 74, 22, 0.04);
   backdrop-filter: blur(14px);
 }
 
 .footer-brand {
-  background: linear-gradient(180deg, #0b1d3a 0%, #071527 100%);
-  border-top: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+  background: linear-gradient(180deg, #102120 0%, #0a1615 100%);
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
 
 .footer-link {
-  color: #bae6fd;
+  color: #c8d4d0;
   text-decoration: none;
 }
 
@@ -251,12 +260,12 @@ svg[data-as-icon="true"] {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-primary);
 }
 
 .hero-badge {
-  border: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
-  background: color-mix(in srgb, var(--color-navy) 88%, var(--color-primary) 12%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  background: color-mix(in srgb, var(--color-footer) 88%, var(--color-primary) 12%);
   color: #f8fafc;
 }
 

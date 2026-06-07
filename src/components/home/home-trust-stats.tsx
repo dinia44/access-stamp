@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { HOME_PANEL } from "@/components/home/home-theme";
 
 const STATS = [
@@ -15,7 +14,7 @@ const STATS = [
   },
   {
     value: "160+",
-    label: "Practical guide topics",
+    label: "Helpful guide topics",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
@@ -48,41 +47,24 @@ const STATS = [
 
 export function HomeTrustStats() {
   return (
-    <section className="border-t border-[#BFDBFE] py-16 sm:py-20" aria-labelledby="trust-stats-heading">
+    <section className="border-t border-[#F1D8C7] bg-[#FFF3E8] py-16 sm:py-20" aria-labelledby="trust-stats-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="overflow-hidden rounded-3xl border border-[#BFDBFE] bg-gradient-to-br from-[#DBEAFE] via-[#EFF6FF] to-[#F8FBFF] p-8 shadow-lg shadow-[#2563EB]/5 sm:p-10 lg:p-12">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-14">
-            <div>
-              <h2 id="trust-stats-heading" className="text-2xl font-bold tracking-[-0.03em] text-[#0B1D3A] sm:text-3xl">
-                Built from lived experience, designed for real access decisions.
-              </h2>
-              <p className="mt-4 text-base leading-7 text-[#1E3A5F]">
-                We combine community insight with practical information so you can make informed choices every time you
-                go out.
-              </p>
-              <Link
-                href="/about"
-                className="mt-6 inline-flex min-h-[44px] items-center text-sm font-semibold text-[#2563EB] transition-colors hover:text-[#0891B2] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4"
-              >
-                Learn more about us →
-              </Link>
-            </div>
-
-            <ul className="grid gap-4 sm:grid-cols-2">
-              {STATS.map((stat) => (
-                <li key={stat.label} className={`flex items-start gap-4 p-5 ${HOME_PANEL}`}>
-                  <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB]">
-                    {stat.icon}
-                  </span>
-                  <div>
-                    <p className="text-2xl font-bold tracking-tight text-[#0B1D3A]">{stat.value}</p>
-                    <p className="mt-0.5 text-sm font-medium text-[#3B6B9A]">{stat.label}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <h2 id="trust-stats-heading" className="sr-only">
+          Platform statistics
+        </h2>
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {STATS.map((stat) => (
+            <li key={stat.label} className={`flex items-start gap-4 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#F04A16]/8 ${HOME_PANEL}`}>
+              <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#F1D8C7] bg-[#FFF3E8] text-[#F04A16]">
+                {stat.icon}
+              </span>
+              <div>
+                <p className="text-xl font-bold tracking-tight text-[#13201F] sm:text-2xl">{stat.value}</p>
+                <p className="mt-0.5 text-sm font-medium text-[#5E6A66]">{stat.label}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

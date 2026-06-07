@@ -1,31 +1,31 @@
-/** Featured access reports shown on the homepage — maps display copy to real venue slugs. */
+/** Featured access-checked venues shown on the homepage. */
 export const HOME_FEATURED_ACCESS_REPORTS = [
   {
     slug: "harbour-kitchen-liverpool",
-    displayName: "Harbour Cafe",
-    city: "Liverpool",
-    score: 92,
-    distance: "0.4 miles away",
+    displayName: "City Art Museum",
+    city: "Manchester",
+    score: 93,
+    distance: "12 min drive",
   },
   {
     slug: "royal-armouries-leeds",
     displayName: "The Book Nook",
     city: "Leeds",
     score: 91,
-    distance: "0.8 miles away",
+    distance: "8 min drive",
   },
   {
     slug: "central-library-birmingham",
     displayName: "Vue Cinema",
     city: "Birmingham",
     score: 92,
-    distance: "1.2 miles away",
+    distance: "15 min drive",
   },
   {
     slug: "riverside-arts-centre-bristol",
     displayName: "Riverside Visitor Centre",
     city: "Bristol",
     score: 94,
-    distance: "0.6 miles away",
+    distance: "10 min drive",
   },
 ] as const;

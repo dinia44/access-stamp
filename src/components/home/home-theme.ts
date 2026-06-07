@@ -1,55 +1,59 @@
-/** Shared light-blue homepage palette — navy text, blue surfaces, cyan accents */
+/** Shared warm homepage palette — charcoal text, burnt orange CTAs, olive accents */
 
 export const HOME_COLORS = {
-  pageBase: "#EFF6FF",
-  pageAlt: "#F8FBFF",
-  pageSection: "#EEF6FC",
-  heroTop: "#DBEAFE",
-  heroMid: "#EFF6FF",
-  heroBottom: "#F8FBFF",
-  primaryBlue: "#2563EB",
-  accentCyan: "#0891B2",
-  accentPurple: "#7C3AED",
-  textPrimary: "#0B1D3A",
-  textSecondary: "#1E3A5F",
-  textMuted: "#3B6B9A",
-  borderLight: "#BFDBFE",
-  borderMid: "#93C5FD",
+  pageBase: "#FFF8F1",
+  pageAlt: "#FFF3E8",
+  pageSection: "#FFF0E4",
+  heroTop: "#FFE8D6",
+  heroMid: "#FFF8F1",
+  heroBottom: "#FFF3E8",
+  primary: "#F04A16",
+  primaryHover: "#D93E10",
+  secondary: "#59682A",
+  secondaryHover: "#45521F",
+  textPrimary: "#13201F",
+  textSecondary: "#2A3836",
+  textMuted: "#5E6A66",
+  borderLight: "#F1D8C7",
+  borderMid: "#E8C4A8",
+  success: "#2F7D32",
 } as const;
 
-export const HOME_PAGE_SHELL = "min-h-screen bg-[#EFF6FF] text-[#0B1D3A]";
+export const HOME_PAGE_SHELL = "min-h-screen bg-[#FFF8F1] text-[#13201F]";
 
-export const HOME_SECTION = "border-t border-[#BFDBFE] py-16";
+export const HOME_SECTION = "border-t border-[#F1D8C7] py-16";
 
-export const HOME_SECTION_ALT = "border-t border-[#BFDBFE] bg-[#F8FBFF] py-16";
+export const HOME_SECTION_ALT = "border-t border-[#F1D8C7] bg-[#FFF3E8] py-16";
 
-export const HOME_SECTION_PANEL = "border-t border-[#BFDBFE] bg-[#EEF6FC] py-16";
+export const HOME_SECTION_PANEL = "border-t border-[#F1D8C7] bg-[#FFF0E4] py-16";
 
 export const HOME_PANEL =
-  "rounded-2xl border border-[#BFDBFE] bg-white shadow-lg shadow-[#2563EB]/[0.06]";
+  "rounded-2xl border border-[#F1D8C7] bg-white shadow-lg shadow-[#F04A16]/[0.05]";
 
 export const HOME_GLASS_PANEL =
-  "rounded-3xl border border-[#93C5FD]/50 bg-white/95 shadow-xl shadow-[#2563EB]/10 backdrop-blur-xl";
+  "rounded-3xl border border-[#F1D8C7]/80 bg-white/95 shadow-xl shadow-[#F04A16]/8 backdrop-blur-xl";
 
 export const HOME_FOCUS =
-  "focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4";
+  "focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-4";
 
-export const HOME_INPUT = `h-14 min-h-[44px] w-full rounded-2xl border border-[#93C5FD] bg-white px-4 text-base text-[#0B1D3A] placeholder:text-[#3B6B9A]/80 transition-all duration-200 focus:border-[#2563EB] focus:outline-none focus:ring-4 focus:ring-[#2563EB]/15 ${HOME_FOCUS}`;
+export const HOME_INPUT = `h-14 min-h-[44px] w-full rounded-2xl border border-[#E8C4A8] bg-white px-4 text-base text-[#13201F] placeholder:text-[#5E6A66]/80 transition-all duration-200 focus:border-[#F04A16] focus:outline-none focus:ring-4 focus:ring-[#F04A16]/15 ${HOME_FOCUS}`;
 
-export const HOME_BTN_PRIMARY = `inline-flex min-h-[44px] h-14 items-center justify-center rounded-2xl bg-blue-600 px-6 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-lg hover:shadow-[#2563EB]/25 ${HOME_FOCUS}`;
+export const HOME_BTN_PRIMARY = `inline-flex min-h-[44px] h-14 items-center justify-center gap-2 rounded-2xl bg-[#F04A16] px-6 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#D93E10] hover:shadow-lg hover:shadow-[#F04A16]/25 ${HOME_FOCUS}`;
 
-export const HOME_BTN_GHOST = `inline-flex min-h-[44px] items-center justify-center rounded-full border border-[#93C5FD] bg-[#EFF6FF] px-5 text-base font-semibold text-[#1E3A5F] transition-all duration-200 hover:border-[#2563EB]/40 hover:bg-[#DBEAFE] hover:text-[#0B1D3A] ${HOME_FOCUS}`;
+export const HOME_BTN_SECONDARY = `inline-flex min-h-[44px] h-14 items-center justify-center gap-2 rounded-2xl bg-[#59682A] px-6 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#45521F] hover:shadow-lg hover:shadow-[#59682A]/20 ${HOME_FOCUS}`;
+
+export const HOME_BTN_GHOST = `inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl border border-[#E8C4A8] bg-white px-5 text-base font-semibold text-[#13201F] transition-all duration-200 hover:border-[#F04A16]/40 hover:bg-[#FFF3E8] hover:text-[#13201F] ${HOME_FOCUS}`;
 
 export function homeChipClass(active: boolean) {
-  const base = `inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all duration-200 ${HOME_FOCUS}`;
+  const base = `inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-all duration-200 ${HOME_FOCUS}`;
   return active
-    ? `${base} border-blue-600 bg-blue-600 text-white shadow-sm shadow-[#2563EB]/20`
-    : `${base} border-[#BFDBFE] bg-white text-[#1E3A5F] hover:border-[#93C5FD] hover:bg-[#EFF6FF] hover:text-[#0B1D3A]`;
+    ? `${base} border-[#F04A16] bg-[#FFE2D3] text-[#13201F] shadow-sm shadow-[#F04A16]/10`
+    : `${base} border-[#F1D8C7] bg-white text-[#2A3836] hover:border-[#E8C4A8] hover:bg-[#FFF3E8] hover:text-[#13201F]`;
 }
 
 export function homeTabClass(active: boolean) {
-  const base = `inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-xl px-4 text-sm font-semibold transition-all duration-200 sm:px-5 ${HOME_FOCUS}`;
+  const base = `inline-flex min-h-[44px] shrink-0 items-center justify-center border-b-2 px-2 pb-3 pt-1 text-sm font-semibold transition-all duration-200 sm:px-3 ${HOME_FOCUS}`;
   return active
-    ? `${base} bg-[#2563EB] text-white shadow-sm shadow-[#2563EB]/25`
-    : `${base} border border-[#BFDBFE] bg-white text-[#1E3A5F] hover:border-[#93C5FD] hover:bg-[#F8FBFF] hover:text-[#0B1D3A]`;
+    ? `${base} border-[#F04A16] text-[#F04A16]`
+    : `${base} border-transparent text-[#5E6A66] hover:text-[#13201F]`;
 }

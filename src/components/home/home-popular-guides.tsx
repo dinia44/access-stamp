@@ -1,26 +1,25 @@
 import Link from "next/link";
 import { FeaturedPracticalGuides } from "@/components/advice/featured-practical-guides";
-import { HOME_SECTION_ALT } from "@/components/home/home-theme";
+import { HOME_SECTION } from "@/components/home/home-theme";
 
 export function HomePopularGuides() {
   return (
-    <section className={`${HOME_SECTION_ALT} py-16 sm:py-20`} aria-labelledby="popular-guides-heading">
+    <section className={`${HOME_SECTION} bg-[#FFF8F1] py-16 sm:py-20`} aria-labelledby="popular-guides-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#2563EB]">Popular practical guides</p>
-          <h2 id="popular-guides-heading" className="mt-3 text-3xl font-bold tracking-[-0.03em] text-[#0B1D3A] sm:text-4xl">
+        <div className="max-w-2xl">
+          <h2 id="popular-guides-heading" className="text-3xl font-bold tracking-[-0.03em] text-[#13201F] sm:text-4xl">
             Popular practical guides
           </h2>
         </div>
 
         <div className="mt-10">
-          <FeaturedPracticalGuides limit={3} hideHeading theme="light" />
+          <FeaturedPracticalGuides limit={3} hideHeading theme="warm" />
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-10">
           <Link
             href="/advice"
-            className="inline-flex min-h-[44px] items-center text-sm font-bold text-[#2563EB] transition-colors hover:text-[#0891B2] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4"
+            className="inline-flex min-h-[44px] items-center text-sm font-bold text-[#59682A] transition-colors hover:text-[#F04A16] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-4"
           >
             Browse all guides →
           </Link>

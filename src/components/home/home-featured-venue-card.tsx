@@ -55,7 +55,7 @@ export function HomeFeaturedVenueCard({ venue, displayName, city, scoreOverride,
     <li className="h-full">
       <Link
         href={href}
-        className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#BFDBFE] bg-white shadow-lg shadow-[#2563EB]/[0.06] transition-all duration-200 hover:-translate-y-1 hover:border-[#93C5FD] hover:shadow-xl hover:shadow-[#2563EB]/12 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4"
+        className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#F1D8C7] bg-white shadow-lg shadow-[#F04A16]/[0.05] transition-all duration-200 hover:-translate-y-1 hover:border-[#E8C4A8] hover:shadow-xl hover:shadow-[#F04A16]/10 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-4"
       >
         <div className="relative aspect-[4/3] overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -64,20 +64,20 @@ export function HomeFeaturedVenueCard({ venue, displayName, city, scoreOverride,
             alt={photo.alt}
             className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
           />
-          <span className="absolute left-3 top-3 inline-flex min-h-[28px] items-center rounded-full bg-[#059669] px-2.5 text-xs font-bold text-white shadow-sm">
+          <span className="absolute left-3 top-3 inline-flex min-h-[28px] items-center rounded-full bg-[#59682A] px-2.5 text-xs font-bold text-white shadow-sm">
             {scoreOverride}%
           </span>
         </div>
 
         <div className="flex flex-1 flex-col p-4">
-          <h3 className="text-base font-bold text-[#0B1D3A] group-hover:text-[#2563EB]">{displayName}</h3>
-          <p className="mt-0.5 text-sm text-[#3B6B9A]">{city}</p>
+          <h3 className="text-base font-bold text-[#13201F] group-hover:text-[#F04A16]">{displayName}</h3>
+          <p className="mt-0.5 text-sm text-[#5E6A66]">{city}</p>
 
           <ul className="mt-3 flex flex-wrap gap-2" aria-label="Access features">
             {features.map((feature) => (
               <li
                 key={feature.label}
-                className="inline-flex items-center gap-1 rounded-full border border-[#BFDBFE] bg-[#EFF6FF] px-2 py-1 text-[10px] font-semibold text-[#1E3A5F]"
+                className="inline-flex items-center gap-1 rounded-full border border-[#F1D8C7] bg-[#FFF3E8] px-2 py-1 text-[10px] font-semibold text-[#2A3836]"
                 title={feature.label}
               >
                 <FeatureIcon icon={feature.icon} color={theme.accent} />
@@ -86,7 +86,7 @@ export function HomeFeaturedVenueCard({ venue, displayName, city, scoreOverride,
             ))}
           </ul>
 
-          <p className="mt-auto pt-3 text-xs font-medium text-[#3B6B9A]">{distance}</p>
+          <p className="mt-auto pt-3 text-xs font-medium text-[#5E6A66]">{distance}</p>
         </div>
       </Link>
     </li>
