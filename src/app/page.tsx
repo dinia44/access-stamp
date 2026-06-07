@@ -19,11 +19,11 @@ export default function HomePage() {
 
       <HomeHeader />
       <HomeHero />
+      <HomePopularGuides />
 
       <CategoryShortcutRow />
       <PlatformPillarsGrid />
       <HomePopularVenues />
-      <HomePopularGuides />
       <HomeVerificationSection />
       <HomeForVenues />
 

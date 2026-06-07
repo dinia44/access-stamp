@@ -4,7 +4,10 @@ import { HOME_SECTION_ALT } from "@/components/home/home-theme";
 
 export function HomePopularGuides() {
   return (
-    <section className={HOME_SECTION_ALT} aria-labelledby="popular-guides-heading">
+    <section
+      className={`${HOME_SECTION_ALT} relative z-20 -mt-8 border-t-0 pt-10 sm:-mt-10 sm:pt-12 lg:-mt-16 lg:pt-8`}
+      aria-labelledby="popular-guides-heading"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -19,14 +22,14 @@ export function HomePopularGuides() {
           </div>
           <Link
             href="/advice"
-            className="inline-flex min-h-[44px] shrink-0 items-center text-sm font-bold text-[#2563EB] transition-colors hover:text-[#0891B2] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#0891B2]/20"
+            className="inline-flex min-h-[44px] shrink-0 items-center text-sm font-bold text-[#2563EB] transition-colors hover:text-[#0891B2] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4"
           >
             Browse all guides →
           </Link>
         </div>
 
         <div className="mt-8">
-          <FeaturedPracticalGuides limit={3} hideHeading theme="dark" />
+          <FeaturedPracticalGuides limit={3} hideHeading theme="light" />
         </div>
       </div>
     </section>
