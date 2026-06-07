@@ -1,43 +1,40 @@
 import type { ReactNode } from "react";
 import { Container } from "@/components/container";
+import { FadeIn } from "@/components/fade-in";
 import { cn } from "@/lib/utils";
 
-/** Shared vertical rhythm between major blocks on marketing/advice pages */
 const STACK = {
-  hub: "space-y-6",
-  tight: "space-y-8",
-  default: "space-y-10",
-  relaxed: "space-y-12",
+  hub: "space-y-8",
+  tight: "space-y-10",
+  default: "space-y-12",
+  relaxed: "space-y-16",
 } as const;
 
 export type PageStack = keyof typeof STACK;
 
-/**
- * Standard page shell: site background, centred container, consistent vertical padding.
- * Use across Advice Hub, category landings, and similar pages for visual consistency.
- */
 export function PageLayout({
   children,
   className,
   stack = "default",
   containerClassName,
+  hero = false,
 }: {
   children: React.ReactNode;
   className?: string;
   stack?: PageStack;
-  /** Extra classes on the inner stack wrapper */
   containerClassName?: string;
+  /** Adds premium gradient hero band at top */
+  hero?: boolean;
 }) {
   return (
-    <div className={cn("bg-background", className)}>
-      <Container className="py-10 md:py-12">
+    <div className={cn(hero ? "premium-section-hero" : "bg-background", className)}>
+      <Container className="py-12 md:py-16 lg:py-20">
         <div className={cn(STACK[stack], containerClassName)}>{children}</div>
       </Container>
     </div>
   );
 }
 
-/** Hero block: badge + title + optional subtitle — matches Advice Hub / category pages */
 export function PageHero({
   badge,
   title,
@@ -50,17 +47,22 @@ export function PageHero({
   className?: string;
 }) {
   return (
-    <div className={cn("max-w-4xl space-y-4", className)}>
-      <div className="page-hero-panel max-w-3xl space-y-4 shadow-[var(--shadow-soft)]">
-        <div className="w-fit">{badge}</div>
-        <h1 className="font-[var(--font-heading)] text-4xl leading-tight text-heading sm:text-5xl">{title}</h1>
-        {subtitle ? <p className="max-w-[82ch] text-base leading-7 text-muted">{subtitle}</p> : null}
+    <FadeIn>
+      <div className={cn("max-w-3xl", className)}>
+        <div className="page-hero-panel space-y-5">
+          <div className="w-fit">{badge}</div>
+          <h1 className="text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-heading sm:text-5xl lg:text-[3.25rem]">
+            {title}
+          </h1>
+          {subtitle ? (
+            <p className="max-w-[65ch] text-base leading-7 text-muted sm:text-lg">{subtitle}</p>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </FadeIn>
   );
 }
 
-/** Section title row used above grids on hub/category pages */
 export function PageSectionTitle({
   title,
   description,
@@ -73,9 +75,13 @@ export function PageSectionTitle({
   titleClassName?: string;
 }) {
   return (
-    <div className={cn("space-y-2", className)}>
-      <h2 className={cn("font-[var(--font-heading)] text-2xl text-heading", titleClassName)}>{title}</h2>
-      {description ? <p className="text-sm text-muted">{description}</p> : null}
-    </div>
+    <FadeIn delayMs={80}>
+      <div className={cn("space-y-2", className)}>
+        <h2 className={cn("text-2xl font-bold tracking-[-0.02em] text-heading sm:text-3xl", titleClassName)}>
+          {title}
+        </h2>
+        {description ? <p className="max-w-[65ch] text-base leading-7 text-muted">{description}</p> : null}
+      </div>
+    </FadeIn>
   );
 }

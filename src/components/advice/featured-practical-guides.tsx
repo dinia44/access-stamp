@@ -104,10 +104,10 @@ export async function FeaturedPracticalGuides({
         <section className="space-y-4" aria-labelledby={hideHeading ? undefined : "featured-practical-guides-heading"}>
           {hideHeading ? null : (
             <div className="space-y-2">
-              <h2 id="featured-practical-guides-heading" className="font-[var(--font-heading)] text-2xl text-heading">
+              <h2 id="featured-practical-guides-heading" className="text-2xl font-bold tracking-[-0.02em] text-heading sm:text-3xl">
                 Popular practical guides
               </h2>
-              <p className="max-w-[80ch] text-sm text-muted">
+              <p className="max-w-[65ch] text-base leading-7 text-muted">
                 High-intent topics people search when they need urgent, practical next steps — benefits, work, travel,
                 education, and care.
               </p>
@@ -120,10 +120,10 @@ export async function FeaturedPracticalGuides({
       {more.length ? (
         <section className="space-y-4" aria-labelledby="featured-more-guides-heading">
           <div className="space-y-2">
-            <h2 id="featured-more-guides-heading" className="font-[var(--font-heading)] text-2xl text-heading">
+            <h2 id="featured-more-guides-heading" className="text-2xl font-bold tracking-[-0.02em] text-heading sm:text-3xl">
               Appeals, NHS care funding, and older-age support
             </h2>
-            <p className="max-w-[80ch] text-sm text-muted">
+            <p className="max-w-[65ch] text-base leading-7 text-muted">
               When decisions, care costs, or health funding need a clear next step.
             </p>
           </div>
@@ -134,10 +134,10 @@ export async function FeaturedPracticalGuides({
       {batch3.length ? (
         <section className="space-y-4" aria-labelledby="featured-batch3-guides-heading">
           <div className="space-y-2">
-            <h2 id="featured-batch3-guides-heading" className="font-[var(--font-heading)] text-2xl text-heading">
+            <h2 id="featured-batch3-guides-heading" className="text-2xl font-bold tracking-[-0.02em] text-heading sm:text-3xl">
               Carers, children, and Universal Credit health
             </h2>
-            <p className="max-w-[80ch] text-sm text-muted">
+            <p className="max-w-[65ch] text-base leading-7 text-muted">
               Support for unpaid carers, DLA for children, and work capability on Universal Credit.
             </p>
           </div>

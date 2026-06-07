@@ -1,29 +1,39 @@
+import { FadeIn } from "@/components/fade-in";
+
 export function VenueFinderHero() {
   return (
     <section
       aria-labelledby="venue-finder-heading"
-      className="relative overflow-hidden bg-[#061A3A] pb-20 pt-10 sm:pb-24 sm:pt-12"
+      className="premium-section-hero relative overflow-hidden pb-24 pt-12 sm:pb-28 sm:pt-14"
     >
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-64"
+        className="pointer-events-none absolute inset-0 opacity-60"
         aria-hidden="true"
         style={{
-          background:
-            "radial-gradient(640px 360px at 20% 30%, rgba(103,232,249,0.1), transparent 60%), radial-gradient(520px 300px at 80% 20%, rgba(29,78,216,0.16), transparent 55%)",
+          backgroundImage:
+            "linear-gradient(rgba(37,99,235,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.04) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
         }}
       />
+      <div
+        className="pointer-events-none absolute -right-20 top-8 h-72 w-72 rounded-full blur-3xl"
+        aria-hidden="true"
+        style={{ background: "radial-gradient(circle, rgba(8,145,178,0.12) 0%, transparent 70%)" }}
+      />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Venue finder</p>
-        <h1
-          id="venue-finder-heading"
-          className="mt-3 max-w-2xl text-3xl font-bold tracking-[-0.035em] leading-[1.05] text-white sm:text-4xl lg:text-5xl"
-        >
-          Find accessible venues with{" "}
-          <span className="text-[#67E8F9]">real access detail</span>
-        </h1>
-        <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-          Search by step-free access, toilets, parking, and more — then open a full access report before you travel.
-        </p>
+        <FadeIn>
+          <p className="page-hero-eyebrow">Venue finder</p>
+          <h1
+            id="venue-finder-heading"
+            className="mt-4 max-w-3xl text-4xl font-bold leading-[1.05] tracking-[-0.035em] text-[#0B1D3A] sm:text-5xl lg:text-[3.25rem]"
+          >
+            Find accessible venues with{" "}
+            <span className="text-[#0891B2]">real access detail</span>
+          </h1>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-[#3B6B9A] sm:text-lg">
+            Search by step-free access, toilets, parking, and more — then open a full access report before you travel.
+          </p>
+        </FadeIn>
       </div>
     </section>
   );

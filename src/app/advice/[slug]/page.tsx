@@ -124,7 +124,7 @@ export default async function AdviceArticlePage({
           </Card>
 
           <div className="space-y-3">
-            <h1 className="advice-print-title font-[var(--font-heading)] text-4xl leading-tight text-heading">
+            <h1 className="advice-print-title text-4xl font-bold leading-[1.1] tracking-[-0.03em] text-heading sm:text-5xl">
               {a.title}
             </h1>
             <div className="flex flex-wrap items-center gap-2 print:hidden">

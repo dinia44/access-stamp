@@ -35,7 +35,7 @@ function VenueFinderEmptyState() {
   return (
     <section
       aria-labelledby="empty-state-heading"
-      className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+      className="mt-6 overflow-hidden rounded-2xl border border-[#BFDBFE] bg-white/95 shadow-[var(--shadow-soft)]"
     >
       <div className="grid gap-0 md:grid-cols-[180px_minmax(0,1fr)]">
         <div className="relative hidden min-h-[180px] md:block">
@@ -48,10 +48,10 @@ function VenueFinderEmptyState() {
           <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/20" aria-hidden="true" />
         </div>
         <div className="p-8 text-center md:text-left">
-          <h2 id="empty-state-heading" className="text-lg font-semibold text-slate-900">
+          <h2 id="empty-state-heading" className="text-xl font-semibold text-[#0B1D3A]">
             No matching venues found
           </h2>
-          <p className="mt-2 text-base leading-7 text-slate-600">
+          <p className="mt-2 text-base leading-7 text-[#3B6B9A]">
             Try removing a filter, searching a nearby town, or suggest a venue for us to check.
           </p>
           <Link href="/submit-venue" className={`${VF_BTN_SECONDARY} mt-5 inline-flex`}>
@@ -208,7 +208,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
 
       <VenueFinderHero />
 
-      <div className="bg-slate-50">
+      <div className="bg-[#EFF6FF]">
         <div className="px-4 sm:px-6 lg:px-8">
           <VenueFinderFloatingBox
             query={query}
@@ -261,11 +261,11 @@ function VenueFinderInteractive({ venues, initial }: Props) {
             <div>
               <h2
                 id="venue-results-heading"
-                className="text-2xl font-bold tracking-[-0.025em] leading-[1.15] text-slate-900"
+                className="text-2xl font-bold tracking-[-0.025em] leading-[1.15] text-[#0B1D3A] sm:text-3xl"
               >
                 {resultsHeading}
               </h2>
-              <p className="mt-1 text-base leading-7 text-slate-600" aria-live="polite" aria-atomic="true">
+              <p className="mt-1 text-base leading-7 text-[#3B6B9A]" aria-live="polite" aria-atomic="true">
                 {filtered.length} venue{filtered.length === 1 ? "" : "s"}
                 {location.trim() ? ` · ${location.trim()}` : ""}
               </p>

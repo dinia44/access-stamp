@@ -43,7 +43,7 @@ export function AdviceArticleCard({
           <Badge tone={badgeTone} className="mb-2 w-fit">
             {categoryLabel}
           </Badge>
-          <div className="line-clamp-3 text-sm font-semibold text-heading">{article.title}</div>
+          <div className="line-clamp-3 text-base font-semibold leading-snug text-heading">{article.title}</div>
           {article.excerpt ? (
             <p className="mt-2 line-clamp-3 text-sm text-muted">{article.excerpt}</p>
           ) : null}

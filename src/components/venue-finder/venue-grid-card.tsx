@@ -119,8 +119,8 @@ export function VenueGridCard({
 
   return (
     <article
-      className={`flex h-full flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg ${
-        selected ? "ring-2" : "border-slate-200"
+      className={`flex h-full flex-col overflow-hidden rounded-2xl border border-[#BFDBFE] bg-white/95 shadow-[var(--shadow-soft)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-1 hover:border-[#93C5FD] hover:shadow-[var(--shadow-lift)] ${
+        selected ? "ring-2" : ""
       }`}
       style={selected ? { borderColor: theme.accent, boxShadow: `0 0 0 2px ${theme.accentRing}` } : undefined}
     >
@@ -154,8 +154,8 @@ export function VenueGridCard({
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <h3 className="text-lg font-bold leading-snug tracking-[-0.02em] text-slate-950">{venue.name}</h3>
-        <p className="mt-1 flex items-center gap-1.5 text-sm text-slate-600">
+        <h3 className="text-lg font-bold leading-snug tracking-[-0.02em] text-[#0B1D3A]">{venue.name}</h3>
+        <p className="mt-1 flex items-center gap-1.5 text-sm text-[#3B6B9A]">
           <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke={theme.accent} strokeWidth="2" aria-hidden>
             <path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z" />
             <circle cx="12" cy="11" r="2.5" />
@@ -176,14 +176,14 @@ export function VenueGridCard({
             ))}
           </ul>
         ) : (
-          <p className="mt-4 text-xs leading-5 text-slate-500">{venue.summary}</p>
+          <p className="mt-4 text-xs leading-5 text-[#3B6B9A]">{venue.summary}</p>
         )}
 
         <div className="mt-auto flex gap-2 pt-5">
           <Link
             href={reportHref}
             aria-label={`View details for ${venue.name}`}
-            className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border px-3 text-sm font-bold transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
+            className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border px-3 text-sm font-bold transition-colors hover:bg-[#EFF6FF] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4"
             style={{ borderColor: theme.accent, color: theme.accent }}
           >
             View details

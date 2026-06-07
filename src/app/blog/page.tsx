@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Container } from "@/components/container";
+import { FadeIn } from "@/components/fade-in";
+import { PageHero, PageLayout } from "@/components/page-layout";
 import { Badge, Card } from "@/components/ui";
 import { getBlogPosts } from "@/lib/content/blog";
 
@@ -13,31 +14,29 @@ export default async function BlogPage() {
   const posts = await getBlogPosts();
 
   return (
-    <div className="bg-background">
-      <Container className="py-10">
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <Badge tone="blue">Blog</Badge>
-            <h1 className="font-[var(--font-heading)] text-4xl text-heading">Updates, explainers, walkthroughs</h1>
-            <p className="max-w-[85ch] text-muted">
-              Clear, practical posts. No charity tone. No inspiration language.
-            </p>
-          </div>
+    <PageLayout stack="relaxed" hero>
+      <PageHero
+        badge={<Badge tone="blue">Blog</Badge>}
+        title="Updates, explainers, and walkthroughs"
+        subtitle="Curated posts on access, venues, and practical disability guidance — clear and direct, never charity-speak."
+      />
 
-          <div className="grid gap-3 md:grid-cols-3">
-            {posts.map((p) => (
-              <Link key={p.slug} href={`/blog/${p.slug}`} className="group">
-                <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
-                  <div className="text-xs font-semibold text-muted">{p.date}</div>
-                  <div className="mt-2 text-sm font-semibold text-heading">{p.title}</div>
-                  <p className="mt-2 text-sm text-muted">{p.excerpt}</p>
-                  <div className="mt-4 text-sm font-semibold text-blue">Read →</div>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </Container>
-    </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {posts.map((p, index) => (
+          <FadeIn key={p.slug} delayMs={index * 60}>
+            <Link href={`/blog/${p.slug}`} className="group block h-full">
+              <Card className="flex h-full flex-col p-6">
+                <div className="text-xs font-semibold uppercase tracking-[0.06em] text-[#0891B2]">{p.date}</div>
+                <h2 className="mt-3 text-lg font-semibold leading-snug text-heading group-hover:text-blue">
+                  {p.title}
+                </h2>
+                <p className="mt-3 flex-1 text-sm leading-6 text-muted">{p.excerpt}</p>
+                <div className="mt-5 text-sm font-semibold text-blue">Read article →</div>
+              </Card>
+            </Link>
+          </FadeIn>
+        ))}
+      </div>
+    </PageLayout>
   );
 }

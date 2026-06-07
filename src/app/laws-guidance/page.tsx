@@ -48,16 +48,18 @@ export default function LawsGuidancePage() {
   const groups = ["General", "Work", "Education", "Travel", "Services", "Housing"] as const;
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   return (
-    <div className="bg-background">
+    <div className="premium-section-hero">
       <SetChatContext page={{ kind: "none" }} />
-      <Container className="py-10">
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <Badge tone="blue">Useful laws and guidance</Badge>
-            <h1 className="font-[var(--font-heading)] text-4xl text-heading">Laws, rights, and practical guidance links</h1>
-            <p className="max-w-[82ch] text-muted">
-              Trusted links for Equality Act rights, workplace adjustments, education support, travel rights, housing access,
-              and complaint escalation.
+      <Container className="py-12 md:py-16">
+        <div className="space-y-10">
+          <div className="page-hero-panel max-w-3xl space-y-4">
+            <Badge tone="blue">Laws & guidance</Badge>
+            <h1 className="text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-heading sm:text-5xl">
+              Laws, rights, and practical guidance
+            </h1>
+            <p className="max-w-[65ch] text-base leading-7 text-muted">
+              Trusted links for Equality Act rights, workplace adjustments, education support, travel rights, housing
+              access, and complaint escalation.
             </p>
           </div>
 
@@ -66,7 +68,7 @@ export default function LawsGuidancePage() {
             if (!links.length) return null;
             return (
               <section key={group} className="space-y-3">
-                <h2 className="font-[var(--font-heading)] text-2xl text-heading">{group}</h2>
+                <h2 className="text-2xl font-bold tracking-[-0.02em] text-heading">{group}</h2>
                 <div className="grid gap-3 md:grid-cols-2">
                   {links.map((link) => (
                     <Card key={link.href} className="p-5 transition-shadow hover:shadow-[0_14px_32px_-24px_rgba(12,29,52,0.45)]">

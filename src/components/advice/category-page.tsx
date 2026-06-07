@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { AdviceArticleCard } from "@/components/advice/advice-article-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { Container } from "@/components/container";
+import { FadeIn } from "@/components/fade-in";
+import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
 import { Badge, Button, Card } from "@/components/ui";
 import { getAdviceArticles } from "@/lib/content/advice";
 
@@ -19,107 +21,71 @@ export async function CategoryPage({
   const articles = all.filter((a) => a.categorySlug === categorySlug);
 
   return (
-    <div className="bg-background">
-      <Container className="py-10">
-        <div className="space-y-6">
-          <Breadcrumbs
-            items={[
-              { label: "Home", href: "/" },
-              { label: "Advice Hub", href: "/advice" },
-              { label: title },
-            ]}
-          />
+    <PageLayout stack="relaxed" hero>
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Advice Hub", href: "/advice" },
+          { label: title },
+        ]}
+      />
 
-          <div className="space-y-2">
-            <Badge tone="blue">{title}</Badge>
-            <h1 className="font-[var(--font-heading)] text-4xl text-heading">{title}</h1>
-            <p className="max-w-[85ch] text-muted">{description}</p>
-          </div>
+      <PageHero badge={<Badge tone="blue">{title}</Badge>} title={title} subtitle={description} />
 
-          {tabs ? (
-            <Card className="p-5">
-              <div className="text-sm font-semibold text-heading">Browse by category</div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {tabs.map((t) => (
-                  <a
-                    key={t.label}
-                    href={`#tab-${t.label.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="rounded-full bg-blue-pale px-3 py-2 text-xs font-semibold text-blue"
-                  >
-                    {t.label}
-                  </a>
-                ))}
-              </div>
+      {tabs ? (
+        <FadeIn delayMs={100}>
+          <Card className="p-6">
+            <PageSectionTitle title="Browse by category" className="mb-4" />
+            <div className="flex flex-wrap gap-2">
+              {tabs.map((t) => (
+                <a
+                  key={t.label}
+                  href={`#tab-${t.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="inline-flex min-h-[44px] items-center rounded-full border border-[#BFDBFE] bg-white px-4 text-sm font-semibold text-[#2563EB] transition-colors hover:border-[#93C5FD] hover:bg-[#EFF6FF]"
+                >
+                  {t.label}
+                </a>
+              ))}
+            </div>
 
-              <div className="mt-6 grid gap-4">
-                {tabs.map((t) => (
-                  <div
-                    key={t.label}
-                    id={`tab-${t.label.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="scroll-mt-24"
-                  >
-                    <div className="text-sm font-semibold text-heading">{t.label}</div>
-                    <div className="mt-2 grid gap-3 md:grid-cols-2">
-                      {t.articleSlugs.map((slug) => {
-                        const a = all.find((x) => x.slug === slug);
-                        if (!a) return null;
-                        return (
-                          <Link key={a.slug} href={`/advice/${a.slug}`}>
-                            <Card className="p-4 hover:shadow-[var(--shadow-soft)]">
-                              <div className="text-sm font-semibold text-heading">{a.title}</div>
-                              <div className="mt-2 flex flex-wrap gap-2">
-                                {a.tags.slice(0, 3).map((tag) => (
-                                  <Badge key={tag} tone="blue">
-                                    {tag}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </Card>
-                          </Link>
-                        );
-                      })}
-                    </div>
+            <div className="mt-8 grid gap-6">
+              {tabs.map((t) => (
+                <div key={t.label} id={`tab-${t.label.toLowerCase().replace(/\s+/g, "-")}`} className="scroll-mt-28">
+                  <h3 className="text-lg font-semibold text-heading">{t.label}</h3>
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    {t.articleSlugs.map((slug) => {
+                      const a = all.find((x) => x.slug === slug);
+                      if (!a) return null;
+                      return <AdviceArticleCard key={a.slug} article={a} showReadCta readCtaLabel="Read guide →" />;
+                    })}
                   </div>
-                ))}
-              </div>
-            </Card>
-          ) : null}
-
-          <div className="grid gap-3 md:grid-cols-3">
-            {articles.map((a) => (
-              <Link key={a.slug} href={`/advice/${a.slug}`} className="group">
-                <Card className="h-full p-5 transition-shadow group-hover:shadow-[var(--shadow)]">
-                  <div className="text-sm font-semibold text-heading">{a.title}</div>
-                  <div className="mt-2 text-xs font-semibold text-muted">Updated: {a.updated}</div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {a.tags.slice(0, 3).map((t) => (
-                      <Badge key={t} tone="blue">
-                        {t}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="mt-4 text-sm font-semibold text-blue">Read →</div>
-                </Card>
-              </Link>
-            ))}
-          </div>
-
-          <Card className="p-5">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <div className="text-sm font-semibold text-heading">Not sure where to start?</div>
-                <div className="mt-1 text-sm text-muted">
-                  Ask the AI a question in your own words, it will guide you.
                 </div>
-              </div>
-              <Button href="/ai" variant="secondary">
-                Ask the AI
-              </Button>
+              ))}
             </div>
           </Card>
+        </FadeIn>
+      ) : null}
+
+      <div className="space-y-6">
+        <PageSectionTitle title="All guides in this topic" description="Curated articles for this life area." />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {articles.map((a) => (
+            <AdviceArticleCard key={a.slug} article={a} showReadCta readCtaLabel="Read guide →" />
+          ))}
         </div>
-      </Container>
-    </div>
+      </div>
+
+      <Card className="p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="text-base font-semibold text-heading">Not sure where to start?</div>
+            <p className="mt-1 text-sm leading-6 text-muted">Ask the AI a question in your own words — it will guide you.</p>
+          </div>
+          <Button href="/ai" variant="secondary">
+            Ask the AI
+          </Button>
+        </div>
+      </Card>
+    </PageLayout>
   );
 }
-

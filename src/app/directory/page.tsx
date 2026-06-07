@@ -32,16 +32,18 @@ export default function DirectoryPage() {
   }, [q, cat]);
 
   return (
-    <div className="bg-background">
+    <div className="premium-section-hero">
       <SetChatContext page={{ kind: "directory" }} />
-      <Container className="py-10">
-        <div className="space-y-6">
-          <div className="space-y-2">
+      <Container className="py-12 md:py-16">
+        <div className="space-y-8">
+          <div className="page-hero-panel max-w-3xl space-y-4">
             <Badge tone="blue">Directory</Badge>
-            <h1 className="font-[var(--font-heading)] text-4xl text-heading">Useful contacts</h1>
-            <p className="max-w-[85ch] text-muted">
-              UK-wide helplines and services we often point people to. Access Stamp is not affiliated
-              with these organisations — always check their sites for the latest hours and eligibility.
+            <h1 className="text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-heading sm:text-5xl">
+              Useful contacts
+            </h1>
+            <p className="max-w-[65ch] text-base leading-7 text-muted">
+              UK-wide helplines and services we often point people to. Always check their sites for the latest hours and
+              eligibility.
             </p>
           </div>
 

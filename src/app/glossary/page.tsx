@@ -21,14 +21,14 @@ export default function GlossaryPage() {
   }, [q]);
 
   return (
-    <div className="bg-background">
+    <div className="premium-section-hero">
       <SetChatContext page={{ kind: "glossary" }} />
-      <Container className="py-10">
-        <div className="space-y-6">
-          <div className="space-y-2">
+      <Container className="py-12 md:py-16">
+        <div className="space-y-8">
+          <div className="page-hero-panel max-w-3xl space-y-4">
             <Badge tone="blue">Glossary</Badge>
-            <h1 className="font-[var(--font-heading)] text-4xl text-heading">Jargon buster</h1>
-            <p className="max-w-[85ch] text-muted">
+            <h1 className="text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-heading sm:text-5xl">Jargon buster</h1>
+            <p className="max-w-[65ch] text-base leading-7 text-muted">
               Plain-language definitions for common disability-related terms and acronyms.
             </p>
           </div>

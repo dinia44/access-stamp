@@ -11,7 +11,7 @@ const VenueFinderMap = dynamic(
     ssr: false,
     loading: () => (
       <div
-        className="grid h-full min-h-[280px] place-items-center rounded-2xl border border-slate-200 bg-slate-100 text-sm font-medium text-slate-500"
+        className="grid h-full min-h-[280px] place-items-center rounded-2xl border border-[#BFDBFE] bg-[#EFF6FF] text-sm font-medium text-[#3B6B9A]"
         aria-hidden="true"
       >
         Loading map…
@@ -45,11 +45,11 @@ export function VenueFinderMapPanel({
 
   return (
     <div className={`space-y-3 ${className}`}>
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-200 px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.04em] text-slate-500">Interactive map</p>
-          <p className="mt-1 text-sm font-semibold text-slate-900">{locationLabel.trim() || "UK venues"}</p>
-          <p className="mt-1 text-xs text-slate-500">
+      <div className="overflow-hidden rounded-2xl border border-[#BFDBFE] bg-white/95 shadow-[var(--shadow-soft)]">
+        <div className="border-b border-[#BFDBFE] px-4 py-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#0891B2]">Interactive map</p>
+          <p className="mt-1 text-sm font-semibold text-[#0B1D3A]">{locationLabel.trim() || "UK venues"}</p>
+          <p className="mt-1 text-xs text-[#3B6B9A]">
             Tap a marker to preview access information. Use location controls to centre the map on you.
           </p>
         </div>

@@ -13,7 +13,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-card)] border border-border bg-card transition-shadow duration-200",
+        "rounded-[var(--radius-card)] border border-border bg-card/95 shadow-[var(--shadow-soft)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#93C5FD] hover:shadow-[var(--shadow-lift)]",
         className,
       )}
     >
@@ -43,14 +43,14 @@ export function Badge({
 }) {
   const resolved = tone === "amber" ? "warning" : tone;
   const toneClass: Record<BadgeTone, string> = {
-    blue: "bg-blue-pale text-[#1e40af] ring-1 ring-[#bfdbfe]",
+    blue: "bg-blue-pale text-[#1d4ed8] ring-1 ring-[#bfdbfe]",
     navy: "bg-navy-pale text-[var(--color-ink)] ring-1 ring-[var(--color-border)]",
-    neutral: "bg-[#f1f5f9] text-[var(--color-muted)] ring-1 ring-[var(--color-border)]",
+    neutral: "bg-[#eff6ff] text-[var(--color-muted)] ring-1 ring-[var(--color-border)]",
     verified: "bg-verified-pale text-verified ring-1 ring-[#99f6e4]",
-    community: "bg-blue-pale text-[#1e40af] ring-1 ring-[#bfdbfe]",
+    community: "bg-blue-pale text-[#1d4ed8] ring-1 ring-[#bfdbfe]",
     warning: "bg-amber-pale text-warning ring-1 ring-[#fde68a]",
     error: "bg-error-pale text-error ring-1 ring-[#fecaca]",
-    gold: "bg-[#071827] text-[#f8fafc] ring-1 ring-[color-mix(in_srgb,var(--color-gold)_50%,transparent)]",
+    gold: "bg-[#0b1d3a] text-[#f8fafc] ring-1 ring-[color-mix(in_srgb,var(--color-accent)_40%,transparent)]",
   };
 
   return (
@@ -84,12 +84,12 @@ export function Button({
   disabled?: boolean;
 }) {
   const base =
-    "inline-flex items-center justify-center rounded-[var(--radius-ui)] px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-gold focus-visible:outline-offset-[3px]";
+    "inline-flex min-h-[44px] items-center justify-center rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4";
   const v =
     variant === "primary"
-      ? "bg-blue text-white hover:bg-[var(--color-primary-hover)]"
+      ? "bg-blue text-white shadow-sm shadow-blue-600/20 hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-lg hover:shadow-blue-600/25"
       : variant === "secondary"
-        ? "border border-border bg-card text-[var(--color-ink)] hover:bg-background-2"
+        ? "border border-[#93C5FD] bg-white text-[#1E3A5F] hover:border-[#2563EB]/40 hover:bg-[#EFF6FF]"
         : variant === "premium"
           ? "bg-gold text-[var(--color-navy)] hover:brightness-95"
           : "bg-transparent text-blue hover:bg-blue-pale";

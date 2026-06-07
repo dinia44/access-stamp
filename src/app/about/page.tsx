@@ -1,87 +1,111 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/container";
+import Link from "next/link";
+import { FadeIn } from "@/components/fade-in";
+import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
+import { SiteLogo } from "@/components/site-logo";
+import { Badge, Button, Card } from "@/components/ui";
+import { VerificationBadge } from "@/components/verification-badge";
 
 export const metadata: Metadata = {
   title: "About Access Stamp",
-  description: "Who we are, how we verify venue listings, and why Access Stamp exists \u2014 built from lived experience.",
+  description: "Who we are, how we verify venue listings, and why Access Stamp exists — built from lived experience.",
 };
-import { SiteLogo } from "@/components/site-logo";
-import { Badge, Card } from "@/components/ui";
-import { VerificationBadge } from "@/components/verification-badge";
+
+const VALUES = [
+  {
+    title: "Treat people as capable adults",
+    detail: "No pity framing. No inspiration stories. Just information you can act on.",
+  },
+  {
+    title: "Be specific and useful",
+    detail: "Measurements, photos, and plain-language checks — not vague accessibility claims.",
+  },
+  {
+    title: "Be honest about system failures",
+    detail: "When processes are broken, we say so — and show you practical workarounds.",
+  },
+] as const;
 
 export default function AboutPage() {
   return (
-    <div className="bg-background">
-      <Container className="py-10">
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <Badge tone="blue">About</Badge>
-            <h1 className="font-[var(--font-heading)] text-4xl text-heading">About Access Stamp</h1>
-            <p className="max-w-[85ch] text-muted">
-              Access Stamp is a practical resource platform for disabled people, wheelchair users, carers, older people,
-              and families in the UK. Built from lived experience.
-            </p>
-          </div>
+    <PageLayout stack="relaxed" hero>
+      <PageHero
+        badge={<Badge tone="blue">About</Badge>}
+        title="Built for people who need access information that actually works"
+        subtitle="A practical platform for disabled people, wheelchair users, carers, older people, and families across the UK — from lived experience, not corporate compliance."
+      />
 
-          <Card className="p-6">
-            <div className="grid gap-6 md:grid-cols-[200px_1fr] md:items-start">
-              <SiteLogo className="h-auto w-full max-w-[190px] object-contain" />
-              <div className="space-y-3">
-                <div className="text-sm font-semibold text-heading">What we are</div>
-                <p className="text-sm leading-7 text-text">
-                  Not a charity. Not a corporate compliance tool. A serious platform for people who need accurate,
-                  practical information.
-                </p>
-                <div className="grid gap-3 md:grid-cols-3">
-                  {["Treat people as capable adults", "Be specific and useful", "Be honest about system failures"].map(
-                    (v) => (
-                      <div key={v} className="rounded-[var(--radius-card)] border border-border bg-background p-4">
-                        <div className="text-sm font-semibold text-heading">{v}</div>
-                      </div>
-                    ),
-                  )}
-                </div>
+      <FadeIn delayMs={100}>
+        <Card className="overflow-hidden p-0">
+          <div className="grid gap-0 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+            <div className="premium-section-panel p-8 lg:p-10">
+              <SiteLogo className="h-auto w-full max-w-[200px] object-contain" />
+              <p className="mt-6 text-lg font-semibold leading-snug text-heading">
+                Not a charity. Not a compliance tool. A serious product for real decisions.
+              </p>
+              <p className="mt-4 text-sm leading-7 text-muted">
+                Access Stamp exists because finding out whether a place is actually accessible still takes too much
+                guesswork — and official guidance rarely matches what you need on the ground.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button href="/venue-finder">Explore venues</Button>
+                <Button href="/advice" variant="secondary">
+                  Read guides
+                </Button>
               </div>
             </div>
-          </Card>
-
-          <div id="listings" className="scroll-mt-24">
-            <Card className="p-6">
-              <div className="text-sm font-semibold text-heading">Listings &amp; verification</div>
-              <p className="mt-2 max-w-[85ch] text-sm leading-7 text-muted">
-                Venue pages combine structured feature checks with photos and measurements where we have them. Labels describe how
-                strong the evidence is—not whether a place is &quot;good&quot; or &quot;bad.&quot;
-              </p>
-              <ul className="mt-4 grid gap-3 text-sm leading-7 text-text md:grid-cols-3">
-                <li className="rounded-[var(--radius-ui)] border border-border bg-verified-pale p-4">
-                  <VerificationBadge status="Access Stamp checked" />
-                  <span className="mt-2 block text-sm text-muted">
-                    Reviewed against our field-style checklist; priority for filters like &quot;verified venues only.&quot;
-                  </span>
-                </li>
-                <li className="rounded-[var(--radius-ui)] border border-border bg-blue-pale p-4">
-                  <VerificationBadge status="Community reported" />
-                  <span className="mt-2 block text-sm text-muted">
-                    Submitted or corroborated detail from disabled people and allies—useful, but treat opening hours and layout as
-                    worth confirming.
-                  </span>
-                </li>
-                <li className="rounded-[var(--radius-ui)] border border-border bg-amber-pale p-4">
-                  <VerificationBadge status="Not yet verified" />
-                  <span className="mt-2 block text-sm text-muted">
-                    Early or partial information—still worth a look, especially if you phone ahead or visit off-peak.
-                  </span>
-                </li>
-              </ul>
-              <p className="mt-4 text-sm text-muted">
-                Open listings include <strong className="font-semibold text-heading">Will it fit?</strong> where measurements exist,
-                and the AI uses the same listing context when you chat from that page.
-              </p>
-            </Card>
+            <div className="space-y-4 p-8 lg:p-10">
+              {VALUES.map((value) => (
+                <div
+                  key={value.title}
+                  className="rounded-2xl border border-border bg-background-2 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]"
+                >
+                  <div className="text-sm font-semibold text-heading">{value.title}</div>
+                  <p className="mt-2 text-sm leading-6 text-muted">{value.detail}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </Container>
-    </div>
+        </Card>
+      </FadeIn>
+
+      <div id="listings" className="scroll-mt-28 space-y-6">
+        <PageSectionTitle
+          title="Listings & verification"
+          description="Every venue label describes how strong the evidence is — not whether a place is good or bad."
+        />
+        <FadeIn delayMs={120}>
+          <Card className="p-6 sm:p-8">
+            <ul className="grid gap-4 md:grid-cols-3">
+              <li className="rounded-2xl border border-border bg-verified-pale p-5">
+                <VerificationBadge status="Access Stamp checked" />
+                <p className="mt-3 text-sm leading-6 text-muted">
+                  Reviewed against our field-style checklist; priority for filters like verified venues only.
+                </p>
+              </li>
+              <li className="rounded-2xl border border-border bg-blue-pale p-5">
+                <VerificationBadge status="Community reported" />
+                <p className="mt-3 text-sm leading-6 text-muted">
+                  Submitted or corroborated detail from disabled people and allies — worth confirming hours and layout.
+                </p>
+              </li>
+              <li className="rounded-2xl border border-border bg-amber-pale p-5">
+                <VerificationBadge status="Not yet verified" />
+                <p className="mt-3 text-sm leading-6 text-muted">
+                  Early or partial information — still useful, especially if you phone ahead or visit off-peak.
+                </p>
+              </li>
+            </ul>
+            <p className="mt-6 text-sm leading-7 text-muted">
+              Open listings include <strong className="font-semibold text-heading">Will it fit?</strong> where
+              measurements exist. The AI uses the same listing context when you chat from that page.{" "}
+              <Link href="/about#listings" className="font-semibold text-blue hover:underline">
+                Learn more in our verification guide →
+              </Link>
+            </p>
+          </Card>
+        </FadeIn>
+      </div>
+    </PageLayout>
   );
 }
-
