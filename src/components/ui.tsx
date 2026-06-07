@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SITE_BTN_PRIMARY, SITE_BTN_SECONDARY, SITE_FOCUS } from "@/lib/site-design";
 import { cn } from "@/lib/utils";
 
 export function Card({
@@ -83,16 +84,15 @@ export function Button({
   type?: "button" | "submit";
   disabled?: boolean;
 }) {
-  const base =
-    "inline-flex min-h-[44px] items-center justify-center rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4";
+  const base = `inline-flex min-h-[44px] items-center justify-center rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 ${SITE_FOCUS}`;
   const v =
     variant === "primary"
-      ? "bg-blue text-white shadow-sm shadow-blue-600/20 hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-lg hover:shadow-blue-600/25"
+      ? SITE_BTN_PRIMARY
       : variant === "secondary"
-        ? "border border-[#93C5FD] bg-white text-[#1E3A5F] hover:border-[#2563EB]/40 hover:bg-[#EFF6FF]"
+        ? SITE_BTN_SECONDARY
         : variant === "premium"
           ? "bg-gold text-[var(--color-navy)] hover:brightness-95"
-          : "bg-transparent text-blue hover:bg-blue-pale";
+          : "bg-transparent text-[#F04A16] hover:bg-[#FFE2D3]";
 
   const cls = cn(base, v, disabled && "pointer-events-none opacity-60", className);
   if (href && !disabled) return <Link className={cls} href={href}>{children}</Link>;

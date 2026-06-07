@@ -4,12 +4,25 @@
  */
 
 const CLOUDINARY = "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto";
+const CLOUDINARY_BRAND = "https://res.cloudinary.com/dtl4syjuh/image/upload/q_auto/f_auto";
 
 export const CLOUDINARY_MEDIA = {
   /** Generic UK city hero for marketing backgrounds */
   cityHero:
     process.env.NEXT_PUBLIC_CLOUDINARY_CITY_HERO ??
     `${CLOUDINARY}/v1778451836/8819d7d9-417c-49ce-9923-421d287d3e5d_pfvjhq.png`,
+  /** Homepage hero — stylised map with route pins */
+  homepageMapPreview:
+    process.env.NEXT_PUBLIC_CLOUDINARY_HOMEPAGE_MAP ??
+    `${CLOUDINARY_BRAND}/v1780855479/stylized_map_with_route_and_pins_gq6hdu.png`,
+  /** Homepage hero — accessible venue exterior */
+  homepageVenueExterior:
+    process.env.NEXT_PUBLIC_CLOUDINARY_HOMEPAGE_EXTERIOR ??
+    `${CLOUDINARY_BRAND}/v1780855479/modern_cafe%CC%81_entrance_with_accessible_ramp_hbup31.png`,
+  /** Homepage hero — accessible café interior */
+  homepageVenueInterior:
+    process.env.NEXT_PUBLIC_CLOUDINARY_HOMEPAGE_INTERIOR ??
+    `${CLOUDINARY_BRAND}/v1780855479/cozy_modern_cafe%CC%81_with_accessible_design_mkoc8u.png`,
   /** Venue exterior — Harbour Kitchen overview */
   venueExterior:
     process.env.NEXT_PUBLIC_CLOUDINARY_VENUE_EXTERIOR ??
@@ -37,5 +50,5 @@ export const CLOUDINARY_MEDIA = {
   /** Stylised static map preview for homepage teaser (not interactive) */
   staticMapPreview:
     process.env.NEXT_PUBLIC_CLOUDINARY_STATIC_MAP_PREVIEW ??
-    `${CLOUDINARY}/v1778451836/8819d7d9-417c-49ce-9923-421d287d3e5d_pfvjhq.png`,
+    `${CLOUDINARY_BRAND}/v1780855479/stylized_map_with_route_and_pins_gq6hdu.png`,
 } as const;

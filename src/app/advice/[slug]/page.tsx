@@ -265,7 +265,7 @@ export default async function AdviceArticlePage({
                         download="access-stamp-pa-recruitment-pack.pdf"
                         className={cn(
                           "inline-flex items-center justify-center rounded-[var(--radius-ui)] px-4 py-2 text-sm font-semibold transition-colors",
-                          "bg-navy text-white hover:bg-[#0f2648]",
+                          "bg-navy text-white hover:bg-[#45521F]",
                         )}
                       >
                         Download pack (PDF)
@@ -300,7 +300,7 @@ export default async function AdviceArticlePage({
             </Card>
 
             <div className="grid gap-4 self-start print:hidden lg:sticky lg:top-24">
-              <Card className="border-[#dce6f4] p-5 shadow-[0_8px_18px_-14px_rgba(12,29,52,0.2)]">
+              <Card className="border-[#F1D8C7] p-5 shadow-[0_8px_18px_-14px_rgba(12,29,52,0.2)]">
                 <div className="text-sm font-semibold text-heading">Table of contents</div>
                 <ol className="mt-3 grid gap-2 text-sm">
                   {toc.map((t) => (
@@ -313,7 +313,7 @@ export default async function AdviceArticlePage({
                 </ol>
               </Card>
 
-              <Card className="border-[#dce6f4] p-5 shadow-[0_8px_18px_-14px_rgba(12,29,52,0.2)]">
+              <Card className="border-[#F1D8C7] p-5 shadow-[0_8px_18px_-14px_rgba(12,29,52,0.2)]">
                 <div className="text-sm font-semibold text-heading">Related</div>
                 {related.length ? (
                   <ul className="mt-3 grid gap-2 text-sm">
@@ -341,7 +341,7 @@ export default async function AdviceArticlePage({
                 </div>
               </Card>
               {relevantLaws.length ? (
-                <Card className="border-[#dce6f4] p-5 shadow-[0_8px_18px_-14px_rgba(12,29,52,0.2)]">
+                <Card className="border-[#F1D8C7] p-5 shadow-[0_8px_18px_-14px_rgba(12,29,52,0.2)]">
                   <div className="text-sm font-semibold text-heading">Useful laws and guidance</div>
                   <ul className="mt-3 grid gap-2 text-sm">
                     {relevantLaws.map((item) => (

@@ -119,7 +119,7 @@ export function VenueGridCard({
 
   return (
     <article
-      className={`flex h-full flex-col overflow-hidden rounded-2xl border border-[#BFDBFE] bg-white/95 shadow-[var(--shadow-soft)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-1 hover:border-[#93C5FD] hover:shadow-[var(--shadow-lift)] ${
+      className={`flex h-full flex-col overflow-hidden rounded-2xl border border-[#F1D8C7] bg-white/95 shadow-[var(--shadow-soft)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-1 hover:border-[#E8C4A8] hover:shadow-[var(--shadow-lift)] ${
         selected ? "ring-2" : ""
       }`}
       style={selected ? { borderColor: theme.accent, boxShadow: `0 0 0 2px ${theme.accentRing}` } : undefined}
@@ -154,8 +154,8 @@ export function VenueGridCard({
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <h3 className="text-lg font-bold leading-snug tracking-[-0.02em] text-[#0B1D3A]">{venue.name}</h3>
-        <p className="mt-1 flex items-center gap-1.5 text-sm text-[#3B6B9A]">
+        <h3 className="text-lg font-bold leading-snug tracking-[-0.02em] text-[#13201F]">{venue.name}</h3>
+        <p className="mt-1 flex items-center gap-1.5 text-sm text-[#5E6A66]">
           <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke={theme.accent} strokeWidth="2" aria-hidden>
             <path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z" />
             <circle cx="12" cy="11" r="2.5" />
@@ -176,14 +176,14 @@ export function VenueGridCard({
             ))}
           </ul>
         ) : (
-          <p className="mt-4 text-xs leading-5 text-[#3B6B9A]">{venue.summary}</p>
+          <p className="mt-4 text-xs leading-5 text-[#5E6A66]">{venue.summary}</p>
         )}
 
         <div className="mt-auto flex gap-2 pt-5">
           <Link
             href={reportHref}
             aria-label={`View details for ${venue.name}`}
-            className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border px-3 text-sm font-bold transition-colors hover:bg-[#EFF6FF] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4"
+            className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border px-3 text-sm font-bold transition-colors hover:bg-[#FFF3E8] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#59682A] focus-visible:outline-offset-4"
             style={{ borderColor: theme.accent, color: theme.accent }}
           >
             View details
@@ -191,7 +191,7 @@ export function VenueGridCard({
           <Link
             href={reportHref}
             aria-label={`View access info for ${venue.name}`}
-            className={`inline-flex min-h-11 flex-1 items-center justify-center rounded-xl px-3 text-sm font-bold text-white transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200 ${theme.buttonSolid}`}
+            className={`inline-flex min-h-11 flex-1 items-center justify-center rounded-xl px-3 text-sm font-bold text-white transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F1D8C7] ${theme.buttonSolid}`}
           >
             View access info
           </Link>
@@ -201,7 +201,7 @@ export function VenueGridCard({
           <button
             type="button"
             onClick={onSelect}
-            className="mt-2 min-h-11 text-sm font-semibold underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
+            className="mt-2 min-h-11 text-sm font-semibold underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#FFE2D3]"
             style={{ color: theme.accent }}
           >
             {selected ? "Selected on map" : "Show on map"}

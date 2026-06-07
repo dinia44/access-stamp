@@ -2,7 +2,7 @@ import type { Venue } from "@/lib/mock-data";
 import { computeAccessScore } from "@/lib/venue-access-score";
 
 export type VenueCardTheme = {
-  id: "blue" | "green" | "purple" | "orange";
+  id: "primary" | "green" | "purple" | "orange";
   accent: string;
   accentSoft: string;
   accentRing: string;
@@ -12,20 +12,20 @@ export type VenueCardTheme = {
 
 export const VENUE_CARD_THEMES: VenueCardTheme[] = [
   {
-    id: "blue",
-    accent: "#2563EB",
-    accentSoft: "#EFF6FF",
-    accentRing: "#BFDBFE",
-    buttonSolid: "bg-[#2563EB] hover:bg-[#1D4ED8]",
-    buttonSolidHover: "#1D4ED8",
+    id: "primary",
+    accent: "#F04A16",
+    accentSoft: "#FFF3E8",
+    accentRing: "#F1D8C7",
+    buttonSolid: "bg-[#F04A16] hover:bg-[#D93E10]",
+    buttonSolidHover: "#D93E10",
   },
   {
     id: "green",
-    accent: "#1E8547",
-    accentSoft: "#ECFDF3",
-    accentRing: "#BBF7D0",
-    buttonSolid: "bg-[#1E8547] hover:bg-[#166534]",
-    buttonSolidHover: "#166534",
+    accent: "#59682A",
+    accentSoft: "#EDF7ED",
+    accentRing: "#C8E6C9",
+    buttonSolid: "bg-[#59682A] hover:bg-[#45521F]",
+    buttonSolidHover: "#45521F",
   },
   {
     id: "purple",

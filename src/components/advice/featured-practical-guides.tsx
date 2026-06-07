@@ -35,7 +35,7 @@ function GuideCardGrid({
             <Card
               className={`flex h-full flex-col overflow-hidden p-0 transition-all group-hover:-translate-y-0.5 ${
                 isDark
-                  ? "border-white/10 bg-slate-900/70 shadow-xl shadow-black/20 group-hover:border-white/20 group-hover:shadow-2xl group-hover:shadow-black/30"
+                  ? "border-white/10 bg-[#102120]/70 shadow-xl shadow-black/20 group-hover:border-white/20 group-hover:shadow-2xl group-hover:shadow-black/30"
                   : isWarm
                     ? "border-[#F1D8C7] group-hover:border-[#E8C4A8] group-hover:shadow-[var(--shadow-lift)]"
                     : "border-border group-hover:shadow-[var(--shadow)]"

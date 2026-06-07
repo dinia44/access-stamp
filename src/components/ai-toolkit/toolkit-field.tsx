@@ -140,7 +140,7 @@ export function ToolkitCheckboxGroup({
             <input
               type="checkbox"
               checked={checked}
-              className="mt-0.5 size-4 shrink-0 accent-blue"
+              className="mt-0.5 size-4 shrink-0 accent-[#F04A16]"
               onChange={() => {
                 onChange(checked ? selected.filter((x) => x !== o.value) : [...selected, o.value]);
               }}

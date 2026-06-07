@@ -54,7 +54,7 @@ type NavigateProps = {
 function filterChipClass(on: boolean, tone: (typeof VENUE_SEARCH_FILTERS)[number]["tone"]) {
   const base = "cursor-pointer rounded-[var(--radius-ui)] border px-3 py-2 text-[13px] font-medium transition-colors ";
   if (on) {
-    if (tone === "blue") return base + "border-blue bg-blue-pale text-blue shadow-[inset_0_0_0_1px_rgba(37,99,235,0.15)]";
+    if (tone === "blue") return base + "border-blue bg-blue-pale text-blue shadow-[inset_0_0_0_1px_rgba(240,74,22,0.15)]";
     if (tone === "green") return base + "border-[#16a34a] bg-[#f0fdf4] text-[#15803d]";
     if (tone === "purple") return base + "border-[#9333ea] bg-[#faf5ff] text-[#7e22ce]";
     if (tone === "teal") return base + "border-teal bg-teal-pale text-teal";

@@ -6,13 +6,13 @@ const PILLARS = [
     title: "Find venues",
     description: "Search access-checked places before you go.",
     href: "/venue-finder",
-    accent: "hover:border-cyan-400/30",
+    accent: "hover:border-[#F04A16]/30",
   },
   {
     title: "Plan visits",
     description: "Check entrances, toilets, parking, routes and support needs.",
     href: "/ai-toolkit/venue-fit-planner",
-    accent: "hover:border-blue-400/30",
+    accent: "hover:border-[#F04A16]/30",
   },
   {
     title: "Understand your rights",
@@ -24,13 +24,13 @@ const PILLARS = [
     title: "Use practical guides",
     description: "Plain-language UK advice on everyday access, care and equipment.",
     href: "/advice",
-    accent: "hover:border-cyan-400/30",
+    accent: "hover:border-[#F04A16]/30",
   },
   {
     title: "Get care & support help",
     description: "Find practical information for care, planning and daily life.",
     href: "/advice/care",
-    accent: "hover:border-blue-400/30",
+    accent: "hover:border-[#F04A16]/30",
   },
   {
     title: "For venues",
@@ -45,10 +45,10 @@ export function PlatformPillarsGrid() {
     <section className={HOME_SECTION_ALT} aria-labelledby="platform-helps-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
-          <h2 id="platform-helps-heading" className="text-2xl font-bold tracking-[-0.025em] text-[#0B1D3A]">
+          <h2 id="platform-helps-heading" className="text-2xl font-bold tracking-[-0.025em] text-[#13201F]">
             What you can do on Access Stamp
           </h2>
-          <p className="mt-2 text-sm leading-6 text-[#3B6B9A]">
+          <p className="mt-2 text-sm leading-6 text-[#5E6A66]">
             One platform for finding places, planning visits, understanding rights, and getting practical support.
           </p>
         </div>
@@ -58,10 +58,10 @@ export function PlatformPillarsGrid() {
             <Link
               key={pillar.title}
               href={pillar.href}
-              className={`group block p-5 transition-all duration-200 hover:-translate-y-1 hover:border-[#93C5FD] hover:shadow-xl hover:shadow-[#2563EB]/10 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#0891B2]/20 ${HOME_PANEL} ${pillar.accent}`}
+              className={`group block p-5 transition-all duration-200 hover:-translate-y-1 hover:border-[#E8C4A8] hover:shadow-xl hover:shadow-[#F04A16]/10 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#59682A]/20 ${HOME_PANEL} ${pillar.accent}`}
             >
-              <h3 className="text-base font-bold text-[#0B1D3A] group-hover:text-[#2563EB]">{pillar.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-[#3B6B9A]">{pillar.description}</p>
+              <h3 className="text-base font-bold text-[#13201F] group-hover:text-[#F04A16]">{pillar.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-[#5E6A66]">{pillar.description}</p>
             </Link>
           ))}
         </div>

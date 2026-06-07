@@ -23,16 +23,16 @@ export function VenueFinderFilters({
   const count = selectedFilters.length;
 
   return (
-    <div className="rounded-2xl border border-[#BFDBFE] bg-white/95 p-4 shadow-[var(--shadow-soft)]">
+    <div className="rounded-2xl border border-[#F1D8C7] bg-white/95 p-4 shadow-[var(--shadow-soft)]">
       <div className="flex items-center justify-between gap-2">
-        <h2 className="text-xs font-semibold uppercase tracking-[0.08em] text-[#3B6B9A]">
+        <h2 className="text-xs font-semibold uppercase tracking-[0.08em] text-[#5E6A66]">
           Access filters{count ? ` · ${count}` : ""}
         </h2>
         {count > 0 ? (
           <button
             type="button"
             onClick={onClearFilters}
-            className="text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8]"
+            className="text-xs font-semibold text-[#F04A16] hover:text-[#D93E10]"
           >
             Clear
           </button>

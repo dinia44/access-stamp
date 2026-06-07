@@ -92,7 +92,7 @@ export default function LawsGuidancePage() {
                         </button>
                       </div>
                       {expanded[link.href] ? (
-                        <div className="mt-3 rounded-[var(--radius-ui)] border border-[#dbe4f2] bg-[#f8fbff] p-3">
+                        <div className="mt-3 rounded-[var(--radius-ui)] border border-[#F1D8C7] bg-[#FFF8F1] p-3">
                           <p className="text-sm text-heading">{getLawDetails(link).p1}</p>
                           <p className="mt-2 text-sm text-heading">{getLawDetails(link).p2}</p>
                         </div>

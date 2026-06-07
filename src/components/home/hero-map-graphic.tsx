@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { SAMPLE_VENUE_PHOTOS } from "@/lib/venue-finder-images";
+import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -71,33 +71,21 @@ function PhotoCard({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-function MiniMapCard() {
+function MapPreviewCard() {
   return (
     <div className="overflow-hidden rounded-2xl border border-[#F1D8C7] bg-white shadow-md shadow-[#F04A16]/8">
-      <svg viewBox="0 0 188 120" className="h-[88px] w-full" aria-hidden>
-        <rect width="188" height="120" fill="#FFF8F1" />
-        <path
-          d="M16 92 C 52 68, 88 72, 124 48 S 160 28, 172 20"
-          stroke="#F04A16"
-          strokeWidth="2"
-          strokeDasharray="4 6"
-          strokeLinecap="round"
-          fill="none"
-          opacity="0.45"
-        />
-        <circle cx="16" cy="92" r="5" fill="#F04A16" opacity="0.2" />
-        <circle cx="16" cy="92" r="2.5" fill="#F04A16" />
-        <circle cx="172" cy="20" r="5" fill="#F04A16" opacity="0.2" />
-        <circle cx="172" cy="20" r="2.5" fill="#F04A16" />
-      </svg>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={CLOUDINARY_MEDIA.homepageMapPreview}
+        alt="Stylised map with route and access pins"
+        className="aspect-[4/3] w-full object-cover"
+        loading="lazy"
+      />
     </div>
   );
 }
 
 export function PlatformHeroGraphic() {
-  const interiorPhoto = SAMPLE_VENUE_PHOTOS["sample-cafe"];
-  const exteriorPhoto = SAMPLE_VENUE_PHOTOS["harbour-kitchen-liverpool"];
-
   return (
     <div className="relative w-full py-4 lg:py-0" aria-hidden="true">
       {/* Faint route accent — column only, not inside the card */}
@@ -212,9 +200,15 @@ export function PlatformHeroGraphic() {
 
         {/* Venue imagery + mini map — separate column, not attached to card */}
         <div className="grid w-full max-w-[455px] grid-cols-2 gap-3 sm:grid-cols-3 lg:w-[172px] lg:max-w-none lg:grid-cols-1 lg:pt-2 xl:w-[188px]">
-          <PhotoCard src={exteriorPhoto.src} alt={exteriorPhoto.alt} />
-          <PhotoCard src={interiorPhoto.src} alt={interiorPhoto.alt} />
-          <MiniMapCard />
+          <PhotoCard
+            src={CLOUDINARY_MEDIA.homepageVenueExterior}
+            alt="Modern café entrance with accessible ramp"
+          />
+          <PhotoCard
+            src={CLOUDINARY_MEDIA.homepageVenueInterior}
+            alt="Cozy accessible café interior with ramp to counter"
+          />
+          <MapPreviewCard />
         </div>
       </div>
     </div>

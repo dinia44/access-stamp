@@ -181,11 +181,11 @@ export default async function VenueDetailPage({
 
           <FadeIn>
             <Card className="overflow-hidden p-0">
-              <div className="border-b border-[#BFDBFE] bg-gradient-to-br from-[#DBEAFE] via-white to-[#F8FBFF] px-5 py-8 sm:px-8">
+              <div className="border-b border-[#F1D8C7] bg-gradient-to-br from-[#FFE2D3] via-white to-[#FFF8F1] px-5 py-8 sm:px-8">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                   <div className="space-y-4">
                     <div className="flex items-center gap-4">
-                      <span className="grid h-14 w-14 place-items-center rounded-2xl border border-[#BFDBFE] bg-white text-2xl shadow-[var(--shadow-soft)]">
+                      <span className="grid h-14 w-14 place-items-center rounded-2xl border border-[#F1D8C7] bg-white text-2xl shadow-[var(--shadow-soft)]">
                         {venueEmoji(v.type)}
                       </span>
                       <div>
@@ -196,7 +196,7 @@ export default async function VenueDetailPage({
                         <div className="mt-2 flex flex-wrap items-center gap-2">
                           <span className="text-sm font-semibold text-muted">{v.location}</span>
                           <span className="rounded-full bg-blue-pale px-3 py-1 text-xs font-semibold text-blue">{v.type}</span>
-                          <span className="rounded-full border border-[#BFDBFE] bg-white px-3 py-1 text-xs font-semibold text-muted">
+                          <span className="rounded-full border border-[#F1D8C7] bg-white px-3 py-1 text-xs font-semibold text-muted">
                             Rating {v.rating.toFixed(1)}
                           </span>
                         </div>

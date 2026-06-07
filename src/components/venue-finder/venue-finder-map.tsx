@@ -51,7 +51,7 @@ function AccessStampPin({
       <button
         type="button"
         onClick={onClick}
-        className="inline-flex h-11 min-w-11 items-center justify-center rounded-full border-2 border-white bg-blue-700 px-2 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
+        className="inline-flex h-11 min-w-11 items-center justify-center rounded-full border-2 border-white bg-[#F04A16] px-2 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F1D8C7]"
         aria-label={`${clusterCount} venues in this area`}
       >
         {clusterCount}
@@ -63,13 +63,13 @@ function AccessStampPin({
     <button
       type="button"
       onClick={onClick}
-      className={`relative inline-flex h-11 w-11 items-center justify-center transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200 ${
+      className={`relative inline-flex h-11 w-11 items-center justify-center transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F1D8C7] ${
         selected ? "scale-110" : ""
       }`}
       aria-label="Venue marker"
     >
       <span
-        className={`absolute inset-0 rounded-full ${selected ? "bg-cyan-300/35 animate-ping" : ""}`}
+        className={`absolute inset-0 rounded-full ${selected ? "bg-[#F04A16]/35 animate-ping" : ""}`}
         aria-hidden="true"
       />
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -173,7 +173,7 @@ export function VenueFinderMap({
   }, []);
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 ${className}`}>
+    <div className={`relative overflow-hidden rounded-2xl border border-border bg-background-2 ${className}`}>
       <Map
         ref={mapRef}
         {...viewState}
@@ -196,7 +196,7 @@ export function VenueFinderMap({
         {mapCenter ? (
           <Marker longitude={mapCenter.lng} latitude={mapCenter.lat} anchor="center">
             <span
-              className="inline-flex h-4 w-4 rounded-full border-2 border-white bg-cyan-400 shadow-md"
+              className="inline-flex h-4 w-4 rounded-full border-2 border-white bg-[#F04A16] shadow-md"
               aria-label="Search centre"
             />
           </Marker>
@@ -237,7 +237,7 @@ export function VenueFinderMap({
         })}
       </Map>
 
-      <div className="pointer-events-none absolute bottom-2 left-2 rounded-md bg-white/90 px-2 py-1 text-[10px] font-medium text-slate-600 shadow-sm">
+      <div className="pointer-events-none absolute bottom-2 left-2 rounded-md bg-white/90 px-2 py-1 text-[10px] font-medium text-muted shadow-sm">
         {MAP_ATTRIBUTION}
       </div>
     </div>

@@ -11,7 +11,7 @@ function accentStyles(accent: (typeof RIGHTS_COMMON_ISSUES)[number]["accent"]) {
     case "amber":
       return "border-t-[var(--amber)] bg-amber-pale/50";
     case "violet":
-      return "border-t-[#6b5cae] bg-[#f3f0ff]/80";
+      return "border-t-[var(--color-secondary)] bg-[#EDF7ED]/80";
     default:
       return "border-t-border bg-background-2";
   }

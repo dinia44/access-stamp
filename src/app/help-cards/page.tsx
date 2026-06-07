@@ -29,13 +29,13 @@ export default async function HelpCardsPage({
         <div className="mt-4 flex flex-wrap gap-2">
           <Link
             href="/help-cards?concern=Equality%20Act%20rights"
-            className="inline-flex min-h-[44px] items-center rounded-full border border-[#BFDBFE] bg-white px-4 text-sm font-semibold text-[#2563EB] transition-colors hover:border-[#93C5FD] hover:bg-[#EFF6FF]"
+            className="inline-flex min-h-[44px] items-center rounded-full border border-[#F1D8C7] bg-white px-4 text-sm font-semibold text-[#F04A16] transition-colors hover:border-[#E8C4A8] hover:bg-[#FFF3E8]"
           >
             Equality Act cards
           </Link>
           <Link
             href="/advice/rights"
-            className="inline-flex min-h-[44px] items-center rounded-full border border-[#BFDBFE] bg-[#FFF7ED] px-4 text-sm font-semibold text-warning transition-colors hover:border-[#FDE68A]"
+            className="inline-flex min-h-[44px] items-center rounded-full border border-[#F1D8C7] bg-[#FFF7ED] px-4 text-sm font-semibold text-warning transition-colors hover:border-[#FDE68A]"
           >
             Rights advice hub
           </Link>

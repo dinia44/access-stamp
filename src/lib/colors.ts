@@ -1,21 +1,21 @@
 /** Access Stamp semantic colour system — see globals.css for CSS variables. */
 
 export const ADVICE_CATEGORY_TINT: Record<string, string> = {
-  "/advice/rights": "#EFF6FF",
-  "/advice/care": "#F0FDFA",
+  "/advice/rights": "#FFF3E8",
+  "/advice/care": "#EDF7ED",
   "/advice/transport": "#FFFBEB",
-  "/advice/equipment": "#F8FAFC",
-  "/advice/workplace": "#EEF2FF",
-  "/advice/education": "#EFF6FF",
+  "/advice/equipment": "#FFF8F1",
+  "/advice/workplace": "#FFF0E4",
+  "/advice/education": "#FFE2D3",
   "/advice/emergency": "#FFFBEB",
-  "/advice/new-to-disability": "#F8FAFC",
+  "/advice/new-to-disability": "#FFF8F1",
   "/advice/cars": "#FFFBEB",
-  "/advice/sport": "#F0FDFA",
-  "/advice/travel": "#FFFBEB",
+  "/advice/sport": "#EDF7ED",
+  "/advice/travel": "#FFF3E8",
 };
 
 export function adviceCategoryTint(href: string) {
-  return ADVICE_CATEGORY_TINT[href] ?? "#F8FAFC";
+  return ADVICE_CATEGORY_TINT[href] ?? "#FFF8F1";
 }
 
 export type VerificationStatus = "Access Stamp checked" | "Community reported" | "Not yet verified" | string;

@@ -11,18 +11,18 @@ const CATEGORIES = [
 
 export function HomeAccessCategories() {
   return (
-    <section aria-labelledby="home-access-categories" className="border-b border-slate-200 bg-white pb-10 pt-8">
+    <section aria-labelledby="home-access-categories" className="border-b border-border bg-white pb-10 pt-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.04em] text-slate-500">Browse by access need</p>
-            <h2 id="home-access-categories" className="mt-2 text-2xl font-bold tracking-[-0.025em] text-slate-900">
+            <p className="text-xs font-semibold uppercase tracking-[0.04em] text-muted">Browse by access need</p>
+            <h2 id="home-access-categories" className="mt-2 text-2xl font-bold tracking-[-0.025em] text-heading">
               Start with what matters most
             </h2>
           </div>
           <Link
             href="/venue-finder"
-            className="inline-flex min-h-11 items-center text-sm font-semibold text-blue-700 hover:text-blue-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:ring-offset-2"
+            className="inline-flex min-h-11 items-center text-sm font-semibold text-[#D93E10] hover:text-[#45521F] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#FFE2D3] focus-visible:ring-offset-2"
           >
             View all categories →
           </Link>
@@ -33,12 +33,12 @@ export function HomeAccessCategories() {
             <li key={label}>
               <Link
                 href={`/venue-finder?filters=${encodeURIComponent(filter)}`}
-                className="group flex min-h-[72px] items-center rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:bg-white hover:shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:ring-offset-2"
+                className="group flex min-h-[72px] items-center rounded-2xl border border-border bg-background-2 px-4 py-3 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-[#E8C4A8] hover:bg-white hover:shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#FFE2D3] focus-visible:ring-offset-2"
               >
-                <span className="mr-3 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600">
+                <span className="mr-3 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-white text-muted">
                   <span className="text-xs font-bold">{label.slice(0, 2).toUpperCase()}</span>
                 </span>
-                <span className="text-sm font-semibold text-slate-800 group-hover:text-slate-900">{label}</span>
+                <span className="text-sm font-semibold text-text group-hover:text-heading">{label}</span>
               </Link>
             </li>
           ))}

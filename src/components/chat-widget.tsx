@@ -162,12 +162,12 @@ function VoiceOrb({
 }) {
   const base =
     state === "listening"
-      ? "from-emerald-300/70 via-cyan-300/60 to-blue-300/70"
+      ? "from-emerald-300/70 via-[#FFE2D3]/70 to-[#F04A16]/60"
       : state === "speaking"
         ? "from-amber-300/75 via-orange-300/70 to-rose-300/70"
         : state === "thinking"
-          ? "from-violet-300/70 via-indigo-300/65 to-blue-300/70"
-          : "from-blue-200/55 via-sky-200/50 to-indigo-200/55";
+          ? "from-[#FFE2D3]/70 via-[#F04A16]/55 to-[#59682A]/60"
+          : "from-[#FFE2D3]/55 via-[#FFF3E8]/60 to-[#F1D8C7]/55";
 
   return (
     <div className="relative grid h-[184px] w-[184px] place-items-center">
@@ -191,10 +191,10 @@ function VoiceOrb({
       />
       <div className="absolute inset-[32px] rounded-full bg-navy/92 backdrop-blur-[1px]" />
       <div className="relative z-10 text-center text-white">
-        <div className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-100">
+        <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[#FFE2D3]">
           {state === "listening" ? "Listening" : state === "speaking" ? "Speaking" : state === "thinking" ? "Thinking" : "Ready"}
         </div>
-        <div className="mt-1 text-[11px] text-blue-100/90">Access Stamp Voice</div>
+        <div className="mt-1 text-[11px] text-[#FFE2D3]/90">Access Stamp Voice</div>
       </div>
     </div>
   );
@@ -1176,7 +1176,7 @@ export function ChatWidget() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="text-sm font-semibold">Hands-free mode</div>
-                    <div className="text-xs text-blue-100" aria-live="polite">
+                    <div className="text-xs text-[#FFE2D3]" aria-live="polite">
                       <div className="flex flex-wrap items-center gap-2">
                         <span
                           className={cn(
@@ -1184,12 +1184,12 @@ export function ChatWidget() {
                             handsFreeState === "listening"
                               ? "bg-emerald-500/25 text-emerald-100"
                               : handsFreeState === "processing"
-                                ? "bg-violet-500/25 text-violet-100"
+                                ? "bg-[#FFE2D3]/40 text-[#FFE2D3]"
                                 : handsFreeState === "speaking"
                                   ? "bg-amber-500/25 text-warning-100"
                                   : handsFreeState === "error"
                                     ? "bg-rose-500/25 text-rose-100"
-                                    : "bg-white/15 text-blue-100",
+                                    : "bg-white/15 text-[#FFE2D3]",
                           )}
                         >
                           {statusLabel}
@@ -1205,7 +1205,7 @@ export function ChatWidget() {
                           </button>
                         ) : null}
                       </div>
-                      <div className="mt-1 text-[10px] font-medium uppercase tracking-wide text-blue-200/90">
+                      <div className="mt-1 text-[10px] font-medium uppercase tracking-wide text-[#FFE2D3]/90">
                         Pipeline: {handsFreeState} · Mic: {listening ? "on" : "off"} · TTS: {speaking ? "playing" : "idle"}
                       </div>
                     </div>
@@ -1531,7 +1531,7 @@ export function ChatWidget() {
           <div className="relative flex items-center justify-between gap-3 border-b border-white/15 bg-gradient-to-r from-blue to-navy px-4 py-3 text-white">
             <div className="min-w-0">
               <div className="text-2sm font-semibold">Ask Access Stamp AI</div>
-              <div className="text-xs text-blue-100">
+              <div className="text-xs text-[#FFE2D3]">
                 <span className="inline-flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-green-400" aria-hidden />
                   Online · Ready to help

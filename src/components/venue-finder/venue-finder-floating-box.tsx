@@ -45,7 +45,7 @@ export function VenueFinderFloatingBox({
       >
         <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_260px_auto] md:items-end">
           <label className="block min-w-0">
-            <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-[#3B6B9A]">
+            <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-[#5E6A66]">
               Search
             </span>
             <input
@@ -59,7 +59,7 @@ export function VenueFinderFloatingBox({
           </label>
 
           <label className="block min-w-0">
-            <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-[#3B6B9A]">
+            <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-[#5E6A66]">
               Location
             </span>
             <input
@@ -87,13 +87,13 @@ export function VenueFinderFloatingBox({
           </div>
         </div>
 
-        <div className="mt-5 border-t border-[#BFDBFE] pt-5">
+        <div className="mt-5 border-t border-[#F1D8C7] pt-5">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#3B6B9A]">Access filters</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#5E6A66]">Access filters</p>
             {onOpenMobileFilters ? (
               <button
                 type="button"
-                className="text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] lg:hidden"
+                className="text-xs font-semibold text-[#F04A16] hover:text-[#D93E10] lg:hidden"
                 onClick={onOpenMobileFilters}
               >
                 All filters
@@ -140,9 +140,9 @@ export function VenueFinderFloatingBox({
           </div>
         </div>
 
-        <div className="mt-5 flex flex-col gap-3 border-t border-[#BFDBFE] pt-5 sm:flex-row sm:items-center">
+        <div className="mt-5 flex flex-col gap-3 border-t border-[#F1D8C7] pt-5 sm:flex-row sm:items-center">
           <AskAccessStampAiButton prefill={aiPrefill} />
-          <p className="text-sm leading-6 text-[#3B6B9A]">
+          <p className="text-sm leading-6 text-[#5E6A66]">
             Or describe your access needs in plain language and get help planning your visit.
           </p>
           <button

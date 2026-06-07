@@ -69,7 +69,7 @@ const CATEGORIES = [
 
 export function CategoryShortcutRow() {
   return (
-    <section aria-labelledby="category-shortcuts-heading" className="border-t border-[#BFDBFE] pb-12 pt-8">
+    <section aria-labelledby="category-shortcuts-heading" className="border-t border-[#F1D8C7] pb-12 pt-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 id="category-shortcuts-heading" className="sr-only">
           Browse by category
@@ -80,13 +80,13 @@ export function CategoryShortcutRow() {
             <li key={title}>
               <Link
                 href={href}
-                className={`group flex h-full min-h-[96px] flex-col p-4 transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-[#93C5FD] hover:shadow-xl hover:shadow-[#2563EB]/10 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#0891B2]/20 ${HOME_PANEL}`}
+                className={`group flex h-full min-h-[96px] flex-col p-4 transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-[#E8C4A8] hover:shadow-xl hover:shadow-[#F04A16]/10 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#59682A]/20 ${HOME_PANEL}`}
               >
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#BFDBFE] bg-[#EFF6FF] text-[#0891B2] transition-colors group-hover:border-[#93C5FD] group-hover:bg-[#DBEAFE]">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#F1D8C7] bg-[#FFF3E8] text-[#59682A] transition-colors group-hover:border-[#E8C4A8] group-hover:bg-[#FFE2D3]">
                   {icon}
                 </span>
-                <span className="mt-3 text-sm font-bold text-[#0B1D3A]">{title}</span>
-                <span className="mt-1 text-sm leading-5 text-[#3B6B9A]">{description}</span>
+                <span className="mt-3 text-sm font-bold text-[#13201F]">{title}</span>
+                <span className="mt-1 text-sm leading-5 text-[#5E6A66]">{description}</span>
               </Link>
             </li>
           ))}

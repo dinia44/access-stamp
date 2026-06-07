@@ -65,7 +65,7 @@ export function downloadHelpCardAsPng(card: HelpCard) {
   ctx.fillText(`${card.category} guide`, 100, y);
 
   y += 65;
-  ctx.fillStyle = "#0c1d34";
+  ctx.fillStyle = "#13201F";
   ctx.font = "700 48px Arial, sans-serif";
   for (const line of wrapText(ctx, card.title, width - 200)) {
     ctx.fillText(line, 100, y);
@@ -81,7 +81,7 @@ export function downloadHelpCardAsPng(card: HelpCard) {
   }
 
   y += 20;
-  ctx.fillStyle = "#0c1d34";
+  ctx.fillStyle = "#13201F";
   ctx.font = "700 34px Arial, sans-serif";
   ctx.fillText("Must ask", 100, y);
   y += 46;
@@ -90,7 +90,7 @@ export function downloadHelpCardAsPng(card: HelpCard) {
   y = drawBullets(ctx, card.mustAsk, 100, y, width - 200, 36);
 
   y += 12;
-  ctx.fillStyle = "#0c1d34";
+  ctx.fillStyle = "#13201F";
   ctx.font = "700 34px Arial, sans-serif";
   ctx.fillText("Checklist", 100, y);
   y += 46;
@@ -99,11 +99,11 @@ export function downloadHelpCardAsPng(card: HelpCard) {
   y = drawBullets(ctx, card.checklist, 100, y, width - 200, 36);
 
   y += 12;
-  ctx.fillStyle = "#0c1d34";
+  ctx.fillStyle = "#13201F";
   ctx.font = "700 34px Arial, sans-serif";
   ctx.fillText("Key line", 100, y);
   y += 46;
-  ctx.fillStyle = "#1f4d84";
+  ctx.fillStyle = "#D93E10";
   ctx.font = "700 28px Arial, sans-serif";
   for (const line of wrapText(ctx, card.keyLine, width - 200)) {
     ctx.fillText(line, 100, y);

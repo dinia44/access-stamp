@@ -41,7 +41,7 @@ export async function CategoryPage({
                 <a
                   key={t.label}
                   href={`#tab-${t.label.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="inline-flex min-h-[44px] items-center rounded-full border border-[#BFDBFE] bg-white px-4 text-sm font-semibold text-[#2563EB] transition-colors hover:border-[#93C5FD] hover:bg-[#EFF6FF]"
+                  className="inline-flex min-h-[44px] items-center rounded-full border border-[#F1D8C7] bg-white px-4 text-sm font-semibold text-[#F04A16] transition-colors hover:border-[#E8C4A8] hover:bg-[#FFF3E8]"
                 >
                   {t.label}
                 </a>

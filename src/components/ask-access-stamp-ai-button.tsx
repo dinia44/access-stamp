@@ -18,27 +18,27 @@ export function AskAccessStampAiButton({ prefill, variant = "compact", className
       <button
         type="button"
         onClick={() => openChat({ prefill: prefill || defaultPrefill })}
-        className={`mt-3 grid min-h-11 w-full cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-3 rounded-2xl border border-[#93C5FD] bg-[#EFF6FF] px-3 py-2 text-left transition-colors hover:border-[#2563EB]/40 hover:bg-[#DBEAFE] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#0891B2] focus-visible:outline-offset-4 ${className}`}
+        className={`mt-3 grid min-h-11 w-full cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-3 rounded-2xl border border-[#E8C4A8] bg-[#FFF3E8] px-3 py-2 text-left transition-colors hover:border-[#F04A16]/40 hover:bg-[#FFE2D3] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#59682A] focus-visible:outline-offset-4 ${className}`}
         aria-label="Ask the AI Access Assistant"
       >
         <span
-          className="grid h-8 w-8 place-items-center rounded-full bg-[#DBEAFE] text-sm text-[#0891B2]"
+          className="grid h-8 w-8 place-items-center rounded-full bg-[#FFE2D3] text-sm text-[#59682A]"
           aria-hidden="true"
         >
           ✦
         </span>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-semibold text-[#0B1D3A]">Ask the AI Access Assistant</span>
-            <span className="rounded-full border border-[#BFDBFE] bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#0891B2]">
+            <span className="text-sm font-semibold text-[#13201F]">Ask the AI Access Assistant</span>
+            <span className="rounded-full border border-[#F1D8C7] bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#59682A]">
               Beta
             </span>
           </div>
-          <p className="truncate text-xs text-[#3B6B9A]">
+          <p className="truncate text-xs text-[#5E6A66]">
             Get help finding venues, understanding access features, and planning your visit.
           </p>
         </div>
-        <span className="text-[#2563EB]" aria-hidden="true">
+        <span className="text-[#F04A16]" aria-hidden="true">
           ›
         </span>
       </button>
@@ -49,10 +49,10 @@ export function AskAccessStampAiButton({ prefill, variant = "compact", className
     <button
       type="button"
       onClick={() => openChat({ prefill: prefill || defaultPrefill })}
-      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:ring-offset-2 ${className}`}
+      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#E8C4A8] bg-white px-4 text-sm font-semibold text-[#2A3836] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#F04A16]/40 hover:bg-[#FFF3E8] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#FFE2D3] focus-visible:ring-offset-2 ${className}`}
       aria-label="Ask Access Stamp AI"
     >
-      <span className="text-[#1D4ED8]" aria-hidden="true">
+      <span className="text-[#D93E10]" aria-hidden="true">
         ✦
       </span>
       Ask Access Stamp AI

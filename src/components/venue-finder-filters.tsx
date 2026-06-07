@@ -55,7 +55,7 @@ export function VenueFinderFilters({ selected, onChange }: Props) {
             className={cn(
               "rounded-full border px-3 py-2 text-xs font-semibold transition-colors",
               selectedSet.has(t)
-                ? "border-blue bg-blue-pale text-blue shadow-[inset_0_0_0_1px_rgba(36,120,208,0.25)]"
+                ? "border-blue bg-blue-pale text-blue shadow-[inset_0_0_0_1px_rgba(240,74,22,0.25)]"
                 : "border-border bg-background text-heading hover:bg-background-2",
             )}
             aria-pressed={selectedSet.has(t)}
@@ -82,7 +82,7 @@ export function VenueFinderFilters({ selected, onChange }: Props) {
               className={cn(
                 "rounded-full border px-3 py-2 text-xs font-semibold transition-colors",
                 selectedSet.has(t)
-                  ? "border-blue bg-blue-pale text-blue shadow-[inset_0_0_0_1px_rgba(36,120,208,0.25)]"
+                  ? "border-blue bg-blue-pale text-blue shadow-[inset_0_0_0_1px_rgba(240,74,22,0.25)]"
                   : "border-border bg-background text-heading hover:bg-background-2",
               )}
               aria-pressed={selectedSet.has(t)}

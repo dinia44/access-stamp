@@ -36,7 +36,7 @@ const VERIFICATION_STYLES: Record<
 > = {
   "Access Stamp checked": "border-emerald-200 bg-emerald-50 text-emerald-800",
   "Community reported": "border-amber-200 bg-amber-50 text-amber-800",
-  "Not yet verified": "border-slate-200 bg-slate-100 text-slate-600",
+  "Not yet verified": "border-border bg-background-2 text-muted",
   "Major access concern": "border-red-200 bg-red-50 text-red-800",
 };
 

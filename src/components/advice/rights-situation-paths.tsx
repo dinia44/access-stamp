@@ -73,7 +73,7 @@ function accentClass(accent: (typeof PATHS)[number]["accent"]) {
     case "amber":
       return "border-l-[var(--amber)] bg-gradient-to-br from-amber-pale/70 to-background";
     case "violet":
-      return "border-l-[#6b5cae] bg-gradient-to-br from-[#f3f0ff] to-background";
+      return "border-l-[var(--color-secondary)] bg-gradient-to-br from-[#EDF7ED] to-background";
     default:
       return "border-l-border bg-background-2";
   }

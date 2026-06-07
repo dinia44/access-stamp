@@ -19,6 +19,20 @@
   --color-border: #f1d8c7;
   --color-footer: #102120;
 
+  /* Venue finder legend tokens */
+  --vf-teal: var(--color-secondary);
+  --vf-teal-soft: #edf7ed;
+  --vf-blue: var(--color-primary);
+  --vf-blue-soft: var(--color-primary-soft);
+  --vf-amber: var(--color-warning);
+  --vf-amber-soft: var(--amber-pale);
+  --vf-red: var(--color-error);
+  --vf-red-soft: var(--error-pale);
+  --vf-ink: var(--color-ink);
+  --vf-muted: var(--color-muted);
+  --vf-border: var(--color-border);
+  --vf-hero-subtitle: #c8d4d0;
+
   --color-navy: #13201f;
   --color-ink: #13201f;
   --color-card: #ffffff;
@@ -122,7 +136,7 @@ svg[data-as-icon="true"] {
 }
 
 :where(a, button, input, textarea, select, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid var(--color-primary);
   outline-offset: 4px;
   border-radius: var(--radius-ui);
 }
@@ -141,7 +155,7 @@ svg[data-as-icon="true"] {
 
 .form-input:focus-visible {
   border-color: var(--color-primary);
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid var(--color-primary);
   outline-offset: 4px;
 }
 

@@ -26,7 +26,7 @@ export default async function BlogPage() {
           <FadeIn key={p.slug} delayMs={index * 60}>
             <Link href={`/blog/${p.slug}`} className="group block h-full">
               <Card className="flex h-full flex-col p-6">
-                <div className="text-xs font-semibold uppercase tracking-[0.06em] text-[#0891B2]">{p.date}</div>
+                <div className="text-xs font-semibold uppercase tracking-[0.06em] text-[#59682A]">{p.date}</div>
                 <h2 className="mt-3 text-lg font-semibold leading-snug text-heading group-hover:text-blue">
                   {p.title}
                 </h2>
