@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { VenueResultCard } from "@/components/venue-finder/venue-result-card";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
-import { getHomepageVenues } from "@/lib/venue-finder-featured";
+import { getHomepageVenues, HOME_VENUE_LIMIT } from "@/lib/venue-finder-featured";
 import { HOME_VENUE_GRID_CLASS } from "@/lib/venue-grid-layout";
 import { HOME_BTN_PRIMARY, HOME_SECTION_PANEL } from "@/components/home/home-theme";
 
 export function HomePopularVenues() {
-  const venues = getHomepageVenues(SAMPLE_VENUES);
+  const venues = getHomepageVenues(SAMPLE_VENUES).slice(0, HOME_VENUE_LIMIT);
 
   return (
     <section className={HOME_SECTION_PANEL} aria-labelledby="popular-venues-heading">
@@ -30,8 +30,8 @@ export function HomePopularVenues() {
           </Link>
         </div>
 
-        <ul className={`mt-8 ${HOME_VENUE_GRID_CLASS}`}>
-          {venues.map((venue, index) => (
+        <ul className={`mt-8 ${HOME_VENUE_GRID_CLASS}`} aria-label={`${venues.length} featured venue reports`}>
+          {venues.slice(0, HOME_VENUE_LIMIT).map((venue, index) => (
             <VenueResultCard key={venue.slug} venue={venue} index={index} />
           ))}
         </ul>

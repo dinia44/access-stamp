@@ -1,22 +1,27 @@
 import type { Venue } from "@/lib/mock-data";
 import { SAMPLE_VENUE_CARDS, type SampleVenueCard } from "@/lib/venue-finder-samples";
 
-/** Homepage shows featured venues first, then new listings — never the full directory */
+/** Hard cap — homepage must never show more than six venue cards */
 export const HOME_VENUE_LIMIT = 6;
 
-/** Curated flagship venues on the homepage */
-export const HOME_FEATURED_VENUE_SLUGS = [
+/**
+ * Exactly six venues on the homepage.
+ * Edit this list to change which venues appear — do not pull from the full directory.
+ */
+export const HOME_VENUE_SLUGS = [
   "harbour-kitchen-liverpool",
   "royal-armouries-leeds",
   "gallery-cafe-manchester",
-] as const;
-
-/** Recently added venues on the homepage (after featured, up to HOME_VENUE_LIMIT total) */
-export const HOME_NEW_VENUE_SLUGS = [
   "cardiff-community-hub",
   "pump-room-tea-room-bath",
   "tate-st-ives-gallery",
 ] as const;
+
+/** @deprecated Use HOME_VENUE_SLUGS — first three homepage venues */
+export const HOME_FEATURED_VENUE_SLUGS = HOME_VENUE_SLUGS.slice(0, 3);
+
+/** @deprecated Use HOME_VENUE_SLUGS — last three homepage venues */
+export const HOME_NEW_VENUE_SLUGS = HOME_VENUE_SLUGS.slice(3);
 
 /** Venue finder sort order — featured listings surface first in search results */
 export const FEATURED_VENUE_SLUGS = [
@@ -46,20 +51,10 @@ export type FeaturedVenueItem =
 
 export function getHomepageVenues(venues: Venue[]): Venue[] {
   const bySlug = new Map(venues.map((venue) => [venue.slug, venue]));
-  const seen = new Set<string>();
-  const result: Venue[] = [];
 
-  for (const slug of [...HOME_FEATURED_VENUE_SLUGS, ...HOME_NEW_VENUE_SLUGS]) {
-    if (result.length >= HOME_VENUE_LIMIT) break;
-    if (seen.has(slug)) continue;
-    const venue = bySlug.get(slug);
-    if (venue) {
-      result.push(venue);
-      seen.add(slug);
-    }
-  }
-
-  return result;
+  return HOME_VENUE_SLUGS.map((slug) => bySlug.get(slug))
+    .filter((venue): venue is Venue => Boolean(venue))
+    .slice(0, HOME_VENUE_LIMIT);
 }
 
 export function buildFeaturedVenueItems(venues: Venue[]): FeaturedVenueItem[] {
