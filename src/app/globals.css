@@ -431,3 +431,96 @@ body[data-dyslexia-font="on"] {
     box-shadow: none !important;
   }
 }
+
+/* Guide hero — subtle motion (respects prefers-reduced-motion) */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes guide-hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes guide-hero-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  @keyframes guide-hero-drift-a {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(-8px, 6px);
+    }
+  }
+
+  @keyframes guide-hero-drift-b {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(6px, -4px);
+    }
+  }
+
+  @keyframes guide-hero-drift-c {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-12px);
+    }
+  }
+
+  @keyframes guide-hero-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .guide-hero-rise {
+    animation: guide-hero-rise 0.55s ease-out both;
+  }
+
+  .guide-hero-float {
+    animation: guide-hero-float 5s ease-in-out infinite;
+  }
+
+  .guide-hero-drift-a {
+    animation: guide-hero-drift-a 9s ease-in-out infinite;
+  }
+
+  .guide-hero-drift-b {
+    animation: guide-hero-drift-b 11s ease-in-out infinite;
+  }
+
+  .guide-hero-drift-c {
+    animation: guide-hero-drift-c 14s ease-in-out infinite;
+  }
+
+  .guide-hero-badge-in {
+    animation: guide-hero-fade-up 0.45s ease-out both;
+  }
+
+  .guide-hero-meta-in {
+    animation: guide-hero-fade-up 0.45s ease-out both;
+  }
+}

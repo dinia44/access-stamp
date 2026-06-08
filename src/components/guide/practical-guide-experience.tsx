@@ -1,15 +1,18 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { AdviceArticle } from "@/lib/content/types";
 import type { GuideResourcePack } from "@/lib/guide-resources";
+import { buildGuideHeroProps } from "@/lib/guide-hero";
 import type { PracticalGuideWorkflow } from "@/lib/practical-guide";
 import { useChat } from "@/components/chat/provider";
 import { GuideAiSidebar } from "@/components/guide/guide-ai-sidebar";
 import { GuideBottomActionBar } from "@/components/guide/guide-bottom-action-bar";
 import { GuideFullGuideCta } from "@/components/guide/guide-full-guide-cta";
-import { GuideHeader } from "@/components/guide/guide-header";
+import { GuideHeroHeader } from "@/components/guide/guide-hero-header";
 import { GuideProgressStepper } from "@/components/guide/guide-progress-stepper";
+import { GuideScrollProgress } from "@/components/guide/guide-scroll-progress";
 import { GuideStepCard } from "@/components/guide/guide-step-card";
 import { GuideSupportColumn } from "@/components/guide/guide-support-column";
 import { cn } from "@/lib/utils";
@@ -22,7 +25,10 @@ type PracticalGuideExperienceProps = {
 
 export function PracticalGuideExperience({ article, workflow, resources }: PracticalGuideExperienceProps) {
   const { openChat } = useChat();
+  const router = useRouter();
   const title = workflow.displayTitle ?? article.title;
+  const stepsRef = useRef<HTMLDivElement>(null);
+  const heroProps = buildGuideHeroProps(article, workflow, resources);
 
   const initialExpanded = useMemo(
     () => workflow.steps.find((s) => s.status === "active")?.id ?? workflow.steps[0]?.id,
@@ -73,19 +79,35 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
 
   const completedCount = Math.max(workflow.completedCount, activeStep - 1);
 
+  const startGuide = useCallback(() => {
+    stepsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
+  const listenToGuide = useCallback(() => {
+    if (heroProps.fullGuideHref) {
+      router.push(`${heroProps.fullGuideHref}#read-aloud`);
+      return;
+    }
+    const cta = document.getElementById("guide-full-guide-cta");
+    if (cta) {
+      cta.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [heroProps.fullGuideHref, router]);
+
   return (
     <div className="bg-[#FFF8F1]">
+      <GuideScrollProgress />
       <div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-        <GuideHeader
-          title={title}
-          subtitle={workflow.subtitle}
-          updated={article.updated}
-          readTimeMinutes={article.readTimeMinutes}
+        <GuideHeroHeader
+          {...heroProps}
+          onStartGuide={startGuide}
+          onListen={listenToGuide}
         />
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px_300px] xl:gap-8">
           {/* Main column */}
           <div className="min-w-0 space-y-5 xl:col-span-1">
+            <div ref={stepsRef} id="guide-steps" className="scroll-mt-28 space-y-5">
             <GuideProgressStepper
               currentStep={activeStep}
               totalSteps={workflow.totalSteps}
@@ -115,7 +137,12 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
               onPrimary={() => askAi("I'm ready to make my request. Help me plan what to say.")}
             />
 
-            {resources ? <GuideFullGuideCta resources={resources} className="print:hidden" /> : null}
+            {resources ? (
+              <div id="guide-full-guide-cta">
+                <GuideFullGuideCta resources={resources} className="print:hidden" />
+              </div>
+            ) : null}
+            </div>
           </div>
 
           {/* Support column — below main on tablet, middle on desktop */}

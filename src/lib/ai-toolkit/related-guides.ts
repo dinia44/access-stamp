@@ -12,7 +12,7 @@ const AREA_SLUGS: Record<ProfilerArea, string[]> = {
     "universal-credit-lcwra-work-capability",
     "dla-for-children-claim-guide",
   ],
-  Work: ["reasonable-adjustments-at-work", "access-to-work-application-guide"],
+  Work: ["reasonable-adjustments-at-work", "access-to-work"],
   Travel: ["book-train-assistance-passenger-assist"],
   Education: ["school-reasonable-adjustments", "request-ehcp-needs-assessment", "dla-for-children-claim-guide"],
   Housing: ["disabled-facilities-grant-home-adaptations"],
@@ -45,7 +45,7 @@ export function guidesForLetterType(letterType: string): ToolkitGuideLink[] {
   const map: Record<string, string[]> = {
     "PIP renewal": ["pip-renewal-form-what-to-write"],
     "PIP mandatory reconsideration": ["pip-mandatory-reconsideration", "pip-tribunal-appeal-guide"],
-    "Access to Work": ["access-to-work-application-guide"],
+    "Access to Work": ["access-to-work"],
     "Reasonable adjustments at work": ["reasonable-adjustments-at-work"],
     "School reasonable adjustments": ["school-reasonable-adjustments"],
     "EHCP assessment request": ["request-ehcp-needs-assessment"],

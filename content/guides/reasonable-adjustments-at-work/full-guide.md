@@ -164,7 +164,7 @@ Thank you,
 
 ## Related Access Stamp guides
 
-- [Access to Work application guide](/advice/access-to-work-application-guide)
+- [Access to Work application guide](/advice/access-to-work)
 - [Reasonable adjustments you can ask for](/advice/reasonable-adjustments-you-can-ask-for)
 
 ---

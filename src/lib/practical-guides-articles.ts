@@ -227,7 +227,7 @@ Yours sincerely,
   }),
 
   buildGuide({
-    slug: "access-to-work-application-guide",
+    slug: "access-to-work",
     title: "Access to Work: What You Can Ask For and How to Apply",
     seoTitle: "Access to Work: what to ask for and how to apply",
     metaDescription:
@@ -368,7 +368,7 @@ Thank you,
       { label: "Equality and Human Rights Commission — Work", href: "https://www.equalityhumanrights.com/guidance/your-rights-work" },
     ],
     relatedLinks: [
-      { label: "Access to Work application guide", href: "/advice/access-to-work-application-guide" },
+      { label: "Access to Work application guide", href: "/advice/access-to-work" },
       { label: "Reasonable adjustments you can ask for", href: "/advice/reasonable-adjustments-you-can-ask-for" },
     ],
   }),
