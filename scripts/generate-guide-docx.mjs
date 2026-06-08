@@ -148,6 +148,67 @@ Notes for next review
 -
 
 Reminder: keep copies of emails, meeting notes and any occupational health summaries.`,
+
+  "access-to-work-application-prep-checklist.docx": `Access Stamp — Access to Work application prep checklist
+
+Before applying, gather:
+[ ] Job title or type of work
+[ ] Workplace address and postcode
+[ ] Employer or workplace contact details
+[ ] How your condition affects work
+[ ] Tasks that are difficult
+[ ] Support you already have
+[ ] Support you think you need
+[ ] National Insurance number (if available)
+[ ] Upcoming start date or interview details (if relevant)
+
+Barrier summary:
+What is difficult at work?
+How often does it happen?
+What happens without support?
+What support do you think would help?`,
+
+  "access-to-work-barriers-worksheet.docx": `Access Stamp — Work barriers and support needs worksheet
+
+Barrier 1 — task or situation:
+Impact without support:
+Possible support:
+
+Barrier 2 — task or situation:
+Impact without support:
+Possible support:
+
+Support categories:
+[ ] Equipment and software
+[ ] Human support
+[ ] Travel support
+[ ] Workplace changes
+[ ] Mental health support`,
+
+  "access-to-work-call-notes-template.docx": `Access Stamp — Access to Work call notes template
+
+Date:
+Who I spoke to:
+Reference number:
+
+What they asked:
+What I explained:
+Documents requested:
+Next step:
+Expected timescale:`,
+
+  "access-to-work-decision-review-email.docx": `Access Stamp — Access to Work decision review email
+
+Subject: Request for clarification / review of Access to Work decision
+
+Dear Access to Work,
+
+Thank you for your decision dated [date]. Please could you clarify what support has been approved, who is responsible for arranging it, whether costs need to be paid up front, and what evidence is needed to claim money back.
+
+If the approved support does not fully address the work barrier, please could this be reviewed?
+
+Thank you,
+[Your name]`,
 };
 
 function escapeXml(text) {

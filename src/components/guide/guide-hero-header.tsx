@@ -12,6 +12,7 @@ export type GuideHeroHeaderProps = {
   categoryLabel?: string;
   secondaryLabel?: string;
   lastUpdated?: string;
+  lastUpdatedLabel?: string;
   readTime?: string;
   guideType?: string;
   factChecked?: boolean;
@@ -70,6 +71,7 @@ export function GuideHeroHeader({
   categoryLabel = ACCESS_TO_WORK_HERO_DEFAULTS.categoryLabel,
   secondaryLabel = ACCESS_TO_WORK_HERO_DEFAULTS.secondaryLabel,
   lastUpdated = ACCESS_TO_WORK_HERO_DEFAULTS.lastUpdated,
+  lastUpdatedLabel = "Last updated",
   readTime = ACCESS_TO_WORK_HERO_DEFAULTS.readTime,
   guideType = ACCESS_TO_WORK_HERO_DEFAULTS.guideType,
   factChecked = true,
@@ -87,7 +89,7 @@ export function GuideHeroHeader({
   useEffect(() => setMounted(true), []);
 
   const meta: MetaItem[] = [
-    { icon: "📅", label: `Last updated ${lastUpdated}` },
+    { icon: "📅", label: `${lastUpdatedLabel} ${lastUpdated}` },
     { icon: "⏱", label: readTime },
     { icon: "🇬🇧", label: guideType },
   ];

@@ -39,14 +39,7 @@ export type GuideTocItem = {
 
 const CONTENT_ROOT = path.join(process.cwd(), "content", "guides");
 
-const RESOURCE_SLUGS = ["reasonable-adjustments-at-work"] as const;
-
-export function hasGuideResourcePack(slug: string): slug is (typeof RESOURCE_SLUGS)[number] {
-  return (RESOURCE_SLUGS as readonly string[]).includes(slug);
-}
-
 export function getGuideResourcePack(slug: string): GuideResourcePack | null {
-  if (!hasGuideResourcePack(slug)) return null;
   const filePath = path.join(CONTENT_ROOT, slug, "resources.json");
   if (!fs.existsSync(filePath)) return null;
   const raw = fs.readFileSync(filePath, "utf8");
@@ -54,10 +47,13 @@ export function getGuideResourcePack(slug: string): GuideResourcePack | null {
 }
 
 export function getGuideFullGuideMarkdown(slug: string): string | null {
-  if (!hasGuideResourcePack(slug)) return null;
   const filePath = path.join(CONTENT_ROOT, slug, "full-guide.md");
   if (!fs.existsSync(filePath)) return null;
   return fs.readFileSync(filePath, "utf8");
+}
+
+export function hasGuideResourcePack(slug: string): boolean {
+  return fs.existsSync(path.join(CONTENT_ROOT, slug, "resources.json"));
 }
 
 export function slugifyHeading(text: string): string {

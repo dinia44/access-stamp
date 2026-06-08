@@ -5,18 +5,24 @@ import { useChat } from "@/components/chat/provider";
 import { cn } from "@/lib/utils";
 
 type GuideAiSidebarProps = {
+  intro: string;
   suggestions: string[];
   demoQuestion: string;
+  demoIntro: string;
   demoAnswer: string[];
+  disclaimer: string;
   guideTitle: string;
   className?: string;
   onClose?: () => void;
 };
 
 export function GuideAiSidebar({
+  intro,
   suggestions,
   demoQuestion,
+  demoIntro,
   demoAnswer,
+  disclaimer,
   guideTitle,
   className,
   onClose,
@@ -69,9 +75,7 @@ export function GuideAiSidebar({
       </div>
 
       <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
-        <p className="text-sm leading-6 text-muted">
-          Ask me anything about this guide or your situation.
-        </p>
+        <p className="text-sm leading-6 text-muted">{intro}</p>
 
         <div className="space-y-2">
           {visibleSuggestions.map((s) => (
@@ -100,7 +104,7 @@ export function GuideAiSidebar({
             {demoQuestion}
           </div>
           <div className="max-w-[95%] rounded-2xl rounded-bl-md border border-[#F1D8C7] bg-[#FFF8F1] px-3 py-3">
-            <p className="text-xs leading-5 text-text">Here are some adjustments that often help:</p>
+            <p className="text-xs leading-5 text-text">{demoIntro}</p>
             <ul className="mt-2 space-y-1">
               {demoAnswer.map((item) => (
                 <li key={item} className="flex items-start gap-2 text-xs text-text">
@@ -134,9 +138,7 @@ export function GuideAiSidebar({
             →
           </button>
         </form>
-        <p className="mt-2 text-[10px] leading-4 text-muted">
-          AI can make mistakes. Consider checking important information.
-        </p>
+        <p className="mt-2 text-[10px] leading-4 text-muted">{disclaimer}</p>
       </div>
     </aside>
   );

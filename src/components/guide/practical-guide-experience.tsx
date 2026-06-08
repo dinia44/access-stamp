@@ -37,7 +37,6 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
 
   const [activeStep, setActiveStep] = useState(workflow.currentStep);
   const [expandedStepId, setExpandedStepId] = useState<string | null>(initialExpanded ?? null);
-  const [checklistState, setChecklistState] = useState<Record<string, boolean>>({});
   const [aiPanelOpen, setAiPanelOpen] = useState(false);
 
   const stepLabels = workflow.steps.map((s) => s.title);
@@ -62,10 +61,6 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
 
   const toggleStep = useCallback((stepId: string) => {
     setExpandedStepId((prev) => (prev === stepId ? null : stepId));
-  }, []);
-
-  const toggleChecklist = useCallback((id: string) => {
-    setChecklistState((prev) => ({ ...prev, [id]: !prev[id] }));
   }, []);
 
   const stepsWithStatus = workflow.steps.map((step, i) => {
@@ -122,9 +117,7 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
                     step={step}
                     expanded={expandedStepId === step.id}
                     onToggle={() => toggleStep(step.id)}
-                    onAskAi={() => askAi(step.aiTip)}
-                    checklistState={checklistState}
-                    onChecklistToggle={toggleChecklist}
+                    onAskAi={(prompt) => askAi(prompt)}
                   />
                 </div>
               ))}
@@ -153,9 +146,12 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
           {/* AI sidebar */}
           <div className={cn("order-2 xl:order-3", !aiPanelOpen && "hidden xl:block")}>
             <GuideAiSidebar
+              intro={workflow.aiIntro}
               suggestions={workflow.aiSuggestions}
               demoQuestion={workflow.aiDemoQuestion}
+              demoIntro={workflow.aiDemoIntro}
               demoAnswer={workflow.aiDemoAnswer}
+              disclaimer={workflow.aiDisclaimer}
               guideTitle={title}
               onClose={() => setAiPanelOpen(false)}
             />

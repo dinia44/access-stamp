@@ -26,6 +26,7 @@ type GuideInput = {
   ifRefused: string[];
   officialLinks: Array<{ label: string; href: string }>;
   relatedLinks?: Array<{ label: string; href: string }>;
+  updated?: string;
 };
 
 function buildGuide(g: GuideInput): AdviceArticle {
@@ -80,7 +81,7 @@ function buildGuide(g: GuideInput): AdviceArticle {
     excerpt: g.excerpt,
     readTimeMinutes: g.readTimeMinutes,
     categorySlug: g.categorySlug,
-    updated: "2026-05-12",
+    updated: g.updated ?? "2026-05-12",
     tags: g.tags,
     sections,
   };
@@ -237,6 +238,7 @@ Yours sincerely,
     readTimeMinutes: 11,
     categorySlug: "workplace",
     tags: ["Access to Work", "Work", "Funding", "Adjustments"],
+    updated: "June 2026",
     summary:
       "Access to Work (AtW) is a government scheme that can help pay for practical support so you can start or stay in work. It is not a benefit paid to you — it funds agreed items or services linked to workplace barriers. What gets approved depends on your job, the barrier, and whether support is reasonable for that role.",
     who: [

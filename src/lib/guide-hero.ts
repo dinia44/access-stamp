@@ -11,6 +11,7 @@ export type GuideHeroConfig = {
   backgroundImageUrl?: string;
   heroImageUrl?: string;
   subtitle?: string;
+  lastUpdatedLabel?: string;
 };
 
 const HERO_OVERRIDES: Record<string, GuideHeroConfig> = {
@@ -19,6 +20,7 @@ const HERO_OVERRIDES: Record<string, GuideHeroConfig> = {
     secondaryLabel: "Popular guide",
     guideType: "UK support guide",
     factChecked: true,
+    lastUpdatedLabel: "Last reviewed",
     subtitle:
       "A practical, step-by-step guide to what Access to Work can fund, how to apply, and how to ask for the right support with confidence.",
   },
@@ -51,6 +53,7 @@ export function buildGuideHeroProps(
     categoryLabel: override?.categoryLabel ?? "Practical guide",
     secondaryLabel: override?.secondaryLabel ?? "Guide",
     lastUpdated: article.updated,
+    lastUpdatedLabel: override?.lastUpdatedLabel ?? "Last updated",
     readTime: article.readTimeMinutes ? `${article.readTimeMinutes} min read` : undefined,
     guideType: override?.guideType ?? "UK support guide",
     factChecked: override?.factChecked ?? true,
