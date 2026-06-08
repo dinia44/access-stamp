@@ -36,7 +36,7 @@ export function VenueFinderFloatingBox({
       : "Help me find an accessible venue near me.";
 
   return (
-    <div className={`relative z-20 mx-auto max-w-7xl -mt-12 p-4 sm:-mt-14 sm:p-6 ${SITE_PANEL}`}>
+    <div className={`relative z-20 mx-auto max-w-[1180px] -mt-12 p-4 sm:-mt-14 sm:p-6 ${SITE_PANEL}`}>
       <form
         onSubmit={(e) => {
           e.preventDefault();

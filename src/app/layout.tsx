@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ChatProvider } from "@/components/chat/provider";
 import { ChatWidgetLoader } from "@/components/chat/chat-widget-loader";
@@ -7,18 +7,17 @@ import { AccessibilityControls } from "@/components/accessibility-controls";
 import { Footer } from "@/components/footer";
 import { SiteChrome } from "@/components/site-chrome";
 
-const heading = DM_Serif_Display({
+const display = Plus_Jakarta_Sans({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
+  weight: ["500", "600", "700", "800"],
   display: "swap",
 });
 
-const body = Plus_Jakarta_Sans({
+const body = Inter({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -50,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${heading.variable} ${body.variable} h-full`}
+    <html lang="en" className={`${display.variable} ${body.variable} h-full`}
     >
       <body className="min-h-full flex flex-col">
         <a

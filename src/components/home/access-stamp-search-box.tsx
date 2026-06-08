@@ -13,7 +13,7 @@ import {
 } from "@/components/home/home-theme";
 
 function ChipIcon({ label }: { label: string }) {
-  const cls = "h-4 w-4 shrink-0 text-[#F04A16]";
+  const cls = "h-4 w-4 shrink-0 text-[#2563EB]";
   if (label === "Step-free access") {
     return (
       <svg viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -145,7 +145,7 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
   };
 
   const panelClass = integrated
-    ? "relative z-20 scroll-mt-28 w-full rounded-3xl border border-[#F1D8C7]/80 bg-white/95 p-6 shadow-xl shadow-[#F04A16]/8 backdrop-blur-xl sm:p-7 lg:p-8"
+    ? "relative z-20 scroll-mt-28 w-full rounded-2xl border border-[rgba(16,32,51,0.12)] bg-white p-6 shadow-[0_20px_50px_-24px_rgba(7,24,38,0.2)] sm:p-7 lg:p-8"
     : `relative z-20 scroll-mt-28 w-full ${HOME_GLASS_PANEL} p-6 lg:p-8`;
 
   const modeDescription = isVenueSearch
