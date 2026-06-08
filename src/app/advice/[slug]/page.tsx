@@ -5,12 +5,14 @@ import { AdviceArticleJsonLd } from "@/components/advice-article-jsonld";
 import { ArticleActions } from "@/components/article-actions";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { GuideCoverImage } from "@/components/advice/guide-cover-image";
+import { PracticalGuideExperience } from "@/components/guide/practical-guide-experience";
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { getAdviceArticleBySlug, getAdviceArticles } from "@/lib/content/advice";
 import { ADVICE_CATEGORIES } from "@/lib/mock-data";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { LAWS_GUIDANCE_LINKS } from "@/lib/laws-guidance";
+import { getPracticalGuideWorkflow, isPracticalGuide } from "@/lib/practical-guide";
 import { SetChatContext } from "@/components/chat/set-context";
 import { ArticleCompanion } from "@/components/ai-toolkit/article-companion";
 import { cn } from "@/lib/utils";
@@ -86,6 +88,26 @@ export default async function AdviceArticlePage({
       : a.categorySlug === "workplace" || a.categorySlug === "rights"
         ? LAWS_GUIDANCE_LINKS.filter((item) => item.audience === "Work" || item.audience === "General").slice(0, 4)
         : [];
+
+  const practicalGuide = isPracticalGuide(a.slug);
+  const guideWorkflow = practicalGuide ? getPracticalGuideWorkflow(a) : null;
+
+  if (practicalGuide && guideWorkflow) {
+    return (
+      <div className="advice-practical-guide-page">
+        <AdviceArticleJsonLd article={a} />
+        <SetChatContext
+          page={{
+            kind: "advice-article",
+            slug: a.slug,
+            title: guideWorkflow.displayTitle ?? a.title,
+            category: a.categorySlug,
+          }}
+        />
+        <PracticalGuideExperience article={a} workflow={guideWorkflow} />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background advice-article-page">

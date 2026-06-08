@@ -296,8 +296,8 @@ How it enables work: Completes core hours without missing deadlines`,
 
   buildGuide({
     slug: "reasonable-adjustments-at-work",
-    title: "Reasonable Adjustments at Work: A Simple Guide for Disabled Employees",
-    seoTitle: "Reasonable adjustments at work: a simple guide",
+    title: "Reasonable adjustments at work: your rights",
+    seoTitle: "Reasonable adjustments at work: your rights",
     metaDescription:
       "What reasonable adjustments are, examples you can request, how to ask in writing, and what to do if your employer refuses.",
     excerpt:
