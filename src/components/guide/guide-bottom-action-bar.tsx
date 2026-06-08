@@ -7,7 +7,6 @@ type GuideBottomActionBarProps = {
   totalSteps: number;
   primaryLabel: string;
   onPrimary?: () => void;
-  onSave?: () => void;
   className?: string;
 };
 
@@ -16,7 +15,6 @@ export function GuideBottomActionBar({
   totalSteps,
   primaryLabel,
   onPrimary,
-  onSave,
   className,
 }: GuideBottomActionBarProps) {
   return (
@@ -40,10 +38,12 @@ export function GuideBottomActionBar({
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <button
           type="button"
-          onClick={onSave}
+          onClick={() => {
+            if (typeof window !== "undefined") void navigator.clipboard?.writeText(window.location.href);
+          }}
           className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-[#E8C4A8] bg-white px-4 text-sm font-semibold text-heading transition-colors hover:bg-[#FFF3E8] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-2"
         >
-          <span aria-hidden>🔖</span> Save and come back later
+          <span aria-hidden>🔖</span> Bookmark this page
         </button>
         <button
           type="button"

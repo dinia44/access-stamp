@@ -129,10 +129,12 @@ const REASONABLE_ADJUSTMENTS_WORKFLOW: PracticalGuideWorkflow = {
     },
   ],
   summary: [
-    "Understand your rights",
-    "Plan your request",
-    "Communicate with confidence",
-    "What to do if things go wrong",
+    "Understand what reasonable adjustments are",
+    "Identify the workplace barriers affecting you",
+    "Match each barrier to practical support",
+    "Write a clear request without oversharing",
+    "Track your employer's response",
+    "Know what to do if your request is delayed or refused",
   ],
   atAGlance: [
     "You have the right to equal treatment at work",
@@ -143,10 +145,22 @@ const REASONABLE_ADJUSTMENTS_WORKFLOW: PracticalGuideWorkflow = {
     {
       title: "Reasonable adjustment request template",
       format: "DOCX",
+      href: "/downloads/reasonable-adjustment-request-template.docx",
     },
     {
-      title: "Example request (Sample letter)",
+      title: "Workplace barriers checklist",
       format: "DOCX",
+      href: "/downloads/workplace-barriers-checklist.docx",
+    },
+    {
+      title: "Follow-up email template",
+      format: "DOCX",
+      href: "/downloads/follow-up-email-template.docx",
+    },
+    {
+      title: "Adjustment review notes",
+      format: "DOCX",
+      href: "/downloads/reasonable-adjustment-review-notes.docx",
     },
   ],
   aiSuggestions: [

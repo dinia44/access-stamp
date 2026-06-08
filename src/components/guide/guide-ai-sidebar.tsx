@@ -70,8 +70,6 @@ export function GuideAiSidebar({
 
       <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         <p className="text-sm leading-6 text-muted">
-          Hi Sam, I&apos;m here to help.
-          <br />
           Ask me anything about this guide or your situation.
         </p>
 

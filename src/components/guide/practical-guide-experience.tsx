@@ -2,10 +2,12 @@
 
 import { useCallback, useMemo, useState } from "react";
 import type { AdviceArticle } from "@/lib/content/types";
+import type { GuideResourcePack } from "@/lib/guide-resources";
 import type { PracticalGuideWorkflow } from "@/lib/practical-guide";
 import { useChat } from "@/components/chat/provider";
 import { GuideAiSidebar } from "@/components/guide/guide-ai-sidebar";
 import { GuideBottomActionBar } from "@/components/guide/guide-bottom-action-bar";
+import { GuideFullGuideCta } from "@/components/guide/guide-full-guide-cta";
 import { GuideHeader } from "@/components/guide/guide-header";
 import { GuideProgressStepper } from "@/components/guide/guide-progress-stepper";
 import { GuideStepCard } from "@/components/guide/guide-step-card";
@@ -15,9 +17,10 @@ import { cn } from "@/lib/utils";
 type PracticalGuideExperienceProps = {
   article: AdviceArticle;
   workflow: PracticalGuideWorkflow;
+  resources?: GuideResourcePack | null;
 };
 
-export function PracticalGuideExperience({ article, workflow }: PracticalGuideExperienceProps) {
+export function PracticalGuideExperience({ article, workflow, resources }: PracticalGuideExperienceProps) {
   const { openChat } = useChat();
   const title = workflow.displayTitle ?? article.title;
 
@@ -110,13 +113,14 @@ export function PracticalGuideExperience({ article, workflow }: PracticalGuideEx
               totalSteps={workflow.totalSteps}
               primaryLabel={workflow.primaryCta.label}
               onPrimary={() => askAi("I'm ready to make my request. Help me plan what to say.")}
-              onSave={() => askAi("I want to save my progress and come back later. Summarise where I am.")}
             />
+
+            {resources ? <GuideFullGuideCta resources={resources} className="print:hidden" /> : null}
           </div>
 
           {/* Support column — below main on tablet, middle on desktop */}
           <div className="order-3 xl:order-2">
-            <GuideSupportColumn workflow={workflow} article={article} onAskAi={() => askAi()} />
+            <GuideSupportColumn workflow={workflow} article={article} resources={resources} onAskAi={() => askAi()} />
           </div>
 
           {/* AI sidebar */}

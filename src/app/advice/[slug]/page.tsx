@@ -13,6 +13,7 @@ import { ADVICE_CATEGORIES } from "@/lib/mock-data";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { LAWS_GUIDANCE_LINKS } from "@/lib/laws-guidance";
 import { getPracticalGuideWorkflow, isPracticalGuide } from "@/lib/practical-guide";
+import { getGuideResourcePack } from "@/lib/guide-resources";
 import { SetChatContext } from "@/components/chat/set-context";
 import { ArticleCompanion } from "@/components/ai-toolkit/article-companion";
 import { cn } from "@/lib/utils";
@@ -91,6 +92,7 @@ export default async function AdviceArticlePage({
 
   const practicalGuide = isPracticalGuide(a.slug);
   const guideWorkflow = practicalGuide ? getPracticalGuideWorkflow(a) : null;
+  const guideResources = getGuideResourcePack(a.slug);
 
   if (practicalGuide && guideWorkflow) {
     return (
@@ -104,7 +106,7 @@ export default async function AdviceArticlePage({
             category: a.categorySlug,
           }}
         />
-        <PracticalGuideExperience article={a} workflow={guideWorkflow} />
+        <PracticalGuideExperience article={a} workflow={guideWorkflow} resources={guideResources} />
       </div>
     );
   }

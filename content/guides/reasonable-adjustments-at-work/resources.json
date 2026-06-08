@@ -1,0 +1,76 @@
+{
+  "slug": "reasonable-adjustments-at-work",
+  "summary": [
+    "Understand what reasonable adjustments are",
+    "Identify the workplace barriers affecting you",
+    "Match each barrier to practical support",
+    "Write a clear request without oversharing",
+    "Track your employer's response",
+    "Know what to do if your request is delayed or refused"
+  ],
+  "downloads": [
+    {
+      "id": "request-template",
+      "title": "Reasonable adjustment request template",
+      "description": "A simple email structure using barrier, impact, adjustment and reason.",
+      "file": "/downloads/reasonable-adjustment-request-template.docx",
+      "filename": "reasonable-adjustment-request-template.docx",
+      "format": "DOCX"
+    },
+    {
+      "id": "barriers-checklist",
+      "title": "Workplace barriers checklist",
+      "description": "Identify physical, communication, workload, sensory and policy barriers.",
+      "file": "/downloads/workplace-barriers-checklist.docx",
+      "filename": "workplace-barriers-checklist.docx",
+      "format": "DOCX"
+    },
+    {
+      "id": "follow-up-email",
+      "title": "Follow-up email template",
+      "description": "Chase delayed or unclear responses without sounding aggressive.",
+      "file": "/downloads/follow-up-email-template.docx",
+      "filename": "follow-up-email-template.docx",
+      "format": "DOCX"
+    },
+    {
+      "id": "review-notes",
+      "title": "Adjustment review notes",
+      "description": "Record whether agreed adjustments are working and what needs to happen next.",
+      "file": "/downloads/reasonable-adjustment-review-notes.docx",
+      "filename": "reasonable-adjustment-review-notes.docx",
+      "format": "DOCX"
+    }
+  ],
+  "officialLinks": [
+    {
+      "label": "GOV.UK: Reasonable adjustments for disabled workers",
+      "href": "https://www.gov.uk/reasonable-adjustments-for-disabled-workers"
+    },
+    {
+      "label": "Acas: Reasonable adjustments at work",
+      "href": "https://www.acas.org.uk/reasonable-adjustments"
+    },
+    {
+      "label": "EHRC: Workplace adjustments guidance",
+      "href": "https://www.equalityhumanrights.com/guidance/your-rights-work"
+    },
+    {
+      "label": "Citizens Advice: Asking your employer for changes",
+      "href": "https://www.citizensadvice.org.uk/law-and-courts/discrimination/check-what-type-of-discrimination-youve-experienced/asking-for-reasonable-adjustments/"
+    },
+    {
+      "label": "GOV.UK: Access to Work",
+      "href": "https://www.gov.uk/access-to-work"
+    }
+  ],
+  "fullGuideCta": {
+    "heading": "Read the full guide",
+    "text": "Prefer the full explanation? Open the complete Access Stamp guide with examples, template wording, common mistakes and next steps if your employer delays or refuses.",
+    "primaryLabel": "View full guide",
+    "secondaryLabel": "Listen to guide",
+    "tertiaryLabel": "Download request template",
+    "primaryHref": "/advice/reasonable-adjustments-at-work/full-guide",
+    "templateHref": "/downloads/reasonable-adjustment-request-template.docx"
+  }
+}
