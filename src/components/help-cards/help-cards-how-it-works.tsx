@@ -1,52 +1,47 @@
 import {
-  HC_GRID_CARD,
+  HC_PAGE_SECTION,
+  HC_SECTION_PADDING,
   HC_SECTION_TITLE,
+  HC_STEP_CARD,
 } from "@/components/help-cards/help-cards-theme";
 
 const STEPS = [
   {
-    number: "01",
+    number: "1",
     title: "Choose the moment",
     body: "Pick work, travel, care, education, rights, or emergency support.",
-    icon: "◎",
   },
   {
-    number: "02",
+    number: "2",
     title: "Save the card",
     body: "Download it to your phone or print it before you need it.",
-    icon: "↓",
   },
   {
-    number: "03",
+    number: "3",
     title: "Use the wording",
     body: "Show it, read it, or use it as a prompt when speaking.",
-    icon: "☰",
   },
   {
-    number: "04",
+    number: "4",
     title: "Tailor if needed",
     body: "Adjust the wording to your situation without starting from scratch.",
-    icon: "✦",
   },
 ] as const;
 
 export function HelpCardsHowItWorks() {
   return (
-    <section aria-labelledby="how-help-cards-work">
+    <section aria-labelledby="how-help-cards-work" className={`${HC_PAGE_SECTION} ${HC_SECTION_PADDING}`}>
       <h2 id="how-help-cards-work" className={HC_SECTION_TITLE}>
         How Help Cards work
       </h2>
-      <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <ol className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {STEPS.map((step) => (
-          <li key={step.number} className={`${HC_GRID_CARD} flex h-full flex-col`}>
-            <div className="flex items-start justify-between gap-3">
-              <span className="text-xs font-bold uppercase tracking-[0.12em] text-[#ef5b2a]">{step.number}</span>
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#fff6ef] text-sm text-[#ef5b2a]" aria-hidden>
-                {step.icon}
-              </span>
-            </div>
-            <h3 className="mt-4 text-lg font-extrabold tracking-[-0.03em] text-[#17212b]">{step.title}</h3>
-            <p className="mt-2 flex-1 text-sm leading-relaxed text-[#5f6b76]">{step.body}</p>
+          <li key={step.number} className={`${HC_STEP_CARD} flex h-full flex-col`}>
+            <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-[#fff0e8] text-sm font-black text-[#ef5b2a]">
+              {step.number}
+            </span>
+            <h3 className="text-base font-black text-[#17212b]">{step.title}</h3>
+            <p className="mt-2 flex-1 text-sm leading-6 text-[#5f6b76]">{step.body}</p>
           </li>
         ))}
       </ol>
