@@ -1,74 +1,54 @@
 @import "tailwindcss";
 
 /*
- * Access Stamp — premium disability-led design system
- * Navy authority · action blue · gold accent · cream surfaces
+ * Access Stamp — premium product design system
+ * Warm ivory surfaces · burnt orange actions · olive trust accents
  */
 :root {
-  --as-navy: #071826;
-  --as-navy-secondary: #0b2233;
-  --as-blue: #2563eb;
-  --as-blue-soft: #60a5fa;
-  --as-gold: #d4a84f;
-  --as-cream: #f8f5ee;
-  --as-white: #ffffff;
-  --as-ink: #102033;
-  --as-muted: #617080;
-  --as-border: rgba(16, 32, 51, 0.12);
-  --as-success: #168a5b;
+  --color-bg: #fff8f1;
+  --color-surface: #ffffff;
+  --color-surface-warm: #fff3e8;
+  --color-text: #13201f;
+  --color-muted: #5e6a66;
+  --color-primary: #f04a16;
+  --color-primary-hover: #d93e10;
+  --color-primary-soft: #ffe2d3;
+  --color-secondary: #59682a;
+  --color-secondary-hover: #45521f;
+  --color-success: #2f7d32;
+  --color-border: #f1d8c7;
+  --color-footer: #102120;
 
-  --space-xs: 0.5rem;
-  --space-sm: 0.75rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-  --space-2xl: 3rem;
-  --space-3xl: 4.5rem;
-  --space-4xl: 6rem;
-
-  --color-bg: var(--as-cream);
-  --color-surface: var(--as-white);
-  --color-surface-warm: #f3efe6;
-  --color-text: var(--as-ink);
-  --color-muted: var(--as-muted);
-  --color-primary: var(--as-blue);
-  --color-primary-hover: #1d4ed8;
-  --color-primary-soft: #dbeafe;
-  --color-secondary: var(--as-navy);
-  --color-secondary-hover: var(--as-navy-secondary);
-  --color-success: var(--as-success);
-  --color-border: var(--as-border);
-  --color-footer: var(--as-navy);
-
-  --vf-teal: var(--as-success);
-  --vf-teal-soft: #e8f5ef;
-  --vf-blue: var(--as-blue);
+  /* Venue finder legend tokens */
+  --vf-teal: var(--color-secondary);
+  --vf-teal-soft: #edf7ed;
+  --vf-blue: var(--color-primary);
   --vf-blue-soft: var(--color-primary-soft);
   --vf-amber: var(--color-warning);
   --vf-amber-soft: var(--amber-pale);
   --vf-red: var(--color-error);
   --vf-red-soft: var(--error-pale);
-  --vf-ink: var(--as-ink);
-  --vf-muted: var(--as-muted);
-  --vf-border: var(--as-border);
-  --vf-hero-subtitle: #94a3b8;
+  --vf-ink: var(--color-ink);
+  --vf-muted: var(--color-muted);
+  --vf-border: var(--color-border);
+  --vf-hero-subtitle: #c8d4d0;
 
-  --color-navy: var(--as-navy);
-  --color-ink: var(--as-ink);
-  --color-card: var(--as-white);
-  --color-border-mid: rgba(16, 32, 51, 0.18);
-  --color-accent: var(--as-gold);
-  --color-gold: var(--as-gold);
-  --color-verified: var(--as-success);
+  --color-navy: #13201f;
+  --color-ink: #13201f;
+  --color-card: #ffffff;
+  --color-border-mid: #e8c4a8;
+  --color-accent: #59682a;
+  --color-gold: #d6a84f;
+  --color-verified: #2f7d32;
   --color-warning: #b45309;
   --color-error: #b91c1c;
 
   --background: var(--color-bg);
-  --background-2: #f3efe6;
-  --background-3: #ebe6dc;
+  --background-2: #fff3e8;
+  --background-3: #fff0e4;
   --card: var(--color-card);
   --heading: var(--color-ink);
-  --text: var(--as-ink);
+  --text: #2a3836;
   --muted: var(--color-muted);
   --navy: var(--color-navy);
   --blue: var(--color-primary);
@@ -76,18 +56,18 @@
   --amber: var(--color-warning);
   --verified: var(--color-verified);
   --error: var(--color-error);
-  --blue-pale: var(--color-primary-soft);
+  --blue-pale: #ffe2d3;
   --amber-pale: #fffbeb;
-  --verified-pale: #e8f5ef;
+  --verified-pale: #edf7ed;
   --error-pale: #fef2f2;
-  --navy-pale: #f3efe6;
+  --navy-pale: #fff3e8;
   --border: var(--color-border);
   --ring: var(--color-primary);
-  --shadow: 0 16px 40px -16px rgba(7, 24, 38, 0.14);
-  --shadow-soft: 0 4px 16px -6px rgba(7, 24, 38, 0.08);
-  --shadow-lift: 0 20px 48px -20px rgba(7, 24, 38, 0.18);
-  --radius-card: 16px;
-  --radius-ui: 16px;
+  --shadow: 0 16px 40px -16px rgba(240, 74, 22, 0.12);
+  --shadow-soft: 0 4px 16px -6px rgba(240, 74, 22, 0.07);
+  --shadow-lift: 0 20px 48px -20px rgba(240, 74, 22, 0.16);
+  --radius-card: 20px;
+  --radius-ui: 14px;
   --radius-pill: 999px;
 }
 
@@ -146,7 +126,7 @@ body[data-high-contrast="on"] {
 }
 
 ::selection {
-  background: rgba(37, 99, 235, 0.18);
+  background: rgba(240, 74, 22, 0.18);
 }
 
 svg[data-as-icon="true"] {
@@ -230,18 +210,17 @@ svg[data-as-icon="true"] {
 }
 
 .premium-section-hero {
-  background: linear-gradient(180deg, #0b2233 0%, #071826 55%, #071826 100%);
-  color: #f8fafc;
+  background: linear-gradient(180deg, #ffe8d6 0%, #fff8f1 55%, #fff3e8 100%);
 }
 
 .premium-section-alt {
   background-color: var(--background-2);
-  border-top: 1px solid var(--as-border);
+  border-top: 1px solid var(--color-border);
 }
 
 .premium-section-panel {
   background-color: var(--background-3);
-  border-top: 1px solid var(--as-border);
+  border-top: 1px solid var(--color-border);
 }
 
 .section-band-warm {
@@ -258,15 +237,15 @@ svg[data-as-icon="true"] {
 }
 
 .nav-header {
-  background: rgba(248, 245, 238, 0.92);
-  border-bottom: 1px solid var(--as-border);
-  box-shadow: 0 1px 0 rgba(7, 24, 38, 0.04);
+  background: rgba(255, 248, 241, 0.92);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 1px 0 rgba(240, 74, 22, 0.04);
   backdrop-filter: blur(14px);
 }
 
 .footer-brand {
-  background: linear-gradient(180deg, #071826 0%, #041018 100%);
-  border-top: 1px solid rgba(212, 168, 79, 0.2);
+  background: linear-gradient(180deg, #102120 0%, #0a1615 100%);
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
 
 .footer-link {
@@ -295,7 +274,7 @@ svg[data-as-icon="true"] {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--as-blue-soft);
+  color: var(--color-primary);
 }
 
 .hero-badge {

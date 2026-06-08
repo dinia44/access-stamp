@@ -1,54 +1,45 @@
-import Link from "next/link";
+import Image from "next/image";
 import { AccessStampSearchBox } from "@/components/home/access-stamp-search-box";
-import { AccessReportPreview } from "@/components/access-report-preview";
-import {
-  AS_BTN_GHOST,
-  AS_BTN_SECONDARY,
-  AS_CONTAINER,
-  AS_HERO_DISPLAY,
-  AS_BODY,
-} from "@/lib/design-system";
+import { PlatformHeroGraphic } from "@/components/home/platform-hero-graphic";
+import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
+import { heroBackdropImageUrl } from "@/lib/cloudinary-url";
+
+const HERO_BACKDROP_SRC = heroBackdropImageUrl(CLOUDINARY_MEDIA.homepageHeroBackdrop);
 
 export function HomeHero() {
   return (
-    <section className="relative overflow-hidden bg-[#071826] pb-[clamp(4rem,8vw,6rem)] pt-8 text-white sm:pt-10">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-40"
-        aria-hidden
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 20% 20%, rgba(37,99,235,0.25) 0%, transparent 45%), radial-gradient(circle at 80% 0%, rgba(212,168,79,0.12) 0%, transparent 35%)",
-        }}
-      />
+    <section className="relative overflow-hidden bg-[#FFF8F1] pb-16 pt-8 text-[#13201F] sm:pb-20 sm:pt-10 lg:pb-24">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <Image
+          src={HERO_BACKDROP_SRC}
+          alt=""
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 72vw"
+          className="object-cover object-right-top"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#FFF8F1] from-25% via-[#FFF8F1]/75 via-45% to-transparent to-80% sm:from-30% lg:from-20% lg:via-[#FFF8F1]/55 lg:via-40%" />
+      </div>
 
-      <div className={`${AS_CONTAINER} relative`}>
-        <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] lg:gap-10">
-          <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#60A5FA]">UK accessibility platform</p>
-            <h1 className={`${AS_HERO_DISPLAY} mt-4 max-w-3xl font-[family-name:var(--font-heading)] text-white`}>
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-8 xl:gap-10">
+          <div className="relative z-20 min-w-0">
+            <h1 className="max-w-2xl font-[family-name:var(--font-heading)] text-[clamp(2.25rem,5vw,3.75rem)] font-normal leading-[1.04] tracking-[-0.03em] text-[#13201F]">
               Find accessible places with confidence.
             </h1>
-            <p className={`${AS_BODY} mt-5 max-w-xl text-[#CBD5E1]`}>
-              Search access-checked venues, read practical reports before you travel, and get AI-assisted planning
+
+            <p className="mt-5 max-w-xl text-lg leading-8 text-[#2A3836] sm:text-xl">
+              Search access-checked venues, ask our AI assistant, and plan visits with practical disability guidance
               built from lived experience.
             </p>
 
-            <div className="mt-8">
+            <div className="mt-8 lg:mt-10">
               <AccessStampSearchBox integrated />
-            </div>
-
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link href="/advice" className={AS_BTN_SECONDARY}>
-                Explore guides
-              </Link>
-              <Link href="/ai" className={`${AS_BTN_GHOST} text-[#93C5FD]`}>
-                Ask Access Stamp AI →
-              </Link>
             </div>
           </div>
 
-          <div className="hidden min-w-0 lg:block">
-            <AccessReportPreview variant="compact" showCta={false} />
+          <div className="relative z-10 min-w-0 lg:pt-2">
+            <PlatformHeroGraphic />
           </div>
         </div>
       </div>

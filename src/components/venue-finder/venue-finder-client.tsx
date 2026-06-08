@@ -16,7 +16,6 @@ import {
   type VenueFinderSearchState,
 } from "@/lib/venue-finder-params";
 import { VF_BTN_SECONDARY } from "@/lib/venue-finder-cro";
-import { AS_TRUST_STRIP } from "@/lib/design-system";
 import { VENUE_GRID_CLASS } from "@/lib/venue-grid-layout";
 import { VenueFinderActiveFiltersSummary } from "./venue-finder-active-filters";
 import { VenueFinderAiCard } from "./venue-finder-ai-card";
@@ -209,8 +208,8 @@ function VenueFinderInteractive({ venues, initial }: Props) {
 
       <VenueFinderHero />
 
-      <div className="bg-[#F8F5EE]">
-        <div className="px-4 sm:px-6">
+      <div className="bg-[#FFF3E8]">
+        <div className="px-4 sm:px-6 lg:px-8">
           <VenueFinderFloatingBox
             query={query}
             location={location}
@@ -225,7 +224,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
           />
         </div>
 
-        <div className="mx-auto max-w-[1180px] px-4 pb-28 pt-8 sm:px-6 lg:pb-8">
+        <div className="mx-auto max-w-7xl px-4 pb-28 pt-8 sm:px-6 lg:px-8 lg:pb-8">
           <div className="mb-8 hidden gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_420px]">
             <VenueFinderMapPanel
               venues={filtered}
@@ -277,11 +276,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
             </div>
 
             {filtered.length ? (
-              <>
-                <p className={`${AS_TRUST_STRIP} mt-6`}>
-                  Access details can change — always check before you travel.
-                </p>
-                <ul className={`mt-6 ${VENUE_GRID_CLASS}`}>
+              <ul className={`mt-6 ${VENUE_GRID_CLASS}`}>
                 {filtered.map((venue, index) => (
                   <VenueResultCard
                     key={venue.slug}
@@ -293,7 +288,6 @@ function VenueFinderInteractive({ venues, initial }: Props) {
                   />
                 ))}
               </ul>
-              </>
             ) : (
               <VenueFinderEmptyState />
             )}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AS_BTN_PRIMARY, AS_BTN_SECONDARY, AS_FOCUS } from "@/lib/design-system";
+import { SITE_BTN_PRIMARY, SITE_BTN_SECONDARY, SITE_FOCUS } from "@/lib/site-design";
 import { cn } from "@/lib/utils";
 
 export function Card({
@@ -44,7 +44,7 @@ export function Badge({
 }) {
   const resolved = tone === "amber" ? "warning" : tone;
   const toneClass: Record<BadgeTone, string> = {
-    blue: "bg-[#DBEAFE] text-[#1D4ED8] ring-1 ring-[rgba(16,32,51,0.08)]",
+    blue: "bg-[#FFE2D3] text-[#D93E10] ring-1 ring-[#F1D8C7]",
     navy: "bg-[#FFF3E8] text-[var(--color-ink)] ring-1 ring-[var(--color-border)]",
     neutral: "bg-[#FFF3E8] text-[var(--color-muted)] ring-1 ring-[var(--color-border)]",
     verified: "bg-[#EDF7ED] text-[#2F7D32] ring-1 ring-[#C8E6C9]",
@@ -84,15 +84,15 @@ export function Button({
   type?: "button" | "submit";
   disabled?: boolean;
 }) {
-  const base = `inline-flex min-h-[44px] items-center justify-center rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 ${AS_FOCUS}`;
+  const base = `inline-flex min-h-[44px] items-center justify-center rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 ${SITE_FOCUS}`;
   const v =
     variant === "primary"
-      ? AS_BTN_PRIMARY
+      ? SITE_BTN_PRIMARY
       : variant === "secondary"
-        ? AS_BTN_SECONDARY
+        ? SITE_BTN_SECONDARY
         : variant === "premium"
-          ? "bg-[#D4A84F] text-[#071826] hover:brightness-105 min-h-[48px] px-6 rounded-2xl font-semibold"
-          : "bg-transparent text-[#2563EB] hover:underline min-h-[44px] px-2 rounded-2xl font-semibold underline-offset-4";
+          ? "bg-gold text-[var(--color-navy)] hover:brightness-95"
+          : "bg-transparent text-[#F04A16] hover:bg-[#FFE2D3]";
 
   const cls = cn(base, v, disabled && "pointer-events-none opacity-60", className);
   if (href && !disabled) return <Link className={cls} href={href}>{children}</Link>;

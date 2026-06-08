@@ -1,13 +1,15 @@
 import { SetChatContext } from "@/components/chat/set-context";
-import { HomeAccessReportSection } from "@/components/home/home-access-report-section";
-import { HomeAiToolsPreview } from "@/components/home/home-ai-tools-preview";
-import { HomeFinalCta } from "@/components/home/home-final-cta";
-import { HomeHeader } from "@/components/home/home-header";
 import { HomeHero } from "@/components/home/home-hero";
+import { HomeHeader } from "@/components/home/home-header";
+import { HomeHeroGuidanceCta } from "@/components/home/home-hero-guidance-cta";
+import { HomeHowItWorks } from "@/components/home/home-how-it-works";
+import { HomeLivedExperience } from "@/components/home/home-lived-experience";
+import { HomePlanBeforeYouGo } from "@/components/home/home-plan-before-you-go";
 import { HomePopularGuides } from "@/components/home/home-popular-guides";
 import { HomePopularVenues } from "@/components/home/home-popular-venues";
-import { HomeProductPillars } from "@/components/home/home-product-pillars";
-import { HomeTrustSection } from "@/components/home/home-trust-section";
+import { HomeTrustStats } from "@/components/home/home-trust-stats";
+import { HomeUserJourneys } from "@/components/home/home-user-journeys";
+import { HomeWhatWeHelpWith } from "@/components/home/home-what-we-help-with";
 import { HOME_PAGE_SHELL } from "@/components/home/home-theme";
 
 /** Mostly static marketing homepage — revalidate hourly. */
@@ -20,13 +22,15 @@ export default function HomePage() {
 
       <HomeHeader />
       <HomeHero />
-      <HomeProductPillars />
-      <HomeAccessReportSection />
+      <HomeUserJourneys />
+      <HomeHeroGuidanceCta />
+      <HomeWhatWeHelpWith />
       <HomePopularGuides />
-      <HomeAiToolsPreview />
-      <HomeTrustSection />
+      <HomePlanBeforeYouGo />
+      <HomeHowItWorks />
+      <HomeLivedExperience />
+      <HomeTrustStats />
       <HomePopularVenues />
-      <HomeFinalCta />
     </div>
   );
 }
