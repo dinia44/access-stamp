@@ -7,6 +7,10 @@ const CLOUDINARY = "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_a
 const CLOUDINARY_BRAND = "https://res.cloudinary.com/dtl4syjuh/image/upload/q_auto/f_auto";
 
 export const CLOUDINARY_MEDIA = {
+  /** Access Stamp brand logo SVG */
+  siteLogo:
+    process.env.NEXT_PUBLIC_LOGO_URL?.trim() ||
+    "https://res.cloudinary.com/dtl4syjuh/image/upload/v1780925560/Access_Stamp_Svg_file_htakey.svg",
   /** Generic UK city hero for marketing backgrounds */
   cityHero:
     process.env.NEXT_PUBLIC_CLOUDINARY_CITY_HERO ??

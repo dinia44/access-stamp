@@ -1,14 +1,16 @@
+import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
+
 export type NavItem = { label: string; href: string };
 
-/** Local SVG wordmark — lightweight header/footer logo. Override with NEXT_PUBLIC_LOGO_URL if needed. */
+/** Access Stamp brand logo. Override with NEXT_PUBLIC_LOGO_URL if needed. */
 export const SITE_LOGO_SRC =
   typeof process.env.NEXT_PUBLIC_LOGO_URL === "string" && process.env.NEXT_PUBLIC_LOGO_URL.trim().length > 0
     ? process.env.NEXT_PUBLIC_LOGO_URL.trim()
-    : "/logo.svg";
+    : CLOUDINARY_MEDIA.siteLogo;
 
-/** Display dimensions for the SVG wordmark (viewBox 190×48). */
-export const SITE_LOGO_WIDTH = 190;
-export const SITE_LOGO_HEIGHT = 48;
+/** Intrinsic SVG dimensions (400×537) — layout constrains via max-height in header/footer. */
+export const SITE_LOGO_WIDTH = 400;
+export const SITE_LOGO_HEIGHT = 537;
 
 /** Access Stamp Venue Finder promo (16:9, Cloudinary). */
 export const VENUE_FINDER_PROMO_VIDEO_SRC =
