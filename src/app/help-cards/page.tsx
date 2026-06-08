@@ -1,9 +1,16 @@
 import Link from "next/link";
+import { Atkinson_Hyperlegible } from "next/font/google";
 import { HelpCardsHero } from "@/components/help-cards/help-cards-hero";
 import { HelpCardsHub } from "@/components/help-cards/help-cards-hub";
-import { Container } from "@/components/container";
+import { HC_BTN_GHOST, HC_CONTAINER, HC_NOTICE, HC_PAGE_BG } from "@/components/help-cards/help-cards-theme";
 import { SetChatContext } from "@/components/chat/set-context";
-import { SITE_FOCUS } from "@/lib/site-design";
+
+const helpCardsFont = Atkinson_Hyperlegible({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-help-cards",
+  display: "swap",
+});
 
 export default async function HelpCardsPage({
   searchParams,
@@ -15,35 +22,32 @@ export default async function HelpCardsPage({
   const concern = typeof concernRaw === "string" ? concernRaw : Array.isArray(concernRaw) ? concernRaw[0] : "";
 
   return (
-    <div className="bg-[#FFF8F1] text-[#13201F]">
+    <div className={`${HC_PAGE_BG} ${helpCardsFont.variable} font-[family-name:var(--font-help-cards),Inter,system-ui,sans-serif] text-[#17212b]`}>
       <SetChatContext page={{ kind: "none" }} />
-      <Container className="py-10 md:py-14 lg:py-16">
-        <div className="space-y-10 sm:space-y-12 md:space-y-14">
+      <div className={`${HC_CONTAINER} py-10 md:py-14 lg:py-16`}>
+        <div className="space-y-14 sm:space-y-16 lg:space-y-20">
           <HelpCardsHero />
 
-          <div className="rounded-2xl border border-[#F1D8C7] bg-white/80 p-5 sm:p-6">
-            <p className="text-base leading-7 text-[#2A3836]">
-              These cards are practical prompts, not legal advice. For formal legal disputes, use specialist support.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Link
-                href="/help-cards?concern=Equality%20Act%20rights"
-                className={`inline-flex min-h-[44px] items-center rounded-full border border-[#F1D8C7] bg-white px-4 text-sm font-semibold text-[#F04A16] transition-colors hover:border-[#E8C4A8] hover:bg-[#FFF3E8] ${SITE_FOCUS}`}
-              >
-                Equality Act cards
+          <div className={HC_NOTICE}>
+            <div className="flex items-start gap-3">
+              <span className="mt-1 inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-[#ef5b2a]" aria-hidden />
+              <p className="text-base leading-[1.65] text-[#17212b]">
+                These cards are practical prompts, not legal advice. For formal legal disputes, use specialist support.
+              </p>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2 sm:mt-0">
+              <Link href="/help-cards?concern=Equality%20Act%20rights" className={HC_BTN_GHOST}>
+                Equality Act cards →
               </Link>
-              <Link
-                href="/advice/rights"
-                className={`inline-flex min-h-[44px] items-center rounded-full border border-[#F1D8C7] bg-[#FFF3E8] px-4 text-sm font-semibold text-[#59682A] transition-colors hover:border-[#E8C4A8] ${SITE_FOCUS}`}
-              >
-                Rights advice hub
+              <Link href="/advice/rights" className={HC_BTN_GHOST}>
+                Rights advice hub →
               </Link>
             </div>
           </div>
 
           <HelpCardsHub initialConcern={concern} />
         </div>
-      </Container>
+      </div>
     </div>
   );
 }

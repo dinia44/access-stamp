@@ -4,7 +4,11 @@ import type { HelpCard } from "@/lib/help-cards";
 import { downloadHelpCardAsPng, printHelpCard } from "@/lib/help-card-png";
 import { useChat } from "@/components/chat/provider";
 import { cn } from "@/lib/utils";
-import { SITE_BTN_PRIMARY, SITE_BTN_SECONDARY, SITE_FOCUS } from "@/lib/site-design";
+import {
+  HC_BTN_GHOST,
+  HC_BTN_PRIMARY,
+  HC_BTN_SECONDARY,
+} from "@/components/help-cards/help-cards-theme";
 
 async function copyKeyLine(keyLine: string) {
   try {
@@ -27,20 +31,16 @@ export function HelpCardActions({
 
   return (
     <div className={cn("flex flex-col gap-3", className)}>
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          className={SITE_BTN_PRIMARY}
-          onClick={() => void downloadHelpCardAsPng(card)}
-        >
+      <div className="flex flex-wrap gap-3">
+        <button type="button" className={HC_BTN_PRIMARY} onClick={() => void downloadHelpCardAsPng(card)}>
           Save to phone
         </button>
-        <button type="button" className={SITE_BTN_SECONDARY} onClick={() => void printHelpCard(card)}>
+        <button type="button" className={HC_BTN_SECONDARY} onClick={() => void printHelpCard(card)}>
           Print
         </button>
         <button
           type="button"
-          className={SITE_BTN_SECONDARY}
+          className={HC_BTN_SECONDARY}
           onClick={() =>
             openChat({
               prefill: `Tailor this help card for me: ${card.title}. My situation is: `,
@@ -51,17 +51,14 @@ export function HelpCardActions({
         </button>
         <button
           type="button"
-          className={cn(
-            "inline-flex min-h-[44px] items-center rounded-2xl px-3 text-sm font-semibold text-[#F04A16] underline-offset-4 hover:underline",
-            SITE_FOCUS,
-          )}
+          className={cn(HC_BTN_GHOST, "text-[#ef5b2a] hover:text-[#d94d22]")}
           onClick={() => copyKeyLine(card.keyLine)}
         >
           Copy key line
         </button>
       </div>
       {showHelper ? (
-        <p className="text-sm text-[#5E6A66]">Downloads as a PNG image you can save to your phone or share.</p>
+        <p className="text-sm leading-relaxed text-[#5f6b76]">Downloads as a PNG image you can save to your phone or share.</p>
       ) : null}
     </div>
   );

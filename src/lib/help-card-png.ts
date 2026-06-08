@@ -13,7 +13,7 @@ export async function downloadHelpCardAsPng(card: HelpCard) {
   const dataUrl = await toPng(element, {
     pixelRatio: 2,
     cacheBust: true,
-    backgroundColor: "#FFF8F1",
+    backgroundColor: "#ffffff",
   });
 
   const a = document.createElement("a");
@@ -31,7 +31,7 @@ export async function printHelpCard(card: HelpCard) {
   const dataUrl = await toPng(element, {
     pixelRatio: 2,
     cacheBust: true,
-    backgroundColor: "#FFF8F1",
+    backgroundColor: "#ffffff",
   });
 
   const printWindow = window.open("", "_blank", "noopener,noreferrer,width=900,height=600");

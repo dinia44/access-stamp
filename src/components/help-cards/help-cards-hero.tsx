@@ -1,63 +1,66 @@
-import { FadeIn } from "@/components/fade-in";
-import { homeChipClass } from "@/components/home/home-theme";
+"use client";
 
-const BENEFITS = ["Save to phone", "Print and carry", "Tailor with AI"] as const;
+import { FadeIn } from "@/components/fade-in";
+import { HELP_CARDS } from "@/lib/help-cards";
+import { downloadHelpCardAsPng, printHelpCard } from "@/lib/help-card-png";
+import { useChat } from "@/components/chat/provider";
+import {
+  HC_BODY,
+  HC_BTN_PRIMARY,
+  HC_BTN_SECONDARY,
+  HC_EYEBROW,
+  HC_HERO_TITLE,
+  HC_MUTED,
+} from "@/components/help-cards/help-cards-theme";
+
+const FEATURED_SLUG = "job-interview-adjustments-card";
 
 function StackedCardsGraphic() {
   return (
-    <div className="relative mx-auto flex h-[280px] w-full max-w-md items-center justify-center sm:h-[320px] lg:max-w-none" aria-hidden>
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 400 320" fill="none">
-        <path d="M40 240 Q200 180 360 240" stroke="#F04A16" strokeOpacity="0.15" strokeWidth="2" strokeDasharray="6 8" />
-        <path d="M60 80 Q200 40 340 100" stroke="#59682A" strokeOpacity="0.12" strokeWidth="2" />
-        <circle cx="320" cy="60" r="4" fill="#F04A16" fillOpacity="0.35" />
-        <circle cx="80" cy="200" r="3" fill="#59682A" fillOpacity="0.35" />
-        <circle cx="360" cy="180" r="5" fill="#F04A16" fillOpacity="0.2" />
-      </svg>
+    <div className="relative mx-auto h-[340px] w-full max-w-lg sm:h-[380px]" aria-hidden>
+      <span className="absolute left-[6%] top-[10%] rounded-full border border-[#ead2bf] bg-white/90 px-3 py-1.5 text-xs font-bold text-[#17212b] shadow-md">
+        Save
+      </span>
+      <span className="absolute right-[8%] top-[18%] rounded-full border border-[#ead2bf] bg-white/90 px-3 py-1.5 text-xs font-bold text-[#17212b] shadow-md">
+        Print
+      </span>
+      <span className="absolute bottom-[16%] right-[12%] rounded-full border border-[#ead2bf] bg-white/90 px-3 py-1.5 text-xs font-bold text-[#17212b] shadow-md">
+        Tailor
+      </span>
 
-      <div className="absolute left-[8%] top-[18%] w-[58%] rotate-[-8deg] rounded-2xl border border-[#F1D8C7] bg-[#FFF3E8] p-4 shadow-[0_20px_50px_-20px_rgba(89,104,42,0.25)] transition-transform duration-500 motion-safe:hover:-translate-y-1">
-        <div className="h-1 w-12 rounded-full bg-[#59682A]/40" />
-        <div className="mt-3 space-y-2">
-          <div className="h-2 w-3/4 rounded bg-[#13201F]/10" />
-          <div className="h-2 w-1/2 rounded bg-[#13201F]/8" />
-        </div>
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          <div className="h-10 rounded-lg border border-[#F1D8C7] bg-white/70" />
-          <div className="h-10 rounded-lg border border-[#F1D8C7] bg-white/70" />
+      <div className="absolute left-[4%] top-[22%] w-[56%] rotate-[-7deg] rounded-[1.25rem] border border-[#ead2bf] bg-[#fffaf4] p-4 shadow-[0_20px_50px_rgba(53,30,12,0.1)]">
+        <div className="h-1.5 w-14 rounded-full bg-[#ead2bf]" />
+        <div className="mt-4 space-y-2">
+          <div className="h-2.5 w-4/5 rounded bg-[#17212b]/10" />
+          <div className="h-2.5 w-3/5 rounded bg-[#17212b]/8" />
         </div>
       </div>
 
-      <div className="absolute right-[6%] top-[28%] w-[54%] rotate-[6deg] rounded-2xl border border-[#F1D8C7] bg-white p-4 shadow-[0_24px_60px_-24px_rgba(240,74,22,0.2)] transition-transform duration-500 motion-safe:hover:-translate-y-1">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#F04A16]">Access Stamp</span>
-          <span className="rounded-full border border-[#F1D8C7] px-2 py-0.5 text-[9px] font-semibold text-[#5E6A66]">Help Card</span>
-        </div>
-        <p className="mt-2 text-sm font-bold text-[#13201F]">Interview access</p>
-        <div className="mt-3 h-px bg-gradient-to-r from-[#F04A16] to-transparent" />
-        <div className="mt-3 space-y-1.5">
-          <div className="flex gap-2">
-            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#F04A16]" />
-            <span className="text-[11px] text-[#2A3836]">Ask who owns adjustments</span>
-          </div>
-          <div className="flex gap-2">
-            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#F04A16]" />
-            <span className="text-[11px] text-[#2A3836]">Confirm step-free access</span>
-          </div>
-        </div>
+      <div className="absolute right-[2%] top-[32%] w-[52%] rotate-[5deg] rounded-[1.25rem] border border-[#f0c9b2] bg-white p-4 shadow-[0_24px_60px_rgba(53,30,12,0.12)]">
+        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#ef5b2a]">Access Stamp</p>
+        <p className="mt-1 text-sm font-bold text-[#17212b]">Care review card</p>
       </div>
 
-      <div className="absolute left-[22%] top-[8%] w-[62%] rotate-[-2deg] rounded-2xl border-2 border-[#F04A16]/30 bg-[#FFF8F1] p-4 shadow-[0_28px_70px_-28px_rgba(240,74,22,0.35)] ring-1 ring-[#F04A16]/10">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#FFE2D3] text-xs font-bold text-[#F04A16]">AS</div>
+      <div className="absolute left-[18%] top-[8%] w-[68%] rotate-[-1.5deg] rounded-[1.5rem] border border-[#f0c9b2] bg-white p-5 shadow-[0_28px_70px_rgba(53,30,12,0.14)]">
+        <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#F04A16]">Access Stamp</p>
-            <p className="text-[10px] font-semibold text-[#59682A]">Work • Interview</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#ef5b2a]">Access Stamp</p>
+            <p className="mt-0.5 text-[11px] font-semibold text-[#5f6b76]">Work / Interview</p>
           </div>
+          <span className="rounded-full border border-[#ead2bf] px-2.5 py-0.5 text-[10px] font-bold uppercase text-[#5f6b76]">
+            Help Card
+          </span>
         </div>
-        <p className="mt-3 text-base font-bold leading-snug text-[#13201F]">Help Card</p>
-        <p className="mt-1 text-xs text-[#5E6A66]">Save, print, or carry in meetings</p>
-        <div className="mt-3 flex gap-2">
-          <span className="rounded-full bg-[#FFE2D3] px-2.5 py-1 text-[10px] font-semibold text-[#D93E10]">PNG</span>
-          <span className="rounded-full border border-[#F1D8C7] bg-white px-2.5 py-1 text-[10px] font-semibold text-[#13201F]">Print</span>
+        <p className="mt-4 text-lg font-extrabold leading-tight text-[#17212b]">Job interview access card</p>
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <div className="rounded-lg border border-[#ead2bf]/80 bg-[#fffaf4] p-2">
+            <p className="text-[9px] font-bold uppercase text-[#ef5b2a]">Check once</p>
+            <p className="mt-1 text-[10px] leading-snug text-[#5f6b76]">Step-free route confirmed</p>
+          </div>
+          <div className="rounded-lg border border-[#ead2bf]/80 bg-[#fffaf4] p-2">
+            <p className="text-[9px] font-bold uppercase text-[#ef5b2a]">Key line</p>
+            <p className="mt-1 text-[10px] leading-snug text-[#5f6b76]">Reasonable adjustments…</p>
+          </div>
         </div>
       </div>
     </div>
@@ -65,32 +68,50 @@ function StackedCardsGraphic() {
 }
 
 export function HelpCardsHero() {
+  const { openChat } = useChat();
+  const featured = HELP_CARDS.find((c) => c.slug === FEATURED_SLUG) ?? HELP_CARDS[0];
+
   return (
     <FadeIn>
-      <section className="relative overflow-hidden rounded-3xl border border-[#F1D8C7] bg-gradient-to-br from-[#FFE8D6]/60 via-[#FFF8F1] to-[#FFF3E8] p-6 sm:p-8 md:p-10">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#F04A16]">Downloadable support tools</p>
-            <h1 className="mt-3 text-3xl font-bold tracking-[-0.03em] text-[#13201F] sm:text-4xl lg:text-[2.65rem] lg:leading-[1.1]">
-              Help cards you can{" "}
-              <span className="text-[#59682A]">save, print, and carry</span>
-            </h1>
-            <p className="mt-4 max-w-xl text-base leading-7 text-[#2A3836] sm:text-lg">
-              Pre-built cards for real-life access situations — work, travel, care, education, rights, and emergencies.
-              Save them to your phone, print them, or tailor them with AI.
-            </p>
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {BENEFITS.map((benefit) => (
-                <li key={benefit}>
-                  <span className={homeChipClass(false)}>{benefit}</span>
-                </li>
-              ))}
-            </ul>
+      <section className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <div>
+          <p className={HC_EYEBROW}>Downloadable support tools</p>
+          <h1 className={`${HC_HERO_TITLE} mt-4`}>Help cards you can save, print, and carry</h1>
+          <p className={`${HC_MUTED} mt-5 max-w-xl`}>
+            Pre-built cards for real-life access situations — work, travel, care, education, rights, and emergencies.
+            Save them to your phone, print them, or tailor them with AI.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <button type="button" className={HC_BTN_PRIMARY} onClick={() => void downloadHelpCardAsPng(featured)}>
+              Save to phone
+            </button>
+            <button type="button" className={HC_BTN_SECONDARY} onClick={() => void printHelpCard(featured)}>
+              Print and carry
+            </button>
+            <button
+              type="button"
+              className={HC_BTN_SECONDARY}
+              onClick={() =>
+                openChat({
+                  prefill: `Tailor this help card for me: ${featured.title}. My situation is: `,
+                })
+              }
+            >
+              Tailor with AI
+            </button>
           </div>
 
-          <div className="hidden sm:block">
-            <StackedCardsGraphic />
-          </div>
+          <p className={`${HC_BODY} mt-5 flex items-center gap-2 text-sm font-semibold text-[#17212b]`}>
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#ef5b2a]/15 text-[#ef5b2a]" aria-hidden>
+              ✓
+            </span>
+            Built for real conversations, not legal jargon.
+          </p>
+        </div>
+
+        <div className="hidden sm:block">
+          <StackedCardsGraphic />
         </div>
       </section>
     </FadeIn>
