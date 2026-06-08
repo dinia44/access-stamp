@@ -1,15 +1,20 @@
 import Link from "next/link";
 import { HomeFeaturedVenueCard } from "@/components/home/home-featured-venue-card";
-import { HOME_FEATURED_ACCESS_REPORTS } from "@/components/home/home-featured-venues-data";
+import {
+  HOME_FEATURED_ACCESS_REPORTS,
+  HOME_FEATURED_VENUE_LIMIT,
+} from "@/components/home/home-featured-venues-data";
+import { HOME_BTN_SECONDARY, HOME_SECTION_ALT } from "@/components/home/home-theme";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
-import { HOME_SECTION_ALT } from "@/components/home/home-theme";
 
 export function HomePopularVenues() {
   const bySlug = new Map(SAMPLE_VENUES.map((venue) => [venue.slug, venue]));
-  const featured = HOME_FEATURED_ACCESS_REPORTS.map((item) => ({
-    ...item,
-    venue: bySlug.get(item.slug),
-  })).filter((item) => item.venue);
+  const featured = HOME_FEATURED_ACCESS_REPORTS.slice(0, HOME_FEATURED_VENUE_LIMIT)
+    .map((item) => ({
+      ...item,
+      venue: bySlug.get(item.slug),
+    }))
+    .filter((item) => item.venue);
 
   return (
     <section className={`${HOME_SECTION_ALT} py-16 sm:py-20`} aria-labelledby="featured-reports-heading">
@@ -32,7 +37,7 @@ export function HomePopularVenues() {
         </div>
 
         <ul
-          className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
           aria-label={`${featured.length} featured access-checked venues`}
         >
           {featured.map((item, index) => (
@@ -47,6 +52,13 @@ export function HomePopularVenues() {
             />
           ))}
         </ul>
+
+        <div className="mt-10 flex justify-center">
+          <Link href="/venue-finder" className={`${HOME_BTN_SECONDARY} min-h-[48px] gap-2 px-8`}>
+            View all venues
+            <span aria-hidden>→</span>
+          </Link>
+        </div>
       </div>
     </section>
   );

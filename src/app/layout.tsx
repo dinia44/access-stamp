@@ -2,22 +2,24 @@ import type { Metadata } from "next";
 import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ChatProvider } from "@/components/chat/provider";
+import { ChatWidgetLoader } from "@/components/chat/chat-widget-loader";
 import { AccessibilityControls } from "@/components/accessibility-controls";
 import { Footer } from "@/components/footer";
 import { SiteChrome } from "@/components/site-chrome";
-import { ChatWidget } from "@/components/chat-widget";
 
 const heading = DM_Serif_Display({
   variable: "--font-heading",
   subsets: ["latin"],
   weight: ["400"],
   style: ["normal", "italic"],
+  display: "swap",
 });
 
 const body = Plus_Jakarta_Sans({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -63,7 +65,7 @@ export default function RootLayout({
           </SiteChrome>
           <Footer />
           <AccessibilityControls />
-          <ChatWidget />
+          <ChatWidgetLoader />
         </ChatProvider>
       </body>
     </html>

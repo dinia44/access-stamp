@@ -1,8 +1,6 @@
-"use client";
-
 import Link from "next/link";
-import { useChat } from "@/components/chat/provider";
-import { HOME_BTN_GHOST, HOME_BTN_SECONDARY, HOME_FOCUS } from "@/components/home/home-theme";
+import { HomeHeroGuidanceAskAi } from "@/components/home/home-hero-guidance-ask-ai";
+import { HOME_BTN_SECONDARY } from "@/components/home/home-theme";
 
 function BookIcon({ className }: { className?: string }) {
   return (
@@ -23,8 +21,6 @@ function ArrowIcon({ className }: { className?: string }) {
 }
 
 export function HomeHeroGuidanceCta() {
-  const { openChat } = useChat();
-
   return (
     <section className="relative z-20 -mt-4 px-4 pb-4 sm:px-6 lg:px-8" aria-labelledby="guidance-cta-heading">
       <div className="mx-auto max-w-7xl">
@@ -58,18 +54,7 @@ export function HomeHeroGuidanceCta() {
                 Explore disability guides
                 <ArrowIcon className="h-4 w-4" />
               </Link>
-              <button
-                type="button"
-                onClick={() =>
-                  openChat({
-                    prefill: "I need practical guidance on disability rights, travel, care, or equipment in the UK.",
-                  })
-                }
-                className={`${HOME_BTN_GHOST} gap-2 bg-white/80 hover:bg-white ${HOME_FOCUS}`}
-              >
-                Ask the AI
-                <ArrowIcon className="h-4 w-4" />
-              </button>
+              <HomeHeroGuidanceAskAi />
             </div>
           </div>
         </div>

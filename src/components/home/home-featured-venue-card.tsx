@@ -1,7 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Venue } from "@/lib/mock-data";
+import { venueCardImageUrl } from "@/lib/cloudinary-url";
 import { getVenuePhoto } from "@/lib/venue-access-score";
 import { getVenueFeatureChips, themeForVenueIndex } from "@/lib/venue-card-theme";
+
+export const VENUE_CARD_IMAGE_SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px";
 
 type Props = {
   venue: Venue;
@@ -47,6 +51,7 @@ function FeatureIcon({ icon, color }: { icon: ReturnType<typeof getVenueFeatureC
 
 export function HomeFeaturedVenueCard({ venue, displayName, city, scoreOverride, distance, index = 0 }: Props) {
   const photo = getVenuePhoto(venue);
+  const imageSrc = venueCardImageUrl(photo.src);
   const theme = themeForVenueIndex(index);
   const features = getVenueFeatureChips(venue).slice(0, 4);
   const href = `/venue/${venue.slug}`;
@@ -57,12 +62,14 @@ export function HomeFeaturedVenueCard({ venue, displayName, city, scoreOverride,
         href={href}
         className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#F1D8C7] bg-white shadow-lg shadow-[#F04A16]/[0.05] transition-all duration-200 hover:-translate-y-1 hover:border-[#E8C4A8] hover:shadow-xl hover:shadow-[#F04A16]/10 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-4"
       >
-        <div className="relative aspect-[4/3] overflow-hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={photo.src}
+        <div className="relative aspect-[16/9] overflow-hidden bg-[#FFF3E8]">
+          <Image
+            src={imageSrc}
             alt={photo.alt}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+            fill
+            sizes={VENUE_CARD_IMAGE_SIZES}
+            loading="lazy"
+            className="object-cover transition duration-300 group-hover:scale-[1.03]"
           />
           <span className="absolute left-3 top-3 inline-flex min-h-[28px] items-center rounded-full bg-[#59682A] px-2.5 text-xs font-bold text-white shadow-sm">
             {scoreOverride}%

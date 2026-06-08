@@ -1,5 +1,3 @@
-"use client";
-
 import { PremiumHeader } from "@/components/premium-header";
 
 export function HomeHeader() {

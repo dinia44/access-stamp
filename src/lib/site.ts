@@ -1,20 +1,14 @@
 export type NavItem = { label: string; href: string };
 
-/**
- * Cloudinary delivery URL for the Access Stamp wordmark (icon + stacked text).
- * Override with NEXT_PUBLIC_LOGO_URL if needed.
- */
-const CLOUDINARY_LOGO_URL =
-  "https://res.cloudinary.com/dtl4syjuh/image/upload/q_auto/f_auto/v1780836584/74aedab9-039b-4f0a-a776-9fc44a78bff2_removalai_preview_dm782o.png";
-
+/** Local SVG wordmark — lightweight header/footer logo. Override with NEXT_PUBLIC_LOGO_URL if needed. */
 export const SITE_LOGO_SRC =
   typeof process.env.NEXT_PUBLIC_LOGO_URL === "string" && process.env.NEXT_PUBLIC_LOGO_URL.trim().length > 0
     ? process.env.NEXT_PUBLIC_LOGO_URL.trim()
-    : CLOUDINARY_LOGO_URL;
+    : "/logo.svg";
 
-/** Intrinsic logo dimensions (1083×1453); layout uses max-height + auto width. */
-export const SITE_LOGO_WIDTH = 1083;
-export const SITE_LOGO_HEIGHT = 1453;
+/** Display dimensions for the SVG wordmark (viewBox 190×48). */
+export const SITE_LOGO_WIDTH = 190;
+export const SITE_LOGO_HEIGHT = 48;
 
 /** Access Stamp Venue Finder promo (16:9, Cloudinary). */
 export const VENUE_FINDER_PROMO_VIDEO_SRC =

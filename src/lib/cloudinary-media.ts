@@ -34,7 +34,7 @@ export const CLOUDINARY_MEDIA = {
   /** Accessible café / interior */
   accessibleInterior:
     process.env.NEXT_PUBLIC_CLOUDINARY_ACCESSIBLE_INTERIOR ??
-    "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1200&q=80",
+    `${CLOUDINARY_BRAND}/v1780855479/cozy_modern_cafe%CC%81_with_accessible_design_mkoc8u.png`,
   /** Accessible toilet */
   accessibleToilet:
     process.env.NEXT_PUBLIC_CLOUDINARY_ACCESSIBLE_TOILET ??
@@ -46,11 +46,11 @@ export const CLOUDINARY_MEDIA = {
   /** Placeholder when a venue has no photo */
   placeholderVenue:
     process.env.NEXT_PUBLIC_CLOUDINARY_PLACEHOLDER_VENUE ??
-    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
+    `${CLOUDINARY}/v1778070383/harbour-overview_xhnawl.png`,
   /** Empty state — no venues found */
   emptyState:
     process.env.NEXT_PUBLIC_CLOUDINARY_EMPTY_STATE ??
-    "https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=900&q=80",
+    `${CLOUDINARY_BRAND}/v1780855479/stylized_map_with_route_and_pins_gq6hdu.png`,
   /** Stylised static map preview for homepage teaser (not interactive) */
   staticMapPreview:
     process.env.NEXT_PUBLIC_CLOUDINARY_STATIC_MAP_PREVIEW ??

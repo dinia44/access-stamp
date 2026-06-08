@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
+import { heroCollageImageUrl } from "@/lib/cloudinary-url";
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -46,10 +48,16 @@ function ScoreRing() {
 function CollagePhoto({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return (
     <div
-      className={`overflow-hidden rounded-[16px] border-[4px] border-white bg-white shadow-[0_12px_32px_-16px_rgba(16,33,32,0.28)] ${className ?? ""}`}
+      className={`relative overflow-hidden rounded-[16px] border-[4px] border-white bg-[#FFF3E8] shadow-[0_12px_32px_-16px_rgba(16,33,32,0.28)] ${className ?? ""}`}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} className="h-full w-full object-cover" loading="lazy" />
+      <Image
+        src={heroCollageImageUrl(src)}
+        alt={alt}
+        fill
+        sizes="(max-width: 1024px) 40vw, 260px"
+        loading="lazy"
+        className="object-cover"
+      />
     </div>
   );
 }

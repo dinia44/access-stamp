@@ -1,17 +1,22 @@
+import Image from "next/image";
 import { AccessStampSearchBox } from "@/components/home/access-stamp-search-box";
 import { PlatformHeroGraphic } from "@/components/home/platform-hero-graphic";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
+import { heroBackdropImageUrl } from "@/lib/cloudinary-url";
+
+const HERO_BACKDROP_SRC = heroBackdropImageUrl(CLOUDINARY_MEDIA.homepageHeroBackdrop);
 
 export function HomeHero() {
   return (
     <section className="relative overflow-hidden bg-[#FFF8F1] pb-16 pt-8 text-[#13201F] sm:pb-20 sm:pt-10 lg:pb-24">
-      {/* Map backdrop — pins and routes in upper-right, fades to cream on the left */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={CLOUDINARY_MEDIA.homepageHeroBackdrop}
+        <Image
+          src={HERO_BACKDROP_SRC}
           alt=""
-          className="absolute right-0 top-0 h-full w-[115%] max-w-none object-cover object-right-top sm:w-[95%] lg:w-[78%] xl:w-[72%]"
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 72vw"
+          className="object-cover object-right-top"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#FFF8F1] from-25% via-[#FFF8F1]/75 via-45% to-transparent to-80% sm:from-30% lg:from-20% lg:via-[#FFF8F1]/55 lg:via-40%" />
       </div>

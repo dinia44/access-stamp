@@ -1,4 +1,4 @@
-/** Featured access-checked venues shown on the homepage. */
+/** Featured access-checked venues shown on the homepage (max 6). */
 export const HOME_FEATURED_ACCESS_REPORTS = [
   {
     slug: "harbour-kitchen-liverpool",
@@ -28,4 +28,20 @@ export const HOME_FEATURED_ACCESS_REPORTS = [
     score: 94,
     distance: "10 min drive",
   },
+  {
+    slug: "greenfield-shopping-village-leeds",
+    displayName: "Greenfield Shopping Village",
+    city: "Leeds",
+    score: 90,
+    distance: "6 min drive",
+  },
+  {
+    slug: "botanical-gardens-manchester",
+    displayName: "Botanical Gardens",
+    city: "Manchester",
+    score: 95,
+    distance: "9 min drive",
+  },
 ] as const;
+
+export const HOME_FEATURED_VENUE_LIMIT = 6 as const;

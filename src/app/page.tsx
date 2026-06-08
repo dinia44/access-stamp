@@ -8,6 +8,9 @@ import { HomePopularVenues } from "@/components/home/home-popular-venues";
 import { HomeTrustStats } from "@/components/home/home-trust-stats";
 import { HOME_PAGE_SHELL } from "@/components/home/home-theme";
 
+/** Mostly static marketing homepage — revalidate hourly. */
+export const revalidate = 3600;
+
 export default function HomePage() {
   return (
     <div className={HOME_PAGE_SHELL}>
