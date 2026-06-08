@@ -32,6 +32,30 @@ function defaultAiSuggestions(article: AdviceArticle): string[] {
   ];
 }
 
+function extractSectionBullets(article: AdviceArticle, h2Title: string): string[] {
+  const sections = article.sections;
+  const start = sections.findIndex((s) => s.type === "h2" && "text" in s && s.text === h2Title);
+  if (start === -1) return [];
+
+  const bullets: string[] = [];
+  for (let i = start + 1; i < sections.length; i += 1) {
+    const section = sections[i];
+    if (section.type === "h2") break;
+    if (section.type === "p" && "text" in section && section.text.trim()) {
+      bullets.push(section.text.trim());
+    }
+    if (bullets.length >= 3) break;
+  }
+  return bullets;
+}
+
+function previewForStep(article: AdviceArticle, title: string, index: number, excerpt: string): string {
+  const bullets = extractSectionBullets(article, title);
+  if (bullets[0]) return bullets[0];
+  if (index === 0) return excerpt;
+  return `Learn what ${title.toLowerCase()} means in practice and what to prepare before you move on.`;
+}
+
 function buildDefaultWorkflow(article: AdviceArticle): PracticalGuideWorkflow {
   const excerpt = article.excerpt ?? "Practical guidance for your situation.";
   const h2s = article.sections.filter((s) => s.type === "h2").map((s) => (s as { text: string }).text);
@@ -47,37 +71,60 @@ function buildDefaultWorkflow(article: AdviceArticle): PracticalGuideWorkflow {
           "Official links and next steps",
         ];
 
+  const outcomes = [
+    "You know what applies to your situation",
+    "You have the evidence and notes you need",
+    "You have taken the next practical action",
+    "You have wording you can adapt and send",
+    "You know what to do if things stall",
+    "You know where to check official guidance",
+  ];
+
   return {
     subtitle: "A practical, step-by-step guide with AI support",
     currentStep: 1,
     totalSteps: stepTitles.length,
     completedCount: 0,
-    steps: stepTitles.map((title, i) => ({
-      id: `step-${i + 1}`,
-      number: i + 1,
-      title,
-      preview: i === 0 ? excerpt : `Work through: ${title.toLowerCase()}.`,
-      outcome: `Outcome: step ${i + 1}`,
-      statusLabel: i === 0 ? "Start here" : "To do",
-      status: (i === 0 ? "active" : "upcoming") as GuideStep["status"],
-      content: {
-        intro: i === 0 ? excerpt : `This step covers ${title.toLowerCase()}.`,
-        whatThisMeans: [
-          "Focus on practical impact, not jargon.",
-          "Keep notes as you work through this step.",
-          "Use the checklist below before moving on.",
-        ],
-        checklist: [
-          "Have I read this step fully?",
-          "Do I understand what applies to me?",
-          "Do I know what evidence or wording I need?",
-          "Do I know what to do next if I get stuck?",
-        ],
-        example: article.excerpt ?? "Describe your situation in plain language, focusing on what is difficult and what would help.",
-        exampleLabel: "Example approach",
-        aiPrompt: `Help me with step ${i + 1}: ${title}`,
-      },
-    })),
+    steps: stepTitles.map((title, i) => {
+      const sectionBullets = extractSectionBullets(article, title);
+      const checklist =
+        sectionBullets.length >= 3
+          ? sectionBullets.slice(0, 4)
+          : [
+              `Understand how ${title.toLowerCase()} applies to you`,
+              "Note what evidence or wording you may need",
+              "Decide your next action before moving on",
+              "Use the example wording or ask the AI if stuck",
+            ];
+
+      return {
+        id: `step-${i + 1}`,
+        number: i + 1,
+        title,
+        preview: previewForStep(article, title, i, excerpt),
+        outcome: outcomes[i] ?? `You have completed: ${title.toLowerCase()}`,
+        statusLabel: i === 0 ? "Start here" : "To do",
+        status: (i === 0 ? "active" : "upcoming") as GuideStep["status"],
+        content: {
+          intro: sectionBullets[0] ?? (i === 0 ? excerpt : `This step covers ${title.toLowerCase()}.`),
+          whatThisMeans:
+            sectionBullets.length >= 2
+              ? sectionBullets.slice(0, 3)
+              : [
+                  "Focus on practical impact, not jargon.",
+                  "Keep notes as you work through this step.",
+                  "Use the checklist below before moving on.",
+                ],
+          checklist,
+          example:
+            sectionBullets[sectionBullets.length - 1] ??
+            article.excerpt ??
+            "Describe your situation in plain language, focusing on what is difficult and what would help.",
+          exampleLabel: "Example approach",
+          aiPrompt: `Help me with step ${i + 1}: ${title}`,
+        },
+      };
+    }),
     summary: [
       "Understand your rights and options",
       "Prepare evidence and wording",

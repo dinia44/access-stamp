@@ -49,9 +49,10 @@ const MYTHS = [
   },
 ] as const;
 
-const FAQ: { q: string; a: ReactNode }[] = [
+const FAQ: { q: string; preview: string; a: ReactNode }[] = [
   {
     q: "What counts as discrimination under the Equality Act?",
+    preview: "Covers direct discrimination, failure to make adjustments, harassment, and more — explained in plain English.",
     a: (
       <>
         Several types exist — including direct discrimination, discrimination arising from disability, indirect discrimination,
@@ -65,34 +66,41 @@ const FAQ: { q: string; a: ReactNode }[] = [
   },
   {
     q: "Who has to make reasonable adjustments?",
+    preview: "Employers, education providers, and services to the public — with context-specific rules.",
     a: "Employers, education providers, landlords in some situations, and organisations providing goods, facilities, and services to the public — with some specific rules per context.",
   },
   {
     q: "What evidence should I keep?",
+    preview: "Dates, names, emails, and a simple timeline — consistency matters more than perfect files.",
     a: "Dates, names, emails, screenshots of inaccessible booking pages, photos only where safe and appropriate, and a one-page timeline. You do not need perfect files — consistency beats polish.",
   },
   {
     q: "Can I complain about how a benefit assessment was done?",
+    preview: "Yes — reconsideration, appeals, and Equality Act arguments can all be relevant.",
     a: "Yes — mandatory reconsideration and appeals are the main benefit routes. Equality Act arguments can also matter if the assessment process itself put you at a substantial disadvantage and adjustments were refused.",
   },
   {
     q: "What if I am too exhausted to fight?",
+    preview: "Advocacy, trusted supporters, and formal routes can share the load — prioritise your health first.",
     a: "That is common. Advocacy services, trusted friends, MPs’ caseworkers (for some issues), and formal complaints can share the load. Prioritise safety and health first.",
   },
 ] as const;
 
-function DetailsFaq({ question, answer }: { question: string; answer: ReactNode }) {
+function DetailsFaq({ question, preview, answer }: { question: string; preview: string; answer: ReactNode }) {
   return (
-    <details className="group rounded-[var(--radius-card)] border border-border bg-card px-4 py-3">
-      <summary className="cursor-pointer list-none font-semibold text-heading [&::-webkit-details-marker]:hidden">
+    <details className="group rounded-[var(--radius-card)] border border-border bg-card px-4 py-3" open={false}>
+      <summary className="min-h-[44px] cursor-pointer list-none font-semibold text-heading [&::-webkit-details-marker]:hidden">
         <span className="flex items-start justify-between gap-2">
-          {question}
-          <span className="text-blue transition group-open:rotate-90" aria-hidden>
+          <span className="min-w-0">
+            <span className="block">{question}</span>
+            <span className="mt-1 block text-sm font-normal leading-6 text-muted">{preview}</span>
+          </span>
+          <span className="mt-1 text-blue transition group-open:rotate-90" aria-hidden>
             ›
           </span>
         </span>
       </summary>
-      <div className="mt-3 border-t border-border pt-3 text-sm text-muted">{answer}</div>
+      <div className="mt-3 border-t border-border pt-3 text-base leading-7 text-muted">{answer}</div>
     </details>
   );
 }
@@ -201,7 +209,7 @@ export function RightsEssentials() {
         </p>
         <div className="mt-4 flex max-w-3xl flex-col gap-2">
           {FAQ.map((item) => (
-            <DetailsFaq key={item.q} question={item.q} answer={item.a} />
+            <DetailsFaq key={item.q} question={item.q} preview={item.preview} answer={item.a} />
           ))}
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 
-export type NavItem = { label: string; href: string };
+export type NavItem = { label: string; href: string; description?: string };
 
 /** Access Stamp brand logo. Override with NEXT_PUBLIC_LOGO_URL if needed. */
 export const SITE_LOGO_SRC =
@@ -30,20 +30,44 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 /** Resources dropdown — grouped for homepage header */
-export type ResourceGroup = { label: string; items: NavItem[] };
+export type ResourceGroup = { label: string; description?: string; items: NavItem[] };
 
 export const RESOURCE_GROUPS: ResourceGroup[] = [
   {
     label: "AI Tools",
-    items: [{ label: "AI Toolkit", href: "/ai-toolkit" }],
+    description: "Practical AI helpers for planning, wording, and next steps.",
+    items: [
+      {
+        label: "AI Toolkit",
+        href: "/ai-toolkit",
+        description: "Ask Access Stamp for practical next steps and visit planning.",
+      },
+    ],
   },
   {
     label: "Reference",
+    description: "Quick reference tools, organisations, and rights guidance.",
     items: [
-      { label: "Help Cards", href: "/help-cards" },
-      { label: "Directory", href: "/directory" },
-      { label: "Glossary", href: "/glossary" },
-      { label: "Laws & Guidance", href: "/laws-guidance" },
+      {
+        label: "Help Cards",
+        href: "/help-cards",
+        description: "Create quick support summaries for carers, work, or services.",
+      },
+      {
+        label: "Directory",
+        href: "/directory",
+        description: "Find organisations and services that can help.",
+      },
+      {
+        label: "Glossary",
+        href: "/glossary",
+        description: "Understand disability and access terms in plain English.",
+      },
+      {
+        label: "Laws & Guidance",
+        href: "/laws-guidance",
+        description: "Learn your rights, duties, and where official guidance applies.",
+      },
     ],
   },
 ];

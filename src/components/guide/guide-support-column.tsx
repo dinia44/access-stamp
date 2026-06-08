@@ -41,7 +41,7 @@ export function GuideSupportColumn({ workflow, article, resources, onAskAi }: Gu
       <GuideSummaryCard title="Guide summary" items={summary} image={hero} />
 
       {downloads.length ? (
-        <section className="overflow-hidden rounded-2xl border border-[#F1D8C7] bg-white p-5 shadow-[var(--shadow-soft)]">
+        <section id="guide-templates" className="overflow-hidden rounded-2xl border border-[#F1D8C7] bg-white p-5 shadow-[var(--shadow-soft)]">
           <h2 className="text-sm font-bold text-heading">Helpful templates</h2>
           <div className="mt-3 space-y-2">
             {downloads.map((d) => (
@@ -66,7 +66,35 @@ export function GuideSupportColumn({ workflow, article, resources, onAskAi }: Gu
             />
           </div>
         </section>
-      ) : null}
+      ) : (
+        <section id="guide-templates" className="overflow-hidden rounded-2xl border border-[#F1D8C7] bg-white p-5 shadow-[var(--shadow-soft)]">
+          <h2 className="text-sm font-bold text-heading">Helpful templates</h2>
+          <p className="mt-2 text-sm leading-6 text-muted">
+            Use the step checklists in this guide, or ask the AI to draft wording for your situation.
+          </p>
+          <ul className="mt-4 space-y-2 text-sm text-text">
+            <li className="flex items-start gap-2">
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#59682A]" aria-hidden />
+              Copy example wording from any expanded step
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#59682A]" aria-hidden />
+              Use the practical checklist before moving on
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#59682A]" aria-hidden />
+              Ask the AI to tailor a letter or email
+            </li>
+          </ul>
+          <button
+            type="button"
+            onClick={onAskAi}
+            className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#59682A] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#45521F] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-2"
+          >
+            Ask the AI for template wording →
+          </button>
+        </section>
+      )}
 
       <GuideSummaryCard title="At a glance" items={workflow.atAGlance} variant="glance" />
 

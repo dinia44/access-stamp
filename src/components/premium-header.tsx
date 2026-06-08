@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GlobalSearch } from "@/components/global-search";
 import { SiteLogo } from "@/components/site-logo";
-import { MORE_ITEMS, NAV_ITEMS, RESOURCE_GROUPS } from "@/lib/site";
+import { NAV_ITEMS, RESOURCE_GROUPS } from "@/lib/site";
 import { SITE_BTN_PRIMARY, SITE_BTN_SECONDARY, SITE_FOCUS } from "@/lib/site-design";
 import { cn } from "@/lib/utils";
 
@@ -51,7 +51,6 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
     return () => document.removeEventListener("keydown", onEscape);
   }, []);
 
-  const allMobile = useMemo(() => [...NAV_ITEMS, ...MORE_ITEMS], []);
   const primaryCta =
     variant === "home"
       ? { href: "#platform-search", label: "Search accessible places →" }
@@ -93,7 +92,12 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
               );
             })}
 
-            <div className="relative" ref={resourcesRef}>
+            <div
+              className="relative"
+              ref={resourcesRef}
+              onMouseEnter={() => setResourcesOpen(true)}
+              onMouseLeave={() => setResourcesOpen(false)}
+            >
               <button
                 type="button"
                 className={cn(NAV_LINK, resourcesOpen && navActiveClass)}
@@ -107,25 +111,31 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
                 <div
                   role="menu"
                   aria-label="Resources"
-                  className="absolute right-0 mt-2 w-64 rounded-2xl border border-[#F1D8C7] bg-white p-3 shadow-xl shadow-[#F04A16]/10"
+                  className="absolute right-0 mt-2 w-[22rem] rounded-2xl border border-[#F1D8C7] bg-white p-3 shadow-xl shadow-[#F04A16]/10"
                 >
                   {RESOURCE_GROUPS.map((group, groupIndex) => (
                     <div
                       key={group.label}
                       className={groupIndex > 0 ? "mt-3 border-t border-[#F1D8C7] pt-3" : undefined}
                     >
-                      <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#5E6A66]">
+                      <p className="px-3 pb-0.5 text-xs font-semibold uppercase tracking-[0.08em] text-[#5E6A66]">
                         {group.label}
                       </p>
+                      {group.description ? (
+                        <p className="px-3 pb-2 text-xs leading-5 text-[#5E6A66]">{group.description}</p>
+                      ) : null}
                       {group.items.map((item) => (
                         <Link
                           key={item.href}
                           role="menuitem"
                           href={item.href}
-                          className={`block rounded-xl px-3 py-2.5 text-sm font-medium text-[#2A3836] transition-colors hover:bg-[#FFF3E8] hover:text-[#13201F] ${SITE_FOCUS}`}
+                          className={`block rounded-xl px-3 py-2.5 transition-colors hover:bg-[#FFF3E8] ${SITE_FOCUS}`}
                           onClick={closeMenus}
                         >
-                          {item.label}
+                          <span className="block text-sm font-semibold text-[#13201F]">{item.label}</span>
+                          {item.description ? (
+                            <span className="mt-0.5 block text-xs leading-5 text-[#5E6A66]">{item.description}</span>
+                          ) : null}
                         </Link>
                       ))}
                     </div>
@@ -172,11 +182,11 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
         {mobileOpen ? (
           <nav className="border-t border-[#F1D8C7] pb-4 pt-3 lg:hidden" aria-label="Mobile">
             <div className="grid gap-1 rounded-2xl border border-[#F1D8C7] bg-white p-2 shadow-lg shadow-[#F04A16]/5">
-              {allMobile.map((item) => {
+              {NAV_ITEMS.map((item) => {
                 const active = linkActive(path, item.href);
                 return (
                   <Link
-                    key={`${item.href}-${item.label}`}
+                    key={item.href}
                     href={item.href}
                     className={cn(
                       `rounded-xl px-3 py-2.5 text-sm font-medium text-[#2A3836] transition-colors hover:bg-[#FFF3E8] hover:text-[#13201F] ${SITE_FOCUS}`,
@@ -188,6 +198,37 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
                   </Link>
                 );
               })}
+
+              {RESOURCE_GROUPS.map((group) => (
+                <div key={group.label} className="mt-2 border-t border-[#F1D8C7] pt-2">
+                  <p className="px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#5E6A66]">
+                    {group.label}
+                  </p>
+                  {group.description ? (
+                    <p className="px-3 pb-1 text-xs leading-5 text-[#5E6A66]">{group.description}</p>
+                  ) : null}
+                  {group.items.map((item) => {
+                    const active = linkActive(path, item.href);
+                    return (
+                      <Link
+                        key={`mobile-${item.href}`}
+                        href={item.href}
+                        className={cn(
+                          `block rounded-xl px-3 py-2.5 transition-colors hover:bg-[#FFF3E8] ${SITE_FOCUS}`,
+                          active && navActiveClass,
+                        )}
+                        onClick={closeMenus}
+                      >
+                        <span className="block text-sm font-semibold text-[#13201F]">{item.label}</span>
+                        {item.description ? (
+                          <span className="mt-0.5 block text-xs leading-5 text-[#5E6A66]">{item.description}</span>
+                        ) : null}
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))}
+
               <Link href={primaryCta.href} className={`${SITE_BTN_PRIMARY} mt-2 w-full`} onClick={closeMenus}>
                 {primaryCta.label}
               </Link>

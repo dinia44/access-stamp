@@ -8,8 +8,11 @@ export function HomePopularGuides() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
           <h2 id="popular-guides-heading" className="text-3xl font-bold tracking-[-0.03em] text-[#13201F] sm:text-4xl">
-            Popular practical guides
+            Popular accessibility guides
           </h2>
+          <p className="mt-3 text-base leading-7 text-[#5E6A66]">
+            Each guide shows what it covers upfront — summaries, steps, and templates you can use straight away.
+          </p>
         </div>
 
         <div className="mt-10">

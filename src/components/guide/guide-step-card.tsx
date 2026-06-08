@@ -54,7 +54,15 @@ export function GuideStepCard({ step, expanded, onToggle, onAskAi }: GuideStepCa
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-sm font-bold text-heading">{step.title}</span>
-          <span className="mt-1 block text-xs leading-5 text-muted">{step.preview}</span>
+          <span className="mt-1 block text-sm leading-6 text-muted">{step.preview}</span>
+          <ul className="mt-3 space-y-1.5" aria-label="Step highlights">
+            {content.checklist.slice(0, 3).map((item) => (
+              <li key={item} className="flex items-start gap-2 text-xs leading-5 text-[#2A3836]">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#59682A]" aria-hidden />
+                {item}
+              </li>
+            ))}
+          </ul>
           <span className="mt-2 flex flex-wrap items-center gap-2">
             <span className="inline-flex rounded-full bg-[#FFF8F1] px-2 py-0.5 text-[10px] font-semibold text-[#59682A] ring-1 ring-[#F1D8C7]">
               {step.outcome}

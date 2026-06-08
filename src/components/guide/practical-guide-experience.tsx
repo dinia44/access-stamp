@@ -11,6 +11,7 @@ import { GuideAiSidebar } from "@/components/guide/guide-ai-sidebar";
 import { GuideBottomActionBar } from "@/components/guide/guide-bottom-action-bar";
 import { GuideFullGuideCta } from "@/components/guide/guide-full-guide-cta";
 import { GuideHeroHeader } from "@/components/guide/guide-hero-header";
+import { GuideOverviewSection } from "@/components/guide/guide-overview-section";
 import { GuideProgressStepper } from "@/components/guide/guide-progress-stepper";
 import { GuideScrollProgress } from "@/components/guide/guide-scroll-progress";
 import { GuideStepCard } from "@/components/guide/guide-step-card";
@@ -98,6 +99,14 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
           onStartGuide={startGuide}
           onListen={listenToGuide}
         />
+
+        <div className="mt-8">
+          <GuideOverviewSection
+            workflow={workflow}
+            categoryHref={workflow.learnMoreHref}
+            onAskAi={() => askAi()}
+          />
+        </div>
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px_300px] xl:gap-8">
           {/* Main column */}

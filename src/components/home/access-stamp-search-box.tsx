@@ -76,6 +76,12 @@ const AI_PROMPT_CHIPS = [
   "Explain PIP in plain English",
 ] as const;
 
+const ADVICE_TOPIC_CHIPS = [
+  { label: "Care support", href: "/advice/care" },
+  { label: "Workplace", href: "/advice/workplace" },
+  { label: "Education", href: "/advice/education" },
+] as const;
+
 type AccessStampSearchBoxProps = {
   integrated?: boolean;
 };
@@ -88,7 +94,6 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
   const [aiQuery, setAiQuery] = useState("");
   const [mode, setMode] = useState<SearchMode>("venue");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
 
   const isVenueSearch = mode === "venue";
   const isAiSearch = mode === "ai";
@@ -137,14 +142,6 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
     }
 
     handleAdviceSearch();
-  };
-
-  const handleMoreFilters = () => {
-    if (isVenueSearch) {
-      goToVenueFinder();
-      return;
-    }
-    router.push("/advice");
   };
 
   const panelClass = integrated
@@ -329,64 +326,52 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
       )}
 
       {isVenueSearch ? (
-        <div className="mt-5 flex flex-wrap gap-2">
-          {VENUE_CHIPS.map(({ label, key, href }) => {
-            if (href) {
+        <>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {VENUE_CHIPS.map(({ label, key, href }) => {
+              if (href) {
+                return (
+                  <button key={label} type="button" onClick={() => router.push(href)} className={homeChipClass(false)}>
+                    <ChipIcon label={label} />
+                    {label}
+                  </button>
+                );
+              }
+
+              const active = key ? selectedFilters.includes(key) : false;
               return (
-                <button key={label} type="button" onClick={() => router.push(href)} className={homeChipClass(false)}>
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => {
+                    if (!key) return;
+                    toggleFilter(key);
+                  }}
+                  aria-pressed={active}
+                  className={homeChipClass(active)}
+                >
                   <ChipIcon label={label} />
                   {label}
                 </button>
               );
-            }
+            })}
 
-            const active = key ? selectedFilters.includes(key) : false;
-            return (
-              <button
-                key={label}
-                type="button"
-                onClick={() => {
-                  if (!key) return;
-                  toggleFilter(key);
-                }}
-                aria-pressed={active}
-                className={homeChipClass(active)}
-              >
-                <ChipIcon label={label} />
-                {label}
-              </button>
-            );
-          })}
+            <button type="button" onClick={() => goToVenueFinder()} className={homeChipClass(false)}>
+              Search with selected filters
+            </button>
+          </div>
 
-          {moreFiltersOpen ? (
-            <>
-              <button type="button" onClick={() => router.push("/advice/care")} className={homeChipClass(false)}>
-                Care support
-              </button>
-              <button type="button" onClick={() => router.push("/advice/workplace")} className={homeChipClass(false)}>
-                Workplace
-              </button>
-              <button type="button" onClick={() => router.push("/advice/education")} className={homeChipClass(false)}>
-                Education
-              </button>
-            </>
-          ) : null}
-
-          <button
-            type="button"
-            onClick={() => {
-              if (moreFiltersOpen) {
-                handleMoreFilters();
-                return;
-              }
-              setMoreFiltersOpen(true);
-            }}
-            className={homeChipClass(false)}
-            aria-expanded={moreFiltersOpen}
-          >
-            {moreFiltersOpen ? "Search with filters" : "More filters"}
-          </button>
-        </div>
+          <div className="mt-4">
+            <p className="text-sm font-semibold text-[#2A3836]">Explore advice topics</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {ADVICE_TOPIC_CHIPS.map(({ label, href }) => (
+                <button key={label} type="button" onClick={() => router.push(href)} className={homeChipClass(false)}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
       ) : null}
 
       {!isAiSearch && !isVenueSearch ? (

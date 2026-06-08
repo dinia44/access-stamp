@@ -356,7 +356,17 @@ export default async function AdviceArticlePage({
                     })}
                   </ul>
                 ) : (
-                  <p className="mt-2 text-sm text-muted">More guides in this section are coming soon.</p>
+                  <p className="mt-2 text-base leading-7 text-muted">
+                    Browse more guides in{" "}
+                    <Link className="font-semibold text-blue hover:underline" href={`/advice/${a.categorySlug}`}>
+                      {categoryLabel}
+                    </Link>{" "}
+                    or explore the full{" "}
+                    <Link className="font-semibold text-blue hover:underline" href="/advice">
+                      Advice Hub
+                    </Link>
+                    .
+                  </p>
                 )}
                 <div className="mt-4">
                   <Link className="text-sm font-semibold text-blue hover:underline" href={`/advice/${a.categorySlug}`}>
