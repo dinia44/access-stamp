@@ -18,7 +18,7 @@ export async function downloadHelpCardAsPng(card: HelpCard) {
 
   const a = document.createElement("a");
   a.href = dataUrl;
-  a.download = `${slugifyFile(card.title)}.png`;
+  a.download = `access-stamp-${slugifyFile(card.title)}.png`;
   document.body.appendChild(a);
   a.click();
   a.remove();

@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { SITE_BTN_PRIMARY, SITE_BTN_SECONDARY, SITE_FOCUS } from "@/lib/site-design";
+import { Button as SharedButton } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { cn } from "@/lib/utils";
 
 export function Card({
@@ -67,6 +67,18 @@ export function Badge({
   );
 }
 
+export { Button as UiButton } from "@/components/ui/Button";
+export { ButtonLink } from "@/components/ui/ButtonLink";
+
+type LegacyButtonVariant = "primary" | "secondary" | "premium" | "ghost";
+
+function mapLinkVariant(variant: LegacyButtonVariant): "primary" | "secondary" | "ghost" {
+  if (variant === "ghost") return "ghost";
+  if (variant === "secondary") return "secondary";
+  return "primary";
+}
+
+/** @deprecated Prefer `@/components/ui/Button` or `ButtonLink` directly */
 export function Button({
   href,
   children,
@@ -78,27 +90,31 @@ export function Button({
 }: {
   href?: string;
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "premium" | "ghost";
+  variant?: LegacyButtonVariant;
   className?: string;
   onClick?: () => void | Promise<void>;
   type?: "button" | "submit";
   disabled?: boolean;
 }) {
-  const base = `inline-flex min-h-[44px] items-center justify-center rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 ${SITE_FOCUS}`;
-  const v =
-    variant === "primary"
-      ? SITE_BTN_PRIMARY
-      : variant === "secondary"
-        ? SITE_BTN_SECONDARY
-        : variant === "premium"
-          ? "bg-gold text-[var(--color-navy)] hover:brightness-95"
-          : "bg-transparent text-[#F04A16] hover:bg-[#FFE2D3]";
+  if (href && !disabled) {
+    return (
+      <ButtonLink href={href} variant={mapLinkVariant(variant)} className={className}>
+        {children}
+      </ButtonLink>
+    );
+  }
 
-  const cls = cn(base, v, disabled && "pointer-events-none opacity-60", className);
-  if (href && !disabled) return <Link className={cls} href={href}>{children}</Link>;
+  const mappedVariant = variant === "premium" ? "primary" : variant;
+
   return (
-    <button className={cls} type={type} onClick={onClick} disabled={disabled}>
+    <SharedButton
+      variant={mappedVariant as "primary" | "secondary" | "ghost"}
+      className={className}
+      onClick={onClick}
+      type={type}
+      disabled={disabled}
+    >
       {children}
-    </button>
+    </SharedButton>
   );
 }

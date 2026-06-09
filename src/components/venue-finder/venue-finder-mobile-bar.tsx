@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { Button } from "@/components/ui/Button";
 import { VenueFinderFilters } from "./venue-finder-filters";
-import { VF_BTN_PRIMARY } from "@/lib/venue-finder-cro";
 
 type Props = {
   open: boolean;
@@ -54,9 +54,9 @@ export function VenueFinderMobileBar({
           >
             Filters · {filterCount}
           </button>
-          <button type="button" className={`${VF_BTN_PRIMARY} min-h-11 flex-1`} onClick={onSearch}>
+          <Button type="button" className="min-h-11 flex-1" onClick={onSearch}>
             Search
-          </button>
+          </Button>
         </div>
       </div>
 

@@ -8,6 +8,7 @@
     "analyze": "ANALYZE=true next build --webpack",
     "start": "next start",
     "lint": "eslint",
+    "test:e2e": "playwright test",
     "studio": "sanity dev",
     "seed:cms": "tsx scripts/seed-sanity.ts",
     "generate:guide-docx": "node scripts/generate-guide-docx.mjs"
@@ -29,7 +30,9 @@
     "supercluster": "^8.0.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@next/bundle-analyzer": "^16.2.4",
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

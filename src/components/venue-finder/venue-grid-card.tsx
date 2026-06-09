@@ -148,8 +148,9 @@ export function VenueGridCard({
           </svg>
         </button>
 
-        <div className="absolute bottom-3 left-3">
+        <div className="absolute bottom-3 left-3" aria-label={`Access score ${score} percent`}>
           <ScoreRing score={score} color={theme.accent} />
+          <span className="sr-only">access score</span>
         </div>
       </div>
 
@@ -182,7 +183,7 @@ export function VenueGridCard({
         <div className="mt-auto flex gap-2 pt-5">
           <Link
             href={reportHref}
-            aria-label={`View details for ${venue.name}`}
+            aria-label={`View full details for ${venue.name}`}
             className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border px-3 text-sm font-bold transition-colors hover:bg-[#FFF3E8] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#59682A] focus-visible:outline-offset-4"
             style={{ borderColor: theme.accent, color: theme.accent }}
           >
@@ -201,6 +202,7 @@ export function VenueGridCard({
           <button
             type="button"
             onClick={onSelect}
+            aria-label={selected ? `${venue.name} selected on map` : `Show ${venue.name} on the map`}
             className="mt-2 min-h-11 text-sm font-semibold underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#FFE2D3]"
             style={{ color: theme.accent }}
           >

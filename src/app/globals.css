@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/motion.css";
 
 /*
  * Access Stamp — premium product design system
@@ -97,6 +99,23 @@
   --color-warning: var(--color-warning);
   --font-sans: var(--font-body);
   --font-heading: var(--font-body);
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+* {
+  min-width: 0;
 }
 
 body {
@@ -369,8 +388,17 @@ body[data-dyslexia-font="on"] {
 @media print {
   header,
   footer,
+  nav,
+  .no-print,
   .print\:hidden {
     display: none !important;
+  }
+
+  .print-card,
+  .help-card-print-area {
+    break-inside: avoid;
+    border: 1px solid #111 !important;
+    box-shadow: none !important;
   }
 
   body {

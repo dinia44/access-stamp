@@ -39,6 +39,17 @@ export type GuideOfficialLink = {
   href: string;
 };
 
+export type GuideFaq = {
+  id: string;
+  question: string;
+  explanation: string;
+  whatToDoNext?: string[];
+  exampleWording?: string;
+  evidenceChecklist?: string[];
+  relatedHelpCardHref?: string;
+  relatedHelpCardLabel?: string;
+};
+
 export type PracticalGuideWorkflow = {
   displayTitle?: string;
   subtitle: string;
@@ -58,6 +69,7 @@ export type PracticalGuideWorkflow = {
   aiDisclaimer: string;
   primaryCta: { label: string };
   learnMoreHref?: string;
+  faqs?: GuideFaq[];
 };
 
 export function step(

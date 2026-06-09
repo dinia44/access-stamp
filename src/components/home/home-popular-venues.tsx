@@ -4,7 +4,9 @@ import {
   HOME_FEATURED_ACCESS_REPORTS,
   HOME_FEATURED_VENUE_LIMIT,
 } from "@/components/home/home-featured-venues-data";
-import { HOME_BTN_SECONDARY, HOME_SECTION_ALT } from "@/components/home/home-theme";
+import { HOME_SECTION_ALT } from "@/components/home/home-theme";
+import { ButtonLink } from "@/components/ui/ButtonLink";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 
 export function HomePopularVenues() {
@@ -18,7 +20,7 @@ export function HomePopularVenues() {
 
   return (
     <section className={`${HOME_SECTION_ALT} py-16 sm:py-20`} aria-labelledby="featured-reports-heading">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <PageContainer>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#F04A16]">
@@ -54,12 +56,12 @@ export function HomePopularVenues() {
         </ul>
 
         <div className="mt-10 flex justify-center">
-          <Link href="/venue-finder" className={`${HOME_BTN_SECONDARY} min-h-[48px] gap-2 px-8`}>
+          <ButtonLink href="/venue-finder" variant="secondary" size="lg" aria-label="View all accessible venues">
             View all venues
             <span aria-hidden>→</span>
-          </Link>
+          </ButtonLink>
         </div>
-      </div>
+      </PageContainer>
     </section>
   );
 }

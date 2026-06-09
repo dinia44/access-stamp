@@ -4,6 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FadeIn } from "@/components/fade-in";
 import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
 import { Badge, Button, Card } from "@/components/ui";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { getAdviceArticles } from "@/lib/content/advice";
 
 export async function CategoryPage({
@@ -36,15 +37,17 @@ export async function CategoryPage({
         <FadeIn delayMs={100}>
           <Card className="p-6">
             <PageSectionTitle title="Browse by category" className="mb-4" />
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Browse guide categories">
               {tabs.map((t) => (
-                <a
+                <ButtonLink
                   key={t.label}
                   href={`#tab-${t.label.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="inline-flex min-h-[44px] items-center rounded-full border border-[#F1D8C7] bg-white px-4 text-sm font-semibold text-[#F04A16] transition-colors hover:border-[#E8C4A8] hover:bg-[#FFF3E8]"
+                  variant="chip"
+                  size="sm"
+                  aria-label={`Jump to ${t.label} guides`}
                 >
                   {t.label}
-                </a>
+                </ButtonLink>
               ))}
             </div>
 

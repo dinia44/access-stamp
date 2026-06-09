@@ -1,6 +1,7 @@
 "use client";
 
 import type { GuideStep } from "@/lib/guide-content/types";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 type GuideStepCardProps = {
@@ -186,13 +187,16 @@ export function GuideStepCard({ step, expanded, onToggle, onAskAi }: GuideStepCa
             <span className="font-bold text-[#92400E]">Ask the AI: </span>
             {content.aiPrompt}
           </p>
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="sm"
+            className="shrink-0"
             onClick={() => onAskAi?.(content.aiPrompt)}
-            className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-xl bg-[#59682A] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#45521F] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-2"
+            aria-label={`Ask Access Stamp AI about ${step.title}`}
           >
             Ask the AI →
-          </button>
+          </Button>
         </div>
       </div>
     </article>

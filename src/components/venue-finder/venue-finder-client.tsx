@@ -23,6 +23,7 @@ import { VenueFinderFloatingBox } from "./venue-finder-floating-box";
 import { VenueFinderHero } from "./venue-finder-hero";
 import { VenueFinderMapPanel } from "./venue-finder-map-panel";
 import { VenueFinderMobileBar } from "./venue-finder-mobile-bar";
+import { VenueFinderFilters } from "./venue-finder-filters";
 import { VenueFinderSidebar } from "./venue-finder-sidebar";
 import { VenueResultCard } from "./venue-result-card";
 
@@ -88,6 +89,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   const [mapCenter, setMapCenter] = useState<VenueCoordinates | null>(initial.center ?? null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [locating, setLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -168,8 +170,12 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   }, []);
 
   const handleUseLocation = useCallback(() => {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) {
+      setLocationError("Location is not supported in this browser. Search by postcode instead.");
+      return;
+    }
     setLocating(true);
+    setLocationError(null);
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const coords = {
@@ -179,8 +185,12 @@ function VenueFinderInteractive({ venues, initial }: Props) {
         setLocation(`${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`);
         setMapCenter(coords);
         setLocating(false);
+        setLocationError(null);
       },
-      () => setLocating(false),
+      () => {
+        setLocating(false);
+        setLocationError("Location access was blocked. Search by postcode instead.");
+      },
       { timeout: 8000 },
     );
   }, []);
@@ -215,8 +225,12 @@ function VenueFinderInteractive({ venues, initial }: Props) {
             location={location}
             selectedFilters={selectedFilters}
             locating={locating}
+            locationError={locationError}
             onQueryChange={setQuery}
-            onLocationChange={setLocation}
+            onLocationChange={(value) => {
+              setLocation(value);
+              if (locationError) setLocationError(null);
+            }}
             onToggleFilter={toggleFilter}
             onSearch={handleSearch}
             onUseLocation={handleUseLocation}
@@ -225,49 +239,65 @@ function VenueFinderInteractive({ venues, initial }: Props) {
         </div>
 
         <div className="mx-auto max-w-7xl px-4 pb-28 pt-8 sm:px-6 lg:px-8 lg:pb-8">
-          <div className="mb-8 hidden gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_420px]">
-            <VenueFinderMapPanel
-              venues={filtered}
-              locationLabel={location}
-              selectedSlug={selectedSlug}
-              mapCenter={mapCenter}
-              onSelectVenue={setSelectedSlug}
-              onUserLocation={handleUserLocation}
-              mapHeightClass="h-[360px]"
-            />
-            <div className="space-y-4">
+          <div className="grid gap-8 lg:grid-cols-[360px_minmax(0,1fr)]">
+            <aside className="hidden space-y-4 lg:sticky lg:top-24 lg:block lg:self-start" aria-label="Search and filters">
+              <VenueFinderFilters
+                selectedFilters={selectedFilters}
+                onToggleFilter={toggleFilter}
+                onClearFilters={clearFilters}
+                idPrefix="vf-sidebar"
+              />
               <VenueFinderSidebar venues={filtered} location={location} />
               <VenueFinderAiCard prefill={aiPrefill} />
-            </div>
-          </div>
+            </aside>
 
-          <section
-            ref={resultsRef}
-            id="venue-results"
-            aria-labelledby="venue-results-heading"
-            aria-busy="false"
-          >
-            <div className="mb-6 lg:hidden">
-              <VenueFinderMapPanel
-                venues={filtered}
-                locationLabel={location}
-                selectedSlug={selectedSlug}
-                mapCenter={mapCenter}
-                onSelectVenue={setSelectedSlug}
-                onUserLocation={handleUserLocation}
-              />
-            </div>
+            <div className="space-y-6">
+              <div className="hidden lg:block">
+                <VenueFinderMapPanel
+                  venues={filtered}
+                  locationLabel={location}
+                  selectedSlug={selectedSlug}
+                  mapCenter={mapCenter}
+                  onSelectVenue={setSelectedSlug}
+                  onUserLocation={handleUserLocation}
+                  mapHeightClass="h-[360px]"
+                />
+              </div>
 
-            <div>
+              <section
+                ref={resultsRef}
+                id="venue-results"
+                aria-labelledby="venue-results-heading"
+                aria-busy="false"
+              >
+                <div className="mb-6 lg:hidden">
+                  <VenueFinderMapPanel
+                    venues={filtered}
+                    locationLabel={location}
+                    selectedSlug={selectedSlug}
+                    mapCenter={mapCenter}
+                    onSelectVenue={setSelectedSlug}
+                    onUserLocation={handleUserLocation}
+                  />
+                </div>
+
+                <div>
               <h2
                 id="venue-results-heading"
                 className="text-2xl font-bold tracking-[-0.025em] leading-[1.15] text-[#13201F] sm:text-3xl"
               >
                 {resultsHeading}
               </h2>
-              <p className="mt-1 text-base leading-7 text-[#5E6A66]" aria-live="polite" aria-atomic="true">
-                {filtered.length} venue{filtered.length === 1 ? "" : "s"}
-                {location.trim() ? ` · ${location.trim()}` : ""}
+              <p
+                role="status"
+                className="mt-1 text-base leading-7 text-[#5E6A66]"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {locating
+                  ? "Finding your location…"
+                  : `${filtered.length} ${filtered.length === 1 ? "venue" : "venues"} match your search`}
+                {location.trim() && !locating ? ` · ${location.trim()}` : ""}
               </p>
               <VenueFinderActiveFiltersSummary
                 selectedFilters={selectedFilters}
@@ -292,10 +322,12 @@ function VenueFinderInteractive({ venues, initial }: Props) {
               <VenueFinderEmptyState />
             )}
 
-            <div className="mt-8 lg:hidden">
-              <VenueFinderAiCard prefill={aiPrefill} />
+                <div className="mt-8 lg:hidden">
+                  <VenueFinderAiCard prefill={aiPrefill} />
+                </div>
+              </section>
             </div>
-          </section>
+          </div>
         </div>
       </div>
 

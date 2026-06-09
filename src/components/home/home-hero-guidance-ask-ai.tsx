@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "@/components/chat/provider";
-import { HOME_BTN_GHOST, HOME_FOCUS } from "@/components/home/home-theme";
+import { Button } from "@/components/ui/Button";
 
 function ArrowIcon({ className }: { className?: string }) {
   return (
@@ -15,17 +15,19 @@ export function HomeHeroGuidanceAskAi() {
   const { openChat } = useChat();
 
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
+      className="gap-2 bg-white/80 hover:bg-white"
+      aria-label="Ask Access Stamp AI for practical guidance"
       onClick={() =>
         openChat({
           prefill: "I need practical guidance on disability rights, travel, care, or equipment in the UK.",
         })
       }
-      className={`${HOME_BTN_GHOST} gap-2 bg-white/80 hover:bg-white ${HOME_FOCUS}`}
     >
       Ask the AI
-      <ArrowIcon className="h-4 w-4" />
-    </button>
+      <ArrowIcon className="h-4 w-4" aria-hidden="true" />
+    </Button>
   );
 }

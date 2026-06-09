@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { HOME_BTN_SECONDARY, HOME_FOCUS, HOME_PANEL, HOME_SECTION } from "@/components/home/home-theme";
+import { HOME_FOCUS, HOME_PANEL, HOME_SECTION } from "@/components/home/home-theme";
+import { ButtonLink } from "@/components/ui/ButtonLink";
+import { PageContainer } from "@/components/layout/PageContainer";
 
 const PLAN_TOOLS = [
   {
@@ -28,7 +30,7 @@ const PLAN_TOOLS = [
 export function HomePlanBeforeYouGo() {
   return (
     <section className={`${HOME_SECTION} bg-[#FFF8F1] py-16 sm:py-20`} aria-labelledby="plan-before-heading">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <PageContainer>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#F04A16]">Plan before you go</p>
@@ -39,9 +41,9 @@ export function HomePlanBeforeYouGo() {
               Use these before visiting somewhere new — each tool shows what it covers without opening a hidden menu.
             </p>
           </div>
-          <Link href="/ai-toolkit" className={`${HOME_BTN_SECONDARY} shrink-0 ${HOME_FOCUS}`}>
+          <ButtonLink href="/ai-toolkit" variant="secondary" className="shrink-0" aria-label="View all AI planning tools">
             View all AI tools
-          </Link>
+          </ButtonLink>
         </div>
 
         <ul className="mt-10 grid gap-5 lg:grid-cols-3">
@@ -68,7 +70,7 @@ export function HomePlanBeforeYouGo() {
             </li>
           ))}
         </ul>
-      </div>
+      </PageContainer>
     </section>
   );
 }

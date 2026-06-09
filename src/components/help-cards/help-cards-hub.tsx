@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FadeIn } from "@/components/fade-in";
 import { HelpCardAccessibleContent } from "@/components/help-cards/help-card-accessible-content";
 import { HelpCardActions } from "@/components/help-cards/help-card-actions";
+import { HelpCardQuickActions } from "@/components/help-cards/help-card-quick-actions";
 import { HelpCardPreview } from "@/components/help-cards/help-card-preview";
 import { HelpCardsHowItWorks } from "@/components/help-cards/help-cards-how-it-works";
 import {
@@ -23,7 +24,6 @@ import {
   hcChipClass,
 } from "@/components/help-cards/help-cards-theme";
 import { HELP_CARDS, HELP_CARD_CONCERNS, type HelpCard } from "@/lib/help-cards";
-import { downloadHelpCardAsPng, printHelpCard } from "@/lib/help-card-png";
 
 const CATEGORIES = ["All", "Driving", "Work", "Education", "Travel", "Care", "Rights", "Emergency"] as const;
 const FEATURED_SLUG = "job-interview-adjustments-card";
@@ -222,25 +222,15 @@ export function HelpCardsHub({ initialConcern = "" }: { initialConcern?: string 
                   ))}
                 </ul>
                 <div className="mt-auto flex flex-wrap items-center gap-2 pt-5">
-                  <button type="button" className={HC_BTN_PRIMARY} onClick={() => openCard(card.slug)}>
+                  <button
+                    type="button"
+                    className={HC_BTN_PRIMARY}
+                    aria-label={`Open ${card.title}`}
+                    onClick={() => openCard(card.slug)}
+                  >
                     Open card →
                   </button>
-                  <button
-                    type="button"
-                    className={HC_BTN_SECONDARY}
-                    aria-label={`Save ${card.title} to phone`}
-                    onClick={() => void downloadHelpCardAsPng(card)}
-                  >
-                    Save
-                  </button>
-                  <button
-                    type="button"
-                    className={HC_BTN_SECONDARY}
-                    aria-label={`Print ${card.title}`}
-                    onClick={() => void printHelpCard(card)}
-                  >
-                    Print
-                  </button>
+                  <HelpCardQuickActions card={card} />
                 </div>
               </article>
             ))}

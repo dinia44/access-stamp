@@ -1,5 +1,6 @@
 import type { AdviceArticle } from "@/lib/content/types";
 import { ACCESS_TO_WORK_WORKFLOW } from "@/lib/guide-content/access-to-work";
+import { getGuideFaqs } from "@/lib/guide-content/guide-faqs";
 import { REASONABLE_ADJUSTMENTS_WORKFLOW } from "@/lib/guide-content/reasonable-adjustments-at-work";
 import type { PracticalGuideWorkflow, GuideStep } from "@/lib/guide-content/types";
 import { PRACTICAL_GUIDE_ARTICLES } from "@/lib/practical-guides-articles";
@@ -151,6 +152,7 @@ function buildDefaultWorkflow(article: AdviceArticle): PracticalGuideWorkflow {
 
 export function getPracticalGuideWorkflow(article: AdviceArticle): PracticalGuideWorkflow {
   const override = WORKFLOW_OVERRIDES[article.slug];
-  if (override) return override;
-  return buildDefaultWorkflow(article);
+  const base = override ?? buildDefaultWorkflow(article);
+  const faqs = base.faqs?.length ? base.faqs : getGuideFaqs(article);
+  return faqs.length ? { ...base, faqs } : base;
 }

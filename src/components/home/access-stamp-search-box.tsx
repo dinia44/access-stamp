@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useChat } from "@/components/chat/provider";
 import { searchAccessStamp } from "@/data/searchIndex";
+import { Button } from "@/components/ui/Button";
 import {
-  HOME_BTN_PRIMARY,
   HOME_GLASS_PANEL,
   HOME_INPUT,
   homeChipClass,
@@ -231,17 +231,18 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
               }}
             />
 
-            <button
+            <Button
               type="button"
+              className="mt-4 w-full sm:w-auto"
+              aria-label="Ask the AI Access Assistant"
               onClick={() =>
                 openChat({
                   prefill: aiQuery.trim() || "Help me with a practical accessibility question for the UK.",
                 })
               }
-              className={`${HOME_BTN_PRIMARY} mt-4 w-full sm:w-auto`}
             >
               Ask the AI Access Assistant
-            </button>
+            </Button>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -309,18 +310,18 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
 
             {!isVenueSearch ? (
               <div className="flex items-end">
-                <button type="submit" className={`${HOME_BTN_PRIMARY} w-full lg:min-w-[200px]`}>
+                <Button type="submit" className="w-full lg:min-w-[200px]">
                   Get advice
-                </button>
+                </Button>
               </div>
             ) : null}
           </div>
 
           {isVenueSearch ? (
-            <button type="submit" className={`${HOME_BTN_PRIMARY} mt-4 w-full`}>
+            <Button type="submit" className="mt-4 w-full" aria-label="Search accessible places">
               Search accessible places
               <span aria-hidden>→</span>
-            </button>
+            </Button>
           ) : null}
         </form>
       )}

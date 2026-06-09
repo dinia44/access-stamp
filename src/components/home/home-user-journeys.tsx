@@ -1,5 +1,6 @@
-import Link from "next/link";
-import { HOME_FOCUS, HOME_SECTION } from "@/components/home/home-theme";
+import { ButtonLink } from "@/components/ui/ButtonLink";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { HOME_SECTION } from "@/components/home/home-theme";
 
 const JOURNEYS = [
   {
@@ -34,7 +35,7 @@ const JOURNEYS = [
 export function HomeUserJourneys() {
   return (
     <section className={`${HOME_SECTION} bg-[#13201F] py-12 sm:py-14`} aria-labelledby="user-journeys-heading">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <PageContainer>
         <div className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#22D3EE]">Start here</p>
           <h2 id="user-journeys-heading" className="mt-2 text-2xl font-bold tracking-[-0.03em] text-white sm:text-3xl">
@@ -60,18 +61,15 @@ export function HomeUserJourneys() {
                   ))}
                 </ul>
                 <div className="mt-auto pt-6">
-                  <Link
-                    href={journey.href}
-                    className={`inline-flex min-h-[44px] w-full items-center justify-center rounded-2xl bg-[#F04A16] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#D93E10] ${HOME_FOCUS}`}
-                  >
+                  <ButtonLink href={journey.href} className="w-full" aria-label={journey.cta}>
                     {journey.cta}
-                  </Link>
+                  </ButtonLink>
                 </div>
               </article>
             </li>
           ))}
         </ul>
-      </div>
+      </PageContainer>
     </section>
   );
 }

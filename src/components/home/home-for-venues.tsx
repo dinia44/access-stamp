@@ -1,10 +1,11 @@
-import Link from "next/link";
-import { HOME_BTN_GHOST, HOME_BTN_PRIMARY, HOME_SECTION_ALT } from "@/components/home/home-theme";
+import { ButtonLink } from "@/components/ui/ButtonLink";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { HOME_SECTION_ALT } from "@/components/home/home-theme";
 
 export function HomeForVenues() {
   return (
     <section className={HOME_SECTION_ALT} aria-labelledby="for-venues-heading">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <PageContainer>
         <div className="relative overflow-hidden rounded-3xl border border-[#E8C4A8]/50 bg-gradient-to-br from-[#FFE2D3] via-[#FFF3E8] to-white text-[#13201F] shadow-xl shadow-[#F04A16]/10">
           <div
             className="pointer-events-none absolute inset-0 opacity-50"
@@ -24,17 +25,17 @@ export function HomeForVenues() {
                 your venue describes step-free routes, toilets, parking and staff support.
               </p>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <Link href="/submit-venue" className={HOME_BTN_PRIMARY}>
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:flex-col">
+              <ButtonLink href="/submit-venue" aria-label="Suggest a venue for listing">
                 Suggest a venue
-              </Link>
-              <Link href="/ai-toolkit/venue-questions" className={HOME_BTN_GHOST}>
+              </ButtonLink>
+              <ButtonLink href="/ai-toolkit/venue-questions" variant="ghost" aria-label="Open venue access checklist">
                 Venue access checklist
-              </Link>
+              </ButtonLink>
             </div>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </section>
   );
 }

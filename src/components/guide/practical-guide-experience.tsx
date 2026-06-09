@@ -9,6 +9,7 @@ import type { PracticalGuideWorkflow } from "@/lib/practical-guide";
 import { useChat } from "@/components/chat/provider";
 import { GuideAiSidebar } from "@/components/guide/guide-ai-sidebar";
 import { GuideBottomActionBar } from "@/components/guide/guide-bottom-action-bar";
+import { GuideFaqSection } from "@/components/guide/guide-faq-section";
 import { GuideFullGuideCta } from "@/components/guide/guide-full-guide-cta";
 import { GuideHeroHeader } from "@/components/guide/guide-hero-header";
 import { GuideOverviewSection } from "@/components/guide/guide-overview-section";
@@ -16,6 +17,7 @@ import { GuideProgressStepper } from "@/components/guide/guide-progress-stepper"
 import { GuideScrollProgress } from "@/components/guide/guide-scroll-progress";
 import { GuideStepCard } from "@/components/guide/guide-step-card";
 import { GuideSupportColumn } from "@/components/guide/guide-support-column";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 type PracticalGuideExperienceProps = {
@@ -108,6 +110,12 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
           />
         </div>
 
+        {workflow.faqs?.length ? (
+          <div className="mt-8">
+            <GuideFaqSection faqs={workflow.faqs} headingId={`guide-faq-${article.slug}`} />
+          </div>
+        ) : null}
+
         <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px_300px] xl:gap-8">
           {/* Main column */}
           <div className="min-w-0 space-y-5 xl:col-span-1">
@@ -170,13 +178,16 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
         {/* Mobile AI toggle */}
         <div className="mt-4 xl:hidden">
           {!aiPanelOpen ? (
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="lg"
+              className="w-full"
               onClick={() => setAiPanelOpen(true)}
-              className="flex w-full min-h-[52px] items-center justify-center gap-2 rounded-2xl border border-[#F1D8C7] bg-white px-4 text-sm font-semibold text-heading shadow-[var(--shadow-soft)] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-2"
+              aria-label="Open Access Stamp AI assistant for this guide"
             >
               <span aria-hidden>✦</span> Open Access Stamp AI
-            </button>
+            </Button>
           ) : null}
         </div>
       </div>

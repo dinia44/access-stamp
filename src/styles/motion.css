@@ -1,0 +1,23 @@
+:root {
+  --as-duration-fast: 120ms;
+  --as-duration-base: 180ms;
+  --as-duration-slow: 260ms;
+  --as-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.as-transition {
+  transition-property: color, background-color, border-color, opacity, transform, box-shadow;
+  transition-duration: var(--as-duration-base);
+  transition-timing-function: var(--as-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}

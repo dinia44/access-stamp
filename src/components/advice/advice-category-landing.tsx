@@ -3,6 +3,7 @@ import { AdviceManualCard } from "@/components/advice/advice-manual-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
 import { Badge, Button, Card } from "@/components/ui";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { SetChatContext } from "@/components/chat/set-context";
 import { getAdviceArticles } from "@/lib/content/advice";
 import type { AdviceArticle } from "@/lib/content/types";
@@ -65,11 +66,17 @@ export async function AdviceCategoryLanding({
               <div className="space-y-5">
                 <div className="space-y-3">
                   <div className="text-sm font-semibold uppercase tracking-wide text-muted">Quick actions</div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 sm:flex-row">
                     {quickActions.map((item) => (
-                      <Button key={item.href} href={item.href} variant="ghost" className="border border-border bg-white hover:bg-blue-pale">
+                      <ButtonLink
+                        key={item.href}
+                        href={item.href}
+                        variant="outline"
+                        size="sm"
+                        className="border-border bg-white hover:bg-blue-pale"
+                      >
                         {item.label}
-                      </Button>
+                      </ButtonLink>
                     ))}
                   </div>
                 </div>

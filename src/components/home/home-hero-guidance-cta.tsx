@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { HomeHeroGuidanceAskAi } from "@/components/home/home-hero-guidance-ask-ai";
-import { HOME_BTN_SECONDARY } from "@/components/home/home-theme";
+import { ButtonLink } from "@/components/ui/ButtonLink";
+import { PageContainer } from "@/components/layout/PageContainer";
 
 function BookIcon({ className }: { className?: string }) {
   return (
@@ -23,7 +23,7 @@ function ArrowIcon({ className }: { className?: string }) {
 export function HomeHeroGuidanceCta() {
   return (
     <section className="relative z-20 -mt-4 px-4 pb-4 sm:px-6 lg:px-8" aria-labelledby="guidance-cta-heading">
-      <div className="mx-auto max-w-7xl">
+      <PageContainer>
         <div className="relative overflow-hidden rounded-3xl border border-[#F1D8C7] bg-gradient-to-r from-[#FFE2D3] via-[#FFF3E8] to-[#FFE8D6] p-6 shadow-xl shadow-[#F04A16]/10 sm:p-8 lg:p-10">
           <div
             className="pointer-events-none absolute inset-0 opacity-40"
@@ -49,16 +49,16 @@ export function HomeHeroGuidanceCta() {
               </div>
             </div>
 
-            <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:ml-auto">
-              <Link href="/advice" className={`${HOME_BTN_SECONDARY} gap-2`}>
+            <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:flex-wrap lg:ml-auto">
+              <ButtonLink href="/advice" variant="secondary" className="gap-2" aria-label="Explore disability guides">
                 Explore disability guides
-                <ArrowIcon className="h-4 w-4" />
-              </Link>
+                <ArrowIcon className="h-4 w-4" aria-hidden="true" />
+              </ButtonLink>
               <HomeHeroGuidanceAskAi />
             </div>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </section>
   );
 }

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { PracticalGuideWorkflow } from "@/lib/guide-content/types";
+import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 
 type GuideOverviewSectionProps = {
   workflow: PracticalGuideWorkflow;
@@ -66,20 +68,18 @@ export function GuideOverviewSection({ workflow, categoryHref, onAskAi }: GuideO
                 <h4 className="text-base font-bold text-heading">{step.title}</h4>
                 <p className="mt-2 flex-1 text-sm leading-6 text-muted">{step.description}</p>
                 {step.kind === "link" ? (
-                  <Link
+                  <ButtonLink
                     href={step.href}
-                    className="mt-4 inline-flex min-h-[44px] items-center text-sm font-bold text-[#59682A] hover:text-[#F04A16] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-2"
+                    variant="ghost"
+                    size="sm"
+                    className="mt-4 px-0 text-[#59682A] hover:bg-transparent hover:text-[#F04A16]"
                   >
                     {step.action} →
-                  </Link>
+                  </ButtonLink>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={onAskAi}
-                    className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#59682A] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#45521F] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-2"
-                  >
+                  <Button type="button" variant="secondary" size="sm" className="mt-4" onClick={onAskAi}>
                     {step.action} →
-                  </button>
+                  </Button>
                 )}
               </article>
             </li>
