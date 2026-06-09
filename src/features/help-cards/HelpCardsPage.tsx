@@ -42,6 +42,7 @@ export function HelpCardsPageClient() {
 
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const browseRef = useRef<HTMLDivElement | null>(null);
+  const cardPacksRef = useRef<HTMLDivElement | null>(null);
   const detailRef = useRef<HTMLDivElement | null>(null);
 
   const featured = useMemo(
@@ -70,6 +71,10 @@ export function HelpCardsPageClient() {
     browseRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  function scrollToCardPacks() {
+    cardPacksRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <>
       <div className="pointer-events-none fixed -left-[9999px] top-0 w-[960px]" aria-hidden>
@@ -78,7 +83,7 @@ export function HelpCardsPageClient() {
         ))}
       </div>
 
-      <HelpCardsHero featured={featured} onBrowse={scrollToBrowse} />
+      <HelpCardsHero featured={featured} onBrowse={scrollToBrowse} onBuildPack={scrollToCardPacks} />
 
       <section
         aria-label="Search and filter help cards"
@@ -92,7 +97,9 @@ export function HelpCardsPageClient() {
 
       <HighPressureCards cards={highPressure} onOpenCard={openCard} />
       <RealWorldMoments cards={cards} onSelectCategory={setCategory} />
-      <CardPackSection packs={HELP_CARD_PACKS} cardsBySlug={cardsBySlug} onOpenCard={openCard} />
+      <div ref={cardPacksRef} className="scroll-mt-24">
+        <CardPackSection packs={HELP_CARD_PACKS} cardsBySlug={cardsBySlug} onOpenCard={openCard} />
+      </div>
       <FeaturedHelpCard card={featured} />
       <HelpCardsHowItWorks />
 

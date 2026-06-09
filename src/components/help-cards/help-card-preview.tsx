@@ -154,12 +154,12 @@ export function HelpCardPreview({
         >
           <div className="min-w-0">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#ef5b2a] sm:text-xs">
-              Access Stamp
+              ACCESS STAMP
             </p>
             <p className="mt-1 text-xs font-semibold text-[#5f6b76] sm:text-sm">{categoryLabel(card)}</p>
           </div>
           <span className="shrink-0 rounded-full border border-[#ead2bf]/80 bg-[#fffaf4] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-[#5f6b76]">
-            Help Card
+            HELP CARD
           </span>
         </div>
 
@@ -183,25 +183,27 @@ export function HelpCardPreview({
           </p>
 
           {isLarge ? (
-            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
-              <PreviewBlock title="Check once" icon="✓" isLarge>
-                <BulletList items={checkOnce} size="large" />
-              </PreviewBlock>
-              <PreviewBlock title="Helpful ask" icon="?" isLarge>
-                <BulletList items={mustAsk} size="large" />
-              </PreviewBlock>
-              <PreviewBlock title="Adjustments I can ask for" icon="↔" isLarge>
-                <BulletList items={adjustments} size="large" />
-              </PreviewBlock>
-              <PreviewBlock title="Carry" icon="▣" isLarge>
-                <BulletList items={carry} size="large" />
-              </PreviewBlock>
-              <PreviewBlock title="Key line" icon="“" isLarge accent className="sm:col-span-2">
+            <>
+              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+                <PreviewBlock title="Check once" icon="✓" isLarge>
+                  <BulletList items={checkOnce} size="large" />
+                </PreviewBlock>
+                <PreviewBlock title="Helpful ask" icon="?" isLarge>
+                  <BulletList items={mustAsk} size="large" />
+                </PreviewBlock>
+                <PreviewBlock title="Adjustments I can ask for" icon="↔" isLarge>
+                  <BulletList items={adjustments} size="large" />
+                </PreviewBlock>
+                <PreviewBlock title="Carry" icon="▣" isLarge>
+                  <BulletList items={carry} size="large" />
+                </PreviewBlock>
+              </div>
+              <PreviewBlock title="Key line" icon="“" isLarge accent className="mt-4">
                 <blockquote className="text-sm font-semibold leading-6 text-[#17212b] sm:text-base sm:leading-7">
                   &ldquo;{card.keyLine}&rdquo;
                 </blockquote>
               </PreviewBlock>
-            </div>
+            </>
           ) : (
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
               <section className="rounded-xl border border-[#ead2bf]/90 bg-[#fffaf4] p-3">

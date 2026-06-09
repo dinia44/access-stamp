@@ -9,6 +9,7 @@ import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 import { helpCardsHeroImageUrl } from "@/lib/cloudinary-url";
 import {
   HC_BTN_PRIMARY,
+  HC_BTN_SECONDARY,
   HC_EYEBROW,
   HC_HERO_TITLE,
   HC_MUTED,
@@ -17,28 +18,20 @@ import {
 const HERO_PHOTO_SRC = helpCardsHeroImageUrl(CLOUDINARY_MEDIA.helpCardsHeroInterview);
 
 const MINI_CARDS = [
-  { label: "Interview Room", className: "hc-hero-float-a left-[2%] top-[6%] -rotate-6", delay: "" },
   {
     label: "Adjustments I Can Ask For",
-    className: "hc-hero-float-b right-[0%] top-[38%] rotate-[5deg]",
-    delay: "",
+    className: "hc-hero-float-a right-[4%] top-[10%] rotate-[4deg]",
   },
   {
     label: "Access Evidence",
-    className: "hc-hero-float-c bottom-[8%] left-[8%] -rotate-3",
-    delay: "",
+    className: "hc-hero-float-b bottom-[10%] left-[4%] -rotate-[3deg]",
   },
 ] as const;
 
 function HeroPhotoVisual() {
   return (
     <div className="relative mx-auto w-full max-w-[340px] sm:max-w-[380px] lg:max-w-none">
-      <div
-        className="relative aspect-[4/5] w-full overflow-hidden rounded-[2.75rem] sm:rounded-[3.25rem]"
-        style={{
-          clipPath: "ellipse(88% 92% at 58% 48%)",
-        }}
-      >
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2.5rem] rounded-tl-[4.5rem] rounded-br-[3rem] sm:rounded-[3rem] sm:rounded-tl-[5rem] sm:rounded-br-[3.5rem]">
         <Image
           src={HERO_PHOTO_SRC}
           alt="A disabled person in a wheelchair having a professional interview-style conversation in a modern office"
@@ -48,15 +41,15 @@ function HeroPhotoVisual() {
           className="object-cover object-center"
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-l from-[#fbf3ea]/15 via-[#fbf3ea]/45 to-[#fbf3ea]/92"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-l from-transparent via-[#fbf3ea]/25 to-[#fbf3ea]/88"
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#fbf3ea] via-[#fbf3ea]/35 to-transparent"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#fbf3ea] via-[#fbf3ea]/40 to-transparent"
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#fbf3ea]/60 via-transparent to-[#efc8b2]/20"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#fbf3ea]/50 via-transparent to-[#efc8b2]/15"
           aria-hidden
         />
       </div>
@@ -65,7 +58,7 @@ function HeroPhotoVisual() {
         {MINI_CARDS.map((card) => (
           <div
             key={card.label}
-            className={`absolute max-w-[9.5rem] rounded-2xl border border-[#efc8b2]/90 bg-white/95 px-3 py-2.5 shadow-[0_12px_32px_rgba(53,30,12,0.10),0_0_0_1px_rgba(239,91,42,0.06)] ${card.className}`}
+            className={`absolute max-w-[10rem] rounded-2xl border border-[#efc8b2]/90 bg-white/95 px-3.5 py-2.5 shadow-[0_12px_32px_rgba(53,30,12,0.10),0_0_0_1px_rgba(239,91,42,0.06)] ${card.className}`}
           >
             <p className="text-[10px] font-bold leading-tight text-[#17212b]">{card.label}</p>
           </div>
@@ -78,9 +71,11 @@ function HeroPhotoVisual() {
 export function HelpCardsHero({
   featured,
   onBrowse,
+  onBuildPack,
 }: {
   featured: HelpCard;
   onBrowse?: () => void;
+  onBuildPack?: () => void;
 }) {
   return (
     <FadeIn>
@@ -96,11 +91,18 @@ export function HelpCardsHero({
             conversation. Show it, read it out, print it, save it to your phone, or tailor it with AI.
           </p>
 
-          {onBrowse ? (
-            <div className="mt-8">
-              <button type="button" onClick={onBrowse} className={HC_BTN_PRIMARY}>
-                Browse all cards
-              </button>
+          {onBuildPack || onBrowse ? (
+            <div className="mt-8 flex flex-wrap gap-3">
+              {onBuildPack ? (
+                <button type="button" onClick={onBuildPack} className={HC_BTN_PRIMARY}>
+                  Build a card pack
+                </button>
+              ) : null}
+              {onBrowse ? (
+                <button type="button" onClick={onBrowse} className={HC_BTN_SECONDARY}>
+                  Browse all cards
+                </button>
+              ) : null}
             </div>
           ) : null}
 

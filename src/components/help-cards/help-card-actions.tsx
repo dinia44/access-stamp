@@ -89,6 +89,7 @@ export function HelpCardActions({
           isLoading={saveState === "saving"}
           onClick={() => void saveCard()}
           aria-label={`Save ${card.title} to phone`}
+          className="min-h-11 rounded-full"
         >
           {saveLabel}
         </Button>
@@ -97,6 +98,7 @@ export function HelpCardActions({
           variant="secondary"
           onClick={() => void handlePrint()}
           aria-label={`Print ${card.title}`}
+          className="min-h-11 rounded-full"
         >
           Print
         </Button>
@@ -106,6 +108,7 @@ export function HelpCardActions({
           isLoading={tailoring}
           onClick={handleTailor}
           aria-label={`Tailor ${card.title} with AI`}
+          className="min-h-11 rounded-full"
         >
           {tailoring ? "Opening AI…" : "Tailor with AI"}
         </Button>
@@ -114,6 +117,7 @@ export function HelpCardActions({
           variant="ghost"
           onClick={() => void copyKeyLine()}
           aria-label={`Copy quick line from ${card.title}`}
+          className="min-h-11 rounded-full"
         >
           {copyState === "copied" ? "Copied" : card.quickLine ? "Copy quick line" : "Copy key line"}
         </Button>
