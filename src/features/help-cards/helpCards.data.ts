@@ -885,6 +885,22 @@ export const HELP_CARD_PACKS: HelpCardPack[] = [
       "blue-badge-issue",
     ],
   },
+  {
+    id: "work-reasonable-adjustment-pack",
+    title: "Work reasonable adjustment pack",
+    description: "Rights framing, workplace adjustments, and communication support for work.",
+    cardSlugs: [
+      "equality-act-reasonable-adjustments",
+      "job-interview-reasonable-adjustments",
+      "communication-support-card",
+    ],
+  },
+  {
+    id: "benefits-assessment-pack",
+    title: "Benefits assessment pack",
+    description: "Prepare for PIP and benefits assessments with clear impact wording.",
+    cardSlugs: ["pip-benefits-assessment", "communication-support-card"],
+  },
 ];
 
 export const FEATURED_RESEARCH_CARD_SLUG = "job-interview-reasonable-adjustments";

@@ -1,20 +1,20 @@
 /** Help Cards page — warm premium toolkit tokens */
 
 export const HC = {
-  ink: "#17212b",
-  muted: "#5f6b76",
-  bg: "#fbf3ea",
+  ink: "#132033",
+  muted: "#5B6472",
+  bg: "#FFF7EF",
   panel: "#fffaf4",
-  border: "#ead2bf",
+  border: "#EAD7C5",
   borderSoft: "#e5c8b2",
-  orange: "#ef5b2a",
-  orangeHover: "#d94d22",
+  orange: "#F97316",
+  orangeHover: "#ea580c",
   blue: "#2563eb",
   gold: "#c8953d",
 } as const;
 
 export const HC_PAGE_BG =
-  "bg-[#fbf3ea] [background:radial-gradient(circle_at_top_right,rgba(255,109,64,0.14),transparent_34%),radial-gradient(circle_at_8%_20%,rgba(37,99,235,0.08),transparent_28%),linear-gradient(180deg,#fbf3ea_0%,#f8efe4_48%,#f6ebdf_100%)]";
+  "bg-[#FFF7EF] [background:radial-gradient(circle_at_20%_0%,rgba(255,221,200,0.45),transparent_32%),linear-gradient(180deg,#FFF7EF_0%,#FFF0E4_52%,#FFF7EF_100%)]";
 
 export const HC_CONTAINER =
   "mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 py-10 md:py-14 space-y-8 md:space-y-10";
@@ -40,10 +40,10 @@ export const HC_FOCUS =
   "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#ef5b2a]/25 focus-visible:ring-offset-2";
 
 export const HC_HERO_TITLE =
-  "text-[clamp(3rem,6vw,5.8rem)] font-black leading-[0.92] tracking-[-0.07em] text-[#17212b]";
+  "text-[clamp(2.5rem,5.5vw,4.5rem)] font-black leading-[1.02] tracking-[-0.05em] text-[#132033]";
 
 export const HC_SECTION_TITLE =
-  "text-[clamp(1.6rem,2.5vw,2.4rem)] font-extrabold leading-none tracking-[-0.04em] text-[#17212b]";
+  "text-[clamp(1.75rem,2.8vw,2.75rem)] font-extrabold leading-tight tracking-[-0.04em] text-[#132033]";
 
 export const HC_BODY = "text-base leading-[1.65] text-[#17212b]";
 
@@ -51,11 +51,11 @@ export const HC_MUTED = "text-lg leading-8 text-[#5f6b76]";
 
 export const HC_MUTED_SM = "text-sm leading-6 text-[#5f6b76]";
 
-export const HC_EYEBROW = "text-xs font-bold uppercase tracking-[0.16em] text-[#ef5b2a]";
+export const HC_EYEBROW = "text-xs font-bold uppercase tracking-[0.16em] text-[#F97316]";
 
-export const HC_BTN_PRIMARY = `inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-[#ef5b2a] px-5 py-3 text-sm font-bold text-white shadow-[0_10px_30px_rgba(239,91,42,0.28)] transition hover:bg-[#d94d22] focus:outline-none focus:ring-4 focus:ring-[#ef5b2a]/25 ${HC_FOCUS}`;
+export const HC_BTN_PRIMARY = `inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-[#F97316] px-5 py-3 text-sm font-bold text-white shadow-[0_10px_30px_rgba(249,115,22,0.28)] transition hover:bg-[#ea580c] focus:outline-none focus:ring-4 focus:ring-[#F97316]/25 ${HC_FOCUS}`;
 
-export const HC_BTN_SECONDARY = `inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-[#d8bba3] bg-white px-5 py-3 text-sm font-bold text-[#17212b] transition hover:border-[#ef5b2a]/50 hover:bg-white focus:outline-none focus:ring-4 focus:ring-[#ef5b2a]/15 ${HC_FOCUS}`;
+export const HC_BTN_SECONDARY = `inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-[#EAD7C5] bg-white px-5 py-3 text-sm font-bold text-[#132033] transition hover:border-[#F97316]/50 hover:bg-white focus:outline-none focus:ring-4 focus:ring-[#F97316]/15 ${HC_FOCUS}`;
 
 export const HC_BTN_GHOST = `inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-[#5f6b76] transition hover:bg-white/60 focus:outline-none focus:ring-4 focus:ring-[#ef5b2a]/15 ${HC_FOCUS}`;
 

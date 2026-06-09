@@ -4,9 +4,9 @@ import HelpCardsPage from "@/features/help-cards/HelpCardsPage";
 import { SetChatContext } from "@/components/chat/set-context";
 
 export const metadata: Metadata = {
-  title: "Help Cards | Access Stamp",
+  title: "Help Cards",
   description:
-    "Pocket-sized scripts for real-world access, rights and support situations.",
+    "Save practical disability access cards for interviews, appointments, travel, care reviews and difficult conversations.",
 };
 
 export default function Page() {

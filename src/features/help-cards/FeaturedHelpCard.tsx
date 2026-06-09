@@ -1,52 +1,43 @@
-import { FadeIn } from "@/components/fade-in";
 import { HelpCardActions } from "@/components/help-cards/help-card-actions";
 import { HelpCardPreview } from "@/components/help-cards/help-card-preview";
 import type { HelpCard } from "@/lib/help-cards";
-import {
-  HC_EYEBROW,
-  HC_IMPORTANT_SECTION,
-  HC_SECTION_TITLE,
-} from "@/components/help-cards/help-cards-theme";
+import { HC_EYEBROW, HC_SECTION_TITLE } from "@/components/help-cards/help-cards-theme";
 
-const FEATURED_BENEFITS = [
-  "Ask the right questions before the interview",
-  "Carry a source-backed quick line",
-  "Save or print in seconds",
-] as const;
-
-export function FeaturedHelpCard({ card }: { card: HelpCard }) {
+export function FeaturedHelpCard({
+  card,
+  onOpen,
+}: {
+  card: HelpCard;
+  onOpen?: () => void;
+}) {
   return (
-    <FadeIn>
-      <section aria-labelledby="featured-help-card" className={`${HC_IMPORTANT_SECTION} p-5 sm:p-7 lg:p-9`}>
-        <p className={HC_EYEBROW}>Featured help card</p>
-        <div className="mt-6 grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="help-card-print-area">
+    <section
+      id="featured-card"
+      aria-labelledby="featured-help-card-title"
+      className="px-5 py-12 sm:px-8 md:py-16 lg:px-10 lg:py-24 xl:py-[120px]"
+    >
+      <div className="mx-auto max-w-7xl">
+        <p className={HC_EYEBROW}>Example card</p>
+        <h2 id="featured-help-card-title" className={`${HC_SECTION_TITLE} mt-3`}>
+          Featured help card
+        </h2>
+
+        <div className="mt-10 overflow-hidden rounded-[2rem] border border-[#EAD7C5] bg-[rgba(255,255,255,0.78)] shadow-[0_24px_80px_rgba(19,32,51,0.08)]">
+          <div className="help-card-print-area p-5 sm:p-8 lg:p-10">
             <HelpCardPreview card={card} size="large" />
           </div>
-          <div>
-            <h2 id="featured-help-card" className={`${HC_SECTION_TITLE} text-[clamp(1.8rem,3vw,2.5rem)]`}>
-              {card.title}
-            </h2>
-            <p className="mt-4 text-base leading-7 text-[#5f6b76]">{card.useThisWhen ?? card.summary}</p>
-            <ul className="mt-6 space-y-3">
-              {FEATURED_BENEFITS.map((benefit) => (
-                <li key={benefit} className="flex items-start gap-3 text-base font-semibold leading-6 text-[#17212b]">
-                  <span
-                    className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ef5b2a]/15 text-xs font-bold text-[#ef5b2a]"
-                    aria-hidden
-                  >
-                    ✓
-                  </span>
-                  {benefit}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-8">
-              <HelpCardActions card={card} />
-            </div>
+
+          <div
+            className="flex flex-col gap-4 border-t border-[#EAD7C5]/80 bg-[#FFF7EF]/60 px-5 py-5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-6 sm:px-8 sm:py-6 lg:px-10"
+            aria-label="Featured card actions"
+          >
+            <p className="text-sm font-medium text-[#5B6472]">
+              Save, print, or tailor this card for your interview.
+            </p>
+            <HelpCardActions card={card} showHelper={false} onOpen={onOpen} />
           </div>
         </div>
-      </section>
-    </FadeIn>
+      </div>
+    </section>
   );
 }

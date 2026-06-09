@@ -1,12 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { FadeIn } from "@/components/fade-in";
-import { HelpCardPreview } from "@/components/help-cards/help-card-preview";
-import { HelpCardActions } from "@/components/help-cards/help-card-actions";
-import type { HelpCard } from "@/lib/help-cards";
-import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
-import { helpCardsHeroImageUrl } from "@/lib/cloudinary-url";
+import { HelpCardIcon } from "@/features/help-cards/help-card-icons";
 import {
   HC_BTN_PRIMARY,
   HC_BTN_SECONDARY,
@@ -15,121 +9,156 @@ import {
   HC_MUTED,
 } from "@/components/help-cards/help-cards-theme";
 
-const HERO_PHOTO_SRC = helpCardsHeroImageUrl(CLOUDINARY_MEDIA.helpCardsHeroInterview);
+const FLOATING_TAGS = ["Save", "Print", "Tailor with AI", "Copy line"] as const;
 
-const MINI_CARDS = [
+const STACK_CARDS = [
   {
-    label: "Adjustments I Can Ask For",
-    className: "hc-hero-float-a right-[4%] top-[10%] rotate-[4deg]",
+    title: "Access evidence",
+    lines: ["Medical letters", "Adjustment history"],
+    rotate: "-rotate-[6deg]",
+    offset: "left-[4%] top-[8%] z-10 scale-[0.92] opacity-80",
+    active: false,
   },
   {
-    label: "Access Evidence",
-    className: "hc-hero-float-b bottom-[10%] left-[4%] -rotate-[3deg]",
+    title: "Helpful ask",
+    lines: ["Is the room step-free?", "Can I have extra time?"],
+    rotate: "rotate-[4deg]",
+    offset: "right-[2%] top-[18%] z-20 scale-[0.96] opacity-90",
+    active: false,
+  },
+  {
+    title: "Job interview adjustment card",
+    lines: [
+      "I'm asking for reasonable adjustments so I can take part fairly.",
+      "Work & interviews",
+    ],
+    rotate: "-rotate-[2deg]",
+    offset: "left-[8%] top-[32%] z-30",
+    active: true,
   },
 ] as const;
 
-function HeroPhotoVisual() {
+function CardStackVisual() {
   return (
-    <div className="relative mx-auto w-full max-w-[340px] sm:max-w-[380px] lg:max-w-none">
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2.5rem] rounded-tl-[4.5rem] rounded-br-[3rem] sm:rounded-[3rem] sm:rounded-tl-[5rem] sm:rounded-br-[3.5rem]">
-        <Image
-          src={HERO_PHOTO_SRC}
-          alt="A disabled person in a wheelchair having a professional interview-style conversation in a modern office"
-          fill
-          priority
-          sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 28vw"
-          className="object-cover object-center"
-        />
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-l from-transparent via-[#fbf3ea]/25 to-[#fbf3ea]/88"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#fbf3ea] via-[#fbf3ea]/40 to-transparent"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#fbf3ea]/50 via-transparent to-[#efc8b2]/15"
-          aria-hidden
-        />
-      </div>
+    <div className="relative mx-auto aspect-[4/5] w-full max-w-[420px]" aria-hidden="true">
+      <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-[#FFE8D6]/40 via-transparent to-[#FFF7EF]/60" />
 
-      <div className="pointer-events-none absolute inset-0 hidden sm:block" aria-hidden="true">
-        {MINI_CARDS.map((card) => (
-          <div
-            key={card.label}
-            className={`absolute max-w-[10rem] rounded-2xl border border-[#efc8b2]/90 bg-white/95 px-3.5 py-2.5 shadow-[0_12px_32px_rgba(53,30,12,0.10),0_0_0_1px_rgba(239,91,42,0.06)] ${card.className}`}
-          >
-            <p className="text-[10px] font-bold leading-tight text-[#17212b]">{card.label}</p>
-          </div>
+      {STACK_CARDS.map((card) => (
+        <div
+          key={card.title}
+          className={`absolute w-[78%] rounded-3xl border border-[#EAD7C5] bg-[rgba(255,255,255,0.92)] p-5 shadow-[0_24px_64px_rgba(19,32,51,0.12)] ${card.rotate} ${card.offset}`}
+        >
+          {card.active ? (
+            <>
+              <div className="flex items-start justify-between gap-3 border-b border-[#EAD7C5]/80 pb-3">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#F97316]">
+                    Access Stamp
+                  </p>
+                  <p className="mt-1 text-xs font-semibold text-[#5B6472]">Work & interviews</p>
+                </div>
+                <span className="rounded-full border border-[#EAD7C5] bg-[#FFF7EF] px-2.5 py-1 text-[10px] font-bold uppercase text-[#5B6472]">
+                  Help card
+                </span>
+              </div>
+              <p className="mt-3 text-sm font-extrabold leading-snug text-[#132033]">{card.title}</p>
+              <p className="mt-2 text-xs leading-5 text-[#5B6472]">{card.lines[0]}</p>
+              <div className="mt-4 rounded-2xl border border-[#F97316]/20 bg-[#FFF7EF] px-3 py-2.5">
+                <p className="text-[11px] font-semibold leading-5 text-[#132033]">
+                  &ldquo;I&apos;m asking for reasonable adjustments so I can take part in the interview
+                  fairly.&rdquo;
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-xs font-bold uppercase tracking-wide text-[#F97316]">{card.title}</p>
+              {card.lines.map((line) => (
+                <p key={line} className="mt-2 text-xs leading-5 text-[#5B6472]">
+                  {line}
+                </p>
+              ))}
+            </>
+          )}
+        </div>
+      ))}
+
+      <ul className="absolute bottom-[6%] left-0 right-0 flex flex-wrap justify-center gap-2 px-4">
+        {FLOATING_TAGS.map((tag) => (
+          <li key={tag}>
+            <span className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-[#EAD7C5] bg-white/90 px-3 py-1.5 text-xs font-semibold text-[#132033] shadow-[0_8px_24px_rgba(19,32,51,0.08)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#F97316]" aria-hidden />
+              {tag}
+            </span>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
 
 export function HelpCardsHero({
-  featured,
   onBrowse,
   onBuildPack,
 }: {
-  featured: HelpCard;
   onBrowse?: () => void;
   onBuildPack?: () => void;
 }) {
   return (
-    <FadeIn>
-      <section className="grid items-center gap-8 py-8 md:gap-10 md:py-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.72fr)_minmax(0,1fr)] lg:gap-6 xl:gap-10">
-        <div className="order-1 max-w-2xl lg:max-w-none">
+    <section
+      aria-labelledby="help-cards-hero-title"
+      className="px-5 py-12 sm:px-8 md:py-16 lg:px-10 lg:py-24 xl:py-[120px]"
+    >
+      <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
+        <div className="max-w-xl">
           <p className={HC_EYEBROW}>Pocket-sized support tools</p>
-          <h1 className={`${HC_HERO_TITLE} mt-4`}>Help Cards</h1>
-          <p className={`${HC_MUTED} mt-5 max-w-xl text-lg`}>
-            Pocket-sized scripts for real-world access, rights and support situations.
+          <h1 id="help-cards-hero-title" className={`${HC_HERO_TITLE} mt-4 text-[#132033]`}>
+            Know what to say when access fails.
+          </h1>
+          <p className={`${HC_MUTED} mt-5 max-w-lg text-lg leading-8 text-[#5B6472]`}>
+            Save practical disability access cards for interviews, appointments, travel, care reviews
+            and difficult conversations.
           </p>
-          <p className={`${HC_MUTED} mt-4 max-w-xl`}>
-            Open a card before an appointment, interview, venue visit, police stop or difficult
-            conversation. Show it, read it out, print it, save it to your phone, or tailor it with AI.
+          <p className="mt-4 max-w-lg text-base leading-7 text-[#5B6472]">
+            Pick a situation. Save the card. Show it, read it, print it, or tailor it with AI.
           </p>
 
-          {onBuildPack || onBrowse ? (
-            <div className="mt-8 flex flex-wrap gap-3">
-              {onBuildPack ? (
-                <button type="button" onClick={onBuildPack} className={HC_BTN_PRIMARY}>
-                  Build a card pack
-                </button>
-              ) : null}
-              {onBrowse ? (
-                <button type="button" onClick={onBrowse} className={HC_BTN_SECONDARY}>
-                  Browse all cards
-                </button>
-              ) : null}
-            </div>
-          ) : null}
+          <div className="mt-8 flex flex-wrap gap-3">
+            {onBuildPack ? (
+              <button type="button" onClick={onBuildPack} className={HC_BTN_PRIMARY}>
+                Build my card pack
+              </button>
+            ) : (
+              <a href="#card-packs" className={HC_BTN_PRIMARY}>
+                Build my card pack
+              </a>
+            )}
+            {onBrowse ? (
+              <button type="button" onClick={onBrowse} className={HC_BTN_SECONDARY}>
+                Browse all cards
+              </button>
+            ) : (
+              <a href="#browse-cards" className={HC_BTN_SECONDARY}>
+                Browse all cards
+              </a>
+            )}
+          </div>
 
-          <p className="mt-6 flex items-center gap-2 text-sm font-semibold text-[#17212b]">
+          <p className="mt-6 inline-flex min-h-[44px] items-center gap-2.5 rounded-full border border-[#EAD7C5] bg-[rgba(255,255,255,0.78)] px-4 py-2 text-sm font-semibold text-[#132033]">
             <span
-              className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#ef5b2a]/15 text-[#ef5b2a]"
+              className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F97316]/12 text-[#F97316]"
               aria-hidden
             >
-              ✓
+              <HelpCardIcon name="shield-check" className="h-3.5 w-3.5" />
             </span>
-            Source-backed cards for real conversations — not invented legal advice.
+            Source-backed prompts — not invented legal advice.
           </p>
         </div>
 
-        <div className="order-2 lg:px-2">
-          <HeroPhotoVisual />
+        <div className="relative lg:pl-4">
+          <CardStackVisual />
         </div>
-
-        <div className="order-3 lg:pl-2">
-          <div className="help-card-print-area">
-            <HelpCardPreview card={featured} size="large" />
-          </div>
-          <div className="mt-5 sm:mt-6">
-            <HelpCardActions card={featured} showHelper={false} />
-          </div>
-        </div>
-      </section>
-    </FadeIn>
+      </div>
+    </section>
   );
 }
