@@ -1,7 +1,11 @@
+import type { HelpCardActions, HelpCardSource, HelpCardSourceConfidence } from "@/features/help-cards/helpCardTypes";
+import { researchToHelpCard } from "@/features/help-cards/helpCardAdapter";
+import { RESEARCH_HELP_CARDS } from "@/features/help-cards/helpCards.data";
+
 export type HelpCard = {
   slug: string;
   title: string;
-  category: "Driving" | "Work" | "Education" | "Travel" | "Care" | "Rights" | "Emergency";
+  category: string;
   summary: string;
   whenToUse: string[];
   mustAsk: string[];
@@ -10,11 +14,40 @@ export type HelpCard = {
   escalateIf: string[];
   keyLine: string;
   tags: string[];
+  situation?: string;
+  urgency?: "low" | "medium" | "high";
+  badge?: string;
+  useThisWhen?: string;
+  quickLine?: string;
+  keyBullets?: string[];
+  sayThisFirst?: string[];
+  keyRightsLine?: string;
+  whatToAskFor?: string[];
+  questionsToAsk?: string[];
+  evidenceToHaveReady?: string[];
+  afterTheConversation?: string[];
+  whatNotToSayOrAssume?: string[];
+  importantLimits?: string[];
+  sources?: HelpCardSource[];
+  lastReviewed?: string;
+  sourceConfidence?: HelpCardSourceConfidence;
+  actions?: HelpCardActions;
+  isSourceBacked?: boolean;
 };
 
+export const SOURCE_BACKED_HELP_CARDS: HelpCard[] = RESEARCH_HELP_CARDS.map(researchToHelpCard);
+
 export const HELP_CARD_CONCERNS = [
-  "Driving licence renewal",
+  "Section 88 driving",
+  "Blue Badge parking",
   "Job interview adjustments",
+  "Equality Act adjustments",
+  "GP or hospital access",
+  "Social care assessment",
+  "PIP assessment",
+  "Venue access planning",
+  "Communication support",
+  "Driving licence renewal",
   "Starting school with disability",
   "Access to Work",
   "Flying with a wheelchair",
@@ -35,7 +68,7 @@ export const HELP_CARD_CONCERNS = [
   "NHS communication adjustments",
 ] as const;
 
-export const HELP_CARDS: HelpCard[] = [
+const LEGACY_HELP_CARDS: HelpCard[] = [
   {
     slug: "section-88-driving-card",
     title: "Section 88 driving checklist",
@@ -809,6 +842,8 @@ export const HELP_CARDS: HelpCard[] = [
     tags: ["NHS", "GP", "Reasonable adjustments", "Communication"],
   },
 ];
+
+export const HELP_CARDS: HelpCard[] = [...SOURCE_BACKED_HELP_CARDS, ...LEGACY_HELP_CARDS];
 
 export const FEATURED_HELP_CARD_SLUGS = [
   "new-job-first-30-days-card",

@@ -26,9 +26,11 @@ export function HelpCardActions({
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [tailoring, setTailoring] = useState(false);
 
+  const lineToCopy = card.quickLine ?? card.keyLine;
+
   async function copyKeyLine() {
     try {
-      await navigator.clipboard.writeText(card.keyLine);
+      await navigator.clipboard.writeText(lineToCopy);
       setCopyState("copied");
       window.setTimeout(() => setCopyState("idle"), 1800);
     } catch {
@@ -111,11 +113,15 @@ export function HelpCardActions({
         <Button
           variant="ghost"
           onClick={() => void copyKeyLine()}
-          aria-label={`Copy key line from ${card.title}`}
+          aria-label={`Copy quick line from ${card.title}`}
         >
-          {copyState === "copied" ? "Copied" : "Copy key line"}
+          {copyState === "copied" ? "Copied" : card.quickLine ? "Copy quick line" : "Copy key line"}
         </Button>
       </div>
+
+      <p className="sr-only" aria-live="polite">
+        {copyState === "copied" ? "Quick line copied" : ""}
+      </p>
 
       {showHelper ? (
         <p className="text-sm leading-relaxed text-[#5f6b76]">
