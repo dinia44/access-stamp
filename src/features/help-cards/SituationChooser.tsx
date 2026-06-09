@@ -1,11 +1,5 @@
 import type { HelpCard } from "@/lib/help-cards";
 import { HelpCardIcon, type HelpCardIconName } from "@/features/help-cards/help-card-icons";
-import {
-  HC_EYEBROW,
-  HC_FOCUS,
-  HC_MUTED_SM,
-  HC_SECTION_TITLE,
-} from "@/components/help-cards/help-cards-theme";
 
 type SituationTile = {
   title: string;
@@ -17,56 +11,57 @@ type SituationTile = {
 const SITUATIONS: SituationTile[] = [
   {
     title: "Job interview",
-    description: "Request interview adjustments and confirm access before the day.",
+    description: "Ask for interview adjustments before the day.",
     icon: "briefcase",
     category: "Work & interviews",
   },
   {
     title: "Work adjustments",
-    description: "Ask for reasonable changes at work or during recruitment.",
+    description: "Explain what you need to work safely and fairly.",
     icon: "users",
     category: "Work & interviews",
   },
   {
     title: "GP appointment",
-    description: "Record communication needs and ask for appointment access.",
+    description: "Prepare your key points before speaking to reception or a clinician.",
     icon: "stethoscope",
     category: "Healthcare appointments",
   },
   {
     title: "Hospital appointment",
-    description: "Get clear wording for NHS access and communication support.",
+    description: "Request access support, communication help, and practical adjustments.",
     icon: "hospital",
     category: "Healthcare appointments",
   },
   {
     title: "Social care assessment",
-    description: "Prepare for council needs assessments with evidence and outcomes.",
+    description: "Keep the focus on daily needs, safety, and support.",
     icon: "care",
     category: "Social care",
   },
   {
     title: "Benefits assessment",
-    description: "Explain daily living and mobility impact for PIP or reviews.",
+    description: "Explain functional impact clearly and consistently.",
     icon: "pound",
     category: "Benefits & assessments",
   },
   {
     title: "Visiting a venue",
-    description: "Confirm step-free access, toilets and parking before you travel.",
+    description: "Check access details before you travel.",
     icon: "venue",
     category: "Venues & travel",
   },
   {
     title: "Travel or transport issue",
-    description: "Handle access failures, parking challenges and travel barriers.",
+    description: "Use clear wording when plans break down.",
     icon: "bus",
     category: "Venues & travel",
   },
 ];
 
 function countForCategory(cards: HelpCard[], category: string) {
-  return cards.filter((card) => card.category === category).length;
+  const count = cards.filter((card) => card.category === category).length;
+  return count > 0 ? `${count} card${count === 1 ? "" : "s"}` : "View cards";
 }
 
 export function SituationChooser({
@@ -80,44 +75,44 @@ export function SituationChooser({
     <section
       id="situations"
       aria-labelledby="situation-chooser-title"
-      className="px-5 py-12 sm:px-8 md:py-16 lg:px-10 lg:py-24 xl:py-[120px]"
+      className="px-5 py-12 sm:px-8 lg:px-10 lg:py-16"
     >
-      <div className="mx-auto max-w-7xl">
-        <p className={HC_EYEBROW}>Choose your moment</p>
-        <h2 id="situation-chooser-title" className={`${HC_SECTION_TITLE} mt-3`}>
-          What situation are you preparing for?
-        </h2>
-        <p className={`${HC_MUTED_SM} mt-3 max-w-2xl text-base leading-7`}>
-          Choose a moment and get the card wording you need quickly.
-        </p>
+      <div className="mx-auto max-w-[1200px]">
+        <div className="mb-8 max-w-[720px]">
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#F05A1A]">Browse by moment</p>
+          <h2
+            id="situation-chooser-title"
+            className="mt-3 text-3xl font-black tracking-[-0.05em] text-[#132033] sm:text-4xl"
+          >
+            Choose the situation
+          </h2>
+          <p className="mt-3 text-base leading-7 text-[#68717E]">
+            Find the card that matches what you need, then save it, print it, or tailor the wording.
+          </p>
+        </div>
 
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-          {SITUATIONS.map((situation) => {
-            const count = countForCategory(cards, situation.category);
-            return (
-              <li key={situation.title}>
-                <button
-                  type="button"
-                  onClick={() => onSelectCategory(situation.category)}
-                  className={`group flex h-full min-h-[168px] w-full flex-col rounded-2xl border border-[#EAD7C5] bg-[rgba(255,255,255,0.78)] p-5 text-left shadow-[0_8px_32px_rgba(19,32,51,0.05)] transition hover:-translate-y-1 hover:border-[#F97316]/40 hover:shadow-[0_16px_48px_rgba(19,32,51,0.08)] ${HC_FOCUS}`}
-                >
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF7EF] text-[#132033] transition group-hover:bg-[#F97316]/10 group-hover:text-[#F97316]">
-                    <HelpCardIcon name={situation.icon} className="h-5 w-5" />
-                  </span>
-                  <h3 className="mt-4 text-base font-bold leading-snug text-[#132033]">
-                    {situation.title}
-                  </h3>
-                  <p className="mt-2 flex-1 text-sm leading-6 text-[#5B6472]">
-                    {situation.description}
-                  </p>
-                  <p className="mt-4 text-sm font-semibold text-[#F97316]">
-                    {count > 0 ? `${count} card${count === 1 ? "" : "s"}` : "View cards"}
-                  </p>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {SITUATIONS.map((situation) => (
+            <button
+              key={situation.title}
+              type="button"
+              onClick={() => onSelectCategory(situation.category)}
+              className="group rounded-[28px] border border-[#EAD5C2] bg-white/72 p-6 text-left shadow-sm transition hover:-translate-y-1 hover:border-[#F2B895] hover:bg-white hover:shadow-[0_24px_60px_rgba(19,32,51,0.10)] focus:outline-none focus:ring-4 focus:ring-[#F97316]/20"
+            >
+              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl border border-[#F2D1BE] bg-[#FFF3EA] text-[#F05A1A]">
+                <HelpCardIcon name={situation.icon} className="h-5 w-5" />
+              </div>
+              <h3 className="text-lg font-black tracking-[-0.03em] text-[#132033]">{situation.title}</h3>
+              <p className="mt-3 min-h-[72px] text-sm leading-6 text-[#68717E]">{situation.description}</p>
+              <div className="mt-5 flex items-center justify-between border-t border-[#F0DED0] pt-4">
+                <span className="text-xs font-black uppercase tracking-[0.14em] text-[#8A7280]">
+                  {countForCategory(cards, situation.category)}
+                </span>
+                <span className="text-sm font-extrabold text-[#F05A1A]">Open →</span>
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   );

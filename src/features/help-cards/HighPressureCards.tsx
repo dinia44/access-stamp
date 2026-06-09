@@ -1,18 +1,12 @@
 import type { HelpCard } from "@/lib/help-cards";
 import { HelpCardIcon, type HelpCardIconName } from "@/features/help-cards/help-card-icons";
-import {
-  HC_BTN_SECONDARY,
-  HC_EYEBROW,
-  HC_FOCUS,
-  HC_MUTED_SM,
-  HC_SECTION_TITLE,
-} from "@/components/help-cards/help-cards-theme";
 
 type HighPressureItem = {
   label: string;
   slug: string;
   icon: HelpCardIconName;
   description: string;
+  tag: string;
 };
 
 const HIGH_PRESSURE_ITEMS: HighPressureItem[] = [
@@ -20,31 +14,30 @@ const HIGH_PRESSURE_ITEMS: HighPressureItem[] = [
     label: "Stopped by police",
     slug: "section-88-driving-licence",
     icon: "shield",
-    description: "Stay calm and explain your situation with clear, source-backed wording.",
+    description:
+      "A calm card for explaining disability, communication needs, and support requirements.",
+    tag: "Urgent",
   },
   {
     label: "Section 88 driving licence",
     slug: "section-88-driving-licence",
     icon: "car",
-    description: "When DVLA is processing your licence and you need to explain Section 88.",
+    description: "Simple wording for explaining your position while waiting for DVLA confirmation.",
+    tag: "Travel",
   },
   {
     label: "Blue Badge issue",
     slug: "blue-badge-issue",
     icon: "badge",
-    description: "Record the facts calmly during a parking challenge or PCN.",
+    description: "Clear prompts for parking disputes, badge checks, and access misunderstandings.",
+    tag: "Parking",
   },
   {
     label: "Communication support",
     slug: "communication-support-card",
     icon: "chat",
-    description: "Ask for time, written information, or support to communicate clearly.",
-  },
-  {
-    label: "Please give me time to respond",
-    slug: "communication-support-card",
-    icon: "clock",
-    description: "A quick line when you need space to process and reply.",
+    description: "Ask for extra time, written information, or a quieter conversation.",
+    tag: "Access",
   },
 ];
 
@@ -61,35 +54,51 @@ export function HighPressureCards({
   return (
     <section
       aria-labelledby="high-pressure-cards-title"
-      className="px-5 py-12 sm:px-8 md:py-16 lg:px-10 lg:py-24 xl:py-[120px]"
+      className="px-5 py-12 sm:px-8 lg:px-10 lg:py-16"
     >
-      <div className="mx-auto max-w-7xl">
-        <p className={HC_EYEBROW}>Urgent moments</p>
-        <h2 id="high-pressure-cards-title" className={`${HC_SECTION_TITLE} mt-3`}>
-          High-pressure cards
-        </h2>
-        <p className={`${HC_MUTED_SM} mt-3 max-w-2xl text-base leading-7`}>
-          For moments where you need clear wording quickly.
-        </p>
+      <div className="mx-auto max-w-[1200px]">
+        <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#F05A1A]">Fast support</p>
+            <h2
+              id="high-pressure-cards-title"
+              className="mt-3 text-3xl font-black tracking-[-0.05em] text-[#132033] sm:text-4xl"
+            >
+              High-pressure cards
+            </h2>
+            <p className="mt-3 max-w-[560px] text-base leading-7 text-[#68717E]">
+              Quick support for real-life situations where you need clear wording quickly.
+            </p>
+          </div>
+          <a
+            href="#situations"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-[#E0C8B3] bg-white/70 px-5 text-sm font-extrabold text-[#132033] transition hover:border-[#F05A1A] hover:bg-white focus:outline-none focus:ring-4 focus:ring-[#F97316]/20"
+          >
+            View all situations
+          </a>
+        </div>
 
-        <div className="-mx-5 mt-10 flex gap-4 overflow-x-auto px-5 pb-2 snap-x snap-mandatory sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {items.map((item) => (
             <article
               key={item.label}
-              className="flex w-[min(280px,78vw)] shrink-0 snap-start flex-col rounded-2xl border border-[#EAD7C5] bg-[rgba(255,255,255,0.78)] p-5 shadow-[0_8px_32px_rgba(19,32,51,0.05)] sm:w-auto"
+              className="group rounded-[28px] border border-[#EAD5C2] bg-white/76 p-6 shadow-sm transition hover:-translate-y-1 hover:bg-white hover:shadow-[0_24px_60px_rgba(19,32,51,0.10)]"
             >
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF7EF] text-[#132033]">
+              <div className="mb-5 inline-flex rounded-full border border-[#F2D1BE] bg-[#FFF3EA] px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-[#F05A1A]">
+                {item.tag}
+              </div>
+              <span className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-[#F2D1BE] bg-[#FFF3EA] text-[#F05A1A]">
                 <HelpCardIcon name={item.icon} className="h-5 w-5" />
               </span>
-              <h3 className="mt-4 text-base font-bold leading-snug text-[#132033]">{item.label}</h3>
-              <p className="mt-2 flex-1 text-sm leading-6 text-[#5B6472]">{item.description}</p>
+              <h3 className="text-xl font-black tracking-[-0.03em] text-[#132033]">{item.label}</h3>
+              <p className="mt-3 text-sm leading-6 text-[#68717E]">{item.description}</p>
               <button
                 type="button"
                 onClick={() => onOpenCard(item.slug)}
-                className={`${HC_BTN_SECONDARY} mt-5 w-full sm:w-auto ${HC_FOCUS}`}
+                className="mt-6 inline-flex min-h-[44px] items-center text-sm font-extrabold text-[#F05A1A] focus:outline-none focus:ring-4 focus:ring-[#F97316]/20"
                 aria-label={`Open ${item.label} help card`}
               >
-                Open card
+                Open card →
               </button>
             </article>
           ))}

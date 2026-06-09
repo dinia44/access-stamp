@@ -6,7 +6,7 @@ import { SetChatContext } from "@/components/chat/set-context";
 export const metadata: Metadata = {
   title: "Help Cards",
   description:
-    "Save practical disability access cards for interviews, appointments, travel, care reviews and difficult conversations.",
+    "Say the right thing when access fails. Practical disability access cards for interviews, appointments, travel, care reviews and difficult conversations.",
 };
 
 export default function Page() {

@@ -43,11 +43,17 @@ export function AccessibilityControls() {
   }, [prefs]);
 
   return (
-    <div className="fixed bottom-5 left-5 z-[61] print:hidden">
+    <div
+      className="accessibility-controls accessibility-widget fixed bottom-6 right-6 z-[50] print:hidden"
+      data-accessibility-widget
+      data-testid="accessibility-widget"
+    >
       <button
         type="button"
-        className="rounded-[var(--radius-ui)] border border-border bg-card px-3 py-2 text-sm font-semibold text-heading shadow-[var(--shadow-soft)]"
+        className="accessibility-button min-h-[44px] rounded-[var(--radius-ui)] border border-border bg-card px-3 py-2 text-sm font-semibold text-heading shadow-[var(--shadow-soft)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F97316]/25"
         onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-haspopup="dialog"
       >
         Accessibility
       </button>

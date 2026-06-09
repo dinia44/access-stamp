@@ -1,98 +1,75 @@
 "use client";
 
-import { HelpCardIcon } from "@/features/help-cards/help-card-icons";
-import {
-  HC_BTN_PRIMARY,
-  HC_BTN_SECONDARY,
-  HC_EYEBROW,
-  HC_HERO_TITLE,
-  HC_MUTED,
-} from "@/components/help-cards/help-cards-theme";
+const BTN_PRIMARY =
+  "inline-flex min-h-[56px] items-center justify-center gap-3 rounded-2xl bg-[#F04E16] px-7 text-base font-extrabold text-white shadow-[0_18px_40px_rgba(240,78,22,0.28)] transition hover:-translate-y-0.5 hover:bg-[#E34612] focus:outline-none focus:ring-4 focus:ring-[#F97316]/30";
 
-const FLOATING_TAGS = ["Save", "Print", "Tailor with AI", "Copy line"] as const;
+const BTN_SECONDARY =
+  "inline-flex min-h-[56px] items-center justify-center gap-3 rounded-2xl border border-[#D8BFA9] bg-white/70 px-7 text-base font-extrabold text-[#132033] shadow-sm transition hover:-translate-y-0.5 hover:border-[#F05A1A] hover:bg-white focus:outline-none focus:ring-4 focus:ring-[#F97316]/20";
 
-const STACK_CARDS = [
-  {
-    title: "Access evidence",
-    lines: ["Medical letters", "Adjustment history"],
-    rotate: "-rotate-[6deg]",
-    offset: "left-[4%] top-[8%] z-10 scale-[0.92] opacity-80",
-    active: false,
-  },
-  {
-    title: "Helpful ask",
-    lines: ["Is the room step-free?", "Can I have extra time?"],
-    rotate: "rotate-[4deg]",
-    offset: "right-[2%] top-[18%] z-20 scale-[0.96] opacity-90",
-    active: false,
-  },
-  {
-    title: "Job interview adjustment card",
-    lines: [
-      "I'm asking for reasonable adjustments so I can take part fairly.",
-      "Work & interviews",
-    ],
-    rotate: "-rotate-[2deg]",
-    offset: "left-[8%] top-[32%] z-30",
-    active: true,
-  },
-] as const;
-
-function CardStackVisual() {
+function ProductCardStack() {
   return (
-    <div className="relative mx-auto aspect-[4/5] w-full max-w-[420px]" aria-hidden="true">
-      <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-[#FFE8D6]/40 via-transparent to-[#FFF7EF]/60" />
+    <div
+      className="relative z-10 mx-auto h-[420px] w-full max-w-[650px] sm:h-[480px] lg:h-[560px]"
+      aria-hidden="true"
+    >
+      <div className="absolute left-6 top-6 hidden rounded-2xl border border-[#E8D5C3] bg-white/72 px-5 py-4 text-sm font-bold text-[#132033] shadow-xl backdrop-blur md:block">
+        <span className="mr-2 text-[#F05A1A]">♡</span>
+        Save
+      </div>
+      <div className="absolute right-2 top-20 hidden rounded-2xl border border-[#E8D5C3] bg-white/80 px-5 py-4 text-sm font-bold text-[#132033] shadow-xl backdrop-blur md:block">
+        <span className="mr-2 text-[#F05A1A]">⎙</span>
+        Print
+      </div>
+      <div className="absolute left-0 top-[240px] hidden rounded-2xl border border-[#E8D5C3] bg-white/78 px-5 py-4 text-sm font-bold leading-5 text-[#132033] shadow-xl backdrop-blur md:block">
+        <span className="mr-2 text-[#F05A1A]">✦</span>
+        Tailor
+        <br />
+        with AI
+      </div>
+      <div className="absolute bottom-20 right-0 hidden rounded-2xl border border-[#E8D5C3] bg-white/80 px-5 py-4 text-sm font-bold text-[#132033] shadow-xl backdrop-blur md:block">
+        <span className="mr-2 text-[#F05A1A]">□</span>
+        Copy line
+      </div>
 
-      {STACK_CARDS.map((card) => (
-        <div
-          key={card.title}
-          className={`absolute w-[78%] rounded-3xl border border-[#EAD7C5] bg-[rgba(255,255,255,0.92)] p-5 shadow-[0_24px_64px_rgba(19,32,51,0.12)] ${card.rotate} ${card.offset}`}
-        >
-          {card.active ? (
-            <>
-              <div className="flex items-start justify-between gap-3 border-b border-[#EAD7C5]/80 pb-3">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#F97316]">
-                    Access Stamp
-                  </p>
-                  <p className="mt-1 text-xs font-semibold text-[#5B6472]">Work & interviews</p>
-                </div>
-                <span className="rounded-full border border-[#EAD7C5] bg-[#FFF7EF] px-2.5 py-1 text-[10px] font-bold uppercase text-[#5B6472]">
-                  Help card
-                </span>
-              </div>
-              <p className="mt-3 text-sm font-extrabold leading-snug text-[#132033]">{card.title}</p>
-              <p className="mt-2 text-xs leading-5 text-[#5B6472]">{card.lines[0]}</p>
-              <div className="mt-4 rounded-2xl border border-[#F97316]/20 bg-[#FFF7EF] px-3 py-2.5">
-                <p className="text-[11px] font-semibold leading-5 text-[#132033]">
-                  &ldquo;I&apos;m asking for reasonable adjustments so I can take part in the interview
-                  fairly.&rdquo;
-                </p>
-              </div>
-            </>
-          ) : (
-            <>
-              <p className="text-xs font-bold uppercase tracking-wide text-[#F97316]">{card.title}</p>
-              {card.lines.map((line) => (
-                <p key={line} className="mt-2 text-xs leading-5 text-[#5B6472]">
-                  {line}
-                </p>
-              ))}
-            </>
-          )}
+      <div className="absolute inset-x-6 top-8 h-[360px] rounded-full bg-[#F97316]/10 blur-3xl lg:inset-x-10 lg:top-10 lg:h-[430px]" />
+
+      <article className="absolute right-8 top-6 h-[160px] w-[min(100%,380px)] rotate-[-5deg] rounded-[30px] border border-[#EAD5C2] bg-white/82 p-6 shadow-[0_28px_80px_rgba(19,32,51,0.12)] backdrop-blur sm:right-16 sm:top-8 sm:h-[190px] sm:w-[430px] sm:p-7">
+        <p className="text-sm font-black uppercase tracking-[0.16em] text-[#F05A1A]">Access evidence</p>
+        <div className="mt-4 space-y-2 text-base font-medium text-[#6B7280] sm:mt-5 sm:space-y-3">
+          <p>Medical letters</p>
+          <p>Adjustment history</p>
+          <p className="text-[#9AA1AB]">Notes and examples</p>
         </div>
-      ))}
+      </article>
 
-      <ul className="absolute bottom-[6%] left-0 right-0 flex flex-wrap justify-center gap-2 px-4">
-        {FLOATING_TAGS.map((tag) => (
-          <li key={tag}>
-            <span className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-[#EAD7C5] bg-white/90 px-3 py-1.5 text-xs font-semibold text-[#132033] shadow-[0_8px_24px_rgba(19,32,51,0.08)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#F97316]" aria-hidden />
-              {tag}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <article className="absolute right-0 top-[108px] h-[150px] w-[min(100%,360px)] rotate-[4deg] rounded-[30px] border border-[#EAD5C2] bg-white/88 p-6 shadow-[0_28px_80px_rgba(19,32,51,0.12)] backdrop-blur sm:top-[132px] sm:h-[180px] sm:w-[420px] sm:p-7">
+        <p className="text-sm font-black uppercase tracking-[0.16em] text-[#F05A1A]">Helpful ask</p>
+        <div className="mt-4 space-y-2 text-base font-medium text-[#6B7280] sm:mt-5 sm:space-y-3">
+          <p>Is the room step-free?</p>
+          <p>Can I have extra time?</p>
+        </div>
+      </article>
+
+      <article className="absolute bottom-6 right-4 w-[min(100%,480px)] rotate-[-2deg] rounded-[34px] border border-[#EAD5C2] bg-white p-6 shadow-[0_34px_90px_rgba(19,32,51,0.18)] sm:bottom-10 sm:right-12 sm:p-8">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-[#F05A1A]">Access Stamp</p>
+          <span className="rounded-full border border-[#F3C8B0] bg-[#FFF7EF] px-4 py-2 text-xs font-black uppercase tracking-wide text-[#F05A1A]">
+            Help card
+          </span>
+        </div>
+        <p className="mt-4 text-base font-semibold text-[#5F6875] sm:mt-5">Work & interviews</p>
+        <div className="my-4 h-px bg-[#EED8C6] sm:my-5" />
+        <h2 className="text-xl font-black tracking-[-0.03em] text-[#132033] sm:text-2xl">
+          Job interview adjustment card
+        </h2>
+        <p className="mt-3 max-w-[390px] text-base leading-7 text-[#626B78] sm:mt-4 sm:text-lg sm:leading-8">
+          I&apos;m asking for reasonable adjustments so I can take part fairly.
+        </p>
+        <div className="mt-5 rounded-3xl border border-[#F2D1BE] bg-[#FFF7EF] p-4 text-sm font-bold leading-7 text-[#132033] sm:mt-6 sm:p-5 sm:text-base">
+          <span className="mr-2 text-2xl leading-none text-[#F05A1A]">&ldquo;</span>
+          I&apos;m asking for reasonable adjustments so I can take part in the interview fairly.
+        </div>
+      </article>
     </div>
   );
 }
@@ -107,57 +84,67 @@ export function HelpCardsHero({
   return (
     <section
       aria-labelledby="help-cards-hero-title"
-      className="px-5 py-12 sm:px-8 md:py-16 lg:px-10 lg:py-24 xl:py-[120px]"
+      className="relative overflow-hidden border-b border-[#EED8C6] bg-[radial-gradient(circle_at_74%_34%,rgba(249,115,22,0.14),transparent_34%),linear-gradient(180deg,#FFF1E6_0%,#FFF8F1_56%,#FFF7EF_100%)]"
     >
-      <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
-        <div className="max-w-xl">
-          <p className={HC_EYEBROW}>Pocket-sized support tools</p>
-          <h1 id="help-cards-hero-title" className={`${HC_HERO_TITLE} mt-4 text-[#132033]`}>
-            Know what to say when access fails.
-          </h1>
-          <p className={`${HC_MUTED} mt-5 max-w-lg text-lg leading-8 text-[#5B6472]`}>
-            Save practical disability access cards for interviews, appointments, travel, care reviews
-            and difficult conversations.
+      <div className="pointer-events-none absolute right-0 top-24 h-[520px] w-[520px] rounded-full bg-[#F97316]/10 blur-3xl" />
+      <div className="pointer-events-none absolute right-12 top-32 hidden h-[360px] w-[360px] rounded-full border border-[#F97316]/10 lg:block" />
+
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-12 px-5 py-14 sm:px-8 lg:grid-cols-[0.48fr_0.52fr] lg:gap-16 lg:px-10 lg:py-20 xl:py-24">
+        <div className="relative z-10 max-w-[680px] pb-4 sm:pb-0">
+          <p className="mb-5 text-xs font-black uppercase tracking-[0.28em] text-[#F05A1A] sm:text-sm">
+            Pocket-sized support tools
           </p>
-          <p className="mt-4 max-w-lg text-base leading-7 text-[#5B6472]">
+          <h1
+            id="help-cards-hero-title"
+            className="max-w-[720px] text-balance text-[clamp(2.75rem,7vw,5.5rem)] font-black leading-[0.93] tracking-[-0.065em] text-[#132033] xl:text-[clamp(3.7rem,7vw,7rem)]"
+          >
+            Say the right thing when access fails<span className="text-[#F05A1A]">.</span>
+          </h1>
+          <p className="mt-6 max-w-[610px] text-pretty text-lg leading-8 text-[#5F6875] sm:mt-7 sm:text-xl sm:leading-9">
+            Practical disability access cards for interviews, appointments, travel, care reviews and
+            difficult conversations.
+          </p>
+          <p className="mt-4 max-w-[610px] text-base leading-7 text-[#6D7480] sm:text-lg">
             Pick a situation. Save the card. Show it, read it, print it, or tailor it with AI.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-col gap-4 sm:mt-9 sm:flex-row">
             {onBuildPack ? (
-              <button type="button" onClick={onBuildPack} className={HC_BTN_PRIMARY}>
+              <button type="button" onClick={onBuildPack} className={BTN_PRIMARY}>
+                <span aria-hidden="true">▣</span>
                 Build my card pack
               </button>
             ) : (
-              <a href="#card-packs" className={HC_BTN_PRIMARY}>
+              <a href="#card-packs" className={BTN_PRIMARY}>
+                <span aria-hidden="true">▣</span>
                 Build my card pack
               </a>
             )}
             {onBrowse ? (
-              <button type="button" onClick={onBrowse} className={HC_BTN_SECONDARY}>
+              <button type="button" onClick={onBrowse} className={BTN_SECONDARY}>
+                <span aria-hidden="true">⌕</span>
                 Browse all cards
               </button>
             ) : (
-              <a href="#browse-cards" className={HC_BTN_SECONDARY}>
+              <a href="#situations" className={BTN_SECONDARY}>
+                <span aria-hidden="true">⌕</span>
                 Browse all cards
               </a>
             )}
           </div>
 
-          <p className="mt-6 inline-flex min-h-[44px] items-center gap-2.5 rounded-full border border-[#EAD7C5] bg-[rgba(255,255,255,0.78)] px-4 py-2 text-sm font-semibold text-[#132033]">
-            <span
-              className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F97316]/12 text-[#F97316]"
-              aria-hidden
-            >
-              <HelpCardIcon name="shield-check" className="h-3.5 w-3.5" />
+          <div className="mt-6 inline-flex max-w-full items-start gap-3 rounded-2xl border border-[#E6D2BF] bg-white/58 px-5 py-4 text-sm font-semibold leading-6 text-[#5F6875] shadow-sm backdrop-blur">
+            <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700">
+              ✓
             </span>
-            Source-backed prompts — not invented legal advice.
-          </p>
+            <span>
+              Created with disabled people and access experts. Source-backed practical prompts — not
+              legal advice.
+            </span>
+          </div>
         </div>
 
-        <div className="relative lg:pl-4">
-          <CardStackVisual />
-        </div>
+        <ProductCardStack />
       </div>
     </section>
   );

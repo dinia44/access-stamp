@@ -4,17 +4,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { HelpCardPreview } from "@/components/help-cards/help-card-preview";
 import { HelpCardActions } from "@/components/help-cards/help-card-actions";
 import { CardPacksSection } from "@/features/help-cards/CardPacksSection";
-import { FeaturedHelpCard } from "@/features/help-cards/FeaturedHelpCard";
 import { HelpCardDetail } from "@/features/help-cards/HelpCardDetail";
 import { HelpCardGrid } from "@/features/help-cards/HelpCardGrid";
 import { HelpCardsHero } from "@/features/help-cards/HelpCardsHero";
 import { HighPressureCards } from "@/features/help-cards/HighPressureCards";
+import { HowItWorksStrip } from "@/features/help-cards/HowItWorksStrip";
 import { SituationChooser } from "@/features/help-cards/SituationChooser";
 import { TrustStrip } from "@/features/help-cards/TrustStrip";
-import {
-  FEATURED_RESEARCH_CARD_SLUG,
-  HELP_CARD_PACKS,
-} from "@/features/help-cards/helpCards.data";
+import { HELP_CARD_PACKS } from "@/features/help-cards/helpCards.data";
 import { useHelpCardSearch } from "@/features/help-cards/useHelpCardSearch";
 import type { HelpCardCategoryFilter } from "@/features/help-cards/useHelpCardSearch";
 import { SOURCE_BACKED_HELP_CARDS } from "@/lib/help-cards";
@@ -23,15 +20,11 @@ export default function HelpCardsPage() {
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const detailRef = useRef<HTMLDivElement | null>(null);
   const browseRef = useRef<HTMLDivElement | null>(null);
+  const situationsRef = useRef<HTMLDivElement | null>(null);
   const packsRef = useRef<HTMLDivElement | null>(null);
 
   const cards = SOURCE_BACKED_HELP_CARDS;
   const cardsBySlug = useMemo(() => new Map(cards.map((card) => [card.slug, card])), [cards]);
-
-  const featured = useMemo(
-    () => cards.find((card) => card.slug === FEATURED_RESEARCH_CARD_SLUG) ?? cards[0],
-    [cards],
-  );
 
   const { filtered, hasActiveFilters, clearFilters, setCategory } = useHelpCardSearch(cards);
 
@@ -46,8 +39,8 @@ export default function HelpCardsPage() {
     }
   }, [activeCard]);
 
-  function scrollToBrowse() {
-    browseRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  function scrollToSituations() {
+    situationsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function scrollToPacks() {
@@ -60,26 +53,25 @@ export default function HelpCardsPage() {
 
   function handleSituationSelect(category: string) {
     setCategory(category as HelpCardCategoryFilter);
-    scrollToBrowse();
+    browseRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   return (
-    <div className="hc-landing min-h-screen bg-[#FFF7EF] text-[#132033] [background:radial-gradient(circle_at_20%_0%,rgba(255,221,200,0.45),transparent_32%),linear-gradient(180deg,#FFF7EF_0%,#FFF0E4_52%,#FFF7EF_100%)]">
+    <div className="hc-landing min-h-screen bg-[#FFF7EF] text-[#132033]">
       <div className="pointer-events-none fixed -left-[9999px] top-0 w-[960px]" aria-hidden>
         {cards.map((card) => (
           <HelpCardPreview key={card.slug} card={card} forExport />
         ))}
       </div>
 
-      <HelpCardsHero onBrowse={scrollToBrowse} onBuildPack={scrollToPacks} />
-
-      <SituationChooser cards={cards} onSelectCategory={handleSituationSelect} />
-
-      {featured ? (
-        <FeaturedHelpCard card={featured} onOpen={() => openCard(featured.slug)} />
-      ) : null}
+      <HelpCardsHero onBrowse={scrollToSituations} onBuildPack={scrollToPacks} />
+      <HowItWorksStrip />
 
       <HighPressureCards cardsBySlug={cardsBySlug} onOpenCard={openCard} />
+
+      <div ref={situationsRef}>
+        <SituationChooser cards={cards} onSelectCategory={handleSituationSelect} />
+      </div>
 
       <div ref={packsRef}>
         <CardPacksSection packs={HELP_CARD_PACKS} cardsBySlug={cardsBySlug} onOpenPack={openCard} />
@@ -88,7 +80,7 @@ export default function HelpCardsPage() {
       <TrustStrip />
 
       <div ref={browseRef} id="browse-cards" className="px-5 pb-16 sm:px-8 lg:px-10 lg:pb-24">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-[1200px]">
           <HelpCardGrid
             cards={filtered}
             onOpenCard={openCard}
