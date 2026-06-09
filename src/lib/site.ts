@@ -8,7 +8,7 @@ export const SITE_LOGO_SRC =
     ? process.env.NEXT_PUBLIC_LOGO_URL.trim()
     : CLOUDINARY_MEDIA.siteLogo;
 
-/** Intrinsic SVG dimensions (400×537) — layout constrains via max-height in header/footer. */
+/** Intrinsic SVG dimensions (400×537) — layout constrains via max-height in header/footer (header ~52–60px). */
 export const SITE_LOGO_WIDTH = 400;
 export const SITE_LOGO_HEIGHT = 537;
 

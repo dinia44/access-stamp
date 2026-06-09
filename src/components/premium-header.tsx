@@ -86,7 +86,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
             aria-label="Access Stamp home"
             onClick={closeMenus}
           >
-            <SiteLogo priority className="h-auto max-h-[44px] w-auto object-contain sm:max-h-[48px]" />
+            <SiteLogo priority className="h-auto max-h-[52px] w-auto object-contain sm:max-h-[56px] lg:max-h-[60px]" />
           </Link>
 
           <nav

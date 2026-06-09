@@ -65,7 +65,7 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)_minmax(0,0.9fr)] lg:gap-12">
           <div className="space-y-5">
             <Link href="/" aria-label="Access Stamp home">
-              <SiteLogo className="h-auto max-h-11 w-auto object-contain" />
+              <SiteLogo className="h-auto max-h-12 w-auto object-contain sm:max-h-14" />
             </Link>
             <p className="max-w-sm text-sm leading-7 text-[#c8d4d0]">
               Your trusted platform for accessible venues, practical advice and disability confidence every step of the
