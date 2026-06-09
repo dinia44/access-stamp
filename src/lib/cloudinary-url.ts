@@ -76,3 +76,8 @@ export function heroBackdropImageUrl(src: string): string {
 export function heroCollageImageUrl(src: string): string {
   return cloudinaryUrl(src, { width: 520, height: 390, crop: "fill", dpr: "auto" });
 }
+
+/** Help Cards hero photo — portrait-friendly, moderate weight. */
+export function helpCardsHeroImageUrl(src: string): string {
+  return cloudinaryUrl(src, { width: 720, height: 900, crop: "fill", dpr: "auto" });
+}

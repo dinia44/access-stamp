@@ -59,4 +59,8 @@ export const CLOUDINARY_MEDIA = {
   staticMapPreview:
     process.env.NEXT_PUBLIC_CLOUDINARY_STATIC_MAP_PREVIEW ??
     `${CLOUDINARY_BRAND}/v1780855479/stylized_map_with_route_and_pins_gq6hdu.png`,
+  /** Help Cards hero — interview conversation scene */
+  helpCardsHeroInterview:
+    process.env.NEXT_PUBLIC_CLOUDINARY_HELP_CARDS_HERO ??
+    "https://res.cloudinary.com/dtl4syjuh/image/upload/v1781037325/0d8001f9-4328-4946-b478-14182622343b_fvwtle.png",
 } as const;

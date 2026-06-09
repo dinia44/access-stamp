@@ -551,4 +551,46 @@ body[data-dyslexia-font="on"] {
   .guide-hero-meta-in {
     animation: guide-hero-fade-up 0.45s ease-out both;
   }
+
+  @keyframes hc-hero-float-a {
+    0%,
+    100% {
+      transform: rotate(-6deg) translateY(0);
+    }
+    50% {
+      transform: rotate(-6deg) translateY(-6px);
+    }
+  }
+
+  @keyframes hc-hero-float-b {
+    0%,
+    100% {
+      transform: rotate(5deg) translateY(0);
+    }
+    50% {
+      transform: rotate(5deg) translateY(-5px);
+    }
+  }
+
+  @keyframes hc-hero-float-c {
+    0%,
+    100% {
+      transform: rotate(-3deg) translateY(0);
+    }
+    50% {
+      transform: rotate(-3deg) translateY(-4px);
+    }
+  }
+
+  .hc-hero-float-a {
+    animation: hc-hero-float-a 8s ease-in-out infinite;
+  }
+
+  .hc-hero-float-b {
+    animation: hc-hero-float-b 9.5s ease-in-out infinite;
+  }
+
+  .hc-hero-float-c {
+    animation: hc-hero-float-c 10.5s ease-in-out infinite;
+  }
 }
