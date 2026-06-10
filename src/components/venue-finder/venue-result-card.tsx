@@ -10,16 +10,10 @@ type Props = {
   onSelect?: () => void;
 };
 
-export function VenueResultCard({ venue, index = 0, userCenter, selected, onSelect }: Props) {
+export function VenueResultCard({ venue, userCenter, selected, onSelect }: Props) {
   return (
     <li className="h-full">
-      <VenueGridCard
-        venue={venue}
-        index={index}
-        userCenter={userCenter}
-        selected={selected}
-        onSelect={onSelect}
-      />
+      <VenueGridCard venue={venue} userCenter={userCenter} selected={selected} onSelect={onSelect} />
     </li>
   );
 }

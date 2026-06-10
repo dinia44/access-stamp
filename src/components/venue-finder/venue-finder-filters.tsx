@@ -37,7 +37,7 @@ export function VenueFinderFilters({
           <button
             type="button"
             onClick={onClearFilters}
-            className="text-xs font-semibold text-[#17201C] underline-offset-2 hover:underline"
+            className="text-xs font-semibold text-[var(--color-secondary)] underline-offset-2 hover:underline"
           >
             Clear
           </button>

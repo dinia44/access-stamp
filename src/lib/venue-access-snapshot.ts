@@ -13,10 +13,10 @@ export type AccessConfidence = {
 
 export function getAccessConfidence(venue: Venue): AccessConfidence {
   const score = computeAccessScore(venue);
-  if (score >= 88) return { label: "Excellent access", score };
-  if (score >= 75) return { label: "Strong access", score };
-  if (score >= 60) return { label: "Mixed access", score };
-  return { label: "Needs checking", score };
+  if (score >= 90) return { label: "Excellent access", score };
+  if (score >= 75) return { label: "Good access", score };
+  if (score >= 60) return { label: "Limited access", score };
+  return { label: "Mixed access", score };
 }
 
 function featureLine(

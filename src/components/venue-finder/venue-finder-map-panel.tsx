@@ -3,22 +3,21 @@
 import dynamic from "next/dynamic";
 import type { Venue } from "@/lib/mock-data";
 import type { VenueCoordinates } from "@/lib/venue-coordinates";
+import { SITE_FOCUS } from "@/lib/site-design";
 import { VenueFinderSelectedCard } from "./venue-finder-selected-card";
 
 function MapLoadingState() {
   return (
     <div
-      className="flex h-full min-h-[280px] items-center justify-center rounded-[1.5rem] bg-gradient-to-br from-stone-200 to-stone-100"
+      className="flex h-full min-h-[280px] animate-pulse items-center justify-center rounded-2xl bg-gradient-to-br from-background-2 to-verified-pale"
       role="status"
       aria-live="polite"
       aria-busy="true"
+      aria-label="Map loading"
     >
       <div className="px-6 text-center">
-        <p className="text-sm font-semibold text-[#17201C]">Map loading</p>
-        <p className="mt-1 text-sm text-stone-500">
-          We&apos;re preparing nearby venue markers.
-        </p>
-        <p className="mt-2 text-xs text-stone-500">You can still browse all results below.</p>
+        <p className="text-sm font-semibold text-heading">Map loading</p>
+        <p className="mt-1 text-sm text-muted">Preparing nearby venue markers…</p>
       </div>
     </div>
   );
@@ -41,6 +40,7 @@ type Props = {
   onUserLocation?: (coords: VenueCoordinates) => void;
   className?: string;
   mapHeightClass?: string;
+  onOpenFullMap?: () => void;
 };
 
 export function VenueFinderMapPanel({
@@ -51,28 +51,36 @@ export function VenueFinderMapPanel({
   onSelectVenue,
   onUserLocation,
   className = "",
-  mapHeightClass = "h-[320px] sm:h-[360px] lg:h-[420px]",
+  mapHeightClass = "aspect-square",
+  onOpenFullMap,
 }: Props) {
   const selectedVenue = venues.find((venue) => venue.slug === selectedSlug) ?? null;
 
   return (
     <div className={`space-y-3 ${className}`}>
-      <div className="overflow-hidden rounded-[2rem] border border-stone-200 bg-stone-100/70 p-4 shadow-sm">
-        <div className="mb-3 px-1">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">Map</p>
-          <p className="mt-1 text-sm font-semibold text-[#17201C]">{locationLabel.trim() || "UK venues"}</p>
-          <p className="mt-1 text-xs text-[#4F5A53]">
-            Tap a marker to preview access detail. Use location controls to centre the map on you.
-          </p>
+      <div className="rounded-[2rem] border border-border bg-background-2 p-5 shadow-sm">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-semibold tracking-[-0.03em] text-heading">Explore on map</h2>
+            <p className="mt-1 text-xs text-muted">{locationLabel.trim() || "UK venues"}</p>
+          </div>
+          <button
+            type="button"
+            className={`rounded-xl bg-card px-3 py-2 text-xs font-semibold text-heading shadow-sm transition hover:bg-background ${SITE_FOCUS}`}
+            onClick={onOpenFullMap}
+          >
+            Open full map
+          </button>
         </div>
-        <div className={mapHeightClass}>
+
+        <div className={`overflow-hidden rounded-2xl bg-background-2 ${mapHeightClass}`}>
           <VenueFinderMap
             venues={venues}
             selectedSlug={selectedSlug}
             mapCenter={mapCenter}
             onSelectVenue={onSelectVenue}
             onUserLocation={onUserLocation}
-            className="h-full rounded-[1.5rem] border-0"
+            className="h-full min-h-[280px] rounded-2xl border-0"
           />
         </div>
       </div>

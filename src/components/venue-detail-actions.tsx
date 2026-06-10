@@ -3,30 +3,11 @@
 import { useSyncExternalStore, useState } from "react";
 import { Button } from "@/components/ui";
 
-const STORAGE_KEY = "access-stamp-saved-venues";
-const SAVED_CHANGE_EVENT = "access-stamp-saved-change";
-
-function readSaved(): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    const parsed = raw ? (JSON.parse(raw) as unknown) : [];
-    return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
-  } catch {
-    return [];
-  }
-}
-
-function subscribe(cb: () => void) {
-  if (typeof window === "undefined") return () => {};
-  const run = () => cb();
-  window.addEventListener("storage", run);
-  window.addEventListener(SAVED_CHANGE_EVENT, run);
-  return () => {
-    window.removeEventListener("storage", run);
-    window.removeEventListener(SAVED_CHANGE_EVENT, run);
-  };
-}
+import {
+  readSavedVenueSlugs,
+  subscribeSavedVenues,
+  toggleSavedVenueSlug,
+} from "@/lib/saved-venues";
 
 type Props = {
   slug: string;
@@ -37,17 +18,13 @@ export function VenueDetailActions({ slug, venueName }: Props) {
   const [shareLabel, setShareLabel] = useState("Share");
 
   const saved = useSyncExternalStore(
-    subscribe,
-    () => readSaved().includes(slug),
+    subscribeSavedVenues,
+    () => readSavedVenueSlugs().includes(slug),
     () => false,
   );
 
   function toggleSave() {
-    const next = readSaved();
-    const has = next.includes(slug);
-    const updated = has ? next.filter((s) => s !== slug) : [...next, slug];
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    window.dispatchEvent(new Event(SAVED_CHANGE_EVENT));
+    toggleSavedVenueSlug(slug);
   }
 
   async function onShare() {

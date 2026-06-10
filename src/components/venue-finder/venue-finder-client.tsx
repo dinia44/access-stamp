@@ -16,8 +16,12 @@ import {
   type VenueFinderSearchState,
 } from "@/lib/venue-finder-params";
 import { VF_BTN_SECONDARY, VF_PAGE_BG } from "@/lib/venue-finder-cro";
+import { BottomVenueCTA } from "./bottom-venue-cta";
+import { QuickFilterRow } from "./quick-filter-row";
+import { SavedVenuesCard } from "./saved-venues-card";
 import { VenueFinderAiCard } from "./venue-finder-ai-card";
-import { VenueFinderFilters } from "./venue-finder-filters";
+import { VenueFinderFilterDrawer } from "./venue-finder-filter-drawer";
+import { VenueFinderHeader } from "./venue-finder-header";
 import { VenueFinderHero } from "./venue-finder-hero";
 import { VenueFinderMapPanel } from "./venue-finder-map-panel";
 import { VenueFinderMobileBar } from "./venue-finder-mobile-bar";
@@ -35,7 +39,7 @@ function VenueFinderEmptyState() {
   return (
     <section
       aria-labelledby="empty-state-heading"
-      className="mt-6 overflow-hidden rounded-[2rem] border border-black/10 bg-white shadow-sm"
+      className="mt-6 overflow-hidden rounded-[2rem] border border-border bg-card shadow-sm"
     >
       <div className="grid gap-0 md:grid-cols-[180px_minmax(0,1fr)]">
         <div className="relative hidden min-h-[180px] md:block">
@@ -48,10 +52,10 @@ function VenueFinderEmptyState() {
           <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/20" aria-hidden="true" />
         </div>
         <div className="p-8 text-center md:text-left">
-          <h2 id="empty-state-heading" className="text-xl font-semibold text-[#17201C]">
+          <h2 id="empty-state-heading" className="text-xl font-semibold text-heading">
             No matching venues found
           </h2>
-          <p className="mt-2 text-base leading-7 text-[#4F5A53]">
+          <p className="mt-2 text-base leading-7 text-muted">
             Try removing a filter, searching a nearby town, or suggest a venue for us to check.
           </p>
           <Link href="/submit-venue" className={`${VF_BTN_SECONDARY} mt-5 inline-flex`}>
@@ -77,37 +81,13 @@ function VenueFinderHistorySync({
   return null;
 }
 
-function VenueFinderSupportSection() {
-  return (
-    <section
-      aria-labelledby="vf-support-heading"
-      className="border-t border-black/10 bg-white/60 px-4 py-12 sm:px-6 lg:px-8"
-    >
-      <div className="mx-auto max-w-7xl rounded-[2rem] border border-black/10 bg-white p-8 shadow-sm">
-        <h2 id="vf-support-heading" className="text-2xl font-semibold tracking-[-0.03em] text-[#17201C]">
-          Need help planning your visit?
-        </h2>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-[#4F5A53]">
-          Open a venue access report for practical detail, or use Access Stamp AI to describe your access
-          needs in plain language.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/advice" className={VF_BTN_SECONDARY}>
-            Browse practical guides
-          </Link>
-          <Link href="/submit-venue" className={VF_BTN_SECONDARY}>
-            Suggest a venue
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function VenueFinderInteractive({ venues, initial }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const resultsRef = useRef<HTMLElement>(null);
+  const desktopMapRef = useRef<HTMLDivElement>(null);
+  const mobileMapRef = useRef<HTMLDivElement>(null);
+  const searchPanelRef = useRef<HTMLDivElement>(null);
 
   const [query, setQuery] = useState(initial.query);
   const [location, setLocation] = useState(initial.location);
@@ -116,7 +96,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [locating, setLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const syncFromHistory = useCallback((state: VenueFinderSearchState) => {
@@ -230,6 +210,17 @@ function VenueFinderInteractive({ venues, initial }: Props) {
     resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
+  const handleChangeLocation = useCallback(() => {
+    searchPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const input = searchPanelRef.current?.querySelector<HTMLInputElement>("input[name='search']");
+    input?.focus();
+  }, []);
+
+  const handleOpenFullMap = useCallback(() => {
+    const target = desktopMapRef.current ?? mobileMapRef.current;
+    target?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
   const aiPrefill = [query, location].filter(Boolean).join(" — ") || undefined;
   const searchState = useMemo(
     () => ({ query, location, filters: selectedFilters, center: mapCenter ?? undefined }),
@@ -238,50 +229,41 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   const hasSearchContext = hasVenueFinderSearchContext(searchState);
 
   return (
-    <main className={`vf-page min-h-screen ${VF_PAGE_BG} text-[#17201C]`}>
-      <SetChatContext page={{ kind: "venue-finder" }} />
+    <>
+      <VenueFinderHeader />
 
-      <VenueFinderHero />
+      <main className={`vf-page min-h-screen ${VF_PAGE_BG}`}>
+        <SetChatContext page={{ kind: "venue-finder" }} />
 
-      <VenueSearchPanel
-        query={query}
-        location={location}
-        selectedFilters={selectedFilters}
-        locating={locating}
-        locationError={locationError}
-        onQueryChange={setQuery}
-        onLocationChange={(value) => {
-          setLocation(value);
-          if (locationError) setLocationError(null);
-        }}
-        onToggleFilter={toggleFilter}
-        onSearch={handleSearch}
-        onUseLocation={handleUseLocation}
-        onOpenMobileFilters={() => setMobileFiltersOpen(true)}
-      />
+        <VenueFinderHero />
 
-      <VenueTrustStrip />
+        <div ref={searchPanelRef}>
+          <VenueSearchPanel
+            query={query}
+            location={location}
+            locating={locating}
+            locationError={locationError}
+            onQueryChange={setQuery}
+            onLocationChange={setLocation}
+            onSearch={handleSearch}
+            onUseLocation={handleUseLocation}
+          />
+        </div>
 
-      <section className="mx-auto grid max-w-7xl gap-8 px-4 py-12 pb-28 sm:px-6 lg:grid-cols-[280px_1fr] lg:pb-12 xl:grid-cols-[280px_1fr_380px] lg:px-8">
-        <aside className="hidden lg:block" aria-label="Access filters">
-          <div className="sticky top-24 rounded-[1.5rem] border border-black/10 bg-white/75 p-5 shadow-sm backdrop-blur">
-            <VenueFinderFilters
-              selectedFilters={selectedFilters}
-              onToggleFilter={toggleFilter}
-              onClearFilters={clearFilters}
-              idPrefix="vf-sidebar"
-            />
-          </div>
-        </aside>
+        <QuickFilterRow
+          selectedFilters={selectedFilters}
+          onToggleFilter={toggleFilter}
+          onOpenMoreFilters={() => setFiltersOpen(true)}
+        />
 
-        <div className="space-y-5">
-          <section
-            ref={resultsRef}
-            id="venue-results"
-            aria-labelledby="venue-results-heading"
-            aria-busy="false"
-          >
-            <div className="mb-6 lg:hidden">
+        <VenueTrustStrip />
+
+        <section
+          ref={resultsRef}
+          className="mx-auto grid max-w-7xl gap-8 px-4 py-12 pb-28 sm:px-6 lg:grid-cols-[1fr_360px] lg:px-8 lg:pb-12"
+        >
+          <div className="space-y-6">
+            <div className="mb-2 lg:hidden" ref={mobileMapRef}>
               <VenueFinderMapPanel
                 venues={filtered}
                 locationLabel={location}
@@ -289,73 +271,85 @@ function VenueFinderInteractive({ venues, initial }: Props) {
                 mapCenter={mapCenter}
                 onSelectVenue={setSelectedSlug}
                 onUserLocation={handleUserLocation}
+                onOpenFullMap={handleOpenFullMap}
               />
             </div>
 
-            <VenueResultsHeader
-              resultCount={filtered.length}
-              locating={locating}
-              location={location}
-              hasSearchContext={hasSearchContext}
-              selectedFilters={selectedFilters}
-              onRemoveFilter={toggleFilter}
-            />
+            <section id="venue-results" aria-labelledby="venue-results-heading" aria-busy="false">
+              <VenueResultsHeader
+                resultCount={filtered.length}
+                locating={locating}
+                location={location}
+                hasSearchContext={hasSearchContext}
+                selectedFilters={selectedFilters}
+                onRemoveFilter={toggleFilter}
+                onChangeLocation={handleChangeLocation}
+              />
 
-            {filtered.length ? (
-              <ul className="mt-6 grid grid-cols-1 gap-6">
-                {filtered.map((venue, index) => (
-                  <VenueResultCard
-                    key={venue.slug}
-                    venue={venue}
-                    index={index}
-                    userCenter={mapCenter}
-                    selected={selectedSlug === venue.slug}
-                    onSelect={() => setSelectedSlug(venue.slug)}
-                  />
-                ))}
-              </ul>
-            ) : (
-              <VenueFinderEmptyState />
-            )}
+              {filtered.length ? (
+                <ul className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-2">
+                  {filtered.map((venue, index) => (
+                    <VenueResultCard
+                      key={venue.slug}
+                      venue={venue}
+                      index={index}
+                      userCenter={mapCenter}
+                      selected={selectedSlug === venue.slug}
+                      onSelect={() => setSelectedSlug(venue.slug)}
+                    />
+                  ))}
+                </ul>
+              ) : (
+                <VenueFinderEmptyState />
+              )}
 
-            <div className="mt-8 xl:hidden">
-              <VenueFinderAiCard prefill={aiPrefill} />
-            </div>
-          </section>
-        </div>
-
-        <aside className="hidden xl:block" aria-label="Map and visit planner">
-          <div className="sticky top-24 space-y-5">
-            <VenueFinderMapPanel
-              venues={filtered}
-              locationLabel={location}
-              selectedSlug={selectedSlug}
-              mapCenter={mapCenter}
-              onSelectVenue={setSelectedSlug}
-              onUserLocation={handleUserLocation}
-              mapHeightClass="h-[360px]"
-            />
-            <VenueFinderAiCard prefill={aiPrefill} />
+              <div className="mt-8 lg:hidden">
+                <VenueFinderAiCard prefill={aiPrefill} />
+              </div>
+              <div className="mt-6 lg:hidden">
+                <SavedVenuesCard venues={venues} />
+              </div>
+            </section>
           </div>
-        </aside>
-      </section>
 
-      <VenueFinderSupportSection />
+          <aside className="hidden space-y-6 lg:sticky lg:top-28 lg:self-start" aria-label="Map and visit planner">
+            <div ref={desktopMapRef}>
+              <VenueFinderMapPanel
+                venues={filtered}
+                locationLabel={location}
+                selectedSlug={selectedSlug}
+                mapCenter={mapCenter}
+                onSelectVenue={setSelectedSlug}
+                onUserLocation={handleUserLocation}
+                onOpenFullMap={handleOpenFullMap}
+              />
+            </div>
+            <VenueFinderAiCard prefill={aiPrefill} />
+            <SavedVenuesCard venues={venues} />
+          </aside>
+        </section>
 
-      <VenueFinderMobileBar
-        open={mobileFiltersOpen}
-        onOpenChange={setMobileFiltersOpen}
-        filterCount={selectedFilters.length}
-        selectedFilters={selectedFilters}
-        onToggleFilter={toggleFilter}
-        onClearFilters={clearFilters}
-        onSearch={handleSearch}
-      />
+        <BottomVenueCTA />
 
-      <Suspense fallback={null}>
-        <VenueFinderHistorySync onSync={syncFromHistory} />
-      </Suspense>
-    </main>
+        <VenueFinderMobileBar
+          onOpenChange={setFiltersOpen}
+          filterCount={selectedFilters.length}
+          onSearch={handleSearch}
+        />
+
+        <VenueFinderFilterDrawer
+          open={filtersOpen}
+          onOpenChange={setFiltersOpen}
+          selectedFilters={selectedFilters}
+          onToggleFilter={toggleFilter}
+          onClearFilters={clearFilters}
+        />
+
+        <Suspense fallback={null}>
+          <VenueFinderHistorySync onSync={syncFromHistory} />
+        </Suspense>
+      </main>
+    </>
   );
 }
 
