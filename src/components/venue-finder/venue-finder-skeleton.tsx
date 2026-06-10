@@ -47,7 +47,7 @@ function SidebarSkeleton() {
 
 export function VenueFinderSkeleton() {
   return (
-    <main className="vf-page min-h-screen">
+    <div className="vf-page min-h-screen bg-background">
       <VenueFinderHero />
 
       <div className="bg-background-2">
@@ -75,6 +75,6 @@ export function VenueFinderSkeleton() {
           <SidebarSkeleton />
         </div>
       </div>
-    </main>
+    </div>
   );
 }

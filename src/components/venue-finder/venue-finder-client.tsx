@@ -21,7 +21,6 @@ import { QuickFilterRow } from "./quick-filter-row";
 import { SavedVenuesCard } from "./saved-venues-card";
 import { VenueFinderAiCard } from "./venue-finder-ai-card";
 import { VenueFinderFilterDrawer } from "./venue-finder-filter-drawer";
-import { VenueFinderHeader } from "./venue-finder-header";
 import { VenueFinderHero } from "./venue-finder-hero";
 import { VenueFinderMapPanel } from "./venue-finder-map-panel";
 import { VenueFinderMobileBar } from "./venue-finder-mobile-bar";
@@ -85,8 +84,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const resultsRef = useRef<HTMLElement>(null);
-  const desktopMapRef = useRef<HTMLDivElement>(null);
-  const mobileMapRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
   const searchPanelRef = useRef<HTMLDivElement>(null);
 
   const [query, setQuery] = useState(initial.query);
@@ -217,8 +215,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   }, []);
 
   const handleOpenFullMap = useCallback(() => {
-    const target = desktopMapRef.current ?? mobileMapRef.current;
-    target?.scrollIntoView({ behavior: "smooth", block: "start" });
+    mapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   const aiPrefill = [query, location].filter(Boolean).join(" — ") || undefined;
@@ -229,10 +226,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   const hasSearchContext = hasVenueFinderSearchContext(searchState);
 
   return (
-    <>
-      <VenueFinderHeader />
-
-      <main className={`vf-page min-h-screen ${VF_PAGE_BG}`}>
+    <div className={`vf-page min-h-screen ${VF_PAGE_BG}`}>
         <SetChatContext page={{ kind: "venue-finder" }} />
 
         <VenueFinderHero />
@@ -262,19 +256,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
           ref={resultsRef}
           className="mx-auto grid max-w-7xl gap-8 px-4 py-12 pb-28 sm:px-6 lg:grid-cols-[1fr_360px] lg:px-8 lg:pb-12"
         >
-          <div className="space-y-6">
-            <div className="mb-2 lg:hidden" ref={mobileMapRef}>
-              <VenueFinderMapPanel
-                venues={filtered}
-                locationLabel={location}
-                selectedSlug={selectedSlug}
-                mapCenter={mapCenter}
-                onSelectVenue={setSelectedSlug}
-                onUserLocation={handleUserLocation}
-                onOpenFullMap={handleOpenFullMap}
-              />
-            </div>
-
+          <div className="order-2 space-y-6 lg:order-1">
             <section id="venue-results" aria-labelledby="venue-results-heading" aria-busy="false">
               <VenueResultsHeader
                 resultCount={filtered.length}
@@ -302,18 +284,14 @@ function VenueFinderInteractive({ venues, initial }: Props) {
               ) : (
                 <VenueFinderEmptyState />
               )}
-
-              <div className="mt-8 lg:hidden">
-                <VenueFinderAiCard prefill={aiPrefill} />
-              </div>
-              <div className="mt-6 lg:hidden">
-                <SavedVenuesCard venues={venues} />
-              </div>
             </section>
           </div>
 
-          <aside className="hidden space-y-6 lg:sticky lg:top-28 lg:self-start" aria-label="Map and visit planner">
-            <div ref={desktopMapRef}>
+          <aside
+            className="order-1 space-y-6 lg:sticky lg:top-28 lg:order-2 lg:self-start"
+            aria-label="Map and visit planner"
+          >
+            <div ref={mapRef}>
               <VenueFinderMapPanel
                 venues={filtered}
                 locationLabel={location}
@@ -348,8 +326,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
         <Suspense fallback={null}>
           <VenueFinderHistorySync onSync={syncFromHistory} />
         </Suspense>
-      </main>
-    </>
+    </div>
   );
 }
 

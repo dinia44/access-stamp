@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { VenueFinderHeader } from "@/components/venue-finder/venue-finder-header";
 import "./venue-finder.css";
 
 export const metadata: Metadata = {
@@ -8,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default function VenueFinderLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <VenueFinderHeader />
+      {children}
+    </>
+  );
 }

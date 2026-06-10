@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { VenueFinderClient } from "@/components/venue-finder/venue-finder-client";
+import { VenueFinderSkeleton } from "@/components/venue-finder/venue-finder-skeleton";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
 import { parseVenueFinderSearchParams } from "@/lib/venue-finder-params";
 
@@ -10,5 +12,9 @@ export default async function VenueFinderPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const initial = parseVenueFinderSearchParams(params);
 
-  return <VenueFinderClient venues={SAMPLE_VENUES} initial={initial} />;
+  return (
+    <Suspense fallback={<VenueFinderSkeleton />}>
+      <VenueFinderClient venues={SAMPLE_VENUES} initial={initial} />
+    </Suspense>
+  );
 }

@@ -13,6 +13,7 @@ export function readSavedVenueSlugs(): string[] {
 }
 
 export function writeSavedVenueSlugs(slugs: string[]) {
+  if (typeof window === "undefined") return;
   window.localStorage.setItem(SAVED_VENUES_STORAGE_KEY, JSON.stringify(slugs));
   window.dispatchEvent(new Event(SAVED_VENUES_CHANGE_EVENT));
 }
