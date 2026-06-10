@@ -1,6 +1,5 @@
 import { SetChatContext } from "@/components/chat/set-context";
 import { HomeHero } from "@/components/home/home-hero";
-import { HomeHeader } from "@/components/home/home-header";
 import { HomeHeroGuidanceCta } from "@/components/home/home-hero-guidance-cta";
 import { HomeHowItWorks } from "@/components/home/home-how-it-works";
 import { HomeLivedExperience } from "@/components/home/home-lived-experience";
@@ -20,7 +19,6 @@ export default function HomePage() {
     <div className={HOME_PAGE_SHELL}>
       <SetChatContext page={{ kind: "home" }} />
 
-      <HomeHeader />
       <HomeHero />
       <HomeUserJourneys />
       <HomeHeroGuidanceCta />
