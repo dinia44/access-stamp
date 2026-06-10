@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import type { Venue } from "@/lib/mock-data";
 import type { VenueCoordinates } from "@/lib/venue-coordinates";
+import { useMounted } from "@/hooks/use-mounted";
 import { SITE_FOCUS } from "@/lib/site-design";
 import { VenueFinderSelectedCard } from "./venue-finder-selected-card";
 
@@ -54,6 +55,7 @@ export function VenueFinderMapPanel({
   mapHeightClass = "aspect-square",
   onOpenFullMap,
 }: Props) {
+  const mounted = useMounted();
   const selectedVenue = venues.find((venue) => venue.slug === selectedSlug) ?? null;
 
   return (
@@ -74,14 +76,18 @@ export function VenueFinderMapPanel({
         </div>
 
         <div className={`overflow-hidden rounded-2xl bg-background-2 ${mapHeightClass}`}>
-          <VenueFinderMap
-            venues={venues}
-            selectedSlug={selectedSlug}
-            mapCenter={mapCenter}
-            onSelectVenue={onSelectVenue}
-            onUserLocation={onUserLocation}
-            className="h-full min-h-[280px] rounded-2xl border-0"
-          />
+          {mounted ? (
+            <VenueFinderMap
+              venues={venues}
+              selectedSlug={selectedSlug}
+              mapCenter={mapCenter}
+              onSelectVenue={onSelectVenue}
+              onUserLocation={onUserLocation}
+              className="h-full min-h-[280px] rounded-2xl border-0"
+            />
+          ) : (
+            <MapLoadingState />
+          )}
         </div>
       </div>
 

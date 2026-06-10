@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { SetChatContext } from "@/components/chat/set-context";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 import type { Venue } from "@/lib/mock-data";
@@ -71,11 +71,15 @@ function VenueFinderHistorySync({
 }: {
   onSync: (state: VenueFinderSearchState) => void;
 }) {
-  const searchParams = useSearchParams();
-
   useEffect(() => {
-    onSync(parseVenueFinderSearchParams(searchParams));
-  }, [searchParams, onSync]);
+    const syncFromLocation = () => {
+      const params = new URLSearchParams(window.location.search);
+      onSync(parseVenueFinderSearchParams(params));
+    };
+
+    window.addEventListener("popstate", syncFromLocation);
+    return () => window.removeEventListener("popstate", syncFromLocation);
+  }, [onSync]);
 
   return null;
 }
@@ -323,9 +327,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
           onClearFilters={clearFilters}
         />
 
-        <Suspense fallback={null}>
-          <VenueFinderHistorySync onSync={syncFromHistory} />
-        </Suspense>
+        <VenueFinderHistorySync onSync={syncFromHistory} />
     </div>
   );
 }
