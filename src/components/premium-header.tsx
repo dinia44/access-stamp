@@ -76,7 +76,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           className={cn(
-            "h-16 items-center gap-4 lg:h-[4.5rem]",
+            "relative z-20 h-16 items-center gap-4 lg:h-[4.5rem]",
             variant === "home" ? "grid grid-cols-[auto_1fr_auto] lg:grid-cols-[1fr_auto_1fr]" : "flex justify-between",
           )}
         >
@@ -130,7 +130,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
                 <div
                   role="menu"
                   aria-label="Resources"
-                  className="absolute right-0 mt-2 w-[22rem] rounded-2xl border border-[#F1D8C7] bg-white p-3 shadow-xl shadow-[#F04A16]/10"
+                  className="absolute right-0 z-30 mt-2 w-[22rem] rounded-2xl border border-[#F1D8C7] bg-white p-3 shadow-xl shadow-[#F04A16]/10"
                 >
                   {RESOURCE_GROUPS.map((group, groupIndex) => (
                     <div
@@ -192,7 +192,7 @@ export function PremiumHeader({ variant = "site", showSearchBand = variant === "
           <div
             role="search"
             aria-labelledby="site-search-label"
-            className="border-t border-[#F1D8C7] py-3"
+            className="relative z-10 border-t border-[#F1D8C7] py-3"
           >
             <div className="premium-panel flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
               <p id="site-search-label" className="shrink-0 text-sm font-semibold text-[#13201F]">
