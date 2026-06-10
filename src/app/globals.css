@@ -394,6 +394,20 @@ body[data-dyslexia-font="on"] {
     display: none !important;
   }
 
+  main {
+    background: white !important;
+  }
+
+  article {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  a {
+    color: black !important;
+    text-decoration: underline !important;
+  }
+
   .print-card,
   .help-card-print-area {
     break-inside: avoid;
@@ -592,5 +606,30 @@ body[data-dyslexia-font="on"] {
 
   .hc-hero-float-c {
     animation: hc-hero-float-c 10.5s ease-in-out infinite;
+  }
+}
+
+/* Prevent floating accessibility controls from covering page content */
+.accessibility-controls,
+.accessibility-widget,
+.accessibility-button,
+[data-accessibility-widget],
+[data-testid="accessibility-widget"] {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+}
+
+@media (max-width: 640px) {
+  .accessibility-controls,
+  .accessibility-widget,
+  .accessibility-button,
+  [data-accessibility-widget],
+  [data-testid="accessibility-widget"] {
+    right: 16px;
+    bottom: 16px;
+    max-width: 52px;
+    overflow: hidden;
   }
 }
