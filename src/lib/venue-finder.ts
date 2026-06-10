@@ -126,6 +126,12 @@ function matchesFeatureFilter(venue: Venue, key: string): boolean {
   if (key === "__hearing_loop") {
     return venue.tags.some((tag) => /hearing\s*loop/i.test(tag));
   }
+  if (key === "__seating_available") {
+    return (
+      venue.features["Turning space (150cm+)"] === "yes" ||
+      venue.tags.some((tag) => /spacious|seating/i.test(tag))
+    );
+  }
   return venue.features[key] === "yes";
 }
 

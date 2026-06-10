@@ -5,18 +5,30 @@ import type { Venue } from "@/lib/mock-data";
 import type { VenueCoordinates } from "@/lib/venue-coordinates";
 import { VenueFinderSelectedCard } from "./venue-finder-selected-card";
 
+function MapLoadingState() {
+  return (
+    <div
+      className="flex h-full min-h-[280px] items-center justify-center rounded-[1.5rem] bg-gradient-to-br from-stone-200 to-stone-100"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <div className="px-6 text-center">
+        <p className="text-sm font-semibold text-[#17201C]">Map loading</p>
+        <p className="mt-1 text-sm text-stone-500">
+          We&apos;re preparing nearby venue markers.
+        </p>
+        <p className="mt-2 text-xs text-stone-500">You can still browse all results below.</p>
+      </div>
+    </div>
+  );
+}
+
 const VenueFinderMap = dynamic(
   () => import("./venue-finder-map").then((mod) => mod.VenueFinderMap),
   {
     ssr: false,
-    loading: () => (
-      <div
-        className="grid h-full min-h-[280px] place-items-center rounded-2xl border border-[#F1D8C7] bg-[#FFF3E8] text-sm font-medium text-[#5E6A66]"
-        aria-hidden="true"
-      >
-        Loading map…
-      </div>
-    ),
+    loading: () => <MapLoadingState />,
   },
 );
 
@@ -45,12 +57,12 @@ export function VenueFinderMapPanel({
 
   return (
     <div className={`space-y-3 ${className}`}>
-      <div className="overflow-hidden rounded-2xl border border-[#F1D8C7] bg-white/95 shadow-[var(--shadow-soft)]">
-        <div className="border-b border-[#F1D8C7] px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#59682A]">Interactive map</p>
-          <p className="mt-1 text-sm font-semibold text-[#13201F]">{locationLabel.trim() || "UK venues"}</p>
-          <p className="mt-1 text-xs text-[#5E6A66]">
-            Tap a marker to preview access information. Use location controls to centre the map on you.
+      <div className="overflow-hidden rounded-[2rem] border border-stone-200 bg-stone-100/70 p-4 shadow-sm">
+        <div className="mb-3 px-1">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">Map</p>
+          <p className="mt-1 text-sm font-semibold text-[#17201C]">{locationLabel.trim() || "UK venues"}</p>
+          <p className="mt-1 text-xs text-[#4F5A53]">
+            Tap a marker to preview access detail. Use location controls to centre the map on you.
           </p>
         </div>
         <div className={mapHeightClass}>
@@ -60,7 +72,7 @@ export function VenueFinderMapPanel({
             mapCenter={mapCenter}
             onSelectVenue={onSelectVenue}
             onUserLocation={onUserLocation}
-            className="h-full rounded-none border-0"
+            className="h-full rounded-[1.5rem] border-0"
           />
         </div>
       </div>
