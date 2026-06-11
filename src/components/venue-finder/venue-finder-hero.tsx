@@ -6,12 +6,6 @@ const TRUST_POINTS = [
   "Built by disabled people",
 ] as const;
 
-const FLOATING_LABELS = [
-  { label: "Step-free entrance", className: "left-6 top-8" },
-  { label: "Accessible toilet", className: "bottom-16 right-8" },
-  { label: "Blue Badge parking", className: "bottom-8 left-10" },
-] as const;
-
 export function VenueFinderHero() {
   return (
     <section
@@ -54,31 +48,13 @@ export function VenueFinderHero() {
           </ul>
         </div>
 
-        <div className="relative">
-          <div className="aspect-[1.45/1] overflow-hidden rounded-[2rem] bg-background-2 shadow-[var(--shadow-lift)]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={CLOUDINARY_MEDIA.homepageVenueInterior}
-              alt="Warm café interior with accessible layout and spacious seating"
-              className="h-full w-full object-cover"
-            />
-          </div>
-
-          {FLOATING_LABELS.map((item) => (
-            <span
-              key={item.label}
-              className={`absolute ${item.className} rounded-full bg-card/95 px-4 py-2 text-sm font-semibold text-heading shadow-lg ring-1 ring-border backdrop-blur`}
-            >
-              {item.label}
-            </span>
-          ))}
-
-          <span
-            className="absolute right-6 top-6 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-secondary)] text-xs font-bold uppercase tracking-wide text-white shadow-lg"
-            aria-hidden="true"
-          >
-            AS
-          </span>
+        <div className="aspect-[1.45/1] overflow-hidden rounded-[2rem] bg-background-2 shadow-[var(--shadow-lift)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={CLOUDINARY_MEDIA.homepageVenueInterior}
+            alt="Warm café interior with accessible layout and spacious seating"
+            className="h-full w-full object-cover"
+          />
         </div>
       </div>
     </section>

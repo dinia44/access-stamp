@@ -81,17 +81,15 @@ export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) 
             <path d="M12 21s-6.7-4.4-9.2-8.6C1.1 9.2 2.6 5.5 6.2 5.1c1.9-.2 3.7.8 4.6 2.4.9-1.6 2.7-2.6 4.6-2.4 3.6.4 5.1 4.1 3.4 7.3C18.7 16.6 12 21 12 21z" />
           </svg>
         </button>
-
-        <div className="absolute bottom-3 left-3 flex items-center gap-2 rounded-full bg-card/95 px-3 py-1.5 shadow-md ring-1 ring-border">
-          <span className={`rounded-full px-2 py-1 text-xs font-bold ${scoreStyle.badgeClass}`}>
-            {confidence.score}
-          </span>
-          <span className="text-xs font-semibold text-[var(--color-secondary)]">{scoreStyle.label}</span>
-        </div>
       </div>
 
       <div className="p-4">
-        <p className="text-xs text-muted">{venue.type}</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs text-muted">{venue.type}</p>
+          <span className={`rounded-full px-2 py-1 text-xs font-bold ${scoreStyle.badgeClass}`}>
+            {confidence.score} · {scoreStyle.label}
+          </span>
+        </div>
         <h3 className="mt-1 text-lg font-semibold tracking-[-0.02em] text-heading">{venue.name}</h3>
         <p className="mt-1 text-sm text-muted">
           {formatVenueLocation(venue.location)}
