@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ComponentType } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import type { Venue } from "@/lib/mock-data";
 import type { VenueCoordinates } from "@/lib/venue-coordinates";
 import { SITE_FOCUS } from "@/lib/site-design";
@@ -64,6 +64,7 @@ type Props = {
   className?: string;
   mapHeightClass?: string;
   onOpenFullMap?: () => void;
+  mapEnabledByDefault?: boolean;
 };
 
 export function VenueFinderMapPanel({
@@ -76,8 +77,9 @@ export function VenueFinderMapPanel({
   className = "",
   mapHeightClass = "aspect-square",
   onOpenFullMap,
+  mapEnabledByDefault = false,
 }: Props) {
-  const [mapEnabled, setMapEnabled] = useState(false);
+  const [mapEnabled, setMapEnabled] = useState(mapEnabledByDefault);
   const [mapLoading, setMapLoading] = useState(false);
   const [MapComponent, setMapComponent] = useState<ComponentType<MapComponentProps> | null>(null);
   const selectedVenue = venues.find((venue) => venue.slug === selectedSlug) ?? null;
@@ -98,6 +100,12 @@ export function VenueFinderMapPanel({
         setMapLoading(false);
       });
   };
+
+  useEffect(() => {
+    if (mapEnabledByDefault) handleLoadMap();
+    // Only auto-load once when the panel is mounted on demand.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapEnabledByDefault]);
 
   return (
     <div className={`space-y-3 ${className}`}>

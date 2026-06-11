@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 import type { Venue } from "@/lib/mock-data";
 import type { VenueCoordinates } from "@/lib/venue-coordinates";
@@ -21,7 +21,6 @@ import { SavedVenuesCard } from "./saved-venues-card";
 import { VenueFinderAiCard } from "./venue-finder-ai-card";
 import { VenueFinderFilterDrawer } from "./venue-finder-filter-drawer";
 import { VenueFinderHero } from "./venue-finder-hero";
-import { VenueFinderMapPanel } from "./venue-finder-map-panel";
 import { VenueFinderMobileBar } from "./venue-finder-mobile-bar";
 import { VenueResultsHeader } from "./venue-results-header";
 import { VenueResultCard } from "./venue-result-card";
@@ -83,8 +82,9 @@ function VenueFinderHistorySync({
   return null;
 }
 
+type MapPanelComponent = typeof import("./venue-finder-map-panel").VenueFinderMapPanel;
+
 function VenueFinderInteractive({ venues, initial }: Props) {
-  const router = useRouter();
   const pathname = usePathname();
   const resultsRef = useRef<HTMLElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
@@ -98,6 +98,8 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   const [locating, setLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [MapPanel, setMapPanel] = useState<MapPanelComponent | null>(null);
+  const [mapPanelLoading, setMapPanelLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const syncFromHistory = useCallback((state: VenueFinderSearchState) => {
@@ -123,12 +125,13 @@ function VenueFinderInteractive({ venues, initial }: Props) {
             )
           : "";
       if (next === current) return;
-      router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+      const url = next ? `${pathname}?${next}` : pathname;
+      window.history.replaceState(window.history.state, "", url);
     }, 200);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [query, location, selectedFilters, mapCenter, pathname, router]);
+  }, [query, location, selectedFilters, mapCenter, pathname]);
 
   useEffect(() => {
     const parsed = parseCoordinatePair(location);
@@ -225,6 +228,14 @@ function VenueFinderInteractive({ venues, initial }: Props) {
     mapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
+  const handleLoadMapPanel = useCallback(() => {
+    if (MapPanel || mapPanelLoading) return;
+    setMapPanelLoading(true);
+    import("./venue-finder-map-panel")
+      .then((mod) => setMapPanel(() => mod.VenueFinderMapPanel))
+      .finally(() => setMapPanelLoading(false));
+  }, [MapPanel, mapPanelLoading]);
+
   const aiPrefill = [query, location].filter(Boolean).join(" — ") || undefined;
   const searchState = useMemo(
     () => ({ query, location, filters: selectedFilters, center: mapCenter ?? undefined }),
@@ -297,15 +308,39 @@ function VenueFinderInteractive({ venues, initial }: Props) {
             aria-label="Map and visit planner"
           >
             <div ref={mapRef}>
-              <VenueFinderMapPanel
-                venues={filtered}
-                locationLabel={location}
-                selectedSlug={selectedSlug}
-                mapCenter={mapCenter}
-                onSelectVenue={setSelectedSlug}
-                onUserLocation={handleUserLocation}
-                onOpenFullMap={handleOpenFullMap}
-              />
+              {MapPanel ? (
+                <MapPanel
+                  venues={filtered}
+                  locationLabel={location}
+                  selectedSlug={selectedSlug}
+                  mapCenter={mapCenter}
+                  onSelectVenue={setSelectedSlug}
+                  onUserLocation={handleUserLocation}
+                  onOpenFullMap={handleOpenFullMap}
+                  mapEnabledByDefault
+                />
+              ) : (
+                <div className="rounded-[2rem] border border-border bg-background-2 p-5 shadow-sm">
+                  <div className="mb-4">
+                    <h2 className="text-xl font-semibold tracking-[-0.03em] text-heading">Explore on map</h2>
+                    <p className="mt-1 text-xs text-muted">{location.trim() || "UK venues"}</p>
+                  </div>
+                  <div className="flex min-h-[280px] flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-background-2 to-verified-pale px-6 text-center">
+                    <p className="text-sm font-semibold text-heading">Interactive map</p>
+                    <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
+                      Load the map to explore venue markers near your search.
+                    </p>
+                    <button
+                      type="button"
+                      className={`${VF_BTN_SECONDARY} mt-5`}
+                      onClick={handleLoadMapPanel}
+                      disabled={mapPanelLoading}
+                    >
+                      {mapPanelLoading ? "Loading map…" : "Load map"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             <VenueFinderAiCard prefill={aiPrefill} />
             <SavedVenuesCard venues={venues} />
