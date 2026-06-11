@@ -1,13 +1,21 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, type ComponentType } from "react";
 import type { Venue } from "@/lib/mock-data";
 import type { VenueCoordinates } from "@/lib/venue-coordinates";
 import { SITE_FOCUS } from "@/lib/site-design";
 import { VF_BTN_PRIMARY } from "@/lib/venue-finder-cro";
 import { MapErrorBoundary } from "./map-error-boundary";
 import { VenueFinderSelectedCard } from "./venue-finder-selected-card";
+
+type MapComponentProps = {
+  venues: Venue[];
+  selectedSlug: string | null;
+  mapCenter: VenueCoordinates | null;
+  onSelectVenue: (slug: string | null) => void;
+  onUserLocation?: (coords: VenueCoordinates) => void;
+  className?: string;
+};
 
 function MapLoadingState({ label = "Preparing nearby venue markers…" }: { label?: string }) {
   return (
@@ -26,27 +34,25 @@ function MapLoadingState({ label = "Preparing nearby venue markers…" }: { labe
   );
 }
 
-function MapPlaceholder({ onLoad }: { onLoad: () => void }) {
+function MapPlaceholder({
+  loading,
+  onLoad,
+}: {
+  loading: boolean;
+  onLoad: () => void;
+}) {
   return (
     <div className="flex h-full min-h-[280px] flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-background-2 to-verified-pale px-6 text-center">
       <p className="text-sm font-semibold text-heading">Interactive map</p>
       <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
         Load the map to explore venue markers near your search. This keeps the page fast on first visit.
       </p>
-      <button type="button" className={`${VF_BTN_PRIMARY} mt-5`} onClick={onLoad}>
-        Load map
+      <button type="button" className={`${VF_BTN_PRIMARY} mt-5`} onClick={onLoad} disabled={loading}>
+        {loading ? "Loading map…" : "Load map"}
       </button>
     </div>
   );
 }
-
-const VenueFinderMap = dynamic(
-  () => import("./venue-finder-map").then((mod) => mod.VenueFinderMap),
-  {
-    ssr: false,
-    loading: () => <MapLoadingState />,
-  },
-);
 
 type Props = {
   venues: Venue[];
@@ -72,7 +78,26 @@ export function VenueFinderMapPanel({
   onOpenFullMap,
 }: Props) {
   const [mapEnabled, setMapEnabled] = useState(false);
+  const [mapLoading, setMapLoading] = useState(false);
+  const [MapComponent, setMapComponent] = useState<ComponentType<MapComponentProps> | null>(null);
   const selectedVenue = venues.find((venue) => venue.slug === selectedSlug) ?? null;
+
+  const handleLoadMap = () => {
+    if (MapComponent || mapLoading) return;
+
+    setMapLoading(true);
+    import("./venue-finder-map")
+      .then((mod) => {
+        setMapComponent(() => mod.VenueFinderMap);
+        setMapEnabled(true);
+      })
+      .catch(() => {
+        setMapEnabled(false);
+      })
+      .finally(() => {
+        setMapLoading(false);
+      });
+  };
 
   return (
     <div className={`space-y-3 ${className}`}>
@@ -92,18 +117,9 @@ export function VenueFinderMapPanel({
         </div>
 
         <div className={`overflow-hidden rounded-2xl bg-background-2 ${mapHeightClass}`}>
-          {mapEnabled ? (
-            <MapErrorBoundary
-              fallback={
-                <MapPlaceholder
-                  onLoad={() => {
-                    setMapEnabled(false);
-                    requestAnimationFrame(() => setMapEnabled(true));
-                  }}
-                />
-              }
-            >
-              <VenueFinderMap
+          {mapEnabled && MapComponent ? (
+            <MapErrorBoundary fallback={<MapPlaceholder loading={false} onLoad={handleLoadMap} />}>
+              <MapComponent
                 venues={venues}
                 selectedSlug={selectedSlug}
                 mapCenter={mapCenter}
@@ -112,8 +128,10 @@ export function VenueFinderMapPanel({
                 className="h-full min-h-[280px] rounded-2xl border-0"
               />
             </MapErrorBoundary>
+          ) : mapLoading ? (
+            <MapLoadingState />
           ) : (
-            <MapPlaceholder onLoad={() => setMapEnabled(true)} />
+            <MapPlaceholder loading={mapLoading} onLoad={handleLoadMap} />
           )}
         </div>
       </div>
