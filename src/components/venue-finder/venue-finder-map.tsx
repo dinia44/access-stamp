@@ -8,10 +8,11 @@ import Map, {
   type MapRef,
   type ViewStateChangeEvent,
 } from "react-map-gl/maplibre";
+import maplibregl from "maplibre-gl";
 import Supercluster from "supercluster";
 import type { Venue } from "@/lib/mock-data";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
-import { MAP_ATTRIBUTION, MAP_STYLE, MAPBOX_TOKEN } from "@/lib/map-config";
+import { MAP_ATTRIBUTION, MAP_STYLE } from "@/lib/map-config";
 import {
   attachVenueCoordinates,
   UK_MAP_DEFAULT,
@@ -82,6 +83,17 @@ function AccessStampPin({
   );
 }
 
+function syncBounds(map: maplibregl.Map): [number, number, number, number] | null {
+  const mapBounds = map.getBounds();
+  if (!mapBounds) return null;
+  return [
+    mapBounds.getWest(),
+    mapBounds.getSouth(),
+    mapBounds.getEast(),
+    mapBounds.getNorth(),
+  ];
+}
+
 export function VenueFinderMap({
   venues,
   selectedSlug,
@@ -98,6 +110,7 @@ export function VenueFinderMap({
   });
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
   const [zoom, setZoom] = useState(5.5);
+  const [mapReady, setMapReady] = useState(false);
 
   const mappableVenues = useMemo(() => attachVenueCoordinates(venues), [venues]);
 
@@ -129,65 +142,81 @@ export function VenueFinderMap({
 
   const fitToVenues = useCallback(
     (items: VenueWithCoordinates[], center?: VenueCoordinates | null) => {
-      const points = items.map((v) => v.coordinates);
-      if (center) points.push(center);
-      const nextBounds = boundsFromCoordinates(points, items.length === 1 ? 0.04 : 0.12);
-      if (!nextBounds) return;
-      mapRef.current?.fitBounds(nextBounds, { padding: 48, duration: 700, maxZoom: 14 });
+      const map = mapRef.current;
+      if (!map) return;
+
+      try {
+        const points = items.map((v) => v.coordinates);
+        if (center) points.push(center);
+        const nextBounds = boundsFromCoordinates(points, items.length === 1 ? 0.04 : 0.12);
+        if (nextBounds) {
+          map.fitBounds(nextBounds, { padding: 48, duration: 700, maxZoom: 14 });
+          return;
+        }
+      } catch {
+        // Map may not be ready for fitBounds yet.
+      }
+
+      if (center) {
+        try {
+          map.flyTo({ center: [center.lng, center.lat], zoom: 12, duration: 700 });
+        } catch {
+          // Ignore flyTo failures during teardown.
+        }
+      }
     },
     [],
   );
 
   useEffect(() => {
+    if (!mapReady) return;
+
     if (mappableVenues.length) {
       fitToVenues(mappableVenues, mapCenter);
-    } else if (mapCenter) {
-      mapRef.current?.flyTo({ center: [mapCenter.lng, mapCenter.lat], zoom: 12, duration: 700 });
+      return;
     }
-  }, [mappableVenues, mapCenter, fitToVenues]);
+
+    if (!mapCenter) return;
+
+    try {
+      mapRef.current?.flyTo({ center: [mapCenter.lng, mapCenter.lat], zoom: 12, duration: 700 });
+    } catch {
+      // Ignore flyTo failures during teardown.
+    }
+  }, [mapReady, mappableVenues, mapCenter, fitToVenues]);
 
   const handleMove = useCallback((event: ViewStateChangeEvent) => {
     setViewState(event.viewState);
     setZoom(event.viewState.zoom);
-    const mapBounds = event.target.getBounds();
-    if (!mapBounds) return;
-    setBounds([
-      mapBounds.getWest(),
-      mapBounds.getSouth(),
-      mapBounds.getEast(),
-      mapBounds.getNorth(),
-    ]);
+    const nextBounds = syncBounds(event.target);
+    if (nextBounds) setBounds(nextBounds);
   }, []);
 
   const handleLoad = useCallback(() => {
     const map = mapRef.current?.getMap();
     if (!map) return;
-    const mapBounds = map.getBounds();
-    if (!mapBounds) return;
-    setBounds([
-      mapBounds.getWest(),
-      mapBounds.getSouth(),
-      mapBounds.getEast(),
-      mapBounds.getNorth(),
-    ]);
+
+    const nextBounds = syncBounds(map);
+    if (nextBounds) setBounds(nextBounds);
+    setMapReady(true);
   }, []);
 
   return (
     <div className={`relative overflow-hidden rounded-2xl border border-border bg-background-2 ${className}`}>
       <Map
         ref={mapRef}
+        mapLib={maplibregl}
         {...viewState}
         onMove={handleMove}
         onLoad={handleLoad}
         mapStyle={MAP_STYLE}
         style={{ width: "100%", height: "100%" }}
         attributionControl={false}
-        reuseMaps
       >
         <NavigationControl position="top-right" showCompass={false} />
         <GeolocateControl
           position="bottom-right"
-          trackUserLocation
+          trackUserLocation={false}
           onGeolocate={(event) => {
             onUserLocation?.({ lat: event.coords.latitude, lng: event.coords.longitude });
           }}
@@ -202,39 +231,54 @@ export function VenueFinderMap({
           </Marker>
         ) : null}
 
-        {clusters.map((cluster) => {
-          const [lng, lat] = cluster.geometry.coordinates;
-          const props = cluster.properties as ClusterProperties;
+        {mapReady
+          ? clusters.map((cluster) => {
+              const [lng, lat] = cluster.geometry.coordinates;
+              const props = cluster.properties as ClusterProperties;
 
-          if (props.cluster) {
-            return (
-              <Marker key={`cluster-${cluster.id}`} longitude={lng} latitude={lat} anchor="center">
-                <AccessStampPin
-                  clusterCount={props.point_count}
-                  onClick={() => {
-                    const expansionZoom = Math.min(
-                      index.getClusterExpansionZoom(Number(cluster.id)),
-                      16,
-                    );
-                    mapRef.current?.flyTo({ center: [lng, lat], zoom: expansionZoom, duration: 500 });
-                  }}
-                />
-              </Marker>
-            );
-          }
+              if (props.cluster) {
+                return (
+                  <Marker
+                    key={`cluster-${cluster.id ?? `${lng}-${lat}`}`}
+                    longitude={lng}
+                    latitude={lat}
+                    anchor="center"
+                  >
+                    <AccessStampPin
+                      clusterCount={props.point_count}
+                      onClick={() => {
+                        try {
+                          const expansionZoom = Math.min(
+                            index.getClusterExpansionZoom(Number(cluster.id)),
+                            16,
+                          );
+                          mapRef.current?.flyTo({
+                            center: [lng, lat],
+                            zoom: expansionZoom,
+                            duration: 500,
+                          });
+                        } catch {
+                          mapRef.current?.flyTo({ center: [lng, lat], zoom: 12, duration: 500 });
+                        }
+                      }}
+                    />
+                  </Marker>
+                );
+              }
 
-          const venue = venueBySlug[props.venueSlug ?? ""];
-          if (!venue) return null;
+              const venue = venueBySlug[props.venueSlug ?? ""];
+              if (!venue) return null;
 
-          return (
-            <Marker key={venue.slug} longitude={lng} latitude={lat} anchor="bottom">
-              <AccessStampPin
-                selected={selectedSlug === venue.slug}
-                onClick={() => onSelectVenue(selectedSlug === venue.slug ? null : venue.slug)}
-              />
-            </Marker>
-          );
-        })}
+              return (
+                <Marker key={venue.slug} longitude={lng} latitude={lat} anchor="bottom">
+                  <AccessStampPin
+                    selected={selectedSlug === venue.slug}
+                    onClick={() => onSelectVenue(selectedSlug === venue.slug ? null : venue.slug)}
+                  />
+                </Marker>
+              );
+            })
+          : null}
       </Map>
 
       <div className="pointer-events-none absolute bottom-2 left-2 rounded-md bg-white/90 px-2 py-1 text-[10px] font-medium text-muted shadow-sm">

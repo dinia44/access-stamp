@@ -5,6 +5,7 @@ import type { Venue } from "@/lib/mock-data";
 import type { VenueCoordinates } from "@/lib/venue-coordinates";
 import { useMounted } from "@/hooks/use-mounted";
 import { SITE_FOCUS } from "@/lib/site-design";
+import { MapErrorBoundary } from "./map-error-boundary";
 import { VenueFinderSelectedCard } from "./venue-finder-selected-card";
 
 function MapLoadingState() {
@@ -77,14 +78,16 @@ export function VenueFinderMapPanel({
 
         <div className={`overflow-hidden rounded-2xl bg-background-2 ${mapHeightClass}`}>
           {mounted ? (
-            <VenueFinderMap
-              venues={venues}
-              selectedSlug={selectedSlug}
-              mapCenter={mapCenter}
-              onSelectVenue={onSelectVenue}
-              onUserLocation={onUserLocation}
-              className="h-full min-h-[280px] rounded-2xl border-0"
-            />
+            <MapErrorBoundary fallback={<MapLoadingState />}>
+              <VenueFinderMap
+                venues={venues}
+                selectedSlug={selectedSlug}
+                mapCenter={mapCenter}
+                onSelectVenue={onSelectVenue}
+                onUserLocation={onUserLocation}
+                className="h-full min-h-[280px] rounded-2xl border-0"
+              />
+            </MapErrorBoundary>
           ) : (
             <MapLoadingState />
           )}
