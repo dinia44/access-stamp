@@ -1,14 +1,15 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useState } from "react";
 import type { Venue } from "@/lib/mock-data";
 import type { VenueCoordinates } from "@/lib/venue-coordinates";
-import { useMounted } from "@/hooks/use-mounted";
 import { SITE_FOCUS } from "@/lib/site-design";
+import { VF_BTN_PRIMARY } from "@/lib/venue-finder-cro";
 import { MapErrorBoundary } from "./map-error-boundary";
 import { VenueFinderSelectedCard } from "./venue-finder-selected-card";
 
-function MapLoadingState() {
+function MapLoadingState({ label = "Preparing nearby venue markers…" }: { label?: string }) {
   return (
     <div
       className="flex h-full min-h-[280px] animate-pulse items-center justify-center rounded-2xl bg-gradient-to-br from-background-2 to-verified-pale"
@@ -19,8 +20,22 @@ function MapLoadingState() {
     >
       <div className="px-6 text-center">
         <p className="text-sm font-semibold text-heading">Map loading</p>
-        <p className="mt-1 text-sm text-muted">Preparing nearby venue markers…</p>
+        <p className="mt-1 text-sm text-muted">{label}</p>
       </div>
+    </div>
+  );
+}
+
+function MapPlaceholder({ onLoad }: { onLoad: () => void }) {
+  return (
+    <div className="flex h-full min-h-[280px] flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-background-2 to-verified-pale px-6 text-center">
+      <p className="text-sm font-semibold text-heading">Interactive map</p>
+      <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
+        Load the map to explore venue markers near your search. This keeps the page fast on first visit.
+      </p>
+      <button type="button" className={`${VF_BTN_PRIMARY} mt-5`} onClick={onLoad}>
+        Load map
+      </button>
     </div>
   );
 }
@@ -56,7 +71,7 @@ export function VenueFinderMapPanel({
   mapHeightClass = "aspect-square",
   onOpenFullMap,
 }: Props) {
-  const mounted = useMounted();
+  const [mapEnabled, setMapEnabled] = useState(false);
   const selectedVenue = venues.find((venue) => venue.slug === selectedSlug) ?? null;
 
   return (
@@ -77,8 +92,17 @@ export function VenueFinderMapPanel({
         </div>
 
         <div className={`overflow-hidden rounded-2xl bg-background-2 ${mapHeightClass}`}>
-          {mounted ? (
-            <MapErrorBoundary fallback={<MapLoadingState />}>
+          {mapEnabled ? (
+            <MapErrorBoundary
+              fallback={
+                <MapPlaceholder
+                  onLoad={() => {
+                    setMapEnabled(false);
+                    requestAnimationFrame(() => setMapEnabled(true));
+                  }}
+                />
+              }
+            >
               <VenueFinderMap
                 venues={venues}
                 selectedSlug={selectedSlug}
@@ -89,7 +113,7 @@ export function VenueFinderMapPanel({
               />
             </MapErrorBoundary>
           ) : (
-            <MapLoadingState />
+            <MapPlaceholder onLoad={() => setMapEnabled(true)} />
           )}
         </div>
       </div>
