@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { SetChatContext } from "@/components/chat/set-context";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 import type { Venue } from "@/lib/mock-data";
 import type { VenueCoordinates } from "@/lib/venue-coordinates";
@@ -118,7 +117,11 @@ function VenueFinderInteractive({ venues, initial }: Props) {
         center: mapCenter ?? undefined,
       });
       const current =
-        typeof window !== "undefined" ? window.location.search.replace(/^\?/, "") : "";
+        typeof window !== "undefined"
+          ? buildVenueFinderQueryString(
+              parseVenueFinderSearchParams(new URLSearchParams(window.location.search)),
+            )
+          : "";
       if (next === current) return;
       router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
     }, 200);
@@ -231,8 +234,6 @@ function VenueFinderInteractive({ venues, initial }: Props) {
 
   return (
     <div className={`vf-page min-h-screen ${VF_PAGE_BG}`}>
-        <SetChatContext page={{ kind: "venue-finder" }} />
-
         <VenueFinderHero />
 
         <div ref={searchPanelRef}>
