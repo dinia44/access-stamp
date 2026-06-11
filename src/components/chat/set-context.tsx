@@ -22,7 +22,7 @@ export function SetChatContext({ page }: { page: PageContext }) {
   const pageKey = pageContextKey(page);
 
   useEffect(() => {
-    setPage(pageRef.current);
+    setPage((current) => (pageContextKey(current) === pageKey ? current : pageRef.current));
   }, [pageKey, setPage]);
 
   return null;

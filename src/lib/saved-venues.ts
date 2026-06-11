@@ -1,20 +1,53 @@
 export const SAVED_VENUES_STORAGE_KEY = "access-stamp-saved-venues";
 export const SAVED_VENUES_CHANGE_EVENT = "access-stamp-saved-change";
 
-export function readSavedVenueSlugs(): string[] {
-  if (typeof window === "undefined") return [];
+const EMPTY_SLUGS: string[] = [];
+
+let cachedRaw: string | null | undefined;
+let cachedSlugs: string[] = EMPTY_SLUGS;
+
+function parseSlugs(raw: string | null): string[] {
+  if (!raw) return EMPTY_SLUGS;
   try {
-    const raw = window.localStorage.getItem(SAVED_VENUES_STORAGE_KEY);
-    const parsed = raw ? (JSON.parse(raw) as unknown) : [];
-    return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
+    const parsed = JSON.parse(raw) as unknown;
+    const slugs = Array.isArray(parsed)
+      ? parsed.filter((x): x is string => typeof x === "string")
+      : [];
+    return slugs.length ? slugs : EMPTY_SLUGS;
   } catch {
-    return [];
+    return EMPTY_SLUGS;
   }
+}
+
+function slugsEqual(a: string[], b: string[]): boolean {
+  return a.length === b.length && a.every((slug, index) => slug === b[index]);
+}
+
+/** Stable snapshot for useSyncExternalStore — returns the same array reference when data is unchanged. */
+export function getSavedVenueSlugsSnapshot(): string[] {
+  if (typeof window === "undefined") return EMPTY_SLUGS;
+  const raw = window.localStorage.getItem(SAVED_VENUES_STORAGE_KEY);
+  if (raw === cachedRaw) return cachedSlugs;
+  const next = parseSlugs(raw);
+  if (slugsEqual(next, cachedSlugs)) {
+    cachedRaw = raw;
+    return cachedSlugs;
+  }
+  cachedRaw = raw;
+  cachedSlugs = next;
+  return cachedSlugs;
+}
+
+export function readSavedVenueSlugs(): string[] {
+  return getSavedVenueSlugsSnapshot();
 }
 
 export function writeSavedVenueSlugs(slugs: string[]) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(SAVED_VENUES_STORAGE_KEY, JSON.stringify(slugs));
+  const raw = JSON.stringify(slugs);
+  window.localStorage.setItem(SAVED_VENUES_STORAGE_KEY, raw);
+  cachedRaw = raw;
+  cachedSlugs = slugs.length ? slugs : EMPTY_SLUGS;
   window.dispatchEvent(new Event(SAVED_VENUES_CHANGE_EVENT));
 }
 

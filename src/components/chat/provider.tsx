@@ -15,7 +15,7 @@ export type PageContext =
 
 type ChatCtx = {
   page: PageContext;
-  setPage: (p: PageContext) => void;
+  setPage: (p: PageContext | ((prev: PageContext) => PageContext)) => void;
   open: boolean;
   setOpen: (v: boolean) => void;
   draft: string;

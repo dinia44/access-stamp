@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useSyncExternalStore } from "react";
 import type { Venue } from "@/lib/mock-data";
-import { readSavedVenueSlugs, subscribeSavedVenues } from "@/lib/saved-venues";
+import { getSavedVenueSlugsSnapshot, subscribeSavedVenues } from "@/lib/saved-venues";
 import { getVenuePhoto } from "@/lib/venue-access-score";
 import { SITE_FOCUS } from "@/lib/site-design";
 
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function SavedVenuesCard({ venues }: Props) {
-  const savedSlugs = useSyncExternalStore(subscribeSavedVenues, readSavedVenueSlugs, () => []);
+  const savedSlugs = useSyncExternalStore(subscribeSavedVenues, getSavedVenueSlugsSnapshot, () => []);
 
   const savedVenues = useMemo(() => {
     const bySlug = new Map(venues.map((venue) => [venue.slug, venue]));
