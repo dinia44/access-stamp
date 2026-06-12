@@ -22,6 +22,7 @@ export const VENUE_FINDER_PROMO_VIDEO_POSTER =
 
 /** Primary navigation — shared header on every page */
 export const NAV_ITEMS: NavItem[] = [
+  { label: "Home", href: "/" },
   { label: "Venue Finder", href: "/venue-finder" },
   { label: "Advice", href: "/advice" },
   { label: "AI Tools", href: "/ai-toolkit" },

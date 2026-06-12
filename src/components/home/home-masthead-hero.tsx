@@ -10,11 +10,13 @@ export function HomeMastheadHero() {
       <RouteDecoration className="bottom-12 left-[-8%] h-24 w-[min(45vw,360px)] opacity-60" flip />
 
       <div className="relative mx-auto max-w-4xl text-center">
-        <Link href="/" className="mx-auto mb-8 inline-flex justify-center" aria-label="Access Stamp home">
-          <SiteLogo priority className="h-auto max-h-[72px] w-auto object-contain sm:max-h-[84px]" />
-        </Link>
+        <div className="mb-8 flex w-full flex-col items-center">
+          <Link href="/" className="inline-flex justify-center" aria-label="Access Stamp home">
+            <SiteLogo priority className="h-auto max-h-[72px] w-auto object-contain sm:max-h-[84px]" />
+          </Link>
+        </div>
 
-        <p className="inline-flex items-center rounded-full border border-[#F6CFB8] bg-[#FDE9DD] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-[#C8430F]">
+        <p className="mx-auto inline-flex items-center rounded-full border border-[#F6CFB8] bg-[#FDE9DD] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-[#C8430F]">
           Venues · Advice · Rights · AI tools
         </p>
 
