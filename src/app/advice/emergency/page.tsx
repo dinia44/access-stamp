@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
+import { adviceCategoryMetadata } from "@/lib/seo/advice-categories";
+
 import { AdviceCategoryLanding } from "@/components/advice/advice-category-landing";
+
+export const metadata: Metadata = adviceCategoryMetadata("emergency");
 
 export default function EmergencyPage() {
   return (

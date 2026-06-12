@@ -1,3 +1,6 @@
+import type { Metadata } from "next";
+import { adviceCategoryMetadata } from "@/lib/seo/advice-categories";
+
 import { AdviceArticleCard } from "@/components/advice/advice-article-card";
 import { AdviceManualCard } from "@/components/advice/advice-manual-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -5,6 +8,8 @@ import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { getAdviceArticles } from "@/lib/content/advice";
+
+export const metadata: Metadata = adviceCategoryMetadata("workplace");
 
 const QUICK_ACTIONS = [
   { label: "Access to Work: what can it pay for?", href: "/advice/access-to-work-what-employer-pays-vs-grant" },

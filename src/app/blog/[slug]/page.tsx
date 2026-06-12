@@ -5,6 +5,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Container } from "@/components/container";
 import { Badge, Card } from "@/components/ui";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/content/blog";
+import { buildPageMetadata } from "@/lib/seo/page-metadata";
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
@@ -19,10 +20,12 @@ export async function generateMetadata({
   const { slug } = await Promise.resolve(params);
   const p = await getBlogPostBySlug(slug);
   if (!p) return {};
-  return {
+  return buildPageMetadata({
     title: p.title,
-    description: p.sections[0]?.body.slice(0, 160),
-  };
+    description: p.excerpt || p.sections[0]?.body.slice(0, 160) || p.title,
+    path: `/blog/${p.slug}`,
+    type: "article",
+  });
 }
 
 export default async function BlogPostPage({

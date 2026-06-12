@@ -1,3 +1,6 @@
+import type { Metadata } from "next";
+import { adviceCategoryMetadata } from "@/lib/seo/advice-categories";
+
 import Link from "next/link";
 import { AdviceArticleCard } from "@/components/advice/advice-article-card";
 import { AdviceManualCard } from "@/components/advice/advice-manual-card";
@@ -5,6 +8,8 @@ import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
 import { getAdviceArticles } from "@/lib/content/advice";
+
+export const metadata: Metadata = adviceCategoryMetadata("new-to-disability");
 
 const PRIORITIES = [
   {

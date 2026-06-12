@@ -4,11 +4,9 @@ import { FadeIn } from "@/components/fade-in";
 import { PageHero, PageLayout } from "@/components/page-layout";
 import { Badge, Card } from "@/components/ui";
 import { getBlogPosts } from "@/lib/content/blog";
+import { staticPageMetadata } from "@/lib/seo/static-pages";
 
-export const metadata: Metadata = {
-  title: "Blog",
-  description: "Updates, explainers, and walkthroughs from the Access Stamp team — clear, practical, no charity tone.",
-};
+export const metadata: Metadata = staticPageMetadata("blog");
 
 export default async function BlogPage() {
   const posts = await getBlogPosts();

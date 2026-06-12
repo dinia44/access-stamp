@@ -4,12 +4,9 @@ import "./help-cards.css";
 import { helpCardPacks } from "@/data/helpCardPacks";
 import { HelpCardPackPreview } from "@/components/help-cards/HelpCardComponents";
 import { SetChatContext } from "@/components/chat/set-context";
+import { staticPageMetadata } from "@/lib/seo/static-pages";
 
-export const metadata: Metadata = {
-  title: "Help Cards",
-  description:
-    "Say the right thing when access fails. Practical disability access cards for interviews, appointments, travel, care reviews and difficult conversations.",
-};
+export const metadata: Metadata = staticPageMetadata("helpCards");
 
 const cardTypes = [
   {

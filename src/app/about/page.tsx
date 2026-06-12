@@ -5,11 +5,9 @@ import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout
 import { SiteLogo } from "@/components/site-logo";
 import { Badge, Button, Card } from "@/components/ui";
 import { VerificationBadge } from "@/components/verification-badge";
+import { staticPageMetadata } from "@/lib/seo/static-pages";
 
-export const metadata: Metadata = {
-  title: "About Access Stamp",
-  description: "Who we are, how we verify venue listings, and why Access Stamp exists — built from lived experience.",
-};
+export const metadata: Metadata = staticPageMetadata("about");
 
 const VALUES = [
   {

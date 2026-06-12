@@ -7,6 +7,9 @@ import { getThemeFallbackPhoto } from "@/lib/venue-finder-images";
 import { credibilityScore } from "@/lib/venue-finder";
 
 export function computeAccessScore(venue: Venue): number {
+  if (typeof venue.accessScore === "number") {
+    return venue.accessScore;
+  }
   const values = Object.values(venue.features);
   const yesCount = values.filter((value) => value === "yes").length;
   const knownCount = values.filter((value) => value !== "unknown").length;

@@ -1,33 +1,62 @@
 import Link from "next/link";
-import { FeaturedPracticalGuides } from "@/components/advice/featured-practical-guides";
-import { HOME_SECTION } from "@/components/home/home-theme";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { FEATURED_PRACTICAL_GUIDE_SLUGS } from "@/lib/featured-practical-guides";
+import { getAdviceArticles } from "@/lib/content/advice";
+import { ADVICE_CATEGORIES } from "@/lib/mock-data";
 
-export function HomePopularGuides() {
+function categoryLabel(categorySlug: string) {
+  return ADVICE_CATEGORIES.find((c) => c.href === `/advice/${categorySlug}`)?.title ?? "Advice";
+}
+
+export async function HomePopularGuides() {
+  const articles = await getAdviceArticles();
+  const bySlug = new Map(articles.map((article) => [article.slug, article]));
+  const featured = FEATURED_PRACTICAL_GUIDE_SLUGS.map((slug) => bySlug.get(slug)).filter(
+    (article): article is NonNullable<typeof article> => Boolean(article),
+  ).slice(0, 5);
+
   return (
-    <section className={`${HOME_SECTION} bg-[#FFF8F1] py-16 sm:py-20`} aria-labelledby="popular-guides-heading">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
-          <h2 id="popular-guides-heading" className="text-3xl font-bold tracking-[-0.03em] text-[#13201F] sm:text-4xl">
-            Popular accessibility guides
-          </h2>
-          <p className="mt-3 text-base leading-7 text-[#5E6A66]">
-            Each guide shows what it covers upfront — summaries, steps, and templates you can use straight away.
-          </p>
-        </div>
-
-        <div className="mt-10">
-          <FeaturedPracticalGuides limit={3} hideHeading theme="warm" />
-        </div>
-
-        <div className="mt-10">
+    <section className="border-t border-[#EFE5DA] bg-[#FDFBF8] py-16 sm:py-20" aria-labelledby="popular-guides-heading">
+      <PageContainer>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C8430F]">Popular guides</p>
+            <h2 id="popular-guides-heading" className="mt-3 font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[#20242E] sm:text-4xl">
+              Practical guides people read first
+            </h2>
+          </div>
           <Link
             href="/advice"
-            className="inline-flex min-h-[44px] items-center text-sm font-bold text-[#59682A] transition-colors hover:text-[#F04A16] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-4"
+            className="inline-flex min-h-[44px] shrink-0 items-center text-sm font-semibold text-[#C8430F] hover:underline"
           >
-            Browse all guides →
+            Browse all guides
           </Link>
         </div>
-      </div>
+
+        <ul className="mt-8 divide-y divide-[#EFE5DA] rounded-[24px] border border-[#EFE5DA] bg-white">
+          {featured.map((article) => (
+            <li key={article.slug}>
+              <Link
+                href={`/advice/${article.slug}`}
+                className="flex flex-col gap-2 px-5 py-5 transition hover:bg-[#FAF4ED] sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#C8430F]">
+                    {categoryLabel(article.categorySlug)}
+                  </p>
+                  <h3 className="mt-1 text-base font-semibold text-[#20242E]">{article.title}</h3>
+                  {article.excerpt ? (
+                    <p className="mt-1 line-clamp-2 text-sm leading-6 text-[#4A5263]">{article.excerpt}</p>
+                  ) : null}
+                </div>
+                <span className="shrink-0 text-sm font-medium text-[#76808F]">
+                  {article.readTimeMinutes ? `${article.readTimeMinutes} min read` : `Updated ${article.updated}`}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </PageContainer>
     </section>
   );
 }

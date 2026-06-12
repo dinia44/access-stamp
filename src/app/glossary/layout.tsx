@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
+import { staticPageMetadata } from "@/lib/seo/static-pages";
 
-export const metadata: Metadata = {
-  title: "Glossary \u2013 jargon buster",
-  description: "Plain-language definitions for common UK disability-related terms: PIP, Blue Badge, DFG, Changing Places, and more.",
-};
+export const metadata: Metadata = staticPageMetadata("glossary");
 
 export default function GlossaryLayout({ children }: { children: React.ReactNode }) {
   return children;

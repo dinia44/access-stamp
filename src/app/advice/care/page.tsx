@@ -16,6 +16,7 @@ import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { getAdviceArticles } from "@/lib/content/advice";
+import { adviceCategoryMetadata } from "@/lib/seo/advice-categories";
 
 const FEATURED = [
   "personal-budgets-and-direct-payments",
@@ -118,11 +119,7 @@ const PAPERWORK_HABITS = [
 export const dynamic = "force-dynamic";
 
 /** Distinct tab title — if you still see only “Access Stamp”, you’re not on the latest deployment URL. */
-export const metadata: Metadata = {
-  title: "Care & Support hub",
-  description:
-    "Personal budgets, employing PAs, Care Act assessments, respite, advocacy, and escalation when social care fails — UK-focused guides.",
-};
+export const metadata: Metadata = adviceCategoryMetadata("care");
 
 export default async function CarePage() {
   const articles = (await getAdviceArticles()).filter((a) => a.categorySlug === "care").sort((a, b) =>

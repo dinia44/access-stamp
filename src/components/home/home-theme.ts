@@ -19,7 +19,7 @@ export const HOME_COLORS = {
   success: "#2F7D32",
 } as const;
 
-export const HOME_PAGE_SHELL = "min-h-screen bg-[#FFF8F1] text-[#13201F]";
+export const HOME_PAGE_SHELL = "min-h-screen bg-[#FDFBF8] text-[#20242E]";
 
 export const HOME_SECTION = "border-t border-[#F1D8C7] py-16";
 
@@ -38,7 +38,7 @@ export const HOME_FOCUS =
 
 export const HOME_INPUT = `h-14 min-h-[44px] w-full rounded-2xl border border-[#E8C4A8] bg-white px-4 text-base text-[#13201F] placeholder:text-[#5E6A66]/80 transition-all duration-200 focus:border-[#F04A16] focus:outline-none focus:ring-4 focus:ring-[#F04A16]/15 ${HOME_FOCUS}`;
 
-export const HOME_BTN_PRIMARY = `inline-flex min-h-[44px] h-14 items-center justify-center gap-2 rounded-2xl bg-[#F04A16] px-6 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#D93E10] hover:shadow-lg hover:shadow-[#F04A16]/25 ${HOME_FOCUS}`;
+export const HOME_BTN_PRIMARY = `inline-flex min-h-[44px] h-14 items-center justify-center gap-2 rounded-full bg-[#EF5B25] px-6 text-base font-semibold text-white shadow-[0_8px_24px_-8px_rgba(239,91,37,0.4)] transition-all duration-200 hover:bg-[#D93E10] ${HOME_FOCUS}`;
 
 export const HOME_BTN_SECONDARY = `inline-flex min-h-[44px] h-14 items-center justify-center gap-2 rounded-2xl bg-[#59682A] px-6 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#45521F] hover:shadow-lg hover:shadow-[#59682A]/20 ${HOME_FOCUS}`;
 

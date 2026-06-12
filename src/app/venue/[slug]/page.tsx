@@ -1,20 +1,28 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FadeIn } from "@/components/fade-in";
 import { Container } from "@/components/container";
 import { PageSectionTitle } from "@/components/page-layout";
 import { Button, Card } from "@/components/ui";
 import { ConfidenceBadge, VerificationBadge } from "@/components/verification-badge";
+import { JsonLdScript } from "@/components/seo/json-ld-script";
+import { AccessCheckedMethodology } from "@/components/venue/access-checked-methodology";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
+import { getVenueBySlug } from "@/data/venues";
 import { SetChatContext } from "@/components/chat/set-context";
 import { VenueDetailActions } from "@/components/venue-detail-actions";
 import { VenuePhotoGallery } from "@/components/venue-photo-gallery";
 import { VenueVisitPlanActions } from "@/components/venue-visit-plan-actions";
+import { FeatureChip, getVenueFeatureChipItems } from "@/components/venue/feature-chip";
+import { ScoreDisplay } from "@/components/venue/score-display";
 import { WillItFitCard } from "@/components/venue/will-it-fit-card";
 import { VenueFitPlannerInline } from "@/components/venue/venue-fit-planner-inline";
+import { computeAccessScore } from "@/lib/venue-access-score";
+import { buildPageMetadata } from "@/lib/seo/page-metadata";
+import { buildBreadcrumbJsonLd, buildVenueLocalBusinessJsonLd } from "@/lib/seo/venue-jsonld";
 
 export function generateStaticParams() {
   return SAMPLE_VENUES.map((v) => ({ slug: v.slug }));
@@ -119,20 +127,16 @@ export async function generateMetadata({
   const resolved = await Promise.resolve(params);
   const v = SAMPLE_VENUES.find((x) => x.slug === resolved.slug);
   if (!v) return {};
-  return {
-    title: `${v.name} accessibility guide`,
+  const canonical = getVenueBySlug(resolved.slug);
+  const leadImage = v.photos?.[0]?.src ?? canonical?.images[0]?.src;
+  const title = `${v.name} accessibility guide`;
+  return buildPageMetadata({
+    title,
     description: v.summary,
-    openGraph: {
-      title: `${v.name} accessibility guide`,
-      description: v.summary,
-      type: "article",
-    },
-    twitter: {
-      card: "summary",
-      title: `${v.name} accessibility guide`,
-      description: v.summary,
-    },
-  };
+    path: `/venue/${v.slug}`,
+    image: leadImage,
+    type: "article",
+  });
 }
 
 export default async function VenueDetailPage({
@@ -149,26 +153,27 @@ export default async function VenueDetailPage({
     .filter(([, value]) => value === "yes")
     .map(([feature]) => feature);
   const custom = VENUE_COPY[v.slug];
+  const canonical = getVenueBySlug(v.slug);
+  const accessScore = computeAccessScore(v);
+  const featureChips = getVenueFeatureChipItems(v);
   const beforeYouGo = custom?.beforeYouGo ?? [
     "Call ahead to confirm current layout and staff support.",
     "Check Blue Badge parking and nearest drop-off before leaving.",
     "Confirm toilet access and doorway widths for your equipment.",
   ];
 
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: v.name,
-    description: v.summary,
-    address: { "@type": "PostalAddress", addressLocality: v.location, addressCountry: "GB" },
-    aggregateRating: { "@type": "AggregateRating", ratingValue: v.rating.toFixed(1), reviewCount: 1 },
-    keywords: v.tags.join(", "),
-  };
+  const schema = canonical ? buildVenueLocalBusinessJsonLd(canonical) : null;
+  const breadcrumbSchema = buildBreadcrumbJsonLd([
+    { name: "Home", href: "/" },
+    { name: "Venue Finder", href: "/venue-finder" },
+    { name: v.name },
+  ]);
 
   return (
     <div className="premium-section-hero min-h-screen">
       <SetChatContext page={{ kind: "venue", slug: v.slug, name: v.name }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+      <JsonLdScript data={schema} />
+      <JsonLdScript data={breadcrumbSchema} />
       <Container className="py-12 md:py-16">
         <div className="space-y-10">
           <Breadcrumbs
@@ -203,9 +208,29 @@ export default async function VenueDetailPage({
                       </div>
                     </div>
                     <p className="max-w-[65ch] text-base leading-7 text-text">{v.summary}</p>
+                    {featureChips.length > 0 ? (
+                      <ul className="flex flex-wrap gap-2 pt-1" aria-label="Key access features">
+                        {featureChips.map((chip) => (
+                          <li key={chip.label}>
+                            <FeatureChip icon={chip.icon} label={chip.label} />
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
                   </div>
-                  <VenueDetailActions slug={v.slug} venueName={v.name} />
+                  <div className="flex flex-col items-start gap-4 lg:items-end">
+                    <ScoreDisplay score={accessScore} showRing size="md" />
+                    <VenueDetailActions slug={v.slug} venueName={v.name} />
+                  </div>
                 </div>
+              </div>
+
+              <div className="px-5 sm:px-8">
+                <AccessCheckedMethodology
+                  verification={v.verification}
+                  confidence={v.confidence}
+                  lastUpdated={v.lastUpdated}
+                />
               </div>
 
               <div className="grid gap-3 px-5 py-5 text-xs sm:grid-cols-2 lg:grid-cols-4 sm:px-8">

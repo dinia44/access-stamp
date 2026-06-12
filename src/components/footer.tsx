@@ -4,41 +4,26 @@ import { SiteLogo } from "@/components/site-logo";
 
 const EXPLORE_LINKS = [
   { label: "Venue Finder", href: "/venue-finder" },
-  { label: "Ask AI", href: "/ai" },
   { label: "Advice Hub", href: "/advice" },
-  { label: "Practical Guides", href: "/advice" },
+  { label: "AI Tools", href: "/ai-toolkit" },
   { label: "Blog", href: "/blog" },
 ] as const;
 
 const ABOUT_LINKS = [
   { label: "About Us", href: "/about" },
   { label: "Our Mission", href: "/about#mission" },
-  { label: "Our Community", href: "/about#community" },
-  { label: "Careers", href: "/about#careers" },
-  { label: "Press", href: "/about#press" },
 ] as const;
 
-const RESOURCE_LINKS = [
-  { label: "Accessibility Checklist", href: "/ai-toolkit/venue-questions" },
-  { label: "For Venues", href: "/submit-venue" },
-  { label: "Partner With Us", href: "/about#partners" },
-  { label: "API & Data", href: "/about#data" },
-  { label: "Help Centre", href: "/help-cards" },
+const VENUE_LINKS = [
+  { label: "For Venues", href: "/for-venues" },
+  { label: "List your venue", href: "/submit-venue" },
 ] as const;
 
 const LEGAL_LINKS = [
-  { label: "Terms & Conditions", href: "/legal/terms" },
-  { label: "Privacy Policy", href: "/legal/privacy" },
+  { label: "Terms", href: "/legal/terms" },
+  { label: "Privacy", href: "/legal/privacy" },
   { label: "Cookie Policy", href: "/legal/privacy#cookies" },
-  { label: "Accessibility Statement", href: "/about#accessibility" },
-] as const;
-
-const SOCIAL_LINKS = [
-  { label: "Facebook", href: "https://facebook.com", icon: "FB" },
-  { label: "Instagram", href: "https://instagram.com", icon: "IG" },
-  { label: "X (Twitter)", href: "https://x.com", icon: "X" },
-  { label: "LinkedIn", href: "https://linkedin.com", icon: "LI" },
-  { label: "YouTube", href: "https://youtube.com", icon: "YT" },
+  { label: "Accessibility Statement", href: "/accessibility" },
 ] as const;
 
 function FooterColumn({ title, links }: { title: string; links: readonly { label: string; href: string }[] }) {
@@ -71,26 +56,12 @@ export function Footer() {
               Your trusted platform for accessible venues, practical advice and disability confidence every step of the
               way.
             </p>
-            <div className="flex flex-wrap gap-2" aria-label="Social media">
-              {SOCIAL_LINKS.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.label}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-xs font-bold text-[#c8d4d0] transition-colors hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-4"
-                >
-                  {social.icon}
-                </a>
-              ))}
-            </div>
           </div>
 
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
             <FooterColumn title="Explore" links={EXPLORE_LINKS} />
             <FooterColumn title="About" links={ABOUT_LINKS} />
-            <FooterColumn title="Resources" links={RESOURCE_LINKS} />
+            <FooterColumn title="Venues" links={VENUE_LINKS} />
             <FooterColumn title="Legal" links={LEGAL_LINKS} />
           </div>
 
@@ -100,11 +71,6 @@ export function Footer() {
               <li>
                 <a href="mailto:hello@accessstamp.com" className="footer-link">
                   hello@accessstamp.com
-                </a>
-              </li>
-              <li>
-                <a href="tel:+441234567890" className="footer-link">
-                  +44 (0) 1234 567 890
                 </a>
               </li>
               <li className="leading-6 text-[#94a3b8]">

@@ -1,12 +1,14 @@
 import type { MetadataRoute } from "next";
+import { getSiteUrl } from "@/lib/seo/site-url";
 
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://access-stamp-seven.vercel.app";
+  const base = getSiteUrl();
 
   return {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: ["/api/", "/scan", "/scan/"],
     },
     sitemap: `${base}/sitemap.xml`,
     host: base,

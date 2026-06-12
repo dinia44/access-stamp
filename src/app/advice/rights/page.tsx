@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AdviceArticleCard } from "@/components/advice/advice-article-card";
 import { RightsCommonIssuesGrid } from "@/components/advice/rights-common-issues-grid";
@@ -11,6 +12,9 @@ import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { RIGHTS_COMMON_ISSUES } from "@/lib/rights-hub-common-issues";
 import { getAdviceArticles } from "@/lib/content/advice";
+import { adviceCategoryMetadata } from "@/lib/seo/advice-categories";
+
+export const metadata: Metadata = adviceCategoryMetadata("rights");
 
 const FEATURED = [
   "equality-act",

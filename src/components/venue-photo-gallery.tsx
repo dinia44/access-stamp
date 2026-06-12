@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useFocusTrap } from "@/lib/use-focus-trap";
 
@@ -16,6 +16,7 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
   const [active, setActive] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [broken, setBroken] = useState<Record<number, boolean>>({});
+  const expandTriggerRef = useRef<HTMLButtonElement | null>(null);
   const trapRef = useFocusTrap<HTMLDivElement>(expanded);
   const current = photos[active];
 
@@ -35,21 +36,47 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
     setActive((prev) => (prev - 1 + photos.length) % photos.length);
   }
 
+  function closeLightbox() {
+    setExpanded(false);
+    requestAnimationFrame(() => expandTriggerRef.current?.focus());
+  }
+
   useEffect(() => {
     if (!expanded) return;
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setExpanded(false);
-      if (e.key === "ArrowRight") setActive((prev) => (prev + 1) % photos.length);
-      if (e.key === "ArrowLeft") setActive((prev) => (prev - 1 + photos.length) % photos.length);
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeLightbox();
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goNext();
+      }
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goPrev();
+      }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [expanded, photos.length]);
 
+  function onThumbnailKeyDown(e: React.KeyboardEvent, idx: number) {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      setActive((idx + 1) % photos.length);
+    }
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      setActive((idx - 1 + photos.length) % photos.length);
+    }
+  }
+
   return (
     <>
       <div className="space-y-3">
         <button
+          ref={expandTriggerRef}
           type="button"
           onClick={() => setExpanded(true)}
           className="group relative block w-full cursor-pointer overflow-hidden rounded-[var(--radius-card)] border border-border bg-background-2 text-left transition-shadow hover:shadow-[var(--shadow-soft)]"
@@ -85,14 +112,18 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
           ) : null}
         </button>
 
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-5" role="tablist" aria-label="Photo thumbnails">
           {photos.map((photo, idx) => (
             <button
               key={`${photo.src}-${photo.label}`}
               type="button"
+              role="tab"
+              aria-selected={idx === active}
+              tabIndex={idx === active ? 0 : -1}
               onClick={() => setActive(idx)}
+              onKeyDown={(e) => onThumbnailKeyDown(e, idx)}
               className={cn(
-              "group relative cursor-pointer overflow-hidden rounded-[var(--radius-ui)] border bg-background-2 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]",
+                "group relative cursor-pointer overflow-hidden rounded-[var(--radius-ui)] border bg-background-2 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]",
                 idx === active ? "border-blue ring-2 ring-blue/25" : "border-border",
               )}
               aria-label={`Open photo: ${photo.label}`}
@@ -121,11 +152,17 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
       </div>
 
       {expanded ? (
-        <div ref={trapRef} className="fixed inset-0 z-[120] bg-black/85 p-4 sm:p-8" role="dialog" aria-modal="true" aria-label="Photo gallery">
+        <div
+          ref={trapRef}
+          className="fixed inset-0 z-[120] bg-black/85 p-4 sm:p-8"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Photo gallery: ${current.label}`}
+        >
           <button
             type="button"
             className="absolute right-4 top-4 cursor-pointer rounded-full bg-white/15 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/25"
-            onClick={() => setExpanded(false)}
+            onClick={closeLightbox}
           >
             Close
           </button>
@@ -182,4 +219,3 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
     </>
   );
 }
-

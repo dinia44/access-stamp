@@ -1,21 +1,12 @@
 import type { Venue } from "@/lib/mock-data";
+import { HOME_VENUE_SLUGS as CANONICAL_HOME_SLUGS } from "@/data/venues";
 import { SAMPLE_VENUE_CARDS, type SampleVenueCard } from "@/lib/venue-finder-samples";
 
 /** Hard cap — homepage must never show more than six venue cards */
 export const HOME_VENUE_LIMIT = 6;
 
-/**
- * Exactly six venues on the homepage.
- * Edit this list to change which venues appear — do not pull from the full directory.
- */
-export const HOME_VENUE_SLUGS = [
-  "harbour-kitchen-liverpool",
-  "royal-armouries-leeds",
-  "gallery-cafe-manchester",
-  "cardiff-community-hub",
-  "pump-room-tea-room-bath",
-  "tate-st-ives-gallery",
-] as const;
+/** Homepage venue slugs — defined in src/data/venues.ts */
+export const HOME_VENUE_SLUGS = CANONICAL_HOME_SLUGS;
 
 /** @deprecated Use HOME_VENUE_SLUGS — first three homepage venues */
 export const HOME_FEATURED_VENUE_SLUGS = HOME_VENUE_SLUGS.slice(0, 3);

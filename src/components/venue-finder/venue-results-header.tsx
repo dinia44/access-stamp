@@ -23,7 +23,10 @@ export function VenueResultsHeader({
   onChangeLocation,
 }: Props) {
   const venueLabel = resultCount === 1 ? "venue" : "venues";
-  const locationLine = location?.trim() || "across the UK";
+  const trimmedLocation = location?.trim();
+  const locationLine = trimmedLocation
+    ? `Venues in ${trimmedLocation}`
+    : "Venues across the UK";
 
   return (
     <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -50,7 +53,7 @@ export function VenueResultsHeader({
             "Finding your location…"
           ) : (
             <>
-              in <span className="font-medium text-heading">{locationLine}</span>
+              <span className="font-medium text-heading">{locationLine}</span>
               {onChangeLocation ? (
                 <>
                   {" "}

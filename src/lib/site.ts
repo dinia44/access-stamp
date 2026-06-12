@@ -20,14 +20,16 @@ export const VENUE_FINDER_PROMO_VIDEO_SRC =
 export const VENUE_FINDER_PROMO_VIDEO_POSTER =
   "https://res.cloudinary.com/dtl4syjuh/video/upload/so_0,f_jpg,q_auto/accessstamp_16x9_correct_end_screen_osaycc.jpg";
 
-/** Primary nav — matches website build prompt */
+/** Primary navigation — shared header on every page */
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Home", href: "/" },
   { label: "Venue Finder", href: "/venue-finder" },
-  { label: "Advice Hub", href: "/advice" },
-  { label: "Blog", href: "/blog" },
+  { label: "Advice", href: "/advice" },
+  { label: "AI Tools", href: "/ai-toolkit" },
+  { label: "For Venues", href: "/for-venues" },
   { label: "About", href: "/about" },
 ];
+
+export const PRIMARY_NAV_CTA = { label: "Find a venue", href: "/venue-finder" } as const;
 
 /** Resources dropdown — grouped for homepage header */
 export type ResourceGroup = { label: string; description?: string; items: NavItem[] };

@@ -3,20 +3,14 @@
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import type { Venue } from "@/lib/mock-data";
+import { FeatureChip, getVenueFeatureChipItems } from "@/components/venue/feature-chip";
 import { readSavedVenueSlugs, subscribeSavedVenues, toggleSavedVenueSlug } from "@/lib/saved-venues";
-import { getAccessConfidence } from "@/lib/venue-access-snapshot";
 import { getVenueDistanceLabel, getVenuePhoto } from "@/lib/venue-access-score";
+import { computeAccessScore } from "@/lib/venue-access-score";
 import type { VenueCoordinates } from "@/lib/venue-coordinates";
 import { formatVenueLocation } from "@/lib/venue-card-theme";
 import { getAccessScorePresentation, VF_BTN_SECONDARY } from "@/lib/venue-finder-cro";
 import { SITE_FOCUS } from "@/lib/site-design";
-
-const ACCESS_FEATURE_ICONS = [
-  { key: "Step-free entrance", label: "Step-free entrance listed", symbol: "↗" },
-  { key: "Accessible toilet", label: "Toilet listed", symbol: "T" },
-  { key: "Nearby Blue Badge parking", label: "Parking listed", symbol: "P" },
-  { key: "Quiet environment", label: "Quiet space listed", symbol: "Q" },
-] as const;
 
 type Props = {
   venue: Venue;
@@ -27,27 +21,17 @@ type Props = {
 
 export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) {
   const photo = getVenuePhoto(venue);
-  const confidence = getAccessConfidence(venue);
-  const scoreStyle = getAccessScorePresentation(confidence.score);
+  const score = computeAccessScore(venue);
+  const scoreStyle = getAccessScorePresentation(score);
   const distance = getVenueDistanceLabel(venue, userCenter);
   const reportHref = `/venue/${venue.slug}`;
+  const featureChips = getVenueFeatureChipItems(venue);
 
   const saved = useSyncExternalStore(
     subscribeSavedVenues,
     () => readSavedVenueSlugs().includes(venue.slug),
     () => false,
   );
-
-  const accessIcons = [
-    ...ACCESS_FEATURE_ICONS.filter(
-      (item) =>
-        venue.features[item.key] === "yes" ||
-        venue.tags.some((tag) => tag.toLowerCase().includes(item.key.toLowerCase().split(" ")[0])),
-    ),
-    ...(venue.tags.some((tag) => /hearing\s*loop/i.test(tag))
-      ? [{ key: "__hearing_loop" as const, label: "Hearing loop listed", symbol: "H" as const }]
-      : []),
-  ].slice(0, 4);
 
   return (
     <article
@@ -86,8 +70,11 @@ export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) 
       <div className="p-4">
         <div className="flex items-center justify-between gap-2">
           <p className="text-xs text-muted">{venue.type}</p>
-          <span className={`rounded-full px-2 py-1 text-xs font-bold ${scoreStyle.badgeClass}`}>
-            {confidence.score} · {scoreStyle.label}
+          <span
+            className="rounded-full px-2 py-1 text-xs font-semibold"
+            style={{ color: scoreStyle.textColor, backgroundColor: scoreStyle.backgroundColor }}
+          >
+            {scoreStyle.formatted}
           </span>
         </div>
         <h3 className="mt-1 text-lg font-semibold tracking-[-0.02em] text-heading">{venue.name}</h3>
@@ -96,17 +83,10 @@ export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) 
           {userCenter ? ` · ${distance}` : ""}
         </p>
 
-        {accessIcons.length > 0 ? (
-          <div className="mt-4 flex flex-wrap gap-2 text-[var(--color-secondary)]" aria-label="Access features listed">
-            {accessIcons.map((item) => (
-              <span
-                key={item.key}
-                title={item.label}
-                className="flex h-8 w-8 items-center justify-center rounded-lg bg-verified-pale text-xs font-bold"
-              >
-                <span aria-hidden="true">{item.symbol}</span>
-                <span className="sr-only">{item.label}</span>
-              </span>
+        {featureChips.length > 0 ? (
+          <div className="mt-4 flex flex-wrap gap-2" aria-label="Access features">
+            {featureChips.map((chip) => (
+              <FeatureChip key={chip.label} icon={chip.icon} label={chip.label} />
             ))}
           </div>
         ) : null}

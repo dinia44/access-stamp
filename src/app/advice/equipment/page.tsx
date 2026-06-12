@@ -1,3 +1,6 @@
+import type { Metadata } from "next";
+import { adviceCategoryMetadata } from "@/lib/seo/advice-categories";
+
 import Link from "next/link";
 import { AdviceArticleCard } from "@/components/advice/advice-article-card";
 import { AdviceManualCard } from "@/components/advice/advice-manual-card";
@@ -7,6 +10,8 @@ import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { getAdviceArticles } from "@/lib/content/advice";
+
+export const metadata: Metadata = adviceCategoryMetadata("equipment");
 
 const FEATURED = [
   "choosing-a-wheelchair",

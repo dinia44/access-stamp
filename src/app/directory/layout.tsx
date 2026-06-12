@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
+import { staticPageMetadata } from "@/lib/seo/static-pages";
 
-export const metadata: Metadata = {
-  title: "Useful contacts",
-  description:
-    "UK helplines and services: Citizens Advice, Scope, NHS 111, Motability, Changing Places, and more.",
-};
+export const metadata: Metadata = staticPageMetadata("directory");
 
 export default function DirectoryLayout({ children }: { children: React.ReactNode }) {
   return children;

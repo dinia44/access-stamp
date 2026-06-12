@@ -1,4 +1,5 @@
 import type { Venue } from "@/lib/mock-data";
+import { formatScoreLabel, getScoreBandStyle } from "@/lib/score-band";
 import {
   SITE_BTN_PRIMARY,
   SITE_BTN_SECONDARY,
@@ -93,17 +94,18 @@ export function filterChipClass(active: boolean) {
 export function getAccessScorePresentation(score: number): {
   label: string;
   badgeClass: string;
+  formatted: string;
+  textColor: string;
+  backgroundColor: string;
 } {
-  if (score >= 90) {
-    return { label: "Excellent access", badgeClass: "bg-verified text-white" };
-  }
-  if (score >= 75) {
-    return { label: "Good access", badgeClass: "bg-amber text-white" };
-  }
-  if (score >= 60) {
-    return { label: "Limited access", badgeClass: "bg-[var(--color-primary)] text-white" };
-  }
-  return { label: "Mixed access", badgeClass: "bg-error text-white" };
+  const band = getScoreBandStyle(score);
+  return {
+    label: band.label,
+    formatted: formatScoreLabel(score),
+    textColor: band.text,
+    backgroundColor: band.background,
+    badgeClass: "font-semibold",
+  };
 }
 
 export function labelForFilterKey(key: string): string {

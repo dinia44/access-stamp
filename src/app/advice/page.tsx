@@ -9,11 +9,9 @@ import { ADVICE_HUB_CATEGORY_IMAGES } from "@/lib/advice-card-images";
 import { adviceCategoryTint } from "@/lib/colors";
 import { ADVICE_CATEGORIES } from "@/lib/mock-data";
 import { SetChatContext } from "@/components/chat/set-context";
+import { staticPageMetadata } from "@/lib/seo/static-pages";
 
-export const metadata: Metadata = {
-  title: "Advice hub",
-  description: "Practical accessibility guides covering rights, equipment, transport, education, care, and more — UK-focused and jargon-free.",
-};
+export const metadata: Metadata = staticPageMetadata("advice");
 
 export default function AdviceHubPage() {
   return (

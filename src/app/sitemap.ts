@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
+import { VENUES } from "@/data/venues";
+import { helpCardPacks } from "@/data/helpCardPacks";
 import { getAdviceArticles } from "@/lib/content/advice";
 import { getBlogPosts } from "@/lib/content/blog";
-import { SAMPLE_VENUES } from "@/lib/mock-data";
+import { getSiteUrl } from "@/lib/seo/site-url";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://access-stamp-seven.vercel.app";
+  const base = getSiteUrl();
   const now = new Date();
 
   const [articles, posts] = await Promise.all([getAdviceArticles(), getBlogPosts()]);
@@ -13,6 +15,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "",
     "/venue-finder",
     "/submit-venue",
+    "/for-venues",
+    "/accessibility",
     "/advice",
     "/advice/rights",
     "/advice/education",
@@ -25,6 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/advice/equipment",
     "/advice/cars",
     "/advice/new-to-disability",
+    "/advice/reasonable-adjustments-at-work/full-guide",
     "/ai",
     "/ai-toolkit",
     "/ai-toolkit/access-needs-profiler",
@@ -57,10 +62,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: article.updated ? new Date(article.updated) : now,
   }));
 
-  const venueRoutes = SAMPLE_VENUES.map((venue) => ({
+  const venueRoutes = VENUES.map((venue) => ({
     url: `${base}/venue/${venue.slug}`,
+    lastModified: new Date(venue.lastUpdated),
+  }));
+
+  const helpCardRoutes = helpCardPacks.map((pack) => ({
+    url: `${base}/help-cards/${pack.slug}`,
     lastModified: now,
   }));
 
-  return [...staticRoutes, ...blogRoutes, ...adviceRoutes, ...venueRoutes];
+  return [...staticRoutes, ...blogRoutes, ...adviceRoutes, ...venueRoutes, ...helpCardRoutes];
 }

@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useChat } from "@/components/chat/provider";
 import { searchAccessStamp } from "@/data/searchIndex";
 import { Button } from "@/components/ui/Button";
@@ -102,6 +103,19 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
     setSelectedFilters((prev) => (prev.includes(key) ? prev.filter((f) => f !== key) : [...prev, key]));
   };
 
+  const selectMode = useCallback((id: SearchMode) => setMode(id), []);
+
+  const onTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const order: SearchMode[] = ["venue", "ai", "advice"];
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      selectMode(order[(index + 1) % order.length]);
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      selectMode(order[(index - 1 + order.length) % order.length]);
+    }
+  };
+
   const goToVenueFinder = (extra?: { filters?: string[] }) => {
     const params = new URLSearchParams();
     if (query.trim()) params.set("q", query.trim());
@@ -169,8 +183,8 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
         </div>
       )}
 
-      <div className="mb-5 flex flex-wrap gap-4 border-b border-[#F1D8C7]" role="tablist" aria-label="Search mode">
-        {SEARCH_MODES.map(({ id, label }) => (
+      <div className="mb-5 flex flex-wrap gap-4 border-b border-[#EFE5DA]" role="tablist" aria-label="Search mode">
+        {SEARCH_MODES.map(({ id, label }, index) => (
           <button
             key={id}
             type="button"
@@ -178,7 +192,9 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
             id={`search-tab-${id}`}
             aria-selected={mode === id}
             aria-controls={`search-panel-${id}`}
-            onClick={() => setMode(id)}
+            tabIndex={mode === id ? 0 : -1}
+            onClick={() => selectMode(id)}
+            onKeyDown={(event) => onTabKeyDown(event, index)}
             className={homeTabClass(mode === id)}
           >
             {label}
@@ -362,34 +378,24 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
             </button>
           </div>
 
-          <div className="mt-4">
-            <p className="text-sm font-semibold text-[#2A3836]">Explore advice topics</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {ADVICE_TOPIC_CHIPS.map(({ label, href }) => (
-                <button key={label} type="button" onClick={() => router.push(href)} className={homeChipClass(false)}>
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
         </>
       ) : null}
 
       {!isAiSearch && !isVenueSearch ? (
-        <div className="mt-5 flex flex-wrap gap-2">
-          {["PIP guidance", "Travel support", "Rights & adjustments", "Equipment funding"].map((label) => (
-            <button
-              key={label}
-              type="button"
-              onClick={() => {
-                setQuery(label);
-                router.push(`/advice?q=${encodeURIComponent(label)}`);
-              }}
-              className={homeChipClass(false)}
-            >
-              {label}
-            </button>
-          ))}
+        <div className="mt-5 space-y-4">
+          <div className="flex flex-wrap gap-2">
+            {ADVICE_TOPIC_CHIPS.map(({ label, href }) => (
+              <button key={label} type="button" onClick={() => router.push(href)} className={homeChipClass(false)}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <Link
+            href="/advice"
+            className="inline-flex min-h-[44px] items-center text-sm font-semibold text-[#C8430F] hover:underline"
+          >
+            Browse all guides
+          </Link>
         </div>
       ) : null}
     </div>

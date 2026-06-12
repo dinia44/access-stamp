@@ -1,7 +1,7 @@
 "use client";
 
-import { PremiumHeader } from "@/components/premium-header";
+import { SiteHeader } from "@/components/site-header";
 
 export function Navbar() {
-  return <PremiumHeader variant="site" showSearchBand />;
+  return <SiteHeader />;
 }

@@ -11,6 +11,7 @@ import { Badge, Button, Card } from "@/components/ui";
 import { getAdviceArticleBySlug, getAdviceArticles } from "@/lib/content/advice";
 import { ADVICE_CATEGORIES } from "@/lib/mock-data";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
+import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import { LAWS_GUIDANCE_LINKS } from "@/lib/laws-guidance";
 import { getPracticalGuideWorkflow, isPracticalGuide } from "@/lib/practical-guide";
 import { getGuideResourcePack } from "@/lib/guide-resources";
@@ -36,11 +37,14 @@ export async function generateMetadata({
     firstParagraph && "text" in firstParagraph ? firstParagraph.text.slice(0, 160) : a.title;
   const title = a.seoTitle ?? a.title;
   const description = a.metaDescription ?? a.excerpt ?? fallbackDesc;
-  return {
+  const hero = a.heroImage ?? getAdviceArticleCardImage(a);
+  return buildPageMetadata({
     title,
     description,
-    openGraph: { title, description },
-  };
+    path: `/advice/${a.slug}`,
+    image: hero.src,
+    type: "article",
+  });
 }
 
 async function relatedFor(slug: string, categorySlug: string, limit = 4) {
@@ -97,7 +101,7 @@ export default async function AdviceArticlePage({
   if (practicalGuide && guideWorkflow) {
     return (
       <div className="advice-practical-guide-page">
-        <AdviceArticleJsonLd article={a} />
+        <AdviceArticleJsonLd article={a} imageUrl={guideHero.src} />
         <SetChatContext
           page={{
             kind: "advice-article",
@@ -113,7 +117,7 @@ export default async function AdviceArticlePage({
 
   return (
     <div className="bg-background advice-article-page">
-      <AdviceArticleJsonLd article={a} />
+      <AdviceArticleJsonLd article={a} imageUrl={guideHero.src} />
       <SetChatContext
         page={{
           kind: "advice-article",

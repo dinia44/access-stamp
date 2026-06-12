@@ -4,6 +4,7 @@ import Link from "next/link";
 import { helpCardPacks } from "@/data/helpCardPacks";
 import { RenderHelpCard } from "@/components/help-cards/HelpCardComponents";
 import { SetChatContext } from "@/components/chat/set-context";
+import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import "../help-cards.css";
 
 type PageProps = {
@@ -24,10 +25,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {};
   }
 
-  return {
+  return buildPageMetadata({
     title: pack.title,
     description: pack.description,
-  };
+    path: `/help-cards/${pack.slug}`,
+  });
 }
 
 export default async function HelpCardPackPage({ params }: PageProps) {
