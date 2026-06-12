@@ -9,7 +9,8 @@ import { PracticalGuideExperience } from "@/components/guide/practical-guide-exp
 import { Container } from "@/components/container";
 import { Badge, Button, Card } from "@/components/ui";
 import { getAdviceArticleBySlug, getAdviceArticles } from "@/lib/content/advice";
-import { ADVICE_CATEGORIES } from "@/lib/mock-data";
+import { adviceTopicLabel } from "@/lib/advice-topics";
+import { getGuideLastReviewed } from "@/lib/advice-guide-meta";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import { LAWS_GUIDANCE_LINKS } from "@/lib/laws-guidance";
@@ -53,8 +54,7 @@ async function relatedFor(slug: string, categorySlug: string, limit = 4) {
 }
 
 function slugToCategoryLabel(categorySlug: string) {
-  const match = ADVICE_CATEGORIES.find((c) => c.href === `/advice/${categorySlug}`);
-  return match?.title ?? "Advice";
+  return adviceTopicLabel(categorySlug as Parameters<typeof adviceTopicLabel>[0]);
 }
 
 function slugifyHeading(s: string) {
@@ -162,8 +162,8 @@ export default async function AdviceArticlePage({
                   {t}
                 </Badge>
               ))}
-              <span className="text-xs font-semibold text-muted">
-                Last updated: {a.updated}
+              <span className="inline-flex items-center rounded-full bg-[#EFF3E7] px-2.5 py-1 text-xs font-semibold text-[#5F7444]">
+                Reviewed {getGuideLastReviewed(a)}
               </span>
             </div>
           </div>

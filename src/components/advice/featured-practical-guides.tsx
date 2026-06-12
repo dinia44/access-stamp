@@ -3,11 +3,7 @@ import { AdviceMediaFrame, ADVICE_CARD_IMAGE_SIZES } from "@/components/advice/a
 import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { Badge, Card } from "@/components/ui";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
-import {
-  FEATURED_BATCH_3_SLUGS,
-  FEATURED_MORE_GUIDE_SLUGS,
-  FEATURED_PRACTICAL_GUIDE_SLUGS,
-} from "@/lib/featured-practical-guides";
+import { FEATURED_PRACTICAL_GUIDE_SLUGS } from "@/lib/featured-practical-guides";
 import { getAdviceArticles } from "@/lib/content/advice";
 import type { AdviceArticle } from "@/lib/content/types";
 import { ADVICE_CATEGORIES } from "@/lib/mock-data";
@@ -104,65 +100,23 @@ export async function FeaturedPracticalGuides({
   const all = await getAdviceArticles();
   const primarySlugs = limit ? FEATURED_PRACTICAL_GUIDE_SLUGS.slice(0, limit) : [...FEATURED_PRACTICAL_GUIDE_SLUGS];
   const primary = resolveArticles(all, primarySlugs);
-  const more = limit ? [] : resolveArticles(all, FEATURED_MORE_GUIDE_SLUGS);
-  const batch3 = limit ? [] : resolveArticles(all, FEATURED_BATCH_3_SLUGS);
 
-  if (!primary.length && !more.length && !batch3.length) return null;
+  if (!primary.length) return null;
 
   return (
-    <div className="space-y-10">
-      {primary.length ? (
-        <section className="space-y-4" aria-labelledby={hideHeading ? undefined : "featured-practical-guides-heading"}>
-          {hideHeading ? null : (
-            <div className="space-y-2">
-              <h2 id="featured-practical-guides-heading" className="text-2xl font-bold tracking-[-0.02em] text-heading sm:text-3xl">
-                Popular practical guides
-              </h2>
-              <p className="max-w-[65ch] text-base leading-7 text-muted">
-                High-intent topics people search when they need urgent, practical next steps — benefits, work, travel,
-                education, and care.
-              </p>
-            </div>
-          )}
-          <GuideCardGrid articles={primary} theme={theme} />
-        </section>
-      ) : null}
-
-      {more.length ? (
-        <section className="space-y-4" aria-labelledby="featured-more-guides-heading">
-          <div className="space-y-2">
-            <h2 id="featured-more-guides-heading" className="text-2xl font-bold tracking-[-0.02em] text-heading sm:text-3xl">
-              Appeals, NHS care funding, and older-age support
-            </h2>
-            <p className="max-w-[65ch] text-base leading-7 text-muted">
-              When decisions, care costs, or health funding need a clear next step.
-            </p>
-          </div>
-          <GuideCardGrid articles={more} theme={theme} />
-        </section>
-      ) : null}
-
-      {batch3.length ? (
-        <section className="space-y-4" aria-labelledby="featured-batch3-guides-heading">
-          <div className="space-y-2">
-            <h2 id="featured-batch3-guides-heading" className="text-2xl font-bold tracking-[-0.02em] text-heading sm:text-3xl">
-              Carers, children, and Universal Credit health
-            </h2>
-            <p className="max-w-[65ch] text-base leading-7 text-muted">
-              Support for unpaid carers, DLA for children, and work capability on Universal Credit.
-            </p>
-          </div>
-          <GuideCardGrid articles={batch3} theme={theme} />
-        </section>
-      ) : null}
-
+    <section className="space-y-4" aria-labelledby={hideHeading ? undefined : "featured-practical-guides-heading"}>
       {hideHeading ? null : (
-        <p className="text-sm text-muted">
-          <Link href="/advice" className="font-semibold text-blue underline-offset-2 hover:underline">
-            Browse all advice topics →
-          </Link>
-        </p>
+        <div className="space-y-2">
+          <h2 id="featured-practical-guides-heading" className="text-2xl font-bold tracking-[-0.02em] text-heading sm:text-3xl">
+            Popular practical guides
+          </h2>
+          <p className="max-w-[65ch] text-base leading-7 text-muted">
+            High-intent topics people search when they need urgent, practical next steps — benefits, work, travel,
+            education, and care.
+          </p>
+        </div>
       )}
-    </div>
+      <GuideCardGrid articles={primary} theme={theme} />
+    </section>
   );
 }

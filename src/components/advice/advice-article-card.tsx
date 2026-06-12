@@ -1,6 +1,7 @@
 import Link from "next/link";
-import type { AdviceArticle } from "@/lib/mock-data";
-import { ADVICE_CATEGORIES } from "@/lib/mock-data";
+import type { AdviceArticle } from "@/lib/content/types";
+import { adviceTopicLabel } from "@/lib/advice-topics";
+import { GuideMetaLine } from "@/components/advice/guide-meta-line";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { AdviceMediaFrame, ADVICE_CARD_IMAGE_SIZES } from "@/components/advice/advice-media-frame";
 import { GuideCoverImage } from "@/components/advice/guide-cover-image";
@@ -26,8 +27,7 @@ export function AdviceArticleCard({
   readCtaLabel?: string;
 }) {
   const img = getAdviceArticleCardImage(article);
-  const categoryLabel =
-    ADVICE_CATEGORIES.find((c) => c.href === `/advice/${article.categorySlug}`)?.title ?? "Advice";
+  const categoryLabel = adviceTopicLabel(article.categorySlug);
   return (
     <Link href={`/advice/${article.slug}`} className={cn("group block h-full", className)}>
       <Card className="flex h-full flex-col overflow-hidden p-0 transition-all group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow)]">
@@ -48,8 +48,8 @@ export function AdviceArticleCard({
             <p className="mt-2 line-clamp-3 text-sm text-muted">{article.excerpt}</p>
           ) : null}
           {meta ?? (
-            <div className="mt-2 text-xs font-semibold text-muted">
-              {article.readTimeMinutes ? `${article.readTimeMinutes} min read` : `Updated: ${article.updated}`}
+            <div className="mt-2">
+              <GuideMetaLine article={article} categoryLabel={categoryLabel} className="text-xs font-semibold text-muted" />
             </div>
           )}
           {tagLimit > 0 ? (

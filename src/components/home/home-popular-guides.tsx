@@ -2,11 +2,7 @@ import Link from "next/link";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { FEATURED_PRACTICAL_GUIDE_SLUGS } from "@/lib/featured-practical-guides";
 import { getAdviceArticles } from "@/lib/content/advice";
-import { ADVICE_CATEGORIES } from "@/lib/mock-data";
-
-function categoryLabel(categorySlug: string) {
-  return ADVICE_CATEGORIES.find((c) => c.href === `/advice/${categorySlug}`)?.title ?? "Advice";
-}
+import { adviceTopicLabel } from "@/lib/advice-topics";
 
 export async function HomePopularGuides() {
   const articles = await getAdviceArticles();
@@ -42,7 +38,7 @@ export async function HomePopularGuides() {
               >
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#C8430F]">
-                    {categoryLabel(article.categorySlug)}
+                    {adviceTopicLabel(article.categorySlug)}
                   </p>
                   <h3 className="mt-1 text-base font-semibold text-[#20242E]">{article.title}</h3>
                   {article.excerpt ? (

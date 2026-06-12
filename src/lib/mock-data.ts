@@ -1,4 +1,7 @@
 import type { AdviceArticle } from "@/lib/content/types";
+import { ADVICE_CATEGORIES } from "@/lib/advice-topics";
+
+export { ADVICE_CATEGORIES };
 import { ADVICE_EXTRA_SEEDS } from "@/lib/advice-extra-seeds";
 import { PRACTICAL_GUIDE_ARTICLES } from "@/lib/practical-guides-articles";
 import { CARE_ARTICLES_DETAILED } from "@/lib/care-articles-detail";
@@ -171,75 +174,6 @@ const EDUCATION_ARTICLE_OVERRIDES: Record<string, Pick<AdviceArticle, "heroImage
     ],
   },
 };
-
-export const ADVICE_CATEGORIES = [
-  {
-    title: "Your Rights",
-    href: "/advice/rights",
-    icon: "⚖️",
-    desc: "Benefits, legal protections, Equality Act, and what you're entitled to",
-  },
-  {
-    title: "Education",
-    href: "/advice/education",
-    icon: "🎓",
-    desc: "DSA, EHC plans, school and university support",
-  },
-  {
-    title: "Transport",
-    href: "/advice/transport",
-    icon: "🚂",
-    desc: "Trains, buses, driving, flying, taxis, scooter rules",
-  },
-  {
-    title: "Cars",
-    href: "/advice/cars",
-    icon: "🚗",
-    desc: "Blue Badge, Motability, driving adaptations, parking, and ownership",
-  },
-  {
-    title: "Sport",
-    href: "/advice/sport",
-    icon: "🏃",
-    desc: "Accessible gyms, leisure centres, adaptive sport, and club checklists",
-  },
-  {
-    title: "Workplace",
-    href: "/advice/workplace",
-    icon: "💼",
-    desc: "Access to Work, adjustments, discrimination, returning to work",
-  },
-  {
-    title: "Care & Support",
-    href: "/advice/care",
-    icon: "🤝",
-    desc: "Personal budgets, hiring PAs, templates, managing care",
-  },
-  {
-    title: "Equipment",
-    href: "/advice/equipment",
-    icon: "🦽",
-    desc: "Wheelchairs, home equipment, vehicle adaptations, tech",
-  },
-  {
-    title: "Emergency & Quick Help",
-    href: "/advice/emergency",
-    icon: "🚨",
-    desc: "Breakdowns, helplines, NHS services, rights cards",
-  },
-  {
-    title: "New to Disability",
-    href: "/advice/new-to-disability",
-    icon: "🧭",
-    desc: "Starting point for newly disabled people and families",
-  },
-  {
-    title: "Travel",
-    href: "/advice/travel",
-    icon: "🧳",
-    desc: "Flying, accessible accommodation, insurance, and planning ahead",
-  },
-];
 
 export type { AdviceArticle };
 

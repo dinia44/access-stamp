@@ -45,6 +45,29 @@ export function buildAdviceArticleJsonLd(article: AdviceArticle, imageUrl?: stri
   };
 }
 
+export function buildAdviceHubCollectionJsonLd(articles: AdviceArticle[]) {
+  const url = absoluteUrl("/advice");
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Access Stamp Advice Hub",
+    description:
+      "Plain-English UK guides on rights, benefits, equipment, travel, work and care — written for disabled people, carers and families.",
+    url,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: articles.length,
+      itemListElement: articles.map((article, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: absoluteUrl(`/advice/${article.slug}`),
+        name: article.title,
+      })),
+    },
+  };
+}
+
 export function buildAdviceFaqJsonLd(article: AdviceArticle) {
   const pairs = extractFaqPairs(article.sections);
   if (pairs.length === 0) return null;

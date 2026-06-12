@@ -89,6 +89,15 @@ export function mapSanityAdviceDoc(doc: SanityAdviceDoc): AdviceArticle | null {
   if (doc.heroImage?.src && doc.heroImage?.alt) {
     article.heroImage = { src: doc.heroImage.src, alt: doc.heroImage.alt };
   }
+  if ((doc as { lastReviewed?: string }).lastReviewed) {
+    article.lastReviewed = (doc as { lastReviewed?: string }).lastReviewed;
+  }
+  if ((doc as { nations?: AdviceArticle["nations"] }).nations) {
+    article.nations = (doc as { nations?: AdviceArticle["nations"] }).nations;
+  }
+  if ((doc as { featured?: boolean }).featured) {
+    article.featured = (doc as { featured?: boolean }).featured;
+  }
 
   return article;
 }
