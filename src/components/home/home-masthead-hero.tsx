@@ -10,9 +10,12 @@ export function HomeMastheadHero() {
       <RouteDecoration className="bottom-12 left-[-8%] h-24 w-[min(45vw,360px)] opacity-60" flip />
 
       <div className="relative mx-auto max-w-4xl text-center">
-        <div className="mb-8 flex w-full flex-col items-center">
+        <div className="mb-10 flex w-full flex-col items-center sm:mb-12">
           <Link href="/" className="inline-flex justify-center" aria-label="Access Stamp home">
-            <SiteLogo priority className="h-auto max-h-[72px] w-auto object-contain sm:max-h-[84px]" />
+            <SiteLogo
+              priority
+              className="h-auto w-auto max-h-[min(280px,52vw)] object-contain sm:max-h-[300px] md:max-h-[320px]"
+            />
           </Link>
         </div>
 
