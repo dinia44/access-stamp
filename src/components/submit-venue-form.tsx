@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui";
+import { VenuePhotoScan } from "@/components/venue-photo-scan";
 import { saveSubmission } from "@/lib/submission-store";
 
 export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: string }) {
@@ -9,6 +10,13 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
   const [error, setError] = useState("");
   const [deliveredToTeam, setDeliveredToTeam] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [features, setFeatures] = useState("");
+  const [scanNotes, setScanNotes] = useState("");
+
+  function onFeaturesDetected(nextFeatures: string, notes?: string) {
+    setFeatures((current) => (current.trim() ? `${current.trim()}\n\n${nextFeatures}` : nextFeatures));
+    if (notes) setScanNotes(notes);
+  }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -17,9 +25,9 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
     const name = String(form.get("name") ?? "").trim();
     const location = String(form.get("location") ?? "").trim();
     const type = String(form.get("type") ?? "").trim();
-    const features = String(form.get("features") ?? "").trim();
     const notes = String(form.get("notes") ?? "").trim();
     const contactEmail = String(form.get("contactEmail") ?? "").trim();
+    const featuresValue = features.trim();
 
     if (!name || !location || !type) {
       setError("Please fill in venue name, location, and venue type.");
@@ -37,20 +45,20 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
           name,
           location,
           type,
-          features,
-          notes,
+          features: featuresValue,
+          notes: [notes, scanNotes ? `AI scan note: ${scanNotes}` : ""].filter(Boolean).join("\n\n"),
           contactEmail: contactEmail || undefined,
         }),
       });
       const data = (await res.json()) as { ok?: boolean; delivered?: boolean; error?: string };
       if (!res.ok) {
-        setError(data.error ?? "Could not send your suggestion. Please try again.");
+        setError(data.error ?? "Could not send your listing. Please try again.");
         setSubmitting(false);
         return;
       }
       apiDelivered = Boolean(data.delivered);
     } catch {
-      saveSubmission({ name, location, type, features, notes });
+      saveSubmission({ name, location, type, features: featuresValue, notes });
       setDeliveredToTeam(false);
       setSent(true);
       setSubmitting(false);
@@ -59,7 +67,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
       setSubmitting(false);
     }
 
-    saveSubmission({ name, location, type, features, notes });
+    saveSubmission({ name, location, type, features: featuresValue, notes });
     setDeliveredToTeam(apiDelivered);
     setSent(true);
   }
@@ -67,11 +75,11 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
   if (sent) {
     return (
       <div className="space-y-3 text-center">
-        <p className="form-success-text text-base">Thanks — we&apos;ve received your suggestion.</p>
+        <p className="form-success-text text-base">Thanks — we&apos;ve received your venue listing.</p>
         <p className="text-sm text-muted">
           {deliveredToTeam
             ? "It was sent to the Access Stamp team for review. We aim to triage within 3 working days."
-            : "It is saved on this device and logged on our server for review. Email hello@accessstamp.co.uk with the venue name if you need a faster response."}
+            : "It is saved on this device and logged on our server for review. Email hello@accessstamp.com with the venue name if you need a faster response."}
         </p>
       </div>
     );
@@ -80,7 +88,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
   return (
     <form className="grid gap-5" onSubmit={onSubmit}>
       <p className="text-sm text-muted">
-        Submissions are reviewed before publishing. Optional email lets us follow up if we need
+        Tell us about your venue so we can build your listing. Optional email lets us follow up if we need
         clarification.
       </p>
 
@@ -109,12 +117,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
 
       <label className="grid gap-1 text-sm font-semibold text-heading">
         Venue type
-        <select
-          name="type"
-          className="form-input h-11 px-3 font-normal"
-          defaultValue=""
-          required
-        >
+        <select name="type" className="form-input h-11 px-3 font-normal" defaultValue="" required>
           <option value="" disabled>
             Select type
           </option>
@@ -133,11 +136,15 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
         </select>
       </label>
 
+      <VenuePhotoScan onFeaturesDetected={onFeaturesDetected} disabled={submitting} />
+
       <label className="grid gap-1 text-sm font-semibold text-heading">
         Access features you know about
         <textarea
           name="features"
           rows={4}
+          value={features}
+          onChange={(event) => setFeatures(event.target.value)}
           className="form-input px-3 py-2 font-normal"
           placeholder="Step-free entry, accessible toilet, parking, turning space, hearing loop…"
         />
@@ -164,19 +171,12 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
         />
       </label>
 
-      <label className="grid gap-1 text-sm font-semibold text-heading">
-        Photo (optional)
-        <input
-          name="photo"
-          type="file"
-          accept="image/*"
-          className="text-sm text-muted file:mr-3 file:rounded-[var(--radius-ui)] file:border file:border-border file:bg-background-2 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-heading"
-        />
-        <span className="text-xs font-normal text-muted">Photo uploads are not wired yet — describe access in text for now.</span>
-      </label>
-
-      {error ? <p className="form-error-text text-sm" role="alert">{error}</p> : null}
-      <Button type="submit">{submitting ? "Sending…" : "Submit suggestion"}</Button>
+      {error ? (
+        <p className="form-error-text text-sm" role="alert">
+          {error}
+        </p>
+      ) : null}
+      <Button type="submit">{submitting ? "Sending…" : "Submit listing"}</Button>
     </form>
   );
 }

@@ -18,10 +18,10 @@ const corePages: SearchItem[] = [
     url: "/venue-finder",
   },
   {
-    title: "Suggest a venue",
-    description: "Tell us about a place to help grow the directory.",
+    title: "List your venue",
+    description: "List your venue on Access Stamp with access details and photo scanning.",
     category: "Venue",
-    tags: ["submit", "suggest", "community", "directory"],
+    tags: ["submit", "list", "venue owner", "directory"],
     url: "/submit-venue",
   },
   {

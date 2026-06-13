@@ -6,6 +6,7 @@ import { SetChatContext } from "@/components/chat/set-context";
 import { SubmitVenueForm } from "@/components/submit-venue-form";
 import { SubmissionQueuePreview } from "@/components/submission-queue-preview";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
+import { CONTACT_EMAIL, suggestVenueMailto } from "@/lib/venue-submission";
 
 export default async function SubmitVenuePage({
   searchParams,
@@ -25,18 +26,25 @@ export default async function SubmitVenuePage({
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
-              { label: "Venue Finder", href: "/venue-finder" },
-              { label: "Suggest a venue" },
+              { label: "For Venues", href: "/for-venues" },
+              { label: "List your venue" },
             ]}
           />
 
+          <Card className="border-blue-pale bg-blue-pale/30 p-5 text-sm leading-6 text-text">
+            Visited somewhere that works well for access?{" "}
+            <a href={suggestVenueMailto()} className="font-semibold text-blue underline-offset-2 hover:underline">
+              Email us to suggest a venue
+            </a>{" "}
+            — we also share these requests on social media. This page is for venue owners listing their own place.
+          </Card>
+
           <div className="space-y-2">
-            <Badge tone="blue">Venue Finder</Badge>
-            <h1 className="font-[var(--font-heading)] text-4xl text-heading">Suggest a venue</h1>
+            <Badge tone="blue">For venue owners</Badge>
+            <h1 className="font-[var(--font-heading)] text-4xl text-heading">List your venue here</h1>
             <p className="max-w-[85ch] text-muted">
-              Help grow Access Stamp by telling us about a place you&apos;ve visited. We review suggestions before
-              publishing listings. Submissions are sent to our team when configured; otherwise they are saved in your
-              browser until we connect delivery.
+              Add your venue to Access Stamp with the access details you know today. Upload photos and our AI can help
+              scan entrances, routes, toilets, and parking before you submit. We review listings before publishing.
             </p>
           </div>
 
@@ -48,17 +56,21 @@ export default async function SubmitVenuePage({
           </Card>
 
           <p className="text-sm text-muted">
-            Prefer to browse first?{" "}
-            <Link href="/venue-finder" className="font-semibold text-blue hover:underline">
-              Back to Venue Finder
+            Want a full Access Stamp audit instead?{" "}
+            <Link href="/for-venues" className="font-semibold text-blue hover:underline">
+              See certification for venues
             </Link>
+            . Questions?{" "}
+            <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-blue hover:underline">
+              {CONTACT_EMAIL}
+            </a>
           </p>
 
           <Card className="border-blue-pale bg-blue-pale/40 p-5">
             <div className="text-sm font-semibold text-heading">Ask the AI instead</div>
             <p className="mt-2 text-sm text-text">
-              Describe what you need in plain language — the assistant can point you to similar venues or explain access
-              terms.
+              Describe what you need in plain language — the assistant can help you phrase access features before you
+              submit your listing.
             </p>
             <Button href="/?openChat=1" className="mt-3">
               Open AI Assistant

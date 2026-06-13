@@ -67,7 +67,7 @@ export const STATIC_PAGE_SEO = {
   },
   submitVenue: {
     title: "List your venue",
-    description: "Submit a venue for community access reporting or request an Access Stamp audit.",
+    description: "List your venue on Access Stamp with access details, photos, and AI-assisted scanning before review.",
     path: "/submit-venue",
   },
   scan: {

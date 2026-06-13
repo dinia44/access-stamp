@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Container } from "@/components/container";
 import { FooterNewsletterSignup } from "@/components/footer-newsletter-signup";
 import { SiteLogo } from "@/components/site-logo";
+import { suggestVenueMailto } from "@/lib/venue-submission";
 
 const EXPLORE_LINKS = [
   { label: "Venue Finder", href: "/venue-finder" },
@@ -18,6 +19,7 @@ const ABOUT_LINKS = [
 const VENUE_LINKS = [
   { label: "For Venues", href: "/for-venues" },
   { label: "List your venue", href: "/submit-venue" },
+  { label: "Suggest a venue", href: suggestVenueMailto() },
 ] as const;
 
 const LEGAL_LINKS = [
@@ -34,9 +36,15 @@ function FooterColumn({ title, links }: { title: string; links: readonly { label
       <ul className="mt-4 space-y-2.5">
         {links.map((link) => (
           <li key={link.href + link.label}>
-            <Link href={link.href} className="footer-link text-sm">
-              {link.label}
-            </Link>
+            {link.href.startsWith("mailto:") ? (
+              <a href={link.href} className="footer-link text-sm">
+                {link.label}
+              </a>
+            ) : (
+              <Link href={link.href} className="footer-link text-sm">
+                {link.label}
+              </Link>
+            )}
           </li>
         ))}
       </ul>

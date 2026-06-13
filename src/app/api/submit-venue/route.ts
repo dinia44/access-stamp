@@ -82,7 +82,7 @@ export async function POST(req: Request) {
     ok: true,
     delivered,
     message: delivered
-      ? "Thanks — your suggestion was sent to the Access Stamp team."
-      : "Thanks — we received your suggestion.",
+      ? "Thanks — your venue listing was sent to the Access Stamp team."
+      : "Thanks — we received your venue listing.",
   });
 }

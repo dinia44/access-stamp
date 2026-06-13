@@ -15,6 +15,7 @@ import {
   type VenueFinderSearchState,
 } from "@/lib/venue-finder-params";
 import { VF_BTN_SECONDARY, VF_PAGE_BG } from "@/lib/venue-finder-cro";
+import { suggestVenueMailto } from "@/lib/venue-submission";
 import { BottomVenueCTA } from "./bottom-venue-cta";
 import { QuickFilterRow } from "./quick-filter-row";
 import { SavedVenuesCard } from "./saved-venues-card";
@@ -53,11 +54,11 @@ function VenueFinderEmptyState() {
             No matching venues found
           </h2>
           <p className="mt-2 text-base leading-7 text-muted">
-            Try removing a filter, searching a nearby town, or suggest a venue for us to check.
+            Try removing a filter, searching a nearby town, or email us to suggest a venue for us to check.
           </p>
-          <Link href="/submit-venue" className={`${VF_BTN_SECONDARY} mt-5 inline-flex`}>
+          <a href={suggestVenueMailto()} className={`${VF_BTN_SECONDARY} mt-5 inline-flex`}>
             Suggest a venue
-          </Link>
+          </a>
         </div>
       </div>
     </section>

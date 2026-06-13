@@ -6,6 +6,7 @@ import { Container } from "@/components/container";
 import { Badge, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { DIRECTORY_ENTRIES } from "@/lib/directory-entries";
+import { suggestVenueMailto } from "@/lib/venue-submission";
 
 export default function DirectoryPage() {
   const [q, setQ] = useState("");
@@ -49,9 +50,9 @@ export default function DirectoryPage() {
 
           <Card className="border-blue-pale bg-blue-pale/30 p-4 text-sm text-text">
             Missing a service?{" "}
-            <Link href="/submit-venue" className="font-semibold text-blue underline-offset-2 hover:underline">
-              Suggest a venue
-            </Link>{" "}
+            <a href={suggestVenueMailto()} className="font-semibold text-blue underline-offset-2 hover:underline">
+              Email us to suggest a venue
+            </a>{" "}
             for access listings, or ask the{" "}
             <Link href="/ai" className="font-semibold text-blue underline-offset-2 hover:underline">
               AI assistant

@@ -1,6 +1,7 @@
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { HOME_SECTION_ALT } from "@/components/home/home-theme";
+import { suggestVenueMailto } from "@/lib/venue-submission";
 
 export function HomeForVenues() {
   return (
@@ -21,13 +22,16 @@ export function HomeForVenues() {
                 Help visitors know what to expect
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-7 text-[#2A3836]">
-                Share clearer access information, suggest a venue for listing, or work with Access Stamp to improve how
-                your venue describes step-free routes, toilets, parking and staff support.
+                Share clearer access information, list your venue on Access Stamp, or work with us to improve how your
+                venue describes step-free routes, toilets, parking and staff support.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:flex-col">
-              <ButtonLink href="/submit-venue" aria-label="Suggest a venue for listing">
-                Suggest a venue
+              <ButtonLink href="/submit-venue" aria-label="List your venue on Access Stamp">
+                List your venue
+              </ButtonLink>
+              <ButtonLink href={suggestVenueMailto()} variant="ghost" aria-label="Email Access Stamp to suggest a venue">
+                Suggest a venue by email
               </ButtonLink>
               <ButtonLink href="/ai-toolkit/venue-questions" variant="ghost" aria-label="Open venue access checklist">
                 Venue access checklist

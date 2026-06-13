@@ -23,6 +23,7 @@ import { VenueFitPlannerInline } from "@/components/venue/venue-fit-planner-inli
 import { computeAccessScore } from "@/lib/venue-access-score";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import { buildBreadcrumbJsonLd, buildVenueLocalBusinessJsonLd } from "@/lib/seo/venue-jsonld";
+import { suggestVenueMailto } from "@/lib/venue-submission";
 
 export function generateStaticParams() {
   return SAMPLE_VENUES.map((v) => ({ slug: v.slug }));
@@ -408,7 +409,14 @@ export default async function VenueDetailPage({
                 Spotted something wrong or missing? Tell us what you found on site — measurements and photos help most.
               </p>
               <div className="mt-4">
-                <Button href={`/submit-venue?suggested=${encodeURIComponent(v.slug)}`} variant="secondary">
+                <Button
+                  href={suggestVenueMailto({
+                    venueName: v.name,
+                    subject: `Venue update: ${v.name}`,
+                    body: `Venue: ${v.name}\nArea: ${v.location}\n\nWhat I spotted on site:\n`,
+                  })}
+                  variant="secondary"
+                >
                   Suggest an update
                 </Button>
               </div>

@@ -23,7 +23,7 @@ export function BottomVenueCTA() {
         </div>
 
         <Link href="/submit-venue" className={VF_BTN_PRIMARY}>
-          Add or review a venue +
+          List your venue
         </Link>
       </div>
     </section>

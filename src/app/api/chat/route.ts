@@ -333,7 +333,7 @@ export async function POST(req: Request) {
 
   if (page.kind === "submit-venue") {
     const reply =
-      "You’re on the suggest-a-venue form. Tell me the venue name, town or postcode, and anything you know about access — step-free entry, toilets, parking, turning space, noise. I can help you phrase it clearly before you submit.";
+      "You’re on the list-your-venue page. Tell me the venue name, town or postcode, and anything you know about access — step-free entry, toilets, parking, turning space, noise. I can help you phrase it clearly before you submit your listing.";
     return NextResponse.json({
       reply: voice ? short(reply) : reply,
       quickActions: ["It’s step-free with a good toilet", "I’m not sure what to write", "Parking & Blue Badge"],
