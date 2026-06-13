@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/container";
+import { FooterNewsletterSignup } from "@/components/footer-newsletter-signup";
 import { SiteLogo } from "@/components/site-logo";
 
 const EXPLORE_LINKS = [
@@ -47,6 +48,8 @@ export function Footer() {
   return (
     <footer className="footer-brand text-[#f8fafc] print:hidden">
       <Container className="py-14 sm:py-16">
+        <FooterNewsletterSignup />
+
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)_minmax(0,0.9fr)] lg:gap-12">
           <div className="space-y-5">
             <Link href="/" aria-label="Access Stamp home">

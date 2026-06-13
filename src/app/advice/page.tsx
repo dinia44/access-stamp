@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AdviceHubEmailCapture } from "@/components/advice/advice-hub-email-capture";
 import { AdviceHubHero } from "@/components/advice/advice-hub-hero";
 import {
   AdviceHubEditorialStandards,
@@ -31,7 +30,6 @@ export default async function AdviceHubPage() {
       <AdviceHubMostRead articles={articles} />
       <AdviceHubEditorialStandards />
       <AdviceHubUsefulLinks />
-      <AdviceHubEmailCapture />
     </>
   );
 }
