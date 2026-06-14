@@ -1,12 +1,18 @@
 import Link from "next/link";
 import type { AdviceArticle } from "@/lib/content/types";
 import { adviceTopicLabel } from "@/lib/advice-topics";
+import { getGuideCardPreviewBullets, getGuideIncludesLabel, formatGuideCardMeta } from "@/lib/guide-card-meta";
 import { GuideMetaLine } from "@/components/advice/guide-meta-line";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { AdviceMediaFrame, ADVICE_CARD_IMAGE_SIZES } from "@/components/advice/advice-media-frame";
 import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { Badge, Card } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import { isPracticalGuide } from "@/lib/practical-guide";
+
+function isPracticalGuideCard(article: AdviceArticle) {
+  return isPracticalGuide(article.slug, article.categorySlug);
+}
 
 export function AdviceArticleCard({
   article,
@@ -47,10 +53,28 @@ export function AdviceArticleCard({
           {article.excerpt ? (
             <p className="mt-2 line-clamp-3 text-sm text-muted">{article.excerpt}</p>
           ) : null}
+          {isPracticalGuideCard(article) ? (
+            <div className="mt-3 space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#59682A]">What this helps with</p>
+              <ul className="space-y-1">
+                {getGuideCardPreviewBullets(article).map((bullet) => (
+                  <li key={bullet} className="flex items-start gap-2 text-xs leading-5 text-text">
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#F04A16]" aria-hidden />
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs font-semibold text-muted">
+                Includes: {getGuideIncludesLabel(article)} · {formatGuideCardMeta(article)}
+              </p>
+            </div>
+          ) : null}
           {meta ?? (
+            !isPracticalGuideCard(article) ? (
             <div className="mt-2">
               <GuideMetaLine article={article} categoryLabel={categoryLabel} className="text-xs font-semibold text-muted" />
             </div>
+            ) : null
           )}
           {tagLimit > 0 ? (
             <div className="mt-3 flex flex-wrap gap-2">

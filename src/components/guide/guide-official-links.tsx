@@ -9,8 +9,9 @@ type GuideOfficialLinksProps = {
 export function GuideOfficialLinks({ links, className }: GuideOfficialLinksProps) {
   return (
     <section
+      id="guide-official-links"
       className={cn(
-        "rounded-2xl border border-[#F1D8C7] bg-white p-5 shadow-[var(--shadow-soft)]",
+        "scroll-mt-28 rounded-2xl border border-[#F1D8C7] bg-white p-5 shadow-[var(--shadow-soft)]",
         className,
       )}
       aria-labelledby="official-guidance-heading"

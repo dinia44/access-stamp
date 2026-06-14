@@ -9,6 +9,8 @@ import type { PracticalGuideWorkflow } from "@/lib/practical-guide";
 import { useChat } from "@/components/chat/provider";
 import { GuideAiSidebar } from "@/components/guide/guide-ai-sidebar";
 import { GuideBottomActionBar } from "@/components/guide/guide-bottom-action-bar";
+import { GuideDetailSections } from "@/components/guide/guide-detail-sections";
+import { buildGuideJumpSections, GuideJumpNav } from "@/components/guide/guide-jump-nav";
 import { GuideFaqSection } from "@/components/guide/guide-faq-section";
 import { GuideFullGuideCta } from "@/components/guide/guide-full-guide-cta";
 import { GuideHeroHeader } from "@/components/guide/guide-hero-header";
@@ -32,6 +34,7 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
   const title = workflow.displayTitle ?? article.title;
   const stepsRef = useRef<HTMLDivElement>(null);
   const heroProps = buildGuideHeroProps(article, workflow, resources);
+  const jumpSections = useMemo(() => buildGuideJumpSections(workflow), [workflow]);
 
   const initialExpanded = useMemo(
     () => workflow.steps.find((s) => s.status === "active")?.id ?? workflow.steps[0]?.id,
@@ -110,6 +113,11 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
           />
         </div>
 
+        <div className="mt-8">
+          <GuideJumpNav sections={jumpSections} className="mb-6 xl:hidden" />
+          <GuideDetailSections workflow={workflow} onAskAi={(prefill) => askAi(prefill)} part="intro" />
+        </div>
+
         {workflow.faqs?.length ? (
           <div className="mt-8">
             <GuideFaqSection faqs={workflow.faqs} headingId={`guide-faq-${article.slug}`} />
@@ -120,6 +128,7 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
           {/* Main column */}
           <div className="min-w-0 space-y-5 xl:col-span-1">
             <div ref={stepsRef} id="guide-steps" className="scroll-mt-28 space-y-5">
+            <h2 className="text-xl font-bold text-heading">Step-by-step</h2>
             <GuideProgressStepper
               currentStep={activeStep}
               totalSteps={workflow.totalSteps}
@@ -152,11 +161,14 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
                 <GuideFullGuideCta resources={resources} className="print:hidden" />
               </div>
             ) : null}
+
+            <GuideDetailSections workflow={workflow} onAskAi={(prefill) => askAi(prefill)} part="detail" />
             </div>
           </div>
 
           {/* Support column — below main on tablet, middle on desktop */}
           <div className="order-3 xl:order-2">
+            <GuideJumpNav sections={jumpSections} className="mb-4 hidden xl:block" />
             <GuideSupportColumn workflow={workflow} article={article} resources={resources} onAskAi={() => askAi()} />
           </div>
 

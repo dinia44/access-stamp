@@ -16,6 +16,7 @@ export type GuideHeroHeaderProps = {
   readTime?: string;
   guideType?: string;
   factChecked?: boolean;
+  trustLabel?: string;
   backgroundImageUrl?: string;
   heroImageUrl?: string;
   backHref?: string;
@@ -75,6 +76,7 @@ export function GuideHeroHeader({
   readTime = ACCESS_TO_WORK_HERO_DEFAULTS.readTime,
   guideType = ACCESS_TO_WORK_HERO_DEFAULTS.guideType,
   factChecked = true,
+  trustLabel = "Reviewed against official guidance",
   backgroundImageUrl,
   heroImageUrl,
   backHref = "/advice",
@@ -93,7 +95,7 @@ export function GuideHeroHeader({
     { icon: "⏱", label: readTime },
     { icon: "🇬🇧", label: guideType },
   ];
-  if (factChecked) meta.push({ icon: "✓", label: "Fact checked" });
+  if (factChecked) meta.push({ icon: "✓", label: trustLabel });
 
   return (
     <header className={cn("mx-auto w-full max-w-7xl", className)}>

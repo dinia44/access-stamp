@@ -40,6 +40,13 @@ export type AdviceArticle = {
   metaDescription?: string;
   heroImage?: { src: string; alt: string };
   sections: AdviceSection[];
+  /** Card preview bullets for category/hub listings */
+  cardPreviewBullets?: string[];
+  /** e.g. "checklist, template, official links" */
+  includesLabel?: string;
+  quickAnswer?: string;
+  firstThreeActions?: string[];
+  canonicalGuideHref?: string;
 };
 
 export type BlogSection = { heading?: string; body: string };

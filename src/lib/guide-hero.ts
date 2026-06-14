@@ -57,6 +57,7 @@ export function buildGuideHeroProps(
     readTime: article.readTimeMinutes ? `${article.readTimeMinutes} min read` : undefined,
     guideType: override?.guideType ?? "UK support guide",
     factChecked: override?.factChecked ?? true,
+    trustLabel: "Reviewed against official guidance",
     backgroundImageUrl: override?.backgroundImageUrl,
     heroImageUrl: override?.heroImageUrl,
     fullGuideHref: resources?.fullGuideCta.primaryHref,

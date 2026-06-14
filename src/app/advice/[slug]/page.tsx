@@ -94,7 +94,7 @@ export default async function AdviceArticlePage({
         ? LAWS_GUIDANCE_LINKS.filter((item) => item.audience === "Work" || item.audience === "General").slice(0, 4)
         : [];
 
-  const practicalGuide = isPracticalGuide(a.slug);
+  const practicalGuide = isPracticalGuide(a.slug, a.categorySlug);
   const guideWorkflow = practicalGuide ? getPracticalGuideWorkflow(a) : null;
   const guideResources = getGuideResourcePack(a.slug);
 

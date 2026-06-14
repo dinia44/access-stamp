@@ -27,6 +27,12 @@ type GuideInput = {
   officialLinks: Array<{ label: string; href: string }>;
   relatedLinks?: Array<{ label: string; href: string }>;
   updated?: string;
+  lastReviewed?: string;
+  quickAnswer?: string;
+  firstThreeActions?: string[];
+  cardPreviewBullets?: string[];
+  includesLabel?: string;
+  canonicalGuideHref?: string;
 };
 
 function buildGuide(g: GuideInput): AdviceArticle {
@@ -82,8 +88,14 @@ function buildGuide(g: GuideInput): AdviceArticle {
     readTimeMinutes: g.readTimeMinutes,
     categorySlug: g.categorySlug,
     updated: g.updated ?? "2026-05-12",
+    lastReviewed: g.lastReviewed,
     tags: g.tags,
     sections,
+    quickAnswer: g.quickAnswer,
+    firstThreeActions: g.firstThreeActions,
+    cardPreviewBullets: g.cardPreviewBullets,
+    includesLabel: g.includesLabel,
+    canonicalGuideHref: g.canonicalGuideHref,
   };
 }
 
@@ -97,8 +109,22 @@ export const PRACTICAL_GUIDE_ARTICLES: AdviceArticle[] = [
     excerpt:
       "Renewal is about how your condition affects you now — not your diagnosis. This guide covers wording, evidence, and common form mistakes.",
     readTimeMinutes: 12,
+    lastReviewed: "June 2026",
     categorySlug: "rights",
     tags: ["PIP", "Benefits", "Renewal", "Forms"],
+    quickAnswer:
+      "Write about what happens when you try to do each activity safely, repeatedly, to an acceptable standard, and within a reasonable time. Do not write only “no change” unless the earlier evidence still fully describes your current needs.",
+    firstThreeActions: [
+      "Check the deadline on the renewal letter and ask for more time if needed.",
+      "Make a table of daily living and mobility difficulties before filling in the form.",
+      "Match evidence to each activity instead of sending a random pile of letters.",
+    ],
+    cardPreviewBullets: [
+      "How to describe function, not just diagnosis",
+      "Evidence that matches each PIP activity",
+      "What to do if payments stop or reduce",
+    ],
+    includesLabel: "checklist, supporting statement template, official links",
     summary:
       "A PIP renewal asks the same core question as a new claim: how does your health condition or disability affect daily living and mobility? The form is not a medical test — it is a structured description of real-life impact. Strong renewals use specific examples, consistent timelines (good days and bad days), and evidence that matches what you write.",
     who: [
@@ -147,9 +173,9 @@ Evidence attached: impact diary (4 weeks), GP letter dated [date], list of aids 
       "Keep attending GP or specialist appointments so ongoing impact is documented.",
     ],
     officialLinks: [
-      { label: "GOV.UK — Personal Independence Payment", href: "https://www.gov.uk/pip" },
+      { label: "GOV.UK — PIP when your claim is reviewed", href: "https://www.gov.uk/pip/when-your-pip-claim-is-reviewed" },
       { label: "GOV.UK — How to claim PIP", href: "https://www.gov.uk/pip/how-to-claim" },
-      { label: "Citizens Advice — PIP", href: "https://www.citizensadvice.org.uk/benefits/sick-or-disabled-people-and-carers/personal-independence-payment/" },
+      { label: "PIP2 form and information booklet (PDF)", href: "https://assets.publishing.service.gov.uk/media/6602af72f1d3a09b1f32ac81/pip2-form-and-information-booklet__1_.pdf" },
     ],
     relatedLinks: [
       { label: "PIP in plain English", href: "/advice/pip-in-plain-english" },
@@ -239,6 +265,20 @@ Yours sincerely,
     categorySlug: "workplace",
     tags: ["Access to Work", "Work", "Funding", "Adjustments"],
     updated: "June 2026",
+    lastReviewed: "June 2026",
+    quickAnswer:
+      "Do not apply by saying, “I need a special chair” or “I need software.” Apply by explaining the barrier: the task, the impact, the risk, and the support that would reduce it.",
+    firstThreeActions: [
+      "List the exact work tasks or journeys that are difficult.",
+      "Write what happens without support.",
+      "Identify possible support: equipment, software, travel, support worker, or workplace changes.",
+    ],
+    cardPreviewBullets: [
+      "How to build a work barrier table",
+      "What evidence strengthens an application",
+      "What to do after an AtW decision",
+    ],
+    includesLabel: "barrier table, application checklist, official links",
     summary:
       "Access to Work (AtW) is a government scheme that can help pay for practical support so you can start or stay in work. It is not a benefit paid to you — it funds agreed items or services linked to workplace barriers. What gets approved depends on your job, the barrier, and whether support is reasonable for that role.",
     who: [
@@ -305,8 +345,22 @@ How it enables work: Completes core hours without missing deadlines`,
     excerpt:
       "Employers must remove barriers where reasonable. This guide helps you name the barrier, propose adjustments, and document responses.",
     readTimeMinutes: 10,
+    lastReviewed: "June 2026",
     categorySlug: "workplace",
     tags: ["Work", "Equality Act", "Adjustments", "Employer"],
+    quickAnswer:
+      "Do not write a long medical life story. Write a clear access request that names the barrier, explains the impact, proposes adjustments, and asks for a written decision and review date.",
+    firstThreeActions: [
+      "Name the work barrier.",
+      "Explain how it disadvantages you compared with colleagues.",
+      "Suggest one or two realistic adjustments.",
+    ],
+    cardPreviewBullets: [
+      "How to structure a written adjustment request",
+      "Examples of barriers and practical fixes",
+      "What to do if your employer delays or refuses",
+    ],
+    includesLabel: "email template, follow-up wording, official links",
     summary:
       "Under the Equality Act 2010, employers must make reasonable adjustments where a disabled worker faces a substantial disadvantage. “Reasonable” depends on cost, practicality, and effectiveness — not whether the adjustment is convenient for the employer. The skill is to describe disadvantage clearly and suggest specific fixes.",
     who: [
@@ -384,8 +438,22 @@ Thank you,
     excerpt:
       "Passenger Assist can help with boarding and connections — but booking rules and operator differences trip people up. Plan ahead and document failures.",
     readTimeMinutes: 9,
+    lastReviewed: "June 2026",
     categorySlug: "transport",
     tags: ["Trains", "Passenger Assist", "Travel", "Rail"],
+    quickAnswer:
+      "Do not rely only on a phone conversation. Get a confirmation reference, screenshot, email, or app confirmation before you travel.",
+    firstThreeActions: [
+      "Write down your journey, train times, stations, and access needs.",
+      "Include wheelchair dimensions, ramp needs, transfer needs, and connection support.",
+      "Ask for written confirmation and save it offline.",
+    ],
+    cardPreviewBullets: [
+      "What to ask before you travel",
+      "What to record if assistance fails",
+      "How to complain without losing the timeline",
+    ],
+    includesLabel: "day-of checklist, complaint template, official links",
     summary:
       "Passenger Assist is the national system for booking help on UK rail journeys — ramps, boarding, alighting, and sometimes station changes. Experience varies by operator and station staffing. Booking ahead is usually safest; some routes offer turn-up-and-go rights for wheelchair users — confirm for your operator.",
     who: [
@@ -436,7 +504,8 @@ Thank you,
     ],
     officialLinks: [
       { label: "National Rail — Passenger Assist", href: "https://www.nationalrail.co.uk/help-and-assistance/passenger-assist/" },
-      { label: "GOV.UK — Rail passenger rights", href: "https://www.gov.uk/rail-passengers-rights" },
+      { label: "National Rail — Passenger Assistance app", href: "https://www.nationalrail.co.uk/help-and-assistance/passenger-assistance-app/" },
+      { label: "Network Rail — Assisted travel", href: "https://www.networkrail.co.uk/rail-travel/assisted-travel/" },
     ],
     relatedLinks: [
       { label: "Trains and Passenger Assist (broader guide)", href: "/advice/trains-and-passenger-assistance" },
@@ -452,8 +521,22 @@ Thank you,
     excerpt:
       "Schools must remove barriers for disabled pupils. Document the disadvantage, ask for specific adjustments, and track delivery in writing.",
     readTimeMinutes: 11,
+    lastReviewed: "June 2026",
     categorySlug: "education",
     tags: ["School", "SEND", "Adjustments", "Parents"],
+    quickAnswer:
+      "A useful request says: “This is the barrier, this is the impact, this is the adjustment requested, this is how we will check it is working.”",
+    firstThreeActions: [
+      "Name the barrier at school, not just the diagnosis.",
+      "Ask for specific adjustments and who owns each action.",
+      "Request review dates and written confirmation.",
+    ],
+    cardPreviewBullets: [
+      "School barriers to list before a meeting",
+      "What a written adjustment plan should include",
+      "When to consider an EHC needs assessment",
+    ],
+    includesLabel: "SENCo email template, meeting prompts, official links",
     summary:
       "Schools in England must make reasonable adjustments for disabled pupils and must not discriminate. Adjustments can cover access, toileting, sensory environment, communication, and participation in trips. This is separate from but often overlaps with SEN support and EHC plans.",
     who: [
@@ -723,8 +806,22 @@ Adaptations I think would help: [ramp / shower / stairlift — open to OT advice
     excerpt:
       "A care needs assessment is how adults ask the council what support might be available. Be specific about tasks you cannot do safely at home.",
     readTimeMinutes: 10,
+    lastReviewed: "June 2026",
     categorySlug: "care",
     tags: ["Social care", "Care assessment", "Carers", "Council"],
+    quickAnswer:
+      "Do not only say “I need more help.” Say which tasks are unsafe, how often support is needed, what happens without it, and how it affects wellbeing.",
+    firstThreeActions: [
+      "List daily tasks you cannot do safely or reliably.",
+      "Include washing, dressing, meals, medication, moving around, and carer strain.",
+      "Ask for the assessment in writing and keep a copy.",
+    ],
+    cardPreviewBullets: [
+      "Tasks to name in an assessment request",
+      "Evidence that shows risk and wellbeing impact",
+      "What to ask for after the assessment",
+    ],
+    includesLabel: "assessment wording, care diary prompts, official links",
     summary:
       "Adult social care in England must assess people who appear to need care and support. The assessment looks at what you need to achieve daily outcomes — washing, dressing, meals, safety, relationships, work — not just your diagnosis. Financial assessment for charges is separate.",
     who: [

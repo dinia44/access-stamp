@@ -4,6 +4,7 @@ import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { Badge, Card } from "@/components/ui";
 import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 import { FEATURED_PRACTICAL_GUIDE_SLUGS } from "@/lib/featured-practical-guides";
+import { getGuideCardPreviewBullets, getGuideIncludesLabel, formatGuideCardMeta } from "@/lib/guide-card-meta";
 import { getAdviceArticles } from "@/lib/content/advice";
 import type { AdviceArticle } from "@/lib/content/types";
 import { ADVICE_CATEGORIES } from "@/lib/mock-data";
@@ -59,20 +60,27 @@ function GuideCardGrid({
                     {article.excerpt}
                   </p>
                 ) : null}
+                <div className="mt-3 space-y-2">
+                  <p className={`text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#94A3B8]" : "text-[#59682A]"}`}>
+                    What this helps with
+                  </p>
+                  <ul className="space-y-1">
+                    {getGuideCardPreviewBullets(article).map((bullet) => (
+                      <li key={bullet} className={`flex items-start gap-2 text-xs leading-5 ${isDark ? "text-[#CBD5E1]" : "text-text"}`}>
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#F04A16]" aria-hidden />
+                        {bullet}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 <div className="mt-auto flex items-center justify-between gap-2 pt-4">
-                  {article.readTimeMinutes ? (
-                    <span className={`text-xs font-semibold ${isDark ? "text-[#64748B]" : "text-muted"}`}>
-                      {article.readTimeMinutes} min read
-                    </span>
-                  ) : (
-                    <span className={`text-xs font-semibold ${isDark ? "text-[#64748B]" : "text-muted"}`}>
-                      Updated {article.updated}
-                    </span>
-                  )}
+                  <span className={`text-xs font-semibold ${isDark ? "text-[#64748B]" : "text-muted"}`}>
+                    Includes: {getGuideIncludesLabel(article)} · {formatGuideCardMeta(article)}
+                  </span>
                   <span
                     className={`text-sm font-semibold ${isDark ? "text-[#22D3EE]" : isWarm ? "text-[#59682A] group-hover:text-[#F04A16]" : "text-blue"}`}
                   >
-                    Read guide →
+                    Open guide →
                   </span>
                 </div>
               </div>

@@ -32,11 +32,19 @@ export type GuideTemplate = {
   format: string;
   description?: string;
   href?: string;
+  useWhen?: string;
+  body?: string;
 };
 
 export type GuideOfficialLink = {
   label: string;
   href: string;
+};
+
+export type GuideCopyableTemplate = {
+  title: string;
+  useWhen: string;
+  body: string;
 };
 
 export type GuideFaq = {
@@ -53,12 +61,21 @@ export type GuideFaq = {
 export type PracticalGuideWorkflow = {
   displayTitle?: string;
   subtitle: string;
+  quickAnswer?: string;
+  whoThisIsFor?: string[];
+  firstThreeActions?: string[];
+  warningBox?: { title: string; text: string };
   currentStep: number;
   totalSteps: number;
   completedCount: number;
   steps: GuideStep[];
   summary: string[];
   atAGlance: string[];
+  evidenceChecklist?: string[];
+  copyableTemplates?: GuideCopyableTemplate[];
+  commonMistakes?: string[];
+  escalation?: string[];
+  relatedGuides?: Array<{ label: string; href: string }>;
   templates: GuideTemplate[];
   officialLinks?: GuideOfficialLink[];
   aiIntro: string;
