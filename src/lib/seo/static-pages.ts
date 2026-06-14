@@ -39,9 +39,9 @@ export const STATIC_PAGE_SEO = {
     path: "/blog",
   },
   about: {
-    title: "About Access Stamp",
+    title: "About Access Stamp | Disability-led access guides, venue finder and practical accessibility tools",
     description:
-      "Access Stamp is built by disabled people in the UK to make practical accessibility information easier to find and trust.",
+      "Access Stamp is a disability-led platform helping disabled people, wheelchair users, carers, families, and venues make better access decisions through practical guides, venue information, verification labels, and AI tools.",
     path: "/about",
   },
   lawsGuidance: {

@@ -1,109 +1,79 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { FadeIn } from "@/components/fade-in";
-import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
-import { SiteLogo } from "@/components/site-logo";
-import { Badge, Button, Card } from "@/components/ui";
-import { VerificationBadge } from "@/components/verification-badge";
+import { AboutHero } from "@/components/about/about-hero";
+import { AboutJsonLd } from "@/components/about/about-jsonld";
+import { ABOUT_PAGE } from "@/components/about/about-theme";
+import { AccessibilityPromise } from "@/components/about/accessibility-promise";
+import { AIExplainerSection } from "@/components/about/ai-explainer-section";
+import { AudienceSplitSection } from "@/components/about/audience-split-section";
+import { FinalCTA } from "@/components/about/final-cta";
+import { FounderStory } from "@/components/about/founder-story";
+import { NewsletterSignup } from "@/components/about/newsletter-signup";
+import { PlatformFeatureGrid } from "@/components/about/platform-feature-grid";
+import { ProblemComparison } from "@/components/about/problem-comparison";
+import { PurplePoundStats } from "@/components/about/purple-pound-stats";
+import { SmallChangesChecklist } from "@/components/about/small-changes-checklist";
+import { VerificationLabels } from "@/components/about/verification-labels";
 import { staticPageMetadata } from "@/lib/seo/static-pages";
 
 export const metadata: Metadata = staticPageMetadata("about");
 
-const VALUES = [
-  {
-    title: "Treat people as capable adults",
-    detail: "No pity framing. No inspiration stories. Just information you can act on.",
-  },
-  {
-    title: "Be specific and useful",
-    detail: "Measurements, photos, and plain-language checks — not vague accessibility claims.",
-  },
-  {
-    title: "Be honest about system failures",
-    detail: "When processes are broken, we say so — and show you practical workarounds.",
-  },
+const DISABLED_USER_BULLETS = [
+  "Check whether a venue gives enough access detail",
+  "Find practical guides before a problem escalates",
+  "Prepare questions before calling a venue",
+  "Understand wheelchair-related basics such as cushions, pressure areas, transfer planning, and seating needs",
+  "Learn what to ask about work, education, fire evacuation, and reasonable adjustments",
+  "Use AI tools to turn confusion into a clear checklist",
+] as const;
+
+const VENUE_BULLETS = [
+  "Create clearer accessibility listings",
+  "Identify missing access information",
+  "Understand what disabled customers need to know before visiting",
+  "Improve staff confidence around access questions",
+  "Show small practical improvements that can make a real difference",
+  "Build trust with disabled customers and families",
 ] as const;
 
 export default function AboutPage() {
   return (
-    <PageLayout stack="relaxed" hero>
-      <PageHero
-        badge={<Badge tone="blue">About</Badge>}
-        title="Built for people who need access information that actually works"
-        subtitle="A practical platform for disabled people, wheelchair users, carers, older people, and families across the UK — from lived experience, not corporate compliance."
+    <div className={ABOUT_PAGE}>
+      <AboutJsonLd />
+      <AboutHero />
+      <ProblemComparison />
+      <FounderStory />
+      <PlatformFeatureGrid />
+      <PurplePoundStats />
+      <SmallChangesChecklist />
+      <AudienceSplitSection
+        id="for-users"
+        tone="alt"
+        title="For disabled people, carers, and families"
+        body={[
+          "Access Stamp is designed to reduce the guesswork. Whether you are planning a meal out, preparing for work, starting university, arranging travel, or trying to understand equipment and support needs, the platform gives you clearer information and practical next steps.",
+        ]}
+        bulletsTitle="You can use Access Stamp to…"
+        bullets={DISABLED_USER_BULLETS}
+        cta="Start with the practical guides"
+        href="/advice"
       />
-
-      <FadeIn delayMs={100}>
-        <Card className="overflow-hidden p-0">
-          <div className="grid gap-0 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
-            <div className="premium-section-panel p-8 lg:p-10">
-              <SiteLogo className="h-auto w-full max-w-[200px] object-contain" />
-              <p className="mt-6 text-lg font-semibold leading-snug text-heading">
-                Not a charity. Not a compliance tool. A serious product for real decisions.
-              </p>
-              <p className="mt-4 text-sm leading-7 text-muted">
-                Access Stamp exists because finding out whether a place is actually accessible still takes too much
-                guesswork — and official guidance rarely matches what you need on the ground.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Button href="/venue-finder">Explore venues</Button>
-                <Button href="/advice" variant="secondary">
-                  Read guides
-                </Button>
-              </div>
-            </div>
-            <div className="space-y-4 p-8 lg:p-10">
-              {VALUES.map((value) => (
-                <div
-                  key={value.title}
-                  className="rounded-2xl border border-border bg-background-2 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]"
-                >
-                  <div className="text-sm font-semibold text-heading">{value.title}</div>
-                  <p className="mt-2 text-sm leading-6 text-muted">{value.detail}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Card>
-      </FadeIn>
-
-      <div id="listings" className="scroll-mt-28 space-y-6">
-        <PageSectionTitle
-          title="Listings & verification"
-          description="Every venue label describes how strong the evidence is — not whether a place is good or bad."
-        />
-        <FadeIn delayMs={120}>
-          <Card className="p-6 sm:p-8">
-            <ul className="grid gap-4 md:grid-cols-3">
-              <li className="rounded-2xl border border-border bg-verified-pale p-5">
-                <VerificationBadge status="Access Stamp checked" />
-                <p className="mt-3 text-sm leading-6 text-muted">
-                  Reviewed against our field-style checklist; priority for filters like verified venues only.
-                </p>
-              </li>
-              <li className="rounded-2xl border border-border bg-blue-pale p-5">
-                <VerificationBadge status="Community reported" />
-                <p className="mt-3 text-sm leading-6 text-muted">
-                  Submitted or corroborated detail from disabled people and allies — worth confirming hours and layout.
-                </p>
-              </li>
-              <li className="rounded-2xl border border-border bg-amber-pale p-5">
-                <VerificationBadge status="Not yet verified" />
-                <p className="mt-3 text-sm leading-6 text-muted">
-                  Early or partial information — still useful, especially if you phone ahead or visit off-peak.
-                </p>
-              </li>
-            </ul>
-            <p className="mt-6 text-sm leading-7 text-muted">
-              Open listings include <strong className="font-semibold text-heading">Will it fit?</strong> where
-              measurements exist. The AI uses the same listing context when you chat from that page.{" "}
-              <Link href="/about#listings" className="font-semibold text-blue hover:underline">
-                Learn more in our verification guide →
-              </Link>
-            </p>
-          </Card>
-        </FadeIn>
-      </div>
-    </PageLayout>
+      <AudienceSplitSection
+        id="for-venues"
+        title="For venues, businesses, and organisations"
+        body={[
+          "Access Stamp helps venues move beyond vague claims like “disabled access available.” The goal is to help you explain access in a way disabled people can actually use when deciding whether to visit.",
+          "Clear access information improves trust, reduces repeated phone calls, helps staff answer questions consistently, and makes your venue easier to choose.",
+        ]}
+        bulletsTitle="Access Stamp can help venues…"
+        bullets={VENUE_BULLETS}
+        cta="List or improve your venue"
+        href="/for-venues"
+      />
+      <VerificationLabels />
+      <AIExplainerSection />
+      <AccessibilityPromise />
+      <NewsletterSignup />
+      <FinalCTA />
+    </div>
   );
 }
