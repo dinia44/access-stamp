@@ -20,23 +20,15 @@ export const VENUE_FINDER_PROMO_VIDEO_SRC =
 export const VENUE_FINDER_PROMO_VIDEO_POSTER =
   "https://res.cloudinary.com/dtl4syjuh/video/upload/so_0,f_jpg,q_auto/accessstamp_16x9_correct_end_screen_osaycc.jpg";
 
-/** Primary navigation — always visible in the header */
-export const NAV_PRIMARY_ITEMS: NavItem[] = [
-  { label: "Home", href: "/" },
+/** Primary navigation — shared header on every page */
+export const NAV_ITEMS: NavItem[] = [
   { label: "Find Venues", href: "/venue-finder" },
   { label: "Guides", href: "/advice" },
+  { label: "Tools", href: "/ai-toolkit" },
+  { label: "Help Cards", href: "/help-cards" },
+  { label: "For Venues", href: "/for-venues" },
+  { label: "About", href: "/about" },
 ];
-
-/** Grouped under the “More” menu to keep the header calm */
-export const NAV_MORE_ITEMS: NavItem[] = [
-  { label: "Tools", href: "/ai-toolkit", description: "Draft letters, checklists, and next steps" },
-  { label: "Help Cards", href: "/help-cards", description: "Copyable scripts for access situations" },
-  { label: "For Venues", href: "/for-venues", description: "Venue support and pilot programme" },
-  { label: "About", href: "/about", description: "Why Access Stamp exists" },
-];
-
-/** Flat list for mobile nav and legacy imports */
-export const NAV_ITEMS: NavItem[] = [...NAV_PRIMARY_ITEMS, ...NAV_MORE_ITEMS];
 
 export const PRIMARY_NAV_CTA = { label: "Find accessible venues", href: "/venue-finder" } as const;
 
