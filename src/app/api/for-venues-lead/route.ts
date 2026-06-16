@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sendTransactionalEmail } from "@/lib/email/send";
 
 export type ForVenuesLeadPayload = {
   venueName: string;
@@ -52,8 +53,27 @@ export async function POST(req: Request) {
     notes: typeof body.notes === "string" && body.notes.trim() ? body.notes.trim() : undefined,
   };
 
-  // TODO: Persist leads to CRM / email workflow
-  console.info("[for-venues-lead]", JSON.stringify({ ...payload, receivedAt: new Date().toISOString() }));
+  const emailResult = await sendTransactionalEmail({
+    subject: `Venue pilot enquiry — ${payload.venueName}`,
+    replyTo: payload.email,
+    text: [
+      `Venue: ${payload.venueName}`,
+      `Contact: ${payload.contactName}`,
+      `Email: ${payload.email}`,
+      payload.phone ? `Phone: ${payload.phone}` : null,
+      `Venue type: ${payload.venueType}`,
+      `Town: ${payload.town}`,
+      payload.notes ? `\nNotes:\n${payload.notes}` : null,
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  });
 
-  return NextResponse.json({ ok: true });
+  if (!emailResult.ok) {
+    return NextResponse.json({ error: emailResult.error }, { status: 502 });
+  }
+
+  console.info("[for-venues-lead]", JSON.stringify({ ...payload, receivedAt: new Date().toISOString(), emailed: !emailResult.skipped }));
+
+  return NextResponse.json({ ok: true, delivered: !emailResult.skipped });
 }

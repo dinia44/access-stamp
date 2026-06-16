@@ -106,9 +106,8 @@ export function ToolkitSourceNote({ source }: { source: ToolkitResultSource }) {
     );
   }
   return (
-    <p className="text-xs text-muted print:hidden">
-      Showing structured preview output. Connect <code className="text-text">OPENAI_API_KEY</code> on the server for
-      AI-personalised results (same variable as the chat assistant).
+    <p className="text-xs text-muted print:hidden" role="status">
+      Showing a structured template while personalised results are unavailable. Try generating again in a moment.
     </p>
   );
 }

@@ -1,4 +1,6 @@
-export const CONTACT_EMAIL = "hello@accessstamp.com";
+import { CONTACT_EMAIL } from "@/lib/contact";
+
+export { CONTACT_EMAIL };
 
 export function suggestVenueMailto(options?: { venueName?: string; subject?: string; body?: string }) {
   const subject = options?.subject ?? (options?.venueName ? `Suggest a venue: ${options.venueName}` : "Suggest a venue");

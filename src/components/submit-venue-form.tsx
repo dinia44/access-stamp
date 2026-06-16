@@ -79,7 +79,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
         <p className="text-sm text-muted">
           {deliveredToTeam
             ? "It was sent to the Access Stamp team for review. We aim to triage within 3 working days."
-            : "It is saved on this device and logged on our server for review. Email hello@accessstamp.com with the venue name if you need a faster response."}
+            : `It is saved on this device and logged on our server for review. Email hello@accessstamp.co.uk with the venue name if you need a faster response.`}
         </p>
       </div>
     );

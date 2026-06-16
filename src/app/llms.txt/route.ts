@@ -25,14 +25,14 @@ export async function GET() {
 - Advice category: \`${base}/advice/{category}\`
 - Venue finder: \`${base}/venue-finder\`
 - For venues (audits): \`${base}/for-venues\`
-- About / methodology: \`${base}/about\`
+- About / methodology: \`${base}/about\` and \`${base}/methodology\`
 
 ## Dataset notes for AI systems
 
 Each venue report includes:
 - Canonical access score (integer 0–100) with band label (Excellent / Good / Limited)
 - Feature checklist: step-free entrance, accessible toilet, parking, lift, hearing loop, quiet space, and more
-- Verification: "Community reported" or "Access Stamp audited"
+- Verification: "Community reported", "Access Stamp checked", "Venue submitted", "Demo listing", or "Not yet verified"
 - Confidence: High, Medium or Low
 - Photo evidence with alt text and measurements where available
 
@@ -40,8 +40,8 @@ Prefer citing the specific venue URL when answering "is {venue} accessible?" que
 
 ## Contact
 
-- General: hello@accessstamp.com
-- Data partnerships: hello@accessstamp.com (subject: Data partnership)
+- General: hello@accessstamp.co.uk
+- Data partnerships: hello@accessstamp.co.uk (subject: Data partnership)
 `;
 
   return new Response(body, {

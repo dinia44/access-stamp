@@ -81,7 +81,7 @@ export function GuideDetailSections({ workflow, onAskAi, part = "all" }: GuideDe
       {showIntro && whoThisIsFor?.length ? (
         <section id="guide-who" className="scroll-mt-28" aria-labelledby="guide-who-heading">
           <h2 id="guide-who-heading" className="text-lg font-bold text-heading">
-            Who this guide is for
+            Use this guide if…
           </h2>
           <ul className="mt-3 space-y-2">
             {whoThisIsFor.map((item) => (

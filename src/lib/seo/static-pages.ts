@@ -61,9 +61,22 @@ export const STATIC_PAGE_SEO = {
     path: "/glossary",
   },
   helpCards: {
-    title: "Help cards",
-    description: "Quick-reference cards for common disability rights and access situations in the UK.",
+    title: "Help cards for real access situations",
+    description:
+      "Quick, practical cards you can copy, save, print, or use when you need to explain an access need clearly.",
     path: "/help-cards",
+  },
+  contact: {
+    title: "Contact Access Stamp",
+    description:
+      "Contact Access Stamp about venue access information, guides, partnerships, venue support, or general enquiries.",
+    path: "/contact",
+  },
+  methodology: {
+    title: "How Access Stamp access information works",
+    description:
+      "What Access Stamp records, how confidence labels work, why unknowns are shown, and how to confirm details before travelling.",
+    path: "/methodology",
   },
   submitVenue: {
     title: "List your venue",

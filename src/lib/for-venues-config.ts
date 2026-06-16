@@ -1,9 +1,8 @@
-/** Certification tier pricing — set live values before public launch. */
+/** Certification tier pricing — pilot programme. */
 export const CERTIFICATION_PRICING = {
-  // TODO: Set live pricing before launch
-  bronze: { fromPrice: "£X" },
-  silver: { fromPrice: "£X" },
-  gold: { fromPrice: "£X" },
+  bronze: { label: "Pilot pricing available" },
+  silver: { label: "Pilot pricing available" },
+  gold: { label: "Pilot pricing available" },
 } as const;
 
 export type CertificationTierId = keyof typeof CERTIFICATION_PRICING;
@@ -20,8 +19,8 @@ export type CertificationTier = {
 export const CERTIFICATION_TIERS: CertificationTier[] = [
   {
     id: "bronze",
-    name: "Bronze",
-    tagline: "Core audit, public listing, and window stamp",
+    name: "Bronze Access Snapshot",
+    tagline: "Best for smaller venues that need a simple access information review.",
     features: [
       "On-site core accessibility audit",
       "Public access report on Access Stamp",
@@ -32,8 +31,8 @@ export const CERTIFICATION_TIERS: CertificationTier[] = [
   },
   {
     id: "silver",
-    name: "Silver",
-    tagline: "Full measured report and priority listing",
+    name: "Silver Measured Access Report",
+    tagline: "Best for venues that want a fuller measured report with practical recommendations.",
     features: [
       "Everything in Bronze",
       "Full measured PDF access report",
@@ -45,8 +44,8 @@ export const CERTIFICATION_TIERS: CertificationTier[] = [
   },
   {
     id: "gold",
-    name: "Gold",
-    tagline: "Annual re-check, staff training, featured placement",
+    name: "Gold Access Stamp Review",
+    tagline: "Best for venues that want deeper review, staff-facing guidance, and a more complete access profile.",
     features: [
       "Everything in Silver",
       "Annual accessibility re-check",
@@ -56,6 +55,26 @@ export const CERTIFICATION_TIERS: CertificationTier[] = [
     stampTone: "gold",
   },
 ];
+
+export const WHAT_WE_CHECK = [
+  "Entrances",
+  "Routes",
+  "Toilets",
+  "Seating",
+  "Parking/drop-off",
+  "Staff support",
+  "Emergency considerations",
+  "Website information",
+] as const;
+
+export const WHAT_VENUES_RECEIVE = [
+  "Access information review",
+  "Practical recommendations",
+  "Access profile for customers",
+  "Confidence label",
+  "Clear next steps",
+  "Optional staff-facing guidance",
+] as const;
 
 export const FOR_VENUES_FAQ = [
   {

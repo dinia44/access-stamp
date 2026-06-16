@@ -21,7 +21,7 @@ export function AdviceArticleCard({
   meta,
   tagLimit = 3,
   showReadCta = true,
-  readCtaLabel = "Read →",
+  readCtaLabel = "Start guide",
 }: {
   article: AdviceArticle;
   badgeTone?: "blue" | "amber";

@@ -70,8 +70,8 @@ export default function AccessibilityStatementPage() {
           <p className="text-base leading-8 text-[#4A5263]">
             If you find a barrier on Access Stamp — keyboard traps, missing labels, poor contrast, confusing language, or
             anything else — please email{" "}
-            <a href="mailto:hello@accessstamp.com" className="font-semibold text-[#C8430F] underline-offset-2 hover:underline">
-              hello@accessstamp.com
+            <a href="mailto:hello@accessstamp.co.uk" className="font-semibold text-[#C8430F] underline-offset-2 hover:underline">
+              hello@accessstamp.co.uk
             </a>
             . We aim to respond within <strong className="font-semibold text-[#20242E]">five working days</strong> and
             will tell you what we can fix and when.

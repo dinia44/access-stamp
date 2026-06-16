@@ -1,3 +1,4 @@
+import { MethodologyLink } from "@/components/design-system/methodology-link";
 import { PageContainer } from "@/components/layout/PageContainer";
 
 const PROOF_TILES = [
@@ -24,10 +25,14 @@ export function HomeWhyTrust() {
     <section className="border-t border-[#EFE5DA] bg-[#FAF4ED] py-16 sm:py-20" aria-labelledby="why-trust-heading">
       <PageContainer>
         <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C8430F]">Why trust us</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C8430F]">Trust & methodology</p>
           <h2 id="why-trust-heading" className="mt-3 font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[#20242E] sm:text-4xl">
             Honest about what we know
           </h2>
+          <p className="mt-3 text-base leading-7 text-[#4A5263]">
+            We label confidence, show unknowns, and explain how access information is gathered.
+          </p>
+          <MethodologyLink className="mt-4" />
         </div>
 
         <ul className="mt-10 grid gap-5 sm:grid-cols-2">

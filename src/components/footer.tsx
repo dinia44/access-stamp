@@ -2,31 +2,26 @@ import Link from "next/link";
 import { Container } from "@/components/container";
 import { FooterNewsletterSignup } from "@/components/footer-newsletter-signup";
 import { SiteLogo } from "@/components/site-logo";
+import { CONTACT_EMAIL } from "@/lib/contact";
+import { FOOTER_RESOURCE_LINKS } from "@/lib/site";
 import { suggestVenueMailto } from "@/lib/venue-submission";
 
 const EXPLORE_LINKS = [
-  { label: "Venue Finder", href: "/venue-finder" },
-  { label: "Advice Hub", href: "/advice" },
-  { label: "AI Tools", href: "/ai-toolkit" },
-  { label: "Blog", href: "/blog" },
+  { label: "Find Venues", href: "/venue-finder" },
+  { label: "Guides", href: "/advice" },
+  { label: "Tools", href: "/ai-toolkit" },
+  { label: "Help Cards", href: "/help-cards" },
 ] as const;
 
 const ABOUT_LINKS = [
-  { label: "About Us", href: "/about" },
-  { label: "Our Mission", href: "/about#mission" },
+  { label: "About", href: "/about" },
+  { label: "For Venues", href: "/for-venues" },
 ] as const;
 
 const VENUE_LINKS = [
-  { label: "For Venues", href: "/for-venues" },
   { label: "List your venue", href: "/submit-venue" },
   { label: "Suggest a venue", href: suggestVenueMailto() },
-] as const;
-
-const LEGAL_LINKS = [
-  { label: "Terms", href: "/legal/terms" },
-  { label: "Privacy", href: "/legal/privacy" },
-  { label: "Cookie Policy", href: "/legal/privacy#cookies" },
-  { label: "Accessibility Statement", href: "/accessibility" },
+  { label: "Methodology", href: "/methodology" },
 ] as const;
 
 function FooterColumn({ title, links }: { title: string; links: readonly { label: string; href: string }[] }) {
@@ -64,8 +59,8 @@ export function Footer() {
               <SiteLogo className="h-auto max-h-12 w-auto object-contain sm:max-h-14" />
             </Link>
             <p className="max-w-sm text-sm leading-7 text-[#c8d4d0]">
-              Your trusted platform for accessible venues, practical advice and disability confidence every step of the
-              way.
+              Practical access information, plain-English guides, and structured tools — built to help disabled people,
+              families, carers, and venues make confident decisions.
             </p>
           </div>
 
@@ -73,15 +68,20 @@ export function Footer() {
             <FooterColumn title="Explore" links={EXPLORE_LINKS} />
             <FooterColumn title="About" links={ABOUT_LINKS} />
             <FooterColumn title="Venues" links={VENUE_LINKS} />
-            <FooterColumn title="Legal" links={LEGAL_LINKS} />
+            <FooterColumn title="Resources" links={FOOTER_RESOURCE_LINKS} />
           </div>
 
           <div>
             <h3 className="text-sm font-semibold text-white">Get in touch</h3>
             <ul className="mt-4 space-y-3 text-sm">
               <li>
-                <a href="mailto:hello@accessstamp.com" className="footer-link">
-                  hello@accessstamp.com
+                <Link href="/contact" className="footer-link">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <a href={`mailto:${CONTACT_EMAIL}`} className="footer-link">
+                  {CONTACT_EMAIL}
                 </a>
               </li>
               <li className="leading-6 text-[#94a3b8]">

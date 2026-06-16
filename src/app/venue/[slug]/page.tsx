@@ -23,7 +23,12 @@ import { VenueFitPlannerInline } from "@/components/venue/venue-fit-planner-inli
 import { computeAccessScore } from "@/lib/venue-access-score";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import { buildBreadcrumbJsonLd, buildVenueLocalBusinessJsonLd } from "@/lib/seo/venue-jsonld";
+import { CopyableScript } from "@/components/design-system/copyable-script";
+import { MethodologyLink } from "@/components/design-system/methodology-link";
 import { suggestVenueMailto } from "@/lib/venue-submission";
+
+const BEFORE_TRAVEL_SCRIPT =
+  "Hi, I'm planning to visit and need to check a few access details before booking. Could you confirm the step-free entrance location, narrowest doorway width, accessible toilet layout, and whether staff can keep a clear route to the table?";
 
 export function generateStaticParams() {
   return SAMPLE_VENUES.map((v) => ({ slug: v.slug }));
@@ -293,6 +298,16 @@ export default async function VenueDetailPage({
             unknownFeatureCount={unknownCount}
           />
 
+          <Card className="p-5">
+            <h2 className="text-lg font-semibold text-heading">Before you travel, confirm these details</h2>
+            <p className="mt-2 text-sm leading-6 text-muted">
+              Access information can change. If this visit is important, confirm the details below with the venue before
+              travelling.
+            </p>
+            <CopyableScript script={BEFORE_TRAVEL_SCRIPT} className="mt-4" />
+            <MethodologyLink className="mt-4" />
+          </Card>
+
           <div className="grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
             <Card className="p-5">
               <div className="text-sm font-semibold text-heading">What this means for your visit</div>
@@ -340,8 +355,8 @@ export default async function VenueDetailPage({
                   />
                 </div>
               ) : (
-                <div className="mt-3 grid h-44 place-items-center rounded-[var(--radius-card)] border border-border bg-background text-sm font-semibold text-muted">
-                  Map preview coming soon
+                <div className="mt-3 grid h-44 place-items-center rounded-[var(--radius-card)] border border-border bg-background px-4 text-center text-sm font-semibold text-muted">
+                  Use the address area below with your route planner. A map view is available from the venue finder list.
                 </div>
               )}
               <p className="mt-3 text-xs text-muted">

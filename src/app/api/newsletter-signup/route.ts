@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { subscribeToNewsletter } from "@/lib/email/newsletter";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -19,11 +20,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
   }
 
-  // TODO: wire to email provider (e.g. Resend, Mailchimp, Buttondown).
-  console.info("[newsletter-signup]", email);
+  const result = await subscribeToNewsletter(email);
+  if (!result.ok) {
+    return NextResponse.json({ error: result.error }, { status: 502 });
+  }
 
   return NextResponse.json({
     ok: true,
     message: "Thanks — you're subscribed. We'll only email when there's something worth sharing.",
+    stored: result.stored,
   });
 }

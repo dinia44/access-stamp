@@ -80,7 +80,7 @@ function GuideCardGrid({
                   <span
                     className={`text-sm font-semibold ${isDark ? "text-[#22D3EE]" : isWarm ? "text-[#59682A] group-hover:text-[#F04A16]" : "text-blue"}`}
                   >
-                    Open guide →
+                    Start guide →
                   </span>
                 </div>
               </div>

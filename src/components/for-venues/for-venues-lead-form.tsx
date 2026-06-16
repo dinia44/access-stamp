@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { CONTACT_EMAIL } from "@/lib/contact";
 import { VENUE_TYPE_OPTIONS } from "@/lib/for-venues-config";
 
 type FormState = {
@@ -67,7 +68,7 @@ export function ForVenuesLeadForm() {
       }
       setSent(true);
     } catch {
-      setError("Could not send your enquiry. Please try again or email hello@accessstamp.com.");
+      setError(`Could not send your enquiry. Please try again or email ${CONTACT_EMAIL}.`);
     } finally {
       setSubmitting(false);
     }

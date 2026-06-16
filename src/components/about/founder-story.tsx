@@ -1,64 +1,106 @@
 import { AboutSection } from "@/components/about/about-section";
-import { ABOUT_BODY, ABOUT_PANEL } from "@/components/about/about-theme";
+import {
+  ABOUT_BODY,
+  ABOUT_H2,
+  ABOUT_PANEL,
+} from "@/components/about/about-theme";
 import { FadeIn } from "@/components/fade-in";
+import { cn } from "@/lib/utils";
 
-const PERSPECTIVE = [
-  "Lived experience as a wheelchair user",
-  "Focus on real-world access, not theory",
-  "Built around practical decisions before people travel, work, study, or visit",
-  "Designed to help disabled people and venues understand the details that usually get missed",
+const CREDIBILITY_CHIPS = [
+  "Disabled-led",
+  "Wheelchair user perspective",
+  "Practical access detail",
+  "Plain English guidance",
+  "Built around real decisions",
 ] as const;
 
 export function FounderStory() {
   return (
-    <AboutSection tone="alt" aria-labelledby="founder-heading">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start lg:gap-14">
-        <div className="space-y-4">
-          <h2
-            id="founder-heading"
-            className="text-[1.875rem] font-bold leading-[1.12] tracking-[-0.025em] text-[#13201F] sm:text-4xl"
-          >
-            Built by someone who had to learn access the hard way.
-          </h2>
-          <p className={ABOUT_BODY}>
-            Access Stamp was created by Allister Diniz, a disabled wheelchair user who knows that access is rarely as
-            simple as “can you get through the door?”
-          </p>
-          <p className={ABOUT_BODY}>
-            When you first use a wheelchair, people often make it sound simple: you get a wheelchair, and that is the
-            solution. But real access is full of hidden details. You learn about cushions, pressure areas, slide
-            sheets, transfer space, barrier cream, seating posture, fatigue, toilet access, transport, emergency
-            evacuation, and the small things nobody explains until something goes wrong.
-          </p>
-          <p className={ABOUT_BODY}>
-            The same problem appears at work, in education, in venues, and in everyday life. Many disabled people are
-            expected to understand risk assessments, fire evacuation plans, occupational health reports, reasonable
-            adjustments, and access planning without anyone explaining them in plain English.
-          </p>
-          <p className={ABOUT_BODY}>
-            Access Stamp exists to turn those hidden details into practical tools, guides, and venue information people
-            can actually use.
-          </p>
-        </div>
+    <AboutSection
+      id="founder"
+      tone="panel"
+      aria-labelledby="founder-section-heading"
+      className="founder-about-section bg-[#F4EEF8]"
+    >
+      <h2 id="founder-section-heading" className="sr-only">
+        About Allister Diniz, founder of Access Stamp
+      </h2>
 
-        <FadeIn delayMs={100}>
-          <aside className={`${ABOUT_PANEL} p-6 sm:p-8`} aria-labelledby="founder-perspective-heading">
-            <p
-              id="founder-perspective-heading"
-              className="text-xs font-semibold uppercase tracking-[0.12em] text-[#59682A]"
+      <div className="grid gap-10 md:grid-cols-2 md:items-start md:gap-12 lg:gap-16">
+        <FadeIn>
+          <figure className="founder-photo-card mx-auto w-full max-w-md md:max-w-none">
+            <div
+              className={cn(
+                ABOUT_PANEL,
+                "relative flex aspect-[3/4] max-h-[420px] w-full flex-col items-center justify-center overflow-hidden rounded-[24px] border-[#E8DDF0] bg-gradient-to-br from-[#F8F4FC] via-[#F3ECFA] to-[#EDE4F6] px-6 py-10 text-center shadow-[0_24px_48px_-28px_rgba(89,56,120,0.28)] sm:max-h-[480px] md:max-h-[540px]",
+              )}
+              role="img"
+              aria-label="Founder image or video to be added."
             >
-              Founder perspective
-            </p>
-            <ul className="mt-5 space-y-4">
-              {PERSPECTIVE.map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-6 text-[#13201F]">
-                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#59682A]" aria-hidden />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </aside>
+              <p className="text-sm font-medium text-[#6B5B7A]">Founder image/video to be added.</p>
+            </div>
+            <figcaption className="mt-5 text-center md:text-left">
+              <p className="text-lg font-semibold text-[#13201F]">Allister Diniz</p>
+              <p className="mt-0.5 text-sm font-medium text-[#59682A]">Founder, Access Stamp</p>
+            </figcaption>
+          </figure>
         </FadeIn>
+
+        <div className="founder-copy space-y-6">
+          <div className="space-y-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#59682A]">Founder-led platform</p>
+            <h3 className={ABOUT_H2}>
+              Built from lived experience, not box-ticking.
+            </h3>
+            <p className={ABOUT_BODY}>
+              Access Stamp was founded by Allister Diniz to make access information more practical, honest, and useful.
+              Accessibility is not just a ramp symbol. It is doorway width, seating, transfer space, fatigue, toilet
+              layout, staff awareness, pressure care, emergency planning, and knowing what to expect before you risk the
+              journey.
+            </p>
+            <p className="text-[1rem] leading-[1.7] text-[#5E6A66]">
+              Vague &ldquo;wheelchair accessible&rdquo; claims are not enough. Access Stamp exists because disabled
+              people are often expected to discover access barriers alone — at the doorway, in the toilet, at work, or
+              on the phone before an appointment. We show practical detail, label what is unknown, and help venues
+              explain access in a way people can actually use.
+            </p>
+          </div>
+
+          <ul
+            className="flex flex-wrap gap-2.5"
+            aria-label="Founder credibility"
+          >
+            {CREDIBILITY_CHIPS.map((chip) => (
+              <li key={chip}>
+                <span className="inline-flex rounded-full border border-[#E2D4EC] bg-white/80 px-3.5 py-1.5 text-sm font-medium text-[#13201F] shadow-[0_8px_20px_-16px_rgba(89,56,120,0.35)]">
+                  {chip}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <FadeIn delayMs={100}>
+            <aside
+              className={cn(
+                ABOUT_PANEL,
+                "border-[#E2D4EC] bg-white/90 p-6 sm:p-7",
+              )}
+              aria-labelledby="founder-insight-heading"
+            >
+              <p
+                id="founder-insight-heading"
+                className="text-xs font-semibold uppercase tracking-[0.12em] text-[#59682A]"
+              >
+                Founder insight
+              </p>
+              <p className="mt-3 text-[1rem] leading-[1.7] text-[#13201F]">
+                Access is rarely one thing. It is the route, the chair, the cushion, the transfer, the toilet, the
+                support, the risk plan, and the information someone has before they leave.
+              </p>
+            </aside>
+          </FadeIn>
+        </div>
       </div>
     </AboutSection>
   );

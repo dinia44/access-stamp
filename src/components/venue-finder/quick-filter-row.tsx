@@ -32,6 +32,18 @@ const FILTER_ICONS: Record<string, ReactNode> = {
       <path d="M7 12h3l2-3v6l2-3h3" />
     </svg>
   ),
+  "Wide doorways (80cm+)": (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+      <path d="M4 20V4M20 20V4M9 20V9h6v11" />
+    </svg>
+  ),
+  "__seating_available": (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+      <path d="M4 18v-4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v4" />
+      <path d="M6 18h12" />
+      <path d="M8 10V6h8v4" />
+    </svg>
+  ),
   "Quiet environment": (
     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
       <path d="M11 5L6 9H3v6h3l5 4V5z" />
@@ -83,63 +95,9 @@ export function QuickFilterRow({ selectedFilters, onToggleFilter, onOpenMoreFilt
         {VENUE_FINDER_QUICK_FILTERS.map(({ label, key }) => {
           const pressed = active.has(key);
           const displayLabel =
-            label === "Step-free entrance"
-              ? (
-                  <>
-                    Step-free
-                    <br />
-                    entrance
-                  </>
-                )
-              : label === "Wheelchair access"
-                ? (
-                    <>
-                      Wheelchair
-                      <br />
-                      access
-                    </>
-                  )
-                : label === "Accessible toilet"
-                  ? (
-                      <>
-                        Accessible
-                        <br />
-                        toilet
-                      </>
-                    )
-                  : label === "Blue Badge parking"
-                    ? (
-                        <>
-                          Blue Badge
-                          <br />
-                          parking
-                        </>
-                      )
-                    : label === "Quiet space"
-                      ? (
-                          <>
-                            Quiet
-                            <br />
-                            space
-                          </>
-                        )
-                      : label === "Hearing loop"
-                        ? (
-                            <>
-                              Hearing
-                              <br />
-                              loop
-                            </>
-                          )
-                        : label === "Assistance available"
-                          ? (
-                              <>
-                                Assistance
-                                <br />
-                                available
-                              </>
-                            )
-                          : formatFilterLabel(label);
+            label.includes(" ")
+              ? formatFilterLabel(label)
+              : label;
 
           return (
             <button

@@ -88,8 +88,7 @@ export default function PrivacyPage() {
               <h2 className="mb-2 text-lg font-semibold text-heading">Cookies</h2>
               <p>
                 We do not use tracking cookies, advertising cookies, or third-party marketing pixels.
-                Essential cookies may be set by our hosting provider (Vercel) for security and
-                performance purposes only.
+                Essential cookies may be set by our hosting provider for security and performance purposes only.
               </p>
             </section>
 

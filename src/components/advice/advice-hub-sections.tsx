@@ -146,8 +146,8 @@ export function AdviceHubEditorialStandards() {
             <li>Every guide displays its review date so you can see when it was last checked.</li>
             <li>
               Spotted something wrong? Email{" "}
-              <a href="mailto:hello@accessstamp.com" className="font-semibold text-[#C8430F] hover:underline">
-                hello@accessstamp.com
+              <a href="mailto:hello@accessstamp.co.uk" className="font-semibold text-[#C8430F] hover:underline">
+                hello@accessstamp.co.uk
               </a>
               .
             </li>

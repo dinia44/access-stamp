@@ -27,6 +27,12 @@ export function verificationBadgeMeta(status: VerificationStatus) {
   if (status === "Community reported") {
     return { label: "Community reported", tone: "community" as const };
   }
+  if (status === "Venue submitted") {
+    return { label: "Venue submitted", tone: "blue" as const };
+  }
+  if (status === "Demo listing") {
+    return { label: "Demo listing", tone: "neutral" as const };
+  }
   if (status === "Not yet verified") {
     return { label: "Not yet verified", tone: "warning" as const };
   }

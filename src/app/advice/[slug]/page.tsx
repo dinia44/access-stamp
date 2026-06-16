@@ -18,6 +18,7 @@ import { getPracticalGuideWorkflow, isPracticalGuide } from "@/lib/practical-gui
 import { getGuideResourcePack } from "@/lib/guide-resources";
 import { SetChatContext } from "@/components/chat/set-context";
 import { ArticleCompanion } from "@/components/ai-toolkit/article-companion";
+import { GuideArticleIntro, GuideArticleStructuredSections } from "@/components/guide/guide-article-sections";
 import { cn } from "@/lib/utils";
 
 export async function generateStaticParams() {
@@ -166,6 +167,9 @@ export default async function AdviceArticlePage({
                 Reviewed {getGuideLastReviewed(a)}
               </span>
             </div>
+            <div className="print:hidden">
+              <GuideArticleIntro article={a} />
+            </div>
           </div>
 
           <div className="grid gap-4 print:grid-cols-1 lg:grid-cols-[1fr_320px]">
@@ -273,6 +277,10 @@ export default async function AdviceArticlePage({
                   return null;
                 })}
               </article>
+
+              <div className="mt-8 print:hidden">
+                <GuideArticleStructuredSections article={a} />
+              </div>
 
               <ArticleCompanion
                 articleSlug={a.slug}

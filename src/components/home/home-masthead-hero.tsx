@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { AccessStampSearchBox } from "@/components/home/access-stamp-search-box";
 import { RouteDecoration } from "@/components/home/route-decoration";
-import { SiteLogo } from "@/components/site-logo";
+import { HOME_FOCUS } from "@/components/home/home-theme";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 
 export function HomeMastheadHero() {
   return (
@@ -9,33 +10,35 @@ export function HomeMastheadHero() {
       <RouteDecoration className="right-[-5%] top-8 h-28 w-[min(55vw,420px)] opacity-80" />
       <RouteDecoration className="bottom-12 left-[-8%] h-24 w-[min(45vw,360px)] opacity-60" flip />
 
-      <div className="relative mx-auto max-w-4xl text-center">
-        <div className="mb-10 flex w-full flex-col items-center sm:mb-12">
-          <Link href="/" className="inline-flex justify-center" aria-label="Access Stamp home">
-            <SiteLogo
-              priority
-              className="h-auto w-auto max-h-[min(280px,52vw)] object-contain sm:max-h-[300px] md:max-h-[320px]"
-            />
-          </Link>
-        </div>
-
-        <p className="mx-auto inline-flex items-center rounded-full border border-[#F6CFB8] bg-[#FDE9DD] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-[#C8430F]">
-          Venues · Advice · Rights · AI tools
+      <div className="relative mx-auto max-w-4xl">
+        <p className="text-center text-xs font-semibold uppercase tracking-[0.1em] text-[#C8430F]">
+          Disability-led access platform
         </p>
 
-        <h1 className="mt-6 font-[family-name:var(--font-heading)] text-[clamp(3rem,9vw,6.75rem)] font-medium leading-[0.95] tracking-[-0.03em] text-[#20242E]">
-          Access{" "}
-          <span className="italic text-[#C8430F]">Stamp</span>
+        <h1 className="mx-auto mt-6 max-w-4xl text-center font-[family-name:var(--font-heading)] text-[clamp(2rem,5vw,3.5rem)] font-medium leading-[1.08] tracking-[-0.03em] text-[#20242E]">
+          Access information you can actually use before you travel, work, study, or ask for support.
         </h1>
 
-        <p className="mt-4 font-[family-name:var(--font-heading)] text-xl italic text-[#20242E] sm:text-2xl">
-          Everyday life, made accessible.
+        <p className="mx-auto mt-5 max-w-3xl text-center text-base leading-7 text-[#4A5263] sm:text-lg">
+          Access Stamp helps disabled people, families, carers, venues, and organisations turn vague accessibility
+          claims into practical decisions through venue information, plain-English guides, copyable templates, and
+          structured tools.
         </p>
 
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#4A5263] sm:text-lg">
-          Access-checked venues, plain-English advice on rights, benefits and equipment, and AI tools that help you
-          plan — built by disabled people in the UK.
-        </p>
+        <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <ButtonLink href="/venue-finder" className="w-full sm:w-auto">
+            Find accessible venues
+          </ButtonLink>
+          <ButtonLink href="/advice" variant="secondary" className="w-full sm:w-auto">
+            Browse practical guides
+          </ButtonLink>
+          <Link
+            href="/ai-toolkit"
+            className={`inline-flex min-h-[44px] w-full items-center justify-center text-sm font-semibold text-[#C8430F] hover:underline sm:w-auto ${HOME_FOCUS}`}
+          >
+            Use Access Stamp tools
+          </Link>
+        </div>
 
         <div className="mx-auto mt-10 max-w-3xl text-left">
           <AccessStampSearchBox integrated />

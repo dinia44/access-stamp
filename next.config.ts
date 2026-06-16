@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
         destination: "/advice/access-to-work",
         permanent: true,
       },
+      {
+        source: "/mission",
+        destination: "/about",
+        permanent: true,
+      },
     ];
   },
   images: {

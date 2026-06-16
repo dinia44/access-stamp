@@ -22,15 +22,27 @@ export const VENUE_FINDER_PROMO_VIDEO_POSTER =
 
 /** Primary navigation — shared header on every page */
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Venue Finder", href: "/venue-finder" },
-  { label: "Advice", href: "/advice" },
-  { label: "AI Tools", href: "/ai-toolkit" },
+  { label: "Find Venues", href: "/venue-finder" },
+  { label: "Guides", href: "/advice" },
+  { label: "Tools", href: "/ai-toolkit" },
+  { label: "Help Cards", href: "/help-cards" },
   { label: "For Venues", href: "/for-venues" },
   { label: "About", href: "/about" },
 ];
 
-export const PRIMARY_NAV_CTA = { label: "Find a venue", href: "/venue-finder" } as const;
+export const PRIMARY_NAV_CTA = { label: "Find accessible venues", href: "/venue-finder" } as const;
+
+/** Footer resource navigation */
+export const FOOTER_RESOURCE_LINKS: NavItem[] = [
+  { label: "Contact", href: "/contact" },
+  { label: "Directory", href: "/directory" },
+  { label: "Glossary", href: "/glossary" },
+  { label: "Blog", href: "/blog" },
+  { label: "Methodology", href: "/methodology" },
+  { label: "Accessibility", href: "/accessibility" },
+  { label: "Privacy", href: "/legal/privacy" },
+  { label: "Terms", href: "/legal/terms" },
+];
 
 /** Resources dropdown — grouped for homepage header */
 export type ResourceGroup = { label: string; description?: string; items: NavItem[] };

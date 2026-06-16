@@ -45,12 +45,12 @@ export const VENUE_FINDER_FILTER_GROUPS: VenueFilterGroup[] = [
 
 export const VENUE_FINDER_QUICK_FILTERS: VenueFilterChip[] = [
   { label: "Step-free entrance", key: "Step-free entrance" },
-  { label: "Wheelchair access", key: "__wheelchair_access" },
   { label: "Accessible toilet", key: "Accessible toilet" },
-  { label: "Blue Badge parking", key: "Nearby Blue Badge parking" },
+  { label: "Parking/drop-off", key: "Nearby Blue Badge parking" },
+  { label: "Wider doorway", key: "Wide doorways (80cm+)" },
   { label: "Quiet space", key: "Quiet environment" },
-  { label: "Hearing loop", key: "__hearing_loop" },
-  { label: "Assistance available", key: "Staff disability awareness" },
+  { label: "Staff assistance", key: "Staff disability awareness" },
+  { label: "Wheelchair seating", key: "__seating_available" },
 ];
 
 /** @deprecated Use VENUE_FINDER_QUICK_FILTERS — kept for any external imports */

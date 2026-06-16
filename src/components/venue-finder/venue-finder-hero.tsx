@@ -20,15 +20,14 @@ export function VenueFinderHero() {
 
           <h1
             id="venue-finder-heading"
-            className="max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.05em] text-heading md:text-6xl lg:text-7xl"
+            className="max-w-3xl text-4xl font-semibold leading-[1.05] tracking-[-0.05em] text-heading sm:text-5xl lg:text-6xl"
           >
-            Find accessible venues with{" "}
-            <em className="font-serif italic text-[var(--color-secondary)]">real</em> access detail
+            Find access information before you travel
           </h1>
 
           <p className="mt-6 max-w-xl text-lg leading-8 text-muted">
-            Search by step-free access, toilets, parking, quiet spaces and more. Open a full access report
-            before you travel.
+            Search for practical venue access details, confidence labels, and key information before deciding whether a
+            place may work for you.
           </p>
 
           <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-3" aria-label="Why trust Access Stamp">

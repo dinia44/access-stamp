@@ -52,7 +52,7 @@ export function VenueDetailActions({ slug, venueName }: Props) {
     const body = encodeURIComponent(
       `Venue: ${venueName}\nURL: ${typeof window !== "undefined" ? window.location.href : ""}\n\nWhat’s wrong or missing?\n\n`,
     );
-    window.location.href = `mailto:hello@accessstamp.uk?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:hello@accessstamp.co.uk?subject=${subject}&body=${body}`;
   }
 
   return (

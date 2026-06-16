@@ -10,12 +10,14 @@ import {
   CERTIFICATION_PRICING,
   CERTIFICATION_TIERS,
   FOR_VENUES_FAQ,
+  WHAT_VENUES_RECEIVE,
+  WHAT_WE_CHECK,
 } from "@/lib/for-venues-config";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Accessibility Audits & Certification for UK Venues",
+  title: "Show access clearly before customers have to ask",
   description:
-    "Access Stamp audits and certifies UK venues with measured accessibility reports, Bronze Silver and Gold certification, and listing in the Access Stamp finder.",
+    "Access Stamp helps venues turn vague accessibility claims into practical, confidence-building access information.",
   path: "/for-venues",
 });
 
@@ -82,24 +84,24 @@ export default function ForVenuesPage() {
           <div className="relative max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C8430F]">For venues</p>
             <h1 className="mt-4 font-[family-name:var(--font-heading)] text-4xl font-medium leading-[1.05] tracking-[-0.03em] sm:text-5xl lg:text-6xl">
-              Show customers your venue works for them.
+              Show access clearly before customers have to ask.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-[#4A5263]">
-              Access Stamp audits and certifies UK venues, so disabled customers can choose you with confidence — and
-              you can prove your accessibility, not just claim it.
+              Access Stamp helps venues turn vague accessibility claims into practical, confidence-building access
+              information.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="#book-audit"
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[#EF5B25] px-6 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(239,91,37,0.45)] transition hover:bg-[#D93E10]"
               >
-                Book an audit
+                Request pilot details
               </Link>
               <Link
-                href="#how-it-works"
+                href="#what-we-check"
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#EFE5DA] bg-white px-6 text-sm font-semibold text-[#20242E] transition hover:bg-[#FAF4ED]"
               >
-                How it works
+                See what we check
               </Link>
             </div>
           </div>
@@ -130,7 +132,32 @@ export default function ForVenuesPage() {
         </Container>
       </section>
 
-      {/* How it works */}
+      {/* What we check */}
+      <section
+        id="what-we-check"
+        className="scroll-mt-24 border-t border-[#EFE5DA] py-16 sm:py-20"
+        aria-labelledby="what-we-check-heading"
+      >
+        <Container>
+          <h2
+            id="what-we-check-heading"
+            className="font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[#20242E] sm:text-4xl"
+          >
+            What we check
+          </h2>
+          <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {WHAT_WE_CHECK.map((item) => (
+              <li
+                key={item}
+                className="rounded-[20px] border border-[#EFE5DA] bg-white px-4 py-3 text-sm font-medium text-[#20242E]"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
+
       <section
         id="how-it-works"
         className="scroll-mt-24 border-t border-[#EFE5DA] bg-[#FAF4ED] py-16 sm:py-20"
@@ -168,12 +195,12 @@ export default function ForVenuesPage() {
             Certification tiers
           </h2>
           <p className="mt-3 max-w-2xl text-base leading-7 text-[#4A5263]">
-            Pricing shown as indicative — final quotes depend on venue size and audit scope.
+            Pilot programme pricing — request details for your venue size and scope.
           </p>
 
           <ul className="mt-10 grid gap-6 lg:grid-cols-3">
             {CERTIFICATION_TIERS.map((tier) => {
-              const price = CERTIFICATION_PRICING[tier.id].fromPrice;
+              const price = CERTIFICATION_PRICING[tier.id].label;
               return (
                 <li
                   key={tier.id}
@@ -189,7 +216,7 @@ export default function ForVenuesPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h3 className="text-xl font-semibold text-[#20242E]">{tier.name}</h3>
-                      <p className="mt-1 text-sm text-[#76808F]">from {price}</p>
+                      <p className="mt-1 text-sm text-[#76808F]">{price}</p>
                     </div>
                     <CertificationStampMark tone={tier.stampTone} />
                   </div>
@@ -206,11 +233,36 @@ export default function ForVenuesPage() {
                     href="#book-audit"
                     className="mt-6 inline-flex min-h-[44px] items-center text-sm font-semibold text-[#C8430F] hover:underline"
                   >
-                    Book an audit
+                    Request pilot details
                   </Link>
                 </li>
               );
             })}
+          </ul>
+        </Container>
+      </section>
+
+      {/* What venues receive */}
+      <section
+        className="border-t border-[#EFE5DA] bg-[#FAF4ED] py-16 sm:py-20"
+        aria-labelledby="venues-receive-heading"
+      >
+        <Container>
+          <h2
+            id="venues-receive-heading"
+            className="font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[#20242E] sm:text-4xl"
+          >
+            What venues receive
+          </h2>
+          <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {WHAT_VENUES_RECEIVE.map((item) => (
+              <li
+                key={item}
+                className="rounded-[20px] border border-[#EFE5DA] bg-white px-4 py-3 text-sm font-medium text-[#20242E]"
+              >
+                {item}
+              </li>
+            ))}
           </ul>
         </Container>
       </section>
@@ -270,7 +322,7 @@ export default function ForVenuesPage() {
       </section>
 
       {/* Lead form */}
-      <section className="border-t border-[#EFE5DA] bg-[#FAF4ED] py-16 sm:py-20">
+      <section className="border-t border-[#EFE5DA] bg-[#FAF4ED] py-16 sm:py-20" id="book-audit">
         <Container className="max-w-2xl">
           <ForVenuesLeadForm />
         </Container>

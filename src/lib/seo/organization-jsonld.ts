@@ -11,7 +11,7 @@ export function buildOrganizationJsonLd() {
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer support",
-      email: "hello@accessstamp.com",
+      email: "hello@accessstamp.co.uk",
       areaServed: "GB",
       availableLanguage: "English",
     },
