@@ -9,6 +9,9 @@ import { cn } from "@/lib/utils";
 
 const NAV_LINK = `relative rounded-full px-3 py-2 text-sm font-medium text-[#4A5263] transition-colors hover:text-[#20242E] xl:px-4 ${SITE_FOCUS}`;
 const NAV_ACTIVE = "bg-[#FDE9DD] text-[#20242E] ring-1 ring-[#F6CFB8]";
+const NAV_HOME_LINK = `relative px-3 py-2 text-sm font-medium text-[#4A5263] transition-colors hover:text-[#20242E] xl:px-4 ${SITE_FOCUS}`;
+const NAV_HOME_ACTIVE =
+  "text-[#20242E] font-semibold after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:rounded-full after:bg-[#EF5B25]";
 
 type OpenMenu = string | null;
 
@@ -40,7 +43,10 @@ export function MainNavigation({ onNavigate }: { onNavigate?: () => void }) {
         href={HOME_NAV_LINK.href}
         onClick={onNavigate}
         aria-current={navLinkActive(path, HOME_NAV_LINK.href) ? "page" : undefined}
-        className={cn(NAV_LINK, navLinkActive(path, HOME_NAV_LINK.href) && NAV_ACTIVE)}
+        className={cn(
+          NAV_HOME_LINK,
+          navLinkActive(path, HOME_NAV_LINK.href) ? NAV_HOME_ACTIVE : undefined,
+        )}
       >
         {HOME_NAV_LINK.label}
       </Link>

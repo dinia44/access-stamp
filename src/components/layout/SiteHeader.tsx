@@ -40,7 +40,18 @@ export function SiteHeader() {
 
         <MainNavigation onNavigate={closeMobileMenu} />
 
-        <div className="hidden shrink-0 lg:block">
+        <div className="hidden shrink-0 items-center gap-2 lg:flex">
+          <Link
+            href="/#platform-search"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full text-[#4A5263] transition hover:bg-[#FAF4ED] hover:text-[#20242E]"
+            aria-label="Search Access Stamp"
+            onClick={closeMobileMenu}
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <circle cx="11" cy="11" r="7" />
+              <path d="M20 20l-3.5-3.5" />
+            </svg>
+          </Link>
           <ButtonLink href={PRIMARY_NAV_CTA.href} className="rounded-full" onClick={closeMobileMenu}>
             {PRIMARY_NAV_CTA.label}
           </ButtonLink>

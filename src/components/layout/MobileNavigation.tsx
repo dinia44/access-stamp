@@ -9,6 +9,7 @@ import { SITE_FOCUS } from "@/lib/site-design";
 import { cn } from "@/lib/utils";
 
 const NAV_ACTIVE = "bg-[#FDE9DD] text-[#20242E] ring-1 ring-[#F6CFB8]";
+const NAV_HOME_ACTIVE = "font-semibold text-[#20242E] underline decoration-[#EF5B25] decoration-2 underline-offset-4";
 
 type Props = {
   onNavigate: () => void;
@@ -26,7 +27,7 @@ export function MobileNavigation({ onNavigate }: Props) {
           aria-current={navLinkActive(path, HOME_NAV_LINK.href) ? "page" : undefined}
           className={cn(
             "rounded-xl px-3 py-2.5 text-sm font-medium text-[#4A5263] transition-colors hover:bg-[#FAF4ED] hover:text-[#20242E]",
-            navLinkActive(path, HOME_NAV_LINK.href) && NAV_ACTIVE,
+            navLinkActive(path, HOME_NAV_LINK.href) && NAV_HOME_ACTIVE,
             SITE_FOCUS,
           )}
           onClick={onNavigate}
