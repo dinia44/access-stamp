@@ -1,8 +1,8 @@
 const STATUS_ROWS = [
-  { color: "var(--vf-teal)", label: "Access Stamp checked", bg: "var(--vf-teal-soft)" },
+  { color: "var(--vf-teal)", label: "On-site audited", bg: "var(--vf-teal-soft)" },
   { color: "var(--vf-blue)", label: "Community reported", bg: "var(--vf-blue-soft)" },
-  { color: "var(--vf-amber)", label: "Check before visiting", bg: "var(--vf-amber-soft)" },
-  { color: "var(--vf-red)", label: "Major access concern", bg: "var(--vf-red-soft)" },
+  { color: "var(--vf-amber)", label: "Demo listing", bg: "var(--vf-amber-soft)" },
+  { color: "var(--vf-red)", label: "Not yet verified", bg: "var(--vf-red-soft)" },
 ] as const;
 
 export function ExplainerPanel({ className = "" }: { className?: string }) {
@@ -16,11 +16,11 @@ export function ExplainerPanel({ className = "" }: { className?: string }) {
         className="font-[var(--font-heading)] text-lg font-semibold"
         style={{ color: "var(--vf-ink)" }}
       >
-        How Access Stamp checks venues
+        How to read venue labels
       </h2>
       <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--vf-muted)" }}>
-        Access information can change. We show verification status, confidence level and
-        check-before-you-travel warnings so people can make better decisions before visiting.
+        Access information can change. We show verification status, confidence level, and known unknowns so people can
+        plan and confirm before travelling.
       </p>
       <ul className="mt-5 space-y-3">
         {STATUS_ROWS.map((row) => (

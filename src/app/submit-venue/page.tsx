@@ -58,7 +58,7 @@ export default async function SubmitVenuePage({
           <p className="text-sm text-muted">
             Want a full Access Stamp audit instead?{" "}
             <Link href="/for-venues" className="font-semibold text-blue hover:underline">
-              See certification for venues
+              See venue review options
             </Link>
             . Questions?{" "}
             <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-blue hover:underline">

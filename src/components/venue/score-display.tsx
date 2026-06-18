@@ -2,14 +2,22 @@ import { ScoreRing } from "@/components/venue/score-ring";
 import { formatScoreLabel, getScoreBandStyle } from "@/lib/score-band";
 
 type ScoreDisplayProps = {
-  score: number;
+  score: number | null;
   showRing?: boolean;
   size?: "sm" | "md";
   className?: string;
 };
 
-/** Visible score text with optional aria-hidden ring graphic. */
+/** Visible score text with optional aria-hidden ring graphic. Hidden when score is unavailable. */
 export function ScoreDisplay({ score, showRing = false, size = "sm", className = "" }: ScoreDisplayProps) {
+  if (score === null) {
+    return (
+      <p className={`text-sm text-muted ${className}`}>
+        Access score not published for this listing.
+      </p>
+    );
+  }
+
   const label = formatScoreLabel(score);
   const band = getScoreBandStyle(score);
 

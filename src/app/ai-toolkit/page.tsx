@@ -5,7 +5,7 @@ import { TrustPanel } from "@/components/design-system/trust-panel";
 import { PageHero, PageLayout } from "@/components/page-layout";
 import { Badge } from "@/components/ui";
 import { ToolkitDisclaimer } from "@/components/ai-toolkit/toolkit-disclaimer";
-import { AI_TOOLKIT_TOOLS } from "@/lib/ai-toolkit/tools-meta";
+import { AI_TOOLKIT_TOOLS, PUBLIC_AI_TOOLKIT_TOOLS } from "@/lib/ai-toolkit/tools-meta";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -77,7 +77,7 @@ export default function AiToolkitPage() {
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {AI_TOOLKIT_TOOLS.map((tool) => (
+        {PUBLIC_AI_TOOLKIT_TOOLS.map((tool) => (
           <ToolCard
             key={tool.id}
             title={tool.title}

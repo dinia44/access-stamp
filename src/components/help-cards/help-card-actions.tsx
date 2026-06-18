@@ -15,18 +15,23 @@ export function HelpCardActions({
   className,
   showHelper = true,
   onOpen,
+  customKeyLine,
+  onCustomKeyLineChange,
 }: {
   card: HelpCard;
   className?: string;
   showHelper?: boolean;
   onOpen?: () => void;
+  customKeyLine?: string;
+  onCustomKeyLineChange?: (line: string) => void;
 }) {
   const { openChat } = useChat();
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [tailoring, setTailoring] = useState(false);
+  const [editing, setEditing] = useState(false);
 
-  const lineToCopy = card.quickLine ?? card.keyLine;
+  const lineToCopy = customKeyLine?.trim() || card.quickLine || card.keyLine;
 
   async function copyKeyLine() {
     try {
@@ -66,20 +71,16 @@ export function HelpCardActions({
     saveState === "saving"
       ? "Saving…"
       : saveState === "saved"
-        ? "Saved"
+        ? "Saved to phone"
         : saveState === "error"
           ? "Save failed"
-          : "Save to phone";
+          : "Save as image";
 
   return (
     <div className={cn("flex flex-col gap-3", className)}>
       <div className="flex flex-wrap gap-2">
         {onOpen ? (
-          <Button
-            variant="primary"
-            onClick={onOpen}
-            aria-label={`Open ${card.title}`}
-          >
+          <Button variant="primary" onClick={onOpen} aria-label={`Open ${card.title}`}>
             Open card
           </Button>
         ) : null}
@@ -88,7 +89,7 @@ export function HelpCardActions({
           variant="secondary"
           isLoading={saveState === "saving"}
           onClick={() => void saveCard()}
-          aria-label={`Save ${card.title} to phone`}
+          aria-label={`Save ${card.title} as image`}
           className="min-h-11 rounded-full"
         >
           {saveLabel}
@@ -97,10 +98,10 @@ export function HelpCardActions({
         <Button
           variant="secondary"
           onClick={() => void handlePrint()}
-          aria-label={`Print ${card.title}`}
+          aria-label={`Save ${card.title} as PDF`}
           className="min-h-11 rounded-full"
         >
-          Print
+          Save as PDF
         </Button>
 
         <Button
@@ -121,15 +122,40 @@ export function HelpCardActions({
         >
           {copyState === "copied" ? "Copied" : card.quickLine ? "Copy quick line" : "Copy key line"}
         </Button>
+
+        {onCustomKeyLineChange ? (
+          <Button
+            variant="ghost"
+            onClick={() => setEditing((current) => !current)}
+            className="min-h-11 rounded-full"
+          >
+            {editing ? "Hide editor" : "Edit wording"}
+          </Button>
+        ) : null}
       </div>
 
       <p className="sr-only" aria-live="polite">
-        {copyState === "copied" ? "Quick line copied" : ""}
+        {copyState === "copied" ? "Quick line copied to clipboard." : ""}
+        {saveState === "saved" ? "Help card saved as image." : ""}
+        {saveState === "error" ? "Could not save help card image." : ""}
       </p>
+
+      {editing && onCustomKeyLineChange ? (
+        <label className="block text-sm">
+          <span className="font-semibold text-heading">Edit quick line for this card</span>
+          <textarea
+            value={customKeyLine ?? lineToCopy}
+            rows={3}
+            className="mt-2 w-full rounded-2xl border border-border bg-white px-3 py-2 text-sm"
+            onChange={(event) => onCustomKeyLineChange(event.target.value)}
+          />
+        </label>
+      ) : null}
 
       {showHelper ? (
         <p className="text-sm leading-relaxed text-[#5f6b76]">
-          Downloads as a PNG image you can save to your phone or share.
+          Save as image for your phone, or use Save as PDF for printing. Edit the quick line before exporting if you
+          need different wording.
         </p>
       ) : null}
     </div>

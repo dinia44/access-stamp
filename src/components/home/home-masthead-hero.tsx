@@ -16,27 +16,26 @@ export function HomeMastheadHero() {
         </p>
 
         <h1 className="mx-auto mt-6 max-w-4xl text-center font-[family-name:var(--font-heading)] text-[clamp(2rem,5vw,3.5rem)] font-medium leading-[1.08] tracking-[-0.03em] text-[#20242E]">
-          Access information you can actually use before you travel, work, study, or ask for support.
+          Know what access looks like before you arrive.
         </h1>
 
         <p className="mx-auto mt-5 max-w-3xl text-center text-base leading-7 text-[#4A5263] sm:text-lg">
-          Access Stamp helps disabled people, families, carers, venues, and organisations turn vague accessibility
-          claims into practical decisions through venue information, plain-English guides, copyable templates, and
-          structured tools.
+          Access Stamp gives disabled people and families practical venue details, clear guidance, and tools for asking
+          the right questions — without vague accessibility claims or hidden unknowns.
         </p>
 
         <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <ButtonLink href="/venue-finder" className="w-full sm:w-auto">
-            Find accessible venues
+            Check venue access
           </ButtonLink>
           <ButtonLink href="/advice" variant="secondary" className="w-full sm:w-auto">
-            Browse practical guides
+            Find practical guidance
           </ButtonLink>
           <Link
-            href="/ai-toolkit"
+            href="/ai-toolkit/letter-builder"
             className={`inline-flex min-h-[44px] w-full items-center justify-center text-sm font-semibold text-[#C8430F] hover:underline sm:w-auto ${HOME_FOCUS}`}
           >
-            Use Access Stamp tools
+            Create a letter or checklist
           </Link>
         </div>
 

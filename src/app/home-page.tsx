@@ -1,5 +1,4 @@
 import { SetChatContext } from "@/components/chat/set-context";
-import { HomeAiToolsPreview } from "@/components/home/home-ai-tools-preview";
 import { HomeForVenuesBand } from "@/components/home/home-for-venues-band";
 import { HomeFounderMission } from "@/components/home/home-founder-mission";
 import { HomeHelpCardsPreview } from "@/components/home/home-help-cards-preview";
@@ -16,15 +15,14 @@ export default function HomePage() {
       <SetChatContext page={{ kind: "home" }} />
 
       <HomeMastheadHero />
+      <HomeWillItFitDemo />
       <HomeUserPathways />
       <HomePopularVenues />
-      <HomeWillItFitDemo />
+      <HomeWhyTrust />
       <HomePopularGuides />
       <HomeHelpCardsPreview />
-      <HomeAiToolsPreview />
       <HomeFounderMission />
       <HomeForVenuesBand />
-      <HomeWhyTrust />
     </div>
   );
 }

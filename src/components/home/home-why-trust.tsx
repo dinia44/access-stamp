@@ -16,7 +16,7 @@ const PROOF_TILES = [
   },
   {
     title: "Free for visitors",
-    body: "Search venues, read guides, and use core AI tools at no cost — funded by venue audits.",
+    body: "Search venues, read guides, and use core tools at no cost — funded by venue reviews.",
   },
 ] as const;
 

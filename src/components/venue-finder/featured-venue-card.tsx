@@ -10,6 +10,7 @@ import {
   SampleVerificationBadge,
   VenueFinderVerificationBadge,
 } from "./venue-finder-badges";
+import { mapVenueVerificationStatus } from "@/lib/venue-card";
 
 function FeatureChip({ label }: { label: string }) {
   return (
@@ -91,7 +92,7 @@ export function FeaturedVenueCardItem({ item }: { item: FeaturedVenueItem }) {
           imageSrc={photo.src}
           imageAlt={photo.alt ?? `${venue.name} accessibility photo`}
           title={venue.name}
-          badges={<VenueFinderVerificationBadge status={venue.verification} />}
+          badges={<VenueFinderVerificationBadge status={mapVenueVerificationStatus(venue.verification)} />}
           features={venue.tags}
           description={venue.summary}
           ctaLabel="View access report"

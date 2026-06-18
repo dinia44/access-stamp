@@ -20,7 +20,10 @@ export type VenueFeatureKey =
   | "assistance"
   | "seating";
 
-export type VenueVerification = "Community reported" | "Access Stamp audited";
+import type { VerificationType } from "@/lib/venue-verification";
+import { toVerificationType } from "@/lib/venue-verification";
+
+export type VenueVerification = VerificationType;
 export type VenueConfidence = "High" | "Medium" | "Low";
 export type ScoreBandLabel = "Excellent access" | "Good access" | "Limited access";
 
@@ -71,7 +74,8 @@ type VenueSeedRecord = {
   accessScore: number;
   summary: string;
   tags: string[];
-  verification: "Community reported" | "Access Stamp checked" | "Not yet verified";
+  verification: "Community reported" | "Access Stamp checked" | "Not yet verified" | "Demo listing" | VerificationType;
+  verificationType?: VerificationType;
   lastUpdated: string;
   confidence: VenueConfidence;
   features: Record<string, "yes" | "no" | "unknown">;
@@ -111,11 +115,9 @@ function parseLocation(location: string): { town: string; area: string; postcode
   return { town, area, postcodePrefix };
 }
 
-function mapVerification(
-  verification: VenueSeedRecord["verification"],
-): VenueVerification {
-  if (verification === "Access Stamp checked") return "Access Stamp audited";
-  return "Community reported";
+function mapVerification(record: VenueSeedRecord): VenueVerification {
+  if (record.verificationType) return record.verificationType;
+  return toVerificationType(record.verification);
 }
 
 function deriveFeatureKeys(
@@ -160,7 +162,7 @@ function toCanonicalVenue(record: VenueSeedRecord): Venue {
     features: deriveFeatureKeys(record.features, record.tags),
     images: photos.map(({ src, alt }) => ({ src, alt })),
     summary: record.summary,
-    verification: mapVerification(record.verification),
+    verification: mapVerification(record),
     confidence: record.confidence,
     lastUpdated: record.lastUpdated,
     tags: record.tags,

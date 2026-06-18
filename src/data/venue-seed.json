@@ -4,14 +4,13 @@
     "name": "Harbour Kitchen",
     "location": "Liverpool, L1",
     "type": "Restaurant",
-    "rating": 4.4,
     "summary": "Step-free entrance with wide doors. Spacious layout and an accessible toilet on the ground floor.",
     "tags": [
       "Step-free",
       "Accessible toilet",
       "Spacious"
     ],
-    "verification": "Community reported",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "Medium",
     "features": {
@@ -81,21 +80,21 @@
       "alt": "Map snapshot of Liverpool city centre showing Harbour Kitchen and surrounding streets"
     },
     "id": "001",
-    "accessScore": 88
+    "accessScore": 88,
+    "verificationType": "demo"
   },
   {
     "slug": "gallery-cafe-manchester",
     "name": "Gallery Café",
     "location": "Manchester, M1",
     "type": "Café",
-    "rating": 4.1,
     "summary": "Level access via side entrance. Tight turning space near the counter, accessible toilet not confirmed.",
     "tags": [
       "Step-free",
       "Tight turning",
       "Ask staff"
     ],
-    "verification": "Not yet verified",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "Low",
     "features": {
@@ -139,21 +138,21 @@
       "alt": "Map snapshot of Manchester city centre showing Gallery Café location"
     },
     "id": "002",
-    "accessScore": 62
+    "accessScore": 62,
+    "verificationType": "demo"
   },
   {
     "slug": "riverside-cinema-leeds",
     "name": "Riverside Cinema",
     "location": "Leeds, LS1",
     "type": "Entertainment",
-    "rating": 4.6,
     "summary": "Step-free entry, lift to all screens, transfer-friendly seating options, and hearing loop available.",
     "tags": [
       "Lift",
       "Seating",
       "Hearing loop"
     ],
-    "verification": "Access Stamp checked",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "High",
     "features": {
@@ -210,21 +209,21 @@
       "alt": "Map snapshot of Leeds city centre showing Riverside Cinema"
     },
     "id": "003",
-    "accessScore": 93
+    "accessScore": 93,
+    "verificationType": "demo"
   },
   {
     "slug": "the-botanist-kitchen-manchester",
     "name": "The Botanist Kitchen",
     "location": "Manchester, M1",
     "type": "Restaurant",
-    "rating": 4.7,
     "summary": "Step-free entrance, good turning space, and nearby parking. Practical details are confirmed in the listing.",
     "tags": [
       "Step-free",
       "Parking",
       "Spacious"
     ],
-    "verification": "Community reported",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "Medium",
     "features": {
@@ -241,21 +240,21 @@
       "Staff disability awareness": "unknown"
     },
     "id": "004",
-    "accessScore": 79
+    "accessScore": 79,
+    "verificationType": "demo"
   },
   {
     "slug": "riverside-arts-centre-bristol",
     "name": "Riverside Arts Centre",
     "location": "Bristol, BS1",
     "type": "Arts & Culture",
-    "rating": 4.5,
     "summary": "Lift access to key areas and a Changing Places toilet. Clear approach routes and helpful staff.",
     "tags": [
       "Lift access",
       "Changing Places",
       "Clear routes"
     ],
-    "verification": "Access Stamp checked",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "High",
     "features": {
@@ -272,21 +271,21 @@
       "Staff disability awareness": "yes"
     },
     "id": "005",
-    "accessScore": 91
+    "accessScore": 91,
+    "verificationType": "demo"
   },
   {
     "slug": "greenfield-shopping-village-leeds",
     "name": "Greenfield Shopping Village",
     "location": "Leeds, LS2",
     "type": "Shopping",
-    "rating": 4.3,
     "summary": "Powered chair friendly, rest areas available, and staff are trained. Good internal circulation space.",
     "tags": [
       "Power chair OK",
       "Staff trained",
       "Rest areas"
     ],
-    "verification": "Community reported",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "Medium",
     "features": {
@@ -304,21 +303,21 @@
       "Powered wheelchair suitable": "yes"
     },
     "id": "006",
-    "accessScore": 84
+    "accessScore": 84,
+    "verificationType": "demo"
   },
   {
     "slug": "botanical-gardens-manchester",
     "name": "Botanical Gardens",
     "location": "Manchester, M2",
     "type": "Outdoor",
-    "rating": 4.6,
     "summary": "Mostly step-free garden routes with several level resting zones. Accessible toilet available near the main visitor centre.",
     "tags": [
       "Outdoor routes",
       "Rest points",
       "Accessible toilet"
     ],
-    "verification": "Access Stamp checked",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "High",
     "features": {
@@ -368,21 +367,21 @@
       "alt": "Map snapshot of Manchester showing Botanical Gardens location"
     },
     "id": "007",
-    "accessScore": 95
+    "accessScore": 95,
+    "verificationType": "demo"
   },
   {
     "slug": "gluckberry-woods-cafe-liverpool",
     "name": "Gluckberry Woods Cafe",
     "location": "Liverpool, L2",
     "type": "Café",
-    "rating": 4.5,
     "summary": "Step-free front entrance, flexible seating layout, and practical access details for wheelchair users and carers.",
     "tags": [
       "Step-free",
       "Flexible seating",
       "Blue Badge nearby"
     ],
-    "verification": "Community reported",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "Medium",
     "features": {
@@ -399,14 +398,14 @@
       "Staff disability awareness": "unknown"
     },
     "id": "008",
-    "accessScore": 76
+    "accessScore": 76,
+    "verificationType": "demo"
   },
   {
     "slug": "royal-armouries-leeds",
     "name": "Royal Armouries Museum",
     "location": "Leeds, West Yorkshire",
     "type": "Arts & Culture",
-    "rating": 4.8,
     "summary": "Lift access to all galleries, spacious circulation routes, accessible toilets on each floor, and Blue Badge parking close to the entrance.",
     "tags": [
       "Lift access",
@@ -414,7 +413,7 @@
       "Accessible toilet",
       "Hearing loop"
     ],
-    "verification": "Access Stamp checked",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "High",
     "features": {
@@ -438,21 +437,21 @@
       }
     ],
     "id": "009",
-    "accessScore": 89
+    "accessScore": 89,
+    "verificationType": "demo"
   },
   {
     "slug": "brighton-pier-pavilion",
     "name": "Brighton Pier Pavilion",
     "location": "Brighton, East Sussex",
     "type": "Leisure",
-    "rating": 4.2,
     "summary": "Level boardwalk access to the main pavilion, accessible toilet near the entrance, and staff can advise on quieter visiting times.",
     "tags": [
       "Step-free",
       "Accessible toilet",
       "Family friendly"
     ],
-    "verification": "Community reported",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "Medium",
     "features": {
@@ -476,21 +475,21 @@
       }
     ],
     "id": "010",
-    "accessScore": 73
+    "accessScore": 73,
+    "verificationType": "demo"
   },
   {
     "slug": "central-library-birmingham",
     "name": "Central Library Birmingham",
     "location": "Birmingham, B1",
     "type": "Arts & Culture",
-    "rating": 4.5,
     "summary": "Step-free entrance, lift to all public floors, hearing loop at service desks, and accessible toilets on the ground and first floors.",
     "tags": [
       "Lift access",
       "Hearing loop",
       "Step-free"
     ],
-    "verification": "Access Stamp checked",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "High",
     "features": {
@@ -514,21 +513,21 @@
       }
     ],
     "id": "011",
-    "accessScore": 87
+    "accessScore": 87,
+    "verificationType": "demo"
   },
   {
     "slug": "meadowhall-food-hall-sheffield",
     "name": "Meadowhall Food Hall",
     "location": "Sheffield, S9",
     "type": "Shopping",
-    "rating": 4.3,
     "summary": "Powered wheelchair friendly food court with level access, lift links to car parks, and accessible toilets throughout the centre.",
     "tags": [
       "Power chair OK",
       "Lift access",
       "Accessible toilet"
     ],
-    "verification": "Community reported",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "Medium",
     "features": {
@@ -553,21 +552,21 @@
       }
     ],
     "id": "012",
-    "accessScore": 81
+    "accessScore": 81,
+    "verificationType": "demo"
   },
   {
     "slug": "castle-view-restaurant-edinburgh",
     "name": "Castle View Restaurant",
     "location": "Edinburgh, EH1",
     "type": "Restaurant",
-    "rating": 4.6,
     "summary": "Step-free side entrance, spacious dining layout, accessible toilet, and nearby Blue Badge bays on the Royal Mile approach.",
     "tags": [
       "Step-free",
       "Spacious",
       "Blue Badge nearby"
     ],
-    "verification": "Access Stamp checked",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "High",
     "features": {
@@ -591,21 +590,21 @@
       }
     ],
     "id": "013",
-    "accessScore": 85
+    "accessScore": 85,
+    "verificationType": "demo"
   },
   {
     "slug": "tate-st-ives-gallery",
     "name": "Tate St Ives Gallery",
     "location": "St Ives, Cornwall",
     "type": "Arts & Culture",
-    "rating": 4.4,
     "summary": "Lift to upper galleries, step-free ground floor routes, accessible toilet, and staff support for planning quieter visits.",
     "tags": [
       "Lift access",
       "Quiet space",
       "Accessible toilet"
     ],
-    "verification": "Community reported",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "Medium",
     "features": {
@@ -629,21 +628,21 @@
       }
     ],
     "id": "014",
-    "accessScore": 78
+    "accessScore": 78,
+    "verificationType": "demo"
   },
   {
     "slug": "cardiff-community-hub",
     "name": "Cardiff Community Hub",
     "location": "Cardiff, CF10",
     "type": "Healthcare",
-    "rating": 4.5,
     "summary": "Fully step-free community space with automatic doors, hearing loop at reception, accessible toilet, and trained staff on site.",
     "tags": [
       "Step-free",
       "Hearing loop",
       "Staff trained"
     ],
-    "verification": "Access Stamp checked",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "High",
     "features": {
@@ -667,21 +666,21 @@
       }
     ],
     "id": "015",
-    "accessScore": 86
+    "accessScore": 86,
+    "verificationType": "demo"
   },
   {
     "slug": "pump-room-tea-room-bath",
     "name": "Pump Room Tea Room",
     "location": "Bath, Somerset",
     "type": "Café",
-    "rating": 4.7,
     "summary": "Historic tea room with ramped entrance, accessible toilet, flexible seating, and a quieter area available on request.",
     "tags": [
       "Step-free",
       "Quiet space",
       "Accessible toilet"
     ],
-    "verification": "Community reported",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "Medium",
     "features": {
@@ -705,21 +704,21 @@
       }
     ],
     "id": "016",
-    "accessScore": 82
+    "accessScore": 82,
+    "verificationType": "demo"
   },
   {
     "slug": "norwich-cathedral-refectory",
     "name": "Norwich Cathedral Refectory",
     "location": "Norwich, Norfolk",
     "type": "Café",
-    "rating": 4.4,
     "summary": "Level access from the close, wide doorways, accessible toilet nearby, and calm seating away from the main counter.",
     "tags": [
       "Step-free",
       "Quiet space",
       "Accessible toilet"
     ],
-    "verification": "Not yet verified",
+    "verification": "Demo listing",
     "lastUpdated": "May 2026",
     "confidence": "Low",
     "features": {
@@ -743,6 +742,7 @@
       }
     ],
     "id": "017",
-    "accessScore": 58
+    "accessScore": 58,
+    "verificationType": "demo"
   }
 ]

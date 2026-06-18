@@ -18,28 +18,30 @@ export function adviceCategoryTint(href: string) {
   return ADVICE_CATEGORY_TINT[href] ?? "#FFF8F1";
 }
 
-export type VerificationStatus = "Access Stamp checked" | "Community reported" | "Not yet verified" | string;
+import { toVerificationLabel, toVerificationType, type VerificationLabel } from "@/lib/venue-verification";
+
+export type VerificationStatus = VerificationLabel | string;
 
 export function verificationBadgeMeta(status: VerificationStatus) {
-  if (status === "Access Stamp checked") {
-    return { label: "Access Stamp checked", tone: "verified" as const };
+  const type = toVerificationType(status);
+  const label = toVerificationLabel(type);
+
+  switch (type) {
+    case "onsite_audited":
+      return { label, tone: "verified" as const };
+    case "desk_reviewed":
+      return { label, tone: "verified" as const };
+    case "community_reported":
+      return { label, tone: "community" as const };
+    case "venue_submitted":
+      return { label, tone: "blue" as const };
+    case "demo":
+      return { label, tone: "warning" as const };
+    case "unverified":
+      return { label, tone: "warning" as const };
+    default:
+      return { label: status, tone: "neutral" as const };
   }
-  if (status === "Community reported") {
-    return { label: "Community reported", tone: "community" as const };
-  }
-  if (status === "Venue submitted") {
-    return { label: "Venue submitted", tone: "blue" as const };
-  }
-  if (status === "Demo listing") {
-    return { label: "Demo listing", tone: "neutral" as const };
-  }
-  if (status === "Not yet verified") {
-    return { label: "Not yet verified", tone: "warning" as const };
-  }
-  if (status === "Major access concern") {
-    return { label: "Major access concern", tone: "error" as const };
-  }
-  return { label: status, tone: "neutral" as const };
 }
 
 export function confidenceBadgeMeta(level: string) {

@@ -1,4 +1,6 @@
-const DEFAULT_SITE_URL = "https://access-stamp-seven.vercel.app";
+import { SITE_CONFIG } from "@/lib/site-config";
+
+const DEFAULT_SITE_URL = SITE_CONFIG.url;
 
 export function getSiteUrl(): string {
   const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();

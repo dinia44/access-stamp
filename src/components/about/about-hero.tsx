@@ -27,7 +27,7 @@ function HeroAccessCard() {
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#59682A]">Access snapshot</p>
             <p className="mt-1 text-lg font-bold text-[#13201F]">Riverside Café</p>
           </div>
-          <VerificationBadge status="Access Stamp checked" />
+          <VerificationBadge status="Demo listing" />
         </div>
 
         <dl className="mt-5 space-y-3">
@@ -44,7 +44,7 @@ function HeroAccessCard() {
 
         <div className="mt-5 rounded-2xl border border-[#EDF7ED] bg-[#EDF7ED]/60 px-4 py-3">
           <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#2F7D32]">Status</p>
-          <p className="mt-1 text-sm font-semibold text-[#13201F]">Access Stamp checked</p>
+          <p className="mt-1 text-sm font-semibold text-[#13201F]">Sample report layout</p>
         </div>
       </div>
 

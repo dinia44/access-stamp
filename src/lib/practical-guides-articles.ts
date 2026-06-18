@@ -99,90 +99,149 @@ function buildGuide(g: GuideInput): AdviceArticle {
   };
 }
 
+import { PIP_RENEWAL_GUIDE } from "@/lib/guide-content/pip-renewal-form-what-to-write";
+
+const PIP_RENEWAL_ARTICLE: AdviceArticle = {
+  slug: "pip-renewal-form-what-to-write",
+  title: "PIP renewal: completing the form clearly",
+  seoTitle: "PIP renewal form: what to write and evidence to send",
+  metaDescription:
+    "How to complete a PIP renewal form with activity examples, reliability rules, evidence lists, and mistakes to avoid. England and Wales.",
+  excerpt:
+    "Renewal is about how your condition affects you now — not your diagnosis alone. This guide covers deadlines, reliability rules, prompting and supervision, and evidence that matches your answers.",
+  readTimeMinutes: 14,
+  lastReviewed: "June 2026",
+  updated: "2026-06-01",
+  categorySlug: "rights",
+  nations: ["England", "Wales"],
+  editorialStatus: "published",
+  tags: ["PIP", "Benefits", "Renewal", "Forms"],
+  quickAnswer: PIP_RENEWAL_GUIDE.summary,
+  firstThreeActions: [
+    "Find the deadline on your renewal letter and note it in your calendar.",
+    "List what has changed since your last decision — better, worse, or more variable.",
+    "Draft one example per activity before filling the form boxes.",
+  ],
+  cardPreviewBullets: [
+    "Activity-by-activity guidance",
+    "Reliability rules explained",
+    "Evidence checklist",
+    "Example wording",
+    "Mandatory reconsideration next steps",
+  ],
+  includesLabel: "reliability rules, evidence checklist, example wording, official links",
+  sections: [
+    {
+      type: "callout",
+      tone: "warning",
+      title: "Disclaimer",
+      body: DISCLAIMER,
+    },
+    { type: "h2", text: "What this guide helps with" },
+    {
+      type: "p",
+      text: "This guide helps you complete a PIP renewal form with clear functional examples, the reliability rules, and evidence that matches what you write. It is for England and Wales PIP claims reviewed by DWP.",
+    },
+    { type: "h2", text: "Who the renewal form applies to" },
+    {
+      type: "ul",
+      items: [
+        "People with an existing PIP award who receive a renewal pack.",
+        "Claimants whose needs have worsened, improved, or fluctuate more than before.",
+        "Supporters helping someone complete the form with the claimant’s consent.",
+      ],
+    },
+    { type: "h2", text: "Important deadline" },
+    {
+      type: "p",
+      text: "Your renewal letter shows the date DWP must receive the form. Missing it can stop payments. If you need more time, contact DWP as soon as possible — do not assume an extension.",
+    },
+    { type: "h2", text: "What has changed since the last decision" },
+    {
+      type: "ul",
+      items: [
+        "List new or worsening difficulties — fatigue, falls, pain, care needs, medication effects.",
+        "Note if you now use aids or need prompting where you previously managed alone.",
+        "If nothing has changed, you still need fresh examples showing the same impact continues.",
+      ],
+    },
+    { type: "h2", text: "How to answer each activity" },
+    {
+      type: "p",
+      text: "Use the same pattern for daily living and mobility questions: name the task, describe what happens when you try it, explain help or aids used, and state the risk if support is not available.",
+    },
+    { type: "h2", text: "The reliability rules" },
+    {
+      type: "ul",
+      items: [
+        "Safely — without harm to you or someone else.",
+        "Repeatedly — as often as the activity is normally needed.",
+        "Within a reasonable time — not much longer than someone without your condition.",
+        "To an acceptable standard — the outcome is good enough for everyday life.",
+      ],
+    },
+    { type: "h2", text: "Help, prompting, supervision, and risk" },
+    {
+      type: "ul",
+      items: [
+        "Prompting — reminders you need to start or finish a task correctly.",
+        "Supervision — someone nearby to prevent injury or serious mistakes.",
+        "Assistance — physical help part-way through a task.",
+        "Risk — what happens without support (falls, missed medication, dehydration, injury).",
+      ],
+    },
+    { type: "h2", text: "Evidence checklist" },
+    {
+      type: "ul",
+      items: PIP_RENEWAL_GUIDE.evidenceChecklist?.map((item) => item.label) ?? [],
+    },
+    { type: "h2", text: "Realistic example wording" },
+    {
+      type: "pre",
+      text: PIP_RENEWAL_GUIDE.templates?.[0]?.body ?? "",
+    },
+    { type: "h2", text: "Common mistakes" },
+    {
+      type: "ul",
+      items: PIP_RENEWAL_GUIDE.commonMistakes?.map((m) => `${m.mistake} — ${m.whyItMatters}`) ?? [],
+    },
+    { type: "h2", text: "If the award changes or stops" },
+    {
+      type: "ul",
+      items: [
+        "Read the decision letter the same day and note the decision date.",
+        "Request mandatory reconsideration within one month if you disagree (confirm on your letter).",
+        "Contact Citizens Advice or a welfare rights service before the deadline.",
+        "Keep documenting impact while you wait for a decision.",
+      ],
+    },
+    { type: "h2", text: "Official sources" },
+    {
+      type: "links",
+      items: PIP_RENEWAL_GUIDE.officialSources.map((source) => ({ label: source.label, href: source.href })),
+    },
+    { type: "h2", text: "Related tools" },
+    {
+      type: "links",
+      items: [
+        { label: "Evidence Checklist Generator", href: "/ai-toolkit/evidence-checklist" },
+        { label: "Letter Builder", href: "/ai-toolkit/letter-builder" },
+        { label: "Guide Search", href: "/ai-toolkit/article-companion" },
+      ],
+    },
+    { type: "h2", text: "Related guides" },
+    {
+      type: "links",
+      items: [
+        { label: "PIP in plain English", href: "/advice/pip-in-plain-english" },
+        { label: "PIP mandatory reconsideration", href: "/advice/pip-mandatory-reconsideration" },
+      ],
+    },
+  ],
+};
+
 export const PRACTICAL_GUIDE_ARTICLES: AdviceArticle[] = [
-  buildGuide({
-    slug: "pip-renewal-form-what-to-write",
-    title: "PIP Renewal Form: What to Write and What Evidence to Send",
-    seoTitle: "PIP renewal form: what to write and evidence to send",
-    metaDescription:
-      "How to complete a PIP renewal form with real examples, evidence lists, and mistakes to avoid. UK-focused plain English.",
-    excerpt:
-      "Renewal is about how your condition affects you now — not your diagnosis. This guide covers wording, evidence, and common form mistakes.",
-    readTimeMinutes: 12,
-    lastReviewed: "June 2026",
-    categorySlug: "rights",
-    tags: ["PIP", "Benefits", "Renewal", "Forms"],
-    quickAnswer:
-      "Write about what happens when you try to do each activity safely, repeatedly, to an acceptable standard, and within a reasonable time. Do not write only “no change” unless the earlier evidence still fully describes your current needs.",
-    firstThreeActions: [
-      "Check the deadline on the renewal letter and ask for more time if needed.",
-      "Make a table of daily living and mobility difficulties before filling in the form.",
-      "Match evidence to each activity instead of sending a random pile of letters.",
-    ],
-    cardPreviewBullets: [
-      "How to describe function, not just diagnosis",
-      "Evidence that matches each PIP activity",
-      "What to do if payments stop or reduce",
-    ],
-    includesLabel: "checklist, supporting statement template, official links",
-    summary:
-      "A PIP renewal asks the same core question as a new claim: how does your health condition or disability affect daily living and mobility? The form is not a medical test — it is a structured description of real-life impact. Strong renewals use specific examples, consistent timelines (good days and bad days), and evidence that matches what you write.",
-    who: [
-      "People with an existing PIP award who receive a renewal pack from DWP.",
-      "Claimants whose circumstances have changed (better, worse, or fluctuating).",
-      "Family members or supporters helping someone complete the form — with the claimant’s consent.",
-    ],
-    whatAvailable: [
-      "Continuation of daily living and/or mobility components if impact still meets the rules.",
-      "An assessment (phone, paper, or face-to-face) if DWP needs more information.",
-      "Backdated payments only in limited circumstances — focus on accurate dates in your answers.",
-    ],
-    evidence: [
-      "Copies of previous PIP decision letters (if you have them).",
-      "Prescription lists, clinic letters, or consultant summaries — keep copies, send originals only if asked.",
-      "A symptom and impact diary for 2–4 weeks (sleep, pain, fatigue, falls, care needs).",
-      "Support letters from a GP, nurse, social worker, or occupational therapist that describe function, not just diagnosis.",
-      "Photos or lists of aids you use (splints, commode, perching stool, mobility equipment) linked to tasks.",
-    ],
-    steps: [
-      "Read the renewal date on your letter and note any deadline — missing it can stop payments.",
-      "Gather evidence before writing answers so examples and dates match.",
-      "Work through each activity question using the same structure: task → what happens → help needed → risk if unsupported.",
-      "Describe variability: how often difficulties happen and how long they last.",
-      "Ask someone who knows your daily routine to read for gaps (not to change facts).",
-      "Keep a copy of the completed form and proof of submission (online reference or recorded delivery).",
-      "If invited to assessment, bring the same examples you wrote — inconsistency causes problems.",
-    ],
-    mistakes: [
-      "Writing only the diagnosis (“I have MS”) without functional impact.",
-      "Describing only your best day because you do not want to sound negative.",
-      "Contradicting yourself between sections (e.g. cooking vs fatigue).",
-      "Sending evidence DWP did not request without tying it to specific questions.",
-      "Missing the deadline because you waited for a new hospital letter.",
-    ],
-    templateTitle: "Example wording pattern (adapt to your situation)",
-    templateBody: `Activity: Preparing food
-
-On most days I cannot prepare a simple meal safely without help. Pain and fatigue mean standing at the hob is limited to a few minutes. I use a stool and microwave meals, but chopping and lifting pans are unsafe when my hands are weak. On bad days I skip meals or rely on a carer to prepare food. Without support I risk burns, dropped items, or not eating — which worsens other symptoms.
-
-Evidence attached: impact diary (4 weeks), GP letter dated [date], list of aids used.`,
-    ifRefused: [
-      "If payments stop or reduce, read the decision letter carefully — it should explain reasons linked to descriptors.",
-      "You can ask for a mandatory reconsideration within one month of the decision date (check your letter).",
-      "Contact welfare rights advice (Citizens Advice, local law centre) before the deadline if you need help.",
-      "Keep attending GP or specialist appointments so ongoing impact is documented.",
-    ],
-    officialLinks: [
-      { label: "GOV.UK — PIP when your claim is reviewed", href: "https://www.gov.uk/pip/when-your-pip-claim-is-reviewed" },
-      { label: "GOV.UK — How to claim PIP", href: "https://www.gov.uk/pip/how-to-claim" },
-      { label: "PIP2 form and information booklet (PDF)", href: "https://assets.publishing.service.gov.uk/media/6602af72f1d3a09b1f32ac81/pip2-form-and-information-booklet__1_.pdf" },
-    ],
-    relatedLinks: [
-      { label: "PIP in plain English", href: "/advice/pip-in-plain-english" },
-      { label: "PIP mandatory reconsideration", href: "/advice/pip-mandatory-reconsideration" },
-    ],
-  }),
-
+  PIP_RENEWAL_ARTICLE,
   buildGuide({
     slug: "pip-mandatory-reconsideration",
     title: "PIP Mandatory Reconsideration: How to Challenge a Decision",

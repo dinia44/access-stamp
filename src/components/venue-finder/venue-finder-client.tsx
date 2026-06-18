@@ -13,12 +13,12 @@ import {
   hasVenueFinderSearchContext,
   parseVenueFinderSearchParams,
   type VenueFinderSearchState,
+  type VenueFinderSort,
 } from "@/lib/venue-finder-params";
 import { VF_BTN_SECONDARY, VF_PAGE_BG } from "@/lib/venue-finder-cro";
 import { suggestVenueMailto } from "@/lib/venue-submission";
 import { BottomVenueCTA } from "./bottom-venue-cta";
 import { QuickFilterRow } from "./quick-filter-row";
-import { SavedVenuesCard } from "./saved-venues-card";
 import { VenueFinderAiCard } from "./venue-finder-ai-card";
 import { VenueFinderFilterDrawer } from "./venue-finder-filter-drawer";
 import { VenueFinderHero } from "./venue-finder-hero";
@@ -26,7 +26,10 @@ import { VenueFinderMobileBar } from "./venue-finder-mobile-bar";
 import { VenueResultsHeader } from "./venue-results-header";
 import { VenueResultCard } from "./venue-result-card";
 import { VenueSearchPanel } from "./venue-search-panel";
+import { VenueListRow } from "./venue-list-row";
 import { VenueTrustStrip } from "./venue-trust-strip";
+
+const VENUES_PER_PAGE = 12;
 
 type Props = {
   venues: Venue[];
@@ -99,6 +102,9 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   const [locating, setLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<VenueFinderSort>(initial.center ? "Distance" : "Best match");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [page, setPage] = useState(1);
   const [MapPanel, setMapPanel] = useState<MapPanelComponent | null>(null);
   const [mapPanelLoading, setMapPanelLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -164,9 +170,20 @@ function VenueFinderInteractive({ venues, initial }: Props) {
         location,
         filters: selectedFilters,
         center: mapCenter ?? undefined,
+        sortBy,
       }),
-    [venues, query, location, selectedFilters, mapCenter],
+    [venues, query, location, selectedFilters, mapCenter, sortBy],
   );
+
+  useEffect(() => {
+    setPage(1);
+  }, [query, location, selectedFilters, mapCenter, sortBy, viewMode]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / VENUES_PER_PAGE));
+  const paginated = useMemo(() => {
+    const start = (page - 1) * VENUES_PER_PAGE;
+    return filtered.slice(start, start + VENUES_PER_PAGE);
+  }, [filtered, page]);
 
   useEffect(() => {
     if (selectedSlug && !filtered.some((venue) => venue.slug === selectedSlug)) {
@@ -182,6 +199,16 @@ function VenueFinderInteractive({ venues, initial }: Props) {
 
   const clearFilters = useCallback(() => {
     setSelectedFilters([]);
+  }, []);
+
+  const clearAllSearch = useCallback(() => {
+    setQuery("");
+    setLocation("");
+    setSelectedFilters([]);
+    setMapCenter(null);
+    setSortBy("Best match");
+    setPage(1);
+    setLocationError(null);
   }, []);
 
   const handleUseLocation = useCallback(() => {
@@ -281,23 +308,74 @@ function VenueFinderInteractive({ venues, initial }: Props) {
                 location={location}
                 hasSearchContext={hasSearchContext}
                 selectedFilters={selectedFilters}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
                 onRemoveFilter={toggleFilter}
                 onChangeLocation={handleChangeLocation}
+                onClearAll={clearAllSearch}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
               />
 
               {filtered.length ? (
-                <ul className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-2">
-                  {filtered.map((venue, index) => (
-                    <VenueResultCard
-                      key={venue.slug}
-                      venue={venue}
-                      index={index}
-                      userCenter={mapCenter}
-                      selected={selectedSlug === venue.slug}
-                      onSelect={() => setSelectedSlug(venue.slug)}
-                    />
-                  ))}
-                </ul>
+                <>
+                  <ul
+                    className={
+                      viewMode === "grid"
+                        ? "mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-2"
+                        : "mt-6 flex flex-col gap-4"
+                    }
+                  >
+                    {paginated.map((venue, index) =>
+                      viewMode === "grid" ? (
+                        <VenueResultCard
+                          key={venue.slug}
+                          venue={venue}
+                          index={index}
+                          userCenter={mapCenter}
+                          selected={selectedSlug === venue.slug}
+                          onSelect={() => setSelectedSlug(venue.slug)}
+                        />
+                      ) : (
+                        <li key={venue.slug}>
+                          <VenueListRow
+                            venue={venue}
+                            userCenter={mapCenter}
+                            selected={selectedSlug === venue.slug}
+                            onSelect={() => setSelectedSlug(venue.slug)}
+                          />
+                        </li>
+                      ),
+                    )}
+                  </ul>
+
+                  {totalPages > 1 ? (
+                    <nav className="mt-8 flex flex-wrap items-center justify-between gap-3" aria-label="Venue results pages">
+                      <p className="text-sm text-muted">
+                        Showing {(page - 1) * VENUES_PER_PAGE + 1}–
+                        {Math.min(page * VENUES_PER_PAGE, filtered.length)} of {filtered.length}
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          className={VF_BTN_SECONDARY}
+                          disabled={page <= 1}
+                          onClick={() => setPage((current) => Math.max(1, current - 1))}
+                        >
+                          Previous
+                        </button>
+                        <button
+                          type="button"
+                          className={VF_BTN_SECONDARY}
+                          disabled={page >= totalPages}
+                          onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+                        >
+                          Next
+                        </button>
+                      </div>
+                    </nav>
+                  ) : null}
+                </>
               ) : (
                 <VenueFinderEmptyState />
               )}
@@ -344,7 +422,6 @@ function VenueFinderInteractive({ venues, initial }: Props) {
               )}
             </div>
             <VenueFinderAiCard prefill={aiPrefill} />
-            <SavedVenuesCard venues={venues} />
           </aside>
         </section>
 

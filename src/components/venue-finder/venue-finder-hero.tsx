@@ -2,7 +2,7 @@ import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 
 const TRUST_POINTS = [
   "Real access detail",
-  "Checked before travel",
+  "Plan and confirm before travel",
   "Built by disabled people",
 ] as const;
 

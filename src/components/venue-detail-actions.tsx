@@ -1,13 +1,8 @@
 "use client";
 
-import { useSyncExternalStore, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui";
-
-import {
-  readSavedVenueSlugs,
-  subscribeSavedVenues,
-  toggleSavedVenueSlug,
-} from "@/lib/saved-venues";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 type Props = {
   slug: string;
@@ -16,16 +11,6 @@ type Props = {
 
 export function VenueDetailActions({ slug, venueName }: Props) {
   const [shareLabel, setShareLabel] = useState("Share");
-
-  const saved = useSyncExternalStore(
-    subscribeSavedVenues,
-    () => readSavedVenueSlugs().includes(slug),
-    () => false,
-  );
-
-  function toggleSave() {
-    toggleSavedVenueSlug(slug);
-  }
 
   async function onShare() {
     const url = window.location.href;
@@ -50,22 +35,22 @@ export function VenueDetailActions({ slug, venueName }: Props) {
   function onReport() {
     const subject = encodeURIComponent(`Venue listing issue: ${venueName}`);
     const body = encodeURIComponent(
-      `Venue: ${venueName}\nURL: ${typeof window !== "undefined" ? window.location.href : ""}\n\nWhat’s wrong or missing?\n\n`,
+      `Venue: ${venueName}\nURL: ${typeof window !== "undefined" ? window.location.href : ""}\n\nWhat's wrong or missing?\n\n`,
     );
-    window.location.href = `mailto:hello@accessstamp.co.uk?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${SITE_CONFIG.email}?subject=${subject}&body=${body}`;
   }
 
   return (
     <div className="flex flex-wrap gap-2">
       <Button href="/ai">Ask the AI about this venue</Button>
-      <Button variant="secondary" onClick={toggleSave}>
-        {saved ? "Saved" : "Save"}
-      </Button>
       <Button variant="ghost" onClick={onShare}>
         {shareLabel}
       </Button>
-      <Button variant="ghost" onClick={onReport}>
+      <Button variant="ghost" href={`/corrections?venue=${encodeURIComponent(slug)}`}>
         Report an issue
+      </Button>
+      <Button variant="ghost" onClick={onReport}>
+        Suggest an update
       </Button>
     </div>
   );

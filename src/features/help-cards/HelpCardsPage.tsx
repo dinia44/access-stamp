@@ -18,6 +18,7 @@ import { SOURCE_BACKED_HELP_CARDS } from "@/lib/help-cards";
 
 export default function HelpCardsPage() {
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const [customKeyLine, setCustomKeyLine] = useState("");
   const detailRef = useRef<HTMLDivElement | null>(null);
   const browseRef = useRef<HTMLDivElement | null>(null);
   const situationsRef = useRef<HTMLDivElement | null>(null);
@@ -49,6 +50,7 @@ export default function HelpCardsPage() {
 
   function openCard(slug: string) {
     setActiveSlug(slug);
+    setCustomKeyLine("");
   }
 
   function handleSituationSelect(category: string) {
@@ -97,9 +99,13 @@ export default function HelpCardsPage() {
         >
           <div className="mx-auto max-w-7xl space-y-8">
             <div className="help-card-print-area">
-              <HelpCardPreview card={activeCard} size="large" />
+              <HelpCardPreview card={activeCard} size="large" customKeyLine={customKeyLine} />
             </div>
-            <HelpCardActions card={activeCard} />
+            <HelpCardActions
+              card={activeCard}
+              customKeyLine={customKeyLine}
+              onCustomKeyLineChange={setCustomKeyLine}
+            />
             <HelpCardDetail card={activeCard} />
           </div>
         </div>

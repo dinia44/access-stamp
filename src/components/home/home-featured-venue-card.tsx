@@ -6,7 +6,8 @@ import { FeatureChip, getVenueFeatureChipItems } from "@/components/venue/featur
 import { venueCardImageUrl } from "@/lib/cloudinary-url";
 import { computeAccessScore, getVenuePhoto } from "@/lib/venue-access-score";
 import { formatScoreLabel, getScoreBandStyle } from "@/lib/score-band";
-import { countVenueUnknowns, mapVenueVerificationStatus, venueNeedsCheckHref } from "@/lib/venue-card";
+import { KnownUnknowns } from "@/components/venue/KnownUnknowns";
+import { countVenueUnknowns, isDemoVenue, mapVenueVerificationStatus, venueNeedsCheckHref } from "@/lib/venue-card";
 
 export const VENUE_CARD_IMAGE_SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px";
 
@@ -21,10 +22,11 @@ export function HomeFeaturedVenueCard({ venue, distance }: Props) {
   const imageSrc = venueCardImageUrl(photo.src);
   const featureChips = getVenueFeatureChipItems(venue).slice(0, 4);
   const score = computeAccessScore(venue);
-  const bandStyle = getScoreBandStyle(score);
+  const bandStyle = score !== null ? getScoreBandStyle(score) : null;
   const href = `/venue/${venue.slug}`;
   const town = venue.location.split(",")[0]?.trim() ?? venue.location;
   const unknownCount = countVenueUnknowns(venue);
+  const isDemo = isDemoVenue(venue);
 
   return (
     <li className="h-full">
@@ -42,12 +44,18 @@ export function HomeFeaturedVenueCard({ venue, distance }: Props) {
               loading="lazy"
               className="object-cover transition duration-300 group-hover:scale-[1.02]"
             />
-            <span
-              className="absolute left-3 top-3 inline-flex min-h-[28px] items-center rounded-full px-2.5 text-xs font-semibold shadow-sm"
-              style={{ color: bandStyle.text, backgroundColor: bandStyle.background }}
-            >
-              {formatScoreLabel(score)}
-            </span>
+            {score !== null && bandStyle ? (
+              <span
+                className="absolute left-3 top-3 inline-flex min-h-[28px] items-center rounded-full px-2.5 text-xs font-semibold shadow-sm"
+                style={{ color: bandStyle.text, backgroundColor: bandStyle.background }}
+              >
+                {formatScoreLabel(score)}
+              </span>
+            ) : isDemo ? (
+              <span className="absolute left-3 top-3 inline-flex min-h-[28px] items-center rounded-full bg-amber-100 px-2.5 text-xs font-semibold text-amber-950 shadow-sm">
+                Demo listing
+              </span>
+            ) : null}
           </div>
 
           <div className="flex flex-1 flex-col p-5">
@@ -56,7 +64,7 @@ export function HomeFeaturedVenueCard({ venue, distance }: Props) {
             <p className="mt-0.5 text-sm text-[#4A5263]">{town}</p>
 
             <div className="mt-3">
-              <VenueConfidenceBadge status={mapVenueVerificationStatus(venue.verification)} />
+              <VenueConfidenceBadge status={mapVenueVerificationStatus(venue.verification)} showHint={isDemo} />
             </div>
 
             <ul className="mt-3 flex flex-wrap gap-2" aria-label="Access features">
@@ -68,9 +76,7 @@ export function HomeFeaturedVenueCard({ venue, distance }: Props) {
             </ul>
 
             {unknownCount > 0 ? (
-              <p className="mt-3 text-xs text-[#76808F]">
-                {unknownCount} known unknown{unknownCount === 1 ? "" : "s"}
-              </p>
+              <KnownUnknowns count={unknownCount} className="mt-3 text-xs text-[#76808F]" />
             ) : null}
 
             <p className="mt-auto pt-4 text-xs text-[#76808F]">

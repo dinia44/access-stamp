@@ -5,13 +5,13 @@ export const STATIC_PAGE_SEO = {
   home: {
     title: "Access Stamp — accessible venues, advice and AI tools",
     description:
-      "Access-checked UK venues, plain-English advice on rights, benefits and equipment, and AI tools that help you plan — built by disabled people.",
+      "Venue access information, plain-English advice on rights, benefits and equipment, and practical tools — built by disabled people.",
     path: "/",
   },
   venueFinder: {
-    title: "Venue Finder — access-checked places across the UK",
+    title: "Venue Finder — practical access information across the UK",
     description:
-      "Search UK venues by step-free access, toilets, parking, hearing support and more. Photo-evidenced access reports with confidence ratings.",
+      "Search UK venues by step-free access, toilets, parking, hearing support and more. Confidence labels, known unknowns, and evidence where available.",
     path: "/venue-finder",
   },
   advice: {
@@ -77,6 +77,16 @@ export const STATIC_PAGE_SEO = {
     description:
       "What Access Stamp records, how confidence labels work, why unknowns are shown, and how to confirm details before travelling.",
     path: "/methodology",
+  },
+  corrections: {
+    title: "Corrections and venue updates",
+    description: "Report inaccurate venue information or submit corrected access details to Access Stamp.",
+    path: "/corrections",
+  },
+  complaints: {
+    title: "Complaints",
+    description: "How to complain about Access Stamp content, venue listings, or how we handled your enquiry.",
+    path: "/complaints",
   },
   submitVenue: {
     title: "List your venue",

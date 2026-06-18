@@ -2,8 +2,9 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui";
-import { ToolkitField, ToolkitSelect, ToolkitTextarea } from "@/components/ai-toolkit/toolkit-field";
+import { Button, Card } from "@/components/ui";
+import { GuideSearchCombobox } from "@/components/ai-toolkit/guide-search-combobox";
+import { ToolkitField, ToolkitTextarea } from "@/components/ai-toolkit/toolkit-field";
 import { ToolkitListSection, ToolkitSectionCard } from "@/components/ai-toolkit/toolkit-section-card";
 import {
   ToolkitEmptyResults,
@@ -92,6 +93,10 @@ export function ArticleCompanionTool() {
               </p>
             ) : null}
           </>
+        ) : loading ? (
+          <div role="status">
+            <Card className="p-5 text-sm text-muted">Generating your personalised checklist and next steps…</Card>
+          </div>
         ) : (
           <ToolkitEmptyResults />
         )
@@ -99,15 +104,7 @@ export function ArticleCompanionTool() {
     >
       <form className="space-y-5" onSubmit={onSubmit}>
         <ToolkitField label="Which guide?" htmlFor="articleSlug" required>
-          <ToolkitSelect
-            id="articleSlug"
-            value={articleSlug}
-            onChange={setArticleSlug}
-            options={ADVICE_ARTICLES_STATIC.map((a) => ({
-              value: a.slug,
-              label: a.title.length > 60 ? `${a.title.slice(0, 57)}…` : a.title,
-            }))}
-          />
+          <GuideSearchCombobox articles={ADVICE_ARTICLES_STATIC} value={articleSlug} onChange={setArticleSlug} />
         </ToolkitField>
         <p className="text-xs text-muted">
           Or open any advice article and use <strong className="text-heading">Make this guide personal to me</strong> on
@@ -123,7 +120,7 @@ export function ArticleCompanionTool() {
           <ToolkitTextarea id="alreadyTried" value={alreadyTried} onChange={setAlreadyTried} rows={3} />
         </ToolkitField>
         <div className="flex flex-wrap gap-3 pt-2">
-          <Button type="submit" variant="primary" className={loading ? "opacity-70" : ""}>
+          <Button type="submit" variant="primary" className={loading ? "opacity-70" : ""} disabled={loading || !article}>
             {loading ? "Generating…" : "Generate my plan"}
           </Button>
           {result ? (

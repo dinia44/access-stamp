@@ -91,13 +91,22 @@ export function filterChipClass(active: boolean) {
     : `${base} border-border bg-card text-text shadow-sm hover:border-[var(--color-border-mid)] hover:bg-background-2`;
 }
 
-export function getAccessScorePresentation(score: number): {
+export function getAccessScorePresentation(score: number | null): {
   label: string;
   badgeClass: string;
   formatted: string;
   textColor: string;
   backgroundColor: string;
 } {
+  if (score === null) {
+    return {
+      label: "Not published",
+      formatted: "Score not published",
+      textColor: "#76808F",
+      backgroundColor: "#F3F4F6",
+      badgeClass: "font-semibold",
+    };
+  }
   const band = getScoreBandStyle(score);
   return {
     label: band.label,

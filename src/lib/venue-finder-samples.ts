@@ -5,8 +5,8 @@ export type SampleVenueCard = {
   name: string;
   categoryLabel: string;
   imageTheme: VenueImageTheme;
-  verification: "Access Stamp checked" | "Community reported" | "Not yet verified";
-  secondaryVerification?: "Access Stamp checked" | "Community reported" | "Not yet verified";
+  verification: "On-site audited" | "Desk reviewed" | "Community reported" | "Demo listing" | "Not yet verified";
+  secondaryVerification?: "On-site audited" | "Desk reviewed" | "Community reported" | "Demo listing" | "Not yet verified";
   features: string[];
   description: string;
   /** Legacy fields kept for any extended views */
@@ -23,7 +23,7 @@ export const SAMPLE_VENUE_CARDS: SampleVenueCard[] = [
     name: "Sample Café Access Report",
     categoryLabel: "Café",
     imageTheme: "cafe",
-    verification: "Access Stamp checked",
+    verification: "Demo listing",
     secondaryVerification: "Community reported",
     features: ["Step-free entrance", "Accessible toilet", "Hearing loop"],
     description: "Level access via automatic door. Spacious seating and accessible toilet.",
@@ -33,8 +33,8 @@ export const SAMPLE_VENUE_CARDS: SampleVenueCard[] = [
     name: "Sample Hotel Access Report",
     categoryLabel: "Hotel",
     imageTheme: "hotel",
-    verification: "Access Stamp checked",
-    secondaryVerification: "Community reported",
+    verification: "Demo listing",
+    secondaryVerification: "Desk reviewed",
     features: ["Step-free entrance", "Accessible toilet", "Lift access"],
     description: "Step-free entrance and lift to all floors. Accessible bedroom available.",
   },

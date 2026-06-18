@@ -1,12 +1,15 @@
 import type { Venue } from "@/lib/mock-data";
 
+import { countVenueUnknowns } from "@/lib/venue-card";
+import { toVerificationType } from "@/lib/venue-verification";
+
 export const QUICK_FILTERS = [
   "Step-free entrance",
   "Accessible toilet",
   "Blue Badge parking",
   "Powerchair suitable",
   "Changing Places",
-  "Verified by Access Stamp",
+  "Desk reviewed or audited",
 ] as const;
 
 export type FilterGroup = {
@@ -49,10 +52,13 @@ export const FILTER_GROUPS: FilterGroup[] = [
   {
     title: "Confidence",
     filters: [
-      { label: "Access Stamp checked", key: "__verified_checked" },
+      { label: "On-site audited", key: "__verified_onsite" },
+      { label: "Desk reviewed", key: "__verified_desk" },
       { label: "Community reported", key: "__verified_community" },
+      { label: "Demo listing", key: "__demo_listing" },
       { label: "Recently updated", key: "__recently_updated" },
       { label: "High confidence only", key: "__high_confidence" },
+      { label: "Has known unknowns", key: "__has_unknowns" },
     ],
   },
 ];
@@ -65,7 +71,8 @@ export const QUICK_FILTER_KEYS: Record<string, string> = {
   "Powerchair suitable": "Powered wheelchair suitable",
   "Changing Places": "Changing Places toilet",
   "Quiet / sensory-friendly": "Quiet environment",
-  "Verified by Access Stamp": "__verified_checked",
+  "Verified by Access Stamp": "__verified_onsite",
+  "Desk reviewed or audited": "__verified_desk",
 };
 
 const SUMMARY_FEATURES = [
@@ -105,16 +112,31 @@ const QUERY_SYNONYMS: Record<string, string[]> = {
 };
 
 export function credibilityScore(verification: string, confidence: string) {
+  const type = toVerificationType(verification);
   const verificationScore =
-    verification === "Access Stamp checked" ? 3 : verification === "Community reported" ? 2 : 1;
+    type === "onsite_audited"
+      ? 5
+      : type === "desk_reviewed"
+        ? 4
+        : type === "venue_submitted"
+          ? 3
+          : type === "community_reported"
+            ? 2
+            : type === "demo"
+              ? 0
+              : 1;
   const confidenceScore = confidence === "High" ? 3 : confidence === "Medium" ? 2 : 1;
   return verificationScore + confidenceScore;
 }
 
 function matchesFeatureFilter(venue: Venue, key: string): boolean {
-  if (key === "__verified_checked") return venue.verification === "Access Stamp checked";
-  if (key === "__verified_community") return venue.verification === "Community reported";
+  const type = toVerificationType(venue.verificationType ?? venue.verification);
+  if (key === "__verified_onsite") return type === "onsite_audited";
+  if (key === "__verified_desk") return type === "desk_reviewed";
+  if (key === "__demo_listing") return type === "demo";
+  if (key === "__verified_community") return type === "community_reported";
   if (key === "__high_confidence") return venue.confidence === "High";
+  if (key === "__has_unknowns") return countVenueUnknowns(venue) > 0;
   if (key === "__recently_updated") return true;
   if (key === "__wheelchair_access") {
     return (
@@ -184,11 +206,17 @@ export function filterVenues(
   }
 
   if (verifiedOnly) {
-    items = items.filter((v) => v.verification === "Access Stamp checked");
+    items = items.filter((v) => {
+      const type = toVerificationType(v.verificationType ?? v.verification);
+      return type === "onsite_audited" || type === "desk_reviewed";
+    });
   }
 
-  if (sortBy === "Rating") {
-    items.sort((a, b) => b.rating - a.rating);
+  if (sortBy === "Evidence confidence") {
+    items.sort(
+      (a, b) =>
+        credibilityScore(b.verification, b.confidence) - credibilityScore(a.verification, a.confidence),
+    );
   } else if (sortBy === "Distance") {
     items.sort((a, b) => a.location.localeCompare(b.location));
   } else if (sortBy === "Credibility") {
@@ -224,8 +252,12 @@ export function buildBestFor(venue: Venue): string {
 }
 
 export function buildWarning(venue: Venue): string | null {
-  if (venue.verification === "Not yet verified") {
-    return "Check before visiting: access details are not yet verified by Access Stamp.";
+  const type = toVerificationType(venue.verificationType ?? venue.verification);
+  if (type === "demo") {
+    return "Demo listing — for illustration only. Confirm all details with the venue before travelling.";
+  }
+  if (type === "unverified") {
+    return "Check before visiting: access details are not yet verified.";
   }
   if (venue.confidence === "Low") {
     return "Check before visiting: confidence rating is low — confirm details before travel.";

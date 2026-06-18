@@ -7,10 +7,10 @@ import { ForVenuesLeadForm } from "@/components/for-venues/for-venues-lead-form"
 import { RouteDecoration } from "@/components/home/route-decoration";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import {
-  CERTIFICATION_PRICING,
-  CERTIFICATION_TIERS,
+  EAA_REGULATORY_NOTE,
+  REVIEW_TIER_PRICING,
+  VENUE_REVIEW_TIERS,
   FOR_VENUES_FAQ,
-  WHAT_VENUES_RECEIVE,
   WHAT_WE_CHECK,
 } from "@/lib/for-venues-config";
 
@@ -26,14 +26,14 @@ const CASE_STATS = [
   { value: "£274bn", label: "annual spending power of disabled households (Purple Pound)" },
   {
     value: "June 2025",
-    label: "European Accessibility Act — in force since June 2025",
+    label: "European Accessibility Act — applicable in EU member states from 28 June 2025",
   },
 ] as const;
 
 const HOW_IT_WORKS = [
   {
     step: "1",
-    title: "Book your audit",
+    title: "Book your review",
     body: "We visit at a time that suits you and agree which areas matter most for your customers.",
   },
   {
@@ -43,28 +43,28 @@ const HOW_IT_WORKS = [
   },
   {
     step: "3",
-    title: "Get your Stamp",
-    body: "Bronze, Silver, or Gold certification with a public access report your customers can trust.",
+    title: "Get your access report",
+    body: "Access Snapshot, Measured Access Report, or Full Access Review with a public listing your customers can trust.",
   },
   {
     step: "4",
     title: "Get found",
-    body: "Your venue appears in the Access Stamp finder that disabled customers and AI assistants use to choose where to go.",
+    body: "Your venue appears in the Access Stamp finder that disabled customers use to choose where to go.",
   },
 ] as const;
 
 const DELIVERABLES = [
   {
     title: "Window stamp",
-    body: "Physical Bronze, Silver, or Gold stamp for your entrance — a clear signal to customers.",
+    body: "Physical stamp for your entrance — a clear signal that access information is published.",
   },
   {
     title: "Public access report",
-    body: "A shareable listing on Access Stamp with scores, features, and photos.",
+    body: "A shareable listing on Access Stamp with features, photos, and confidence labels.",
   },
   {
     title: "Measured PDF report",
-    body: "Detailed doorway widths, routes, and facilities for your team (Silver and Gold).",
+    body: "Detailed doorway widths, routes, and facilities for your team (Measured and Full tiers).",
   },
   {
     title: "Venue finder listing",
@@ -129,6 +129,9 @@ export default function ForVenuesPage() {
             Most venues lose this custom invisibly, because people check access before they travel and never arrive if
             they cannot be sure your venue will work for them.
           </p>
+          <p className="mx-auto mt-4 max-w-3xl text-center text-sm leading-7 text-[#76808F]">
+            {EAA_REGULATORY_NOTE} <span className="text-[#4A5263]">Reviewed June 2026.</span>
+          </p>
         </Container>
       </section>
 
@@ -185,22 +188,23 @@ export default function ForVenuesPage() {
         </Container>
       </section>
 
-      {/* Certification tiers */}
-      <section className="border-t border-[#EFE5DA] py-16 sm:py-20" aria-labelledby="tiers-heading">
+      {/* Review tiers */}
+      <section id="pilot-programme" className="border-t border-[#EFE5DA] py-16 sm:py-20 scroll-mt-24" aria-labelledby="tiers-heading">
         <Container>
           <h2
             id="tiers-heading"
             className="font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[#20242E] sm:text-4xl"
           >
-            Certification tiers
+            Venue review tiers
           </h2>
           <p className="mt-3 max-w-2xl text-base leading-7 text-[#4A5263]">
-            Pilot programme pricing — request details for your venue size and scope.
+            Pilot programme pricing — request details for your venue size and scope. These are access reviews and reports,
+            not formal certification until governance is published.
           </p>
 
           <ul className="mt-10 grid gap-6 lg:grid-cols-3">
-            {CERTIFICATION_TIERS.map((tier) => {
-              const price = CERTIFICATION_PRICING[tier.id].label;
+            {VENUE_REVIEW_TIERS.map((tier) => {
+              const price = REVIEW_TIER_PRICING[tier.id].label;
               return (
                 <li
                   key={tier.id}
@@ -238,31 +242,6 @@ export default function ForVenuesPage() {
                 </li>
               );
             })}
-          </ul>
-        </Container>
-      </section>
-
-      {/* What venues receive */}
-      <section
-        className="border-t border-[#EFE5DA] bg-[#FAF4ED] py-16 sm:py-20"
-        aria-labelledby="venues-receive-heading"
-      >
-        <Container>
-          <h2
-            id="venues-receive-heading"
-            className="font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[#20242E] sm:text-4xl"
-          >
-            What venues receive
-          </h2>
-          <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {WHAT_VENUES_RECEIVE.map((item) => (
-              <li
-                key={item}
-                className="rounded-[20px] border border-[#EFE5DA] bg-white px-4 py-3 text-sm font-medium text-[#20242E]"
-              >
-                {item}
-              </li>
-            ))}
           </ul>
         </Container>
       </section>

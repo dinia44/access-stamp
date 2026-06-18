@@ -1,22 +1,14 @@
 import type { Venue } from "@/lib/mock-data";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
+import { getDisplayAccessScore } from "@/lib/venue-score";
 import { getVenueCoordinates, type VenueCoordinates } from "@/lib/venue-coordinates";
 import { formatDistanceKm, haversineDistanceKm } from "@/lib/venue-geography";
 import { themeFromVenueType } from "@/lib/venue-finder-category";
 import { getThemeFallbackPhoto } from "@/lib/venue-finder-images";
-import { credibilityScore } from "@/lib/venue-finder";
 
-export function computeAccessScore(venue: Venue): number {
-  if (typeof venue.accessScore === "number") {
-    return venue.accessScore;
-  }
-  const values = Object.values(venue.features);
-  const yesCount = values.filter((value) => value === "yes").length;
-  const knownCount = values.filter((value) => value !== "unknown").length;
-  const featurePct = knownCount ? (yesCount / knownCount) * 100 : 55;
-  const credibility = credibilityScore(venue.verification, venue.confidence);
-  const score = featurePct * 0.62 + credibility * 9 + venue.rating * 4;
-  return Math.min(99, Math.max(42, Math.round(score)));
+/** Deterministic access score — returns null for demo/unverified listings. */
+export function computeAccessScore(venue: Venue): number | null {
+  return getDisplayAccessScore(venue);
 }
 
 export function mockVenueDistanceKm(slug: string): string {

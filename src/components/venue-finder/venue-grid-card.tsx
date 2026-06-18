@@ -1,18 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
 import { VenueConfidenceBadge } from "@/components/design-system/venue-confidence-badge";
 import type { Venue } from "@/lib/mock-data";
 import { FeatureChip, getVenueFeatureChipItems } from "@/components/venue/feature-chip";
-import { readSavedVenueSlugs, subscribeSavedVenues, toggleSavedVenueSlug } from "@/lib/saved-venues";
-import { getVenueDistanceLabel, getVenuePhoto } from "@/lib/venue-access-score";
-import { computeAccessScore } from "@/lib/venue-access-score";
+import { computeAccessScore, getVenueDistanceLabel, getVenuePhoto } from "@/lib/venue-access-score";
 import type { VenueCoordinates } from "@/lib/venue-coordinates";
 import { formatVenueLocation } from "@/lib/venue-card-theme";
-import { countVenueUnknowns, mapVenueVerificationStatus, venueNeedsCheckHref } from "@/lib/venue-card";
+import { KnownUnknowns } from "@/components/venue/KnownUnknowns";
+import { countVenueUnknowns, isDemoVenue, mapVenueVerificationStatus, venueNeedsCheckHref } from "@/lib/venue-card";
 import { getAccessScorePresentation, VF_BTN_PRIMARY, VF_BTN_SECONDARY } from "@/lib/venue-finder-cro";
-import { SITE_FOCUS } from "@/lib/site-design";
 
 type Props = {
   venue: Venue;
@@ -30,12 +27,7 @@ export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) 
   const featureChips = getVenueFeatureChipItems(venue).slice(0, 5);
   const unknownCount = countVenueUnknowns(venue);
   const confidenceStatus = mapVenueVerificationStatus(venue.verification);
-
-  const saved = useSyncExternalStore(
-    subscribeSavedVenues,
-    () => readSavedVenueSlugs().includes(venue.slug),
-    () => false,
-  );
+  const isDemo = isDemoVenue(venue);
 
   return (
     <article
@@ -51,24 +43,11 @@ export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) 
           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
         />
 
-        <button
-          type="button"
-          className={`absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-card text-heading shadow-md transition hover:scale-105 ${SITE_FOCUS}`}
-          aria-label={saved ? `Remove ${venue.name} from saved venues` : `Save ${venue.name}`}
-          aria-pressed={saved}
-          onClick={() => toggleSavedVenueSlug(venue.slug)}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            className="h-5 w-5"
-            fill={saved ? "currentColor" : "none"}
-            stroke="currentColor"
-            strokeWidth="1.75"
-            aria-hidden
-          >
-            <path d="M12 21s-6.7-4.4-9.2-8.6C1.1 9.2 2.6 5.5 6.2 5.1c1.9-.2 3.7.8 4.6 2.4.9-1.6 2.7-2.6 4.6-2.4 3.6.4 5.1 4.1 3.4 7.3C18.7 16.6 12 21 12 21z" />
-          </svg>
-        </button>
+        {isDemo ? (
+          <span className="absolute left-3 top-3 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-950 shadow-sm">
+            Demo listing
+          </span>
+        ) : null}
       </div>
 
       <div className="p-4">
@@ -89,7 +68,7 @@ export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) 
         </p>
 
         <div className="mt-3">
-          <VenueConfidenceBadge status={confidenceStatus} />
+          <VenueConfidenceBadge status={confidenceStatus} showHint={isDemo} />
         </div>
 
         {featureChips.length > 0 ? (
@@ -101,9 +80,7 @@ export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) 
         ) : null}
 
         {unknownCount > 0 ? (
-          <p className="mt-3 text-xs font-medium text-muted">
-            {unknownCount} known unknown{unknownCount === 1 ? "" : "s"} — confirm before travelling
-          </p>
+          <KnownUnknowns count={unknownCount} className="mt-3 text-xs font-medium text-muted" />
         ) : null}
 
         <div className="mt-4 grid gap-2">

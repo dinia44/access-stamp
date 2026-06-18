@@ -7,6 +7,8 @@ type ContactPayload = {
   email: string;
   enquiryType: string;
   message: string;
+  consent: boolean;
+  website?: string;
 };
 
 function isValidPayload(body: unknown): body is ContactPayload {
@@ -20,7 +22,8 @@ function isValidPayload(body: unknown): body is ContactPayload {
     typeof b.enquiryType === "string" &&
     b.enquiryType.trim().length > 0 &&
     typeof b.message === "string" &&
-    b.message.trim().length > 0
+    b.message.trim().length > 0 &&
+    b.consent === true
   );
 }
 
@@ -33,7 +36,14 @@ export async function POST(req: Request) {
   }
 
   if (!isValidPayload(body)) {
-    return NextResponse.json({ error: "Name, email, enquiry type, and message are required." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Name, email, enquiry type, message, and consent are required." },
+      { status: 400 },
+    );
+  }
+
+  if (typeof body.website === "string" && body.website.trim().length > 0) {
+    return NextResponse.json({ ok: true, delivered: false });
   }
 
   const payload: ContactPayload = {
@@ -41,6 +51,7 @@ export async function POST(req: Request) {
     email: body.email.trim(),
     enquiryType: body.enquiryType.trim(),
     message: body.message.trim(),
+    consent: true,
   };
 
   const emailResult = await sendTransactionalEmail({
@@ -50,6 +61,7 @@ export async function POST(req: Request) {
       `Name: ${payload.name}`,
       `Email: ${payload.email}`,
       `Enquiry type: ${payload.enquiryType}`,
+      `Consent: yes (${new Date().toISOString()})`,
       "",
       payload.message,
     ].join("\n"),
@@ -59,7 +71,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: emailResult.error }, { status: 502 });
   }
 
-  console.info("[contact]", JSON.stringify({ ...payload, receivedAt: new Date().toISOString(), emailed: !emailResult.skipped }));
+  console.info(
+    "[contact]",
+    JSON.stringify({
+      name: payload.name,
+      email: payload.email,
+      enquiryType: payload.enquiryType,
+      consent: true,
+      receivedAt: new Date().toISOString(),
+      emailed: !emailResult.skipped,
+    }),
+  );
 
   return NextResponse.json({
     ok: true,

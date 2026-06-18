@@ -6,7 +6,9 @@ import { toLegacyVenue } from "@/lib/venue-legacy";
 import { mockVenueDistanceKm } from "@/lib/venue-access-score";
 
 export function HomePopularVenues() {
-  const featured = getHomepageVenues().map((venue) => toLegacyVenue(venue));
+  const featured = getHomepageVenues()
+    .map((venue) => toLegacyVenue(venue))
+    .slice(0, 3);
 
   return (
     <section className="border-t border-[#EFE5DA] bg-[#FAF4ED] py-16 sm:py-20" aria-labelledby="featured-venues-heading">
@@ -15,8 +17,12 @@ export function HomePopularVenues() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C8430F]">Featured venues</p>
             <h2 id="featured-venues-heading" className="mt-3 font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[#20242E] sm:text-4xl">
-              Access-checked venues
+              Venue access information to explore
             </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-[#4A5263]">
+              Access information can change. Check the confidence label, review any known unknowns, and confirm
+              important details directly with the venue before travelling.
+            </p>
           </div>
           <Link
             href="/venue-finder"
@@ -28,7 +34,7 @@ export function HomePopularVenues() {
 
         <ul
           className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-          aria-label={`${featured.length} featured access-checked venues`}
+          aria-label={`${featured.length} example venue listings`}
         >
           {featured.map((venue, index) => (
             <HomeFeaturedVenueCard

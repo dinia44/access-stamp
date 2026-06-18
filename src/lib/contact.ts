@@ -1,5 +1,7 @@
+import { SITE_CONFIG } from "@/lib/site-config";
+
 /** Standard public contact email for Access Stamp */
-export const CONTACT_EMAIL = "hello@accessstamp.co.uk";
+export const CONTACT_EMAIL = SITE_CONFIG.email;
 
 export function contactMailto(options?: { subject?: string; body?: string }) {
   const subject = options?.subject ?? "Access Stamp enquiry";

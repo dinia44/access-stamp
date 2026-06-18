@@ -2,19 +2,55 @@
 
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui";
+import { PHOTO_UPLOAD_NOTICE } from "@/lib/privacy-content";
 
 type Props = {
   onFeaturesDetected: (features: string, notes?: string) => void;
   disabled?: boolean;
 };
 
+async function stripExifFromFile(file: File): Promise<{ blob: Blob; mimeType: string }> {
+  const bitmap = await createImageBitmap(file);
+  const canvas = document.createElement("canvas");
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    bitmap.close();
+    throw new Error("Could not process image");
+  }
+  ctx.drawImage(bitmap, 0, 0);
+  bitmap.close();
+
+  const mimeType = file.type.startsWith("image/") ? file.type : "image/jpeg";
+  const blob = await new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      (result) => {
+        if (result) resolve(result);
+        else reject(new Error("Could not process image"));
+      },
+      mimeType,
+      0.92,
+    );
+  });
+
+  return { blob, mimeType };
+}
+
 export function VenuePhotoScan({ onFeaturesDetected, disabled }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "scanning" | "ok" | "error">("idle");
   const [message, setMessage] = useState("");
+  const [uploadConsent, setUploadConsent] = useState(false);
 
   async function scanFile(file: File) {
+    if (!uploadConsent) {
+      setStatus("error");
+      setMessage("Please confirm you understand the photo upload rules before scanning.");
+      return;
+    }
+
     if (!file.type.startsWith("image/")) {
       setStatus("error");
       setMessage("Please choose a photo file.");
@@ -30,49 +66,59 @@ export function VenuePhotoScan({ onFeaturesDetected, disabled }: Props) {
     setStatus("scanning");
     setMessage("");
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const dataUrl = reader.result;
-      if (typeof dataUrl !== "string") {
-        setStatus("error");
-        setMessage("Could not read that photo.");
-        return;
-      }
-
-      setPreview(dataUrl);
-      const base64 = dataUrl.split(",")[1];
-      if (!base64) {
-        setStatus("error");
-        setMessage("Could not read that photo.");
-        return;
-      }
-
-      try {
-        const response = await fetch("/api/venue-photo-scan", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageBase64: base64, mimeType: file.type }),
-        });
-        const data = (await response.json()) as { features?: string; notes?: string; error?: string };
-        if (!response.ok) {
+    try {
+      const { blob, mimeType } = await stripExifFromFile(file);
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const dataUrl = reader.result;
+        if (typeof dataUrl !== "string") {
           setStatus("error");
-          setMessage(data.error ?? "Scan failed. Describe access in text instead.");
+          setMessage("Could not read that photo.");
           return;
         }
 
-        onFeaturesDetected(data.features ?? "", data.notes);
-        setStatus("ok");
-        setMessage(data.notes ? `${data.notes} We added what we could see to the form below.` : "Scan complete — check the access features field below.");
-      } catch {
+        setPreview(dataUrl);
+        const base64 = dataUrl.split(",")[1];
+        if (!base64) {
+          setStatus("error");
+          setMessage("Could not read that photo.");
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/venue-photo-scan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ imageBase64: base64, mimeType }),
+          });
+          const data = (await response.json()) as { features?: string; notes?: string; error?: string };
+          if (!response.ok) {
+            setStatus("error");
+            setMessage(data.error ?? "Scan failed. Describe access in text instead.");
+            return;
+          }
+
+          onFeaturesDetected(data.features ?? "", data.notes);
+          setStatus("ok");
+          setMessage(
+            data.notes
+              ? `${data.notes} We added what we could see to the form below.`
+              : "Scan complete — check the access features field below.",
+          );
+        } catch {
+          setStatus("error");
+          setMessage("Could not reach the scan service. Describe access in text instead.");
+        }
+      };
+      reader.onerror = () => {
         setStatus("error");
-        setMessage("Could not reach the scan service. Describe access in text instead.");
-      }
-    };
-    reader.onerror = () => {
+        setMessage("Could not read that photo.");
+      };
+      reader.readAsDataURL(blob);
+    } catch {
       setStatus("error");
-      setMessage("Could not read that photo.");
-    };
-    reader.readAsDataURL(file);
+      setMessage("Could not process that photo. Describe access in text instead.");
+    }
   }
 
   function onFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -80,6 +126,8 @@ export function VenuePhotoScan({ onFeaturesDetected, disabled }: Props) {
     event.target.value = "";
     if (file) void scanFile(file);
   }
+
+  const uploadDisabled = disabled || status === "scanning" || !uploadConsent;
 
   return (
     <div className="rounded-2xl border border-[#EFE5DA] bg-[#FDFBF8] p-5">
@@ -89,6 +137,20 @@ export function VenuePhotoScan({ onFeaturesDetected, disabled }: Props) {
         review before you submit your listing.
       </p>
 
+      <aside className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-950">
+        {PHOTO_UPLOAD_NOTICE}
+      </aside>
+
+      <label className="mt-4 flex min-h-11 cursor-pointer items-start gap-3 text-sm leading-6 text-muted">
+        <input
+          type="checkbox"
+          checked={uploadConsent}
+          onChange={(event) => setUploadConsent(event.target.checked)}
+          className="mt-1 h-4 w-4 accent-[#F04A16]"
+        />
+        <span>I confirm my photos follow these rules and do not contain unnecessary personal information.</span>
+      </label>
+
       <input
         ref={inputRef}
         type="file"
@@ -96,23 +158,22 @@ export function VenuePhotoScan({ onFeaturesDetected, disabled }: Props) {
         capture="environment"
         className="sr-only"
         onChange={onFileChange}
-        disabled={disabled || status === "scanning"}
+        disabled={uploadDisabled}
       />
 
       <div className="mt-4 flex flex-wrap gap-3">
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={disabled || status === "scanning"}
-          onClick={() => inputRef.current?.click()}
-        >
+        <Button type="button" variant="secondary" disabled={uploadDisabled} onClick={() => inputRef.current?.click()}>
           {status === "scanning" ? "Scanning photo…" : "Take or upload photo"}
         </Button>
       </div>
 
       {preview ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={preview} alt="Uploaded venue access photo preview" className="mt-4 max-h-48 rounded-xl border border-border object-cover" />
+        <img
+          src={preview}
+          alt="Uploaded venue access photo preview"
+          className="mt-4 max-h-48 rounded-xl border border-border object-cover"
+        />
       ) : null}
 
       {status === "error" && message ? (

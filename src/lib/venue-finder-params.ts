@@ -7,11 +7,14 @@ import {
 } from "@/lib/venue-coordinates";
 import { haversineDistanceKm, parseCoordinatePair } from "@/lib/venue-geography";
 
+export type VenueFinderSort = "Best match" | "Evidence confidence" | "Distance";
+
 export type VenueFinderSearchState = {
   query: string;
   location: string;
   filters: string[];
   center?: VenueCoordinates;
+  sortBy?: VenueFinderSort;
 };
 
 type SearchParamsInput =
@@ -50,16 +53,19 @@ export function parseVenueFinderSearchParams(input: SearchParamsInput): VenueFin
 }
 
 export function getFilteredVenues(venues: Venue[], state: VenueFinderSearchState): Venue[] {
+  const sortBy: VenueFinderSort =
+    state.sortBy ?? (state.center ? "Distance" : "Best match");
+
   const filtered = sortVenuesFeaturedFirst(
     filterVenues(venues, {
       query: [state.query, state.location].filter(Boolean).join(" "),
       selectedFilters: state.filters,
       verifiedOnly: false,
-      sortBy: state.center ? "Distance" : "Relevance",
+      sortBy: sortBy === "Evidence confidence" ? "Evidence confidence" : sortBy === "Distance" ? "Distance" : "Relevance",
     }),
   );
 
-  if (!state.center) return filtered;
+  if (sortBy !== "Distance" || !state.center) return filtered;
 
   return [...filtered].sort((a, b) => {
     const aCoords = getVenueCoordinates(a);

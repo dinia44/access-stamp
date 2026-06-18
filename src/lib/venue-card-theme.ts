@@ -56,10 +56,13 @@ export type VenueFeatureChip = {
 
 export function getVenueBadge(venue: Venue, index: number): { label: string; emoji: string } {
   const score = computeAccessScore(venue);
-  if (venue.verification === "Access Stamp checked" && venue.confidence === "High") {
-    return { label: "Great access", emoji: "★" };
+  if (venue.verificationType === "onsite_audited" && venue.confidence === "High") {
+    return { label: "Strong evidence", emoji: "★" };
   }
-  if (index === 0 && score >= 88) {
+  if (venue.verificationType === "demo" || venue.verification === "Demo listing") {
+    return { label: "Demo listing", emoji: "📋" };
+  }
+  if (index === 0 && score !== null && score >= 88) {
     return { label: "Top pick", emoji: "🔥" };
   }
   if (venue.verification === "Not yet verified") {

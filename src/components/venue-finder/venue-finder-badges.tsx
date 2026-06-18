@@ -1,8 +1,9 @@
 import type { SampleVenueCard } from "@/lib/venue-finder-samples";
 
 function verificationClass(status: SampleVenueCard["verification"]) {
-  if (status === "Access Stamp checked") return "vf-badge-verified";
+  if (status === "On-site audited" || status === "Desk reviewed") return "vf-badge-verified";
   if (status === "Community reported") return "vf-badge-community-orange";
+  if (status === "Demo listing") return "vf-badge-neutral";
   return "vf-badge-neutral";
 }
 
@@ -31,11 +32,13 @@ export function SampleConfidenceBadge({ level }: { level: SampleVenueCard["confi
 }
 
 const VERIFICATION_STYLES: Record<
-  "Access Stamp checked" | "Community reported" | "Not yet verified" | "Major access concern",
+  "On-site audited" | "Desk reviewed" | "Community reported" | "Demo listing" | "Not yet verified" | "Major access concern",
   string
 > = {
-  "Access Stamp checked": "border-emerald-200 bg-emerald-50 text-emerald-800",
+  "On-site audited": "border-emerald-200 bg-emerald-50 text-emerald-800",
+  "Desk reviewed": "border-emerald-200 bg-emerald-50 text-emerald-800",
   "Community reported": "border-amber-200 bg-amber-50 text-amber-800",
+  "Demo listing": "border-amber-200 bg-amber-50 text-amber-900",
   "Not yet verified": "border-border bg-background-2 text-muted",
   "Major access concern": "border-red-200 bg-red-50 text-red-800",
 };
@@ -43,11 +46,14 @@ const VERIFICATION_STYLES: Record<
 export function VenueFinderVerificationBadge({
   status,
 }: {
-  status: "Access Stamp checked" | "Community reported" | "Not yet verified" | "Major access concern";
+  status: string;
 }) {
+  const style =
+    VERIFICATION_STYLES[status as keyof typeof VERIFICATION_STYLES] ??
+    VERIFICATION_STYLES["Not yet verified"];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${VERIFICATION_STYLES[status]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${style}`}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" aria-hidden="true" />
       {status}

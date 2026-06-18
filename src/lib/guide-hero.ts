@@ -36,7 +36,8 @@ const HERO_OVERRIDES: Record<string, GuideHeroConfig> = {
     secondaryLabel: "Popular guide",
     guideType: "UK benefits guide",
     factChecked: true,
-    subtitle: "A practical, step-by-step guide with AI support",
+    subtitle:
+      "How to answer the renewal form using real examples, the reliability rules, and evidence that matches what you write.",
   },
 };
 

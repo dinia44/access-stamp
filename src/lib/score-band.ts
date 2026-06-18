@@ -18,7 +18,13 @@ export function getScoreBandStyle(score: number): ScoreBandStyle {
   return { label, ...BAND_STYLES[label] };
 }
 
-export function formatScoreLabel(score: number): string {
+export function formatScoreLabel(score: number | null): string {
+  if (score === null) return "Score not published";
   const { label } = getScoreBandStyle(score);
   return `${score}/100 · ${label}`;
+}
+
+export function getScoreBandStyleOrNull(score: number | null): ScoreBandStyle | null {
+  if (score === null) return null;
+  return getScoreBandStyle(score);
 }

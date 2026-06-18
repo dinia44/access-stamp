@@ -3,8 +3,8 @@ import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ChatProvider } from "@/components/chat/provider";
 import { ChatWidgetLoader } from "@/components/chat/chat-widget-loader";
-import { AccessibilityControls } from "@/components/accessibility-controls";
-import { Footer } from "@/components/footer";
+import { AccessibilityControls } from "@/components/layout/AccessibilityControls";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteChrome } from "@/components/site-chrome";
 import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { buildOrganizationJsonLd } from "@/lib/seo/organization-jsonld";
@@ -71,7 +71,7 @@ export default function RootLayout({
           <SiteChrome>
             <main id="main-content" className="flex-1">{children}</main>
           </SiteChrome>
-          <Footer />
+          <SiteFooter />
           <AccessibilityControls />
           <ChatWidgetLoader />
         </ChatProvider>

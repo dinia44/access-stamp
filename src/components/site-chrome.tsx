@@ -1,11 +1,11 @@
 "use client";
 
-import { Navbar } from "@/components/navbar";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <Navbar />
+      <SiteHeader />
       {children}
     </>
   );

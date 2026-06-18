@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FadeIn } from "@/components/fade-in";
+import { SensitiveDataNotice, useSensitiveDataGate } from "@/components/ai/SensitiveDataNotice";
 import { Badge, Button, Card } from "@/components/ui";
 import { ToolkitDisclaimer } from "@/components/ai-toolkit/toolkit-disclaimer";
 import { ToolkitTrustPanel } from "@/components/ai-toolkit/toolkit-trust-panel";
@@ -22,6 +23,9 @@ export function ToolkitToolShell({
   resultsRef?: React.RefObject<HTMLDivElement | null>;
   onPrint?: () => void;
 }) {
+  const requireAck = Boolean(meta.sensitiveDataAck);
+  const { acknowledged, setAcknowledged, blocked } = useSensitiveDataGate(requireAck);
+
   return (
     <div className="premium-section-hero min-h-screen">
       <div className="mx-auto max-w-3xl px-4 py-12 md:py-16 lg:px-8">
@@ -43,8 +47,21 @@ export function ToolkitToolShell({
           </div>
         </FadeIn>
 
+        {requireAck ? (
+          <FadeIn delayMs={60}>
+            <div className="mt-6">
+              <SensitiveDataNotice requireAcknowledgement onAcknowledgedChange={setAcknowledged} />
+            </div>
+          </FadeIn>
+        ) : null}
+
         <FadeIn delayMs={80}>
-          <Card className="mt-8 p-5 md:p-6">{children}</Card>
+          <Card
+            className={`mt-8 p-5 md:p-6 ${blocked ? "pointer-events-none opacity-60" : ""}`}
+            aria-disabled={blocked || undefined}
+          >
+            {children}
+          </Card>
         </FadeIn>
 
         {results ? (

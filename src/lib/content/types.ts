@@ -47,6 +47,8 @@ export type AdviceArticle = {
   quickAnswer?: string;
   firstThreeActions?: string[];
   canonicalGuideHref?: string;
+  /** Editorial lifecycle — only `published` should appear in production listings when enforced. */
+  editorialStatus?: "draft" | "editorial_review" | "expert_review" | "published" | "update_required";
 };
 
 export type BlogSection = { heading?: string; body: string };

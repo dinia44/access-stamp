@@ -11,6 +11,12 @@
     "start": "next start",
     "lint": "eslint",
     "test:e2e": "playwright test",
+    "test:smoke": "playwright test tests/smoke-routes.spec.ts",
+    "test:a11y": "playwright test tests/accessibility.spec.ts tests/keyboard.spec.ts",
+    "test:links": "playwright test tests/links.spec.ts",
+    "test:responsive": "playwright test tests/responsive.spec.ts",
+    "test:smoke:fetch": "node scripts/smoke-routes.mjs",
+    "test:launch-gate": "node scripts/smoke-routes.mjs",
     "studio": "sanity dev",
     "seed:cms": "tsx scripts/seed-sanity.ts",
     "generate:guide-docx": "node scripts/generate-guide-docx.mjs"

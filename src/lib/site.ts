@@ -20,30 +20,8 @@ export const VENUE_FINDER_PROMO_VIDEO_SRC =
 export const VENUE_FINDER_PROMO_VIDEO_POSTER =
   "https://res.cloudinary.com/dtl4syjuh/video/upload/so_0,f_jpg,q_auto/accessstamp_16x9_correct_end_screen_osaycc.jpg";
 
-/** Primary navigation — shared header on every page */
-export const NAV_ITEMS: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Find Venues", href: "/venue-finder" },
-  { label: "Guides", href: "/advice" },
-  { label: "Tools", href: "/ai-toolkit" },
-  { label: "Help Cards", href: "/help-cards" },
-  { label: "For Venues", href: "/for-venues" },
-  { label: "About", href: "/about" },
-];
-
-export const PRIMARY_NAV_CTA = { label: "Find accessible venues", href: "/venue-finder" } as const;
-
-/** Footer resource navigation */
-export const FOOTER_RESOURCE_LINKS: NavItem[] = [
-  { label: "Contact", href: "/contact" },
-  { label: "Directory", href: "/directory" },
-  { label: "Glossary", href: "/glossary" },
-  { label: "Blog", href: "/blog" },
-  { label: "Methodology", href: "/methodology" },
-  { label: "Accessibility", href: "/accessibility" },
-  { label: "Privacy", href: "/legal/privacy" },
-  { label: "Terms", href: "/legal/terms" },
-];
+/** @deprecated Use MAIN_NAV_GROUPS from @/lib/navigation */
+export { MAIN_NAV_GROUPS as NAV_ITEMS, PRIMARY_NAV_CTA } from "@/lib/navigation";
 
 /** Resources dropdown — grouped for homepage header */
 export type ResourceGroup = { label: string; description?: string; items: NavItem[] };

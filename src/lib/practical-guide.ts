@@ -2,6 +2,7 @@ import type { AdviceArticle, AdviceCategorySlug } from "@/lib/content/types";
 import { buildWorkflowFromArticle } from "@/lib/guide-content/article-workflow-builder";
 import { ACCESS_TO_WORK_WORKFLOW } from "@/lib/guide-content/access-to-work";
 import { getGuideFaqs } from "@/lib/guide-content/guide-faqs";
+import { PIP_RENEWAL_WORKFLOW } from "@/lib/guide-content/pip-renewal-form-what-to-write";
 import { REASONABLE_ADJUSTMENTS_WORKFLOW } from "@/lib/guide-content/reasonable-adjustments-at-work";
 import type { PracticalGuideWorkflow } from "@/lib/guide-content/types";
 import { isPracticalGuideCategory } from "@/lib/practical-guide-categories";
@@ -28,6 +29,7 @@ export function isPracticalGuide(slug: string, categorySlug?: AdviceCategorySlug
 const WORKFLOW_OVERRIDES: Partial<Record<string, PracticalGuideWorkflow>> = {
   "access-to-work": ACCESS_TO_WORK_WORKFLOW,
   "reasonable-adjustments-at-work": REASONABLE_ADJUSTMENTS_WORKFLOW,
+  "pip-renewal-form-what-to-write": PIP_RENEWAL_WORKFLOW,
 };
 
 function mergeWorkflows(

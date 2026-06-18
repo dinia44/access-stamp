@@ -23,12 +23,11 @@ import { VenueFitPlannerInline } from "@/components/venue/venue-fit-planner-inli
 import { computeAccessScore } from "@/lib/venue-access-score";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import { buildBreadcrumbJsonLd, buildVenueLocalBusinessJsonLd } from "@/lib/seo/venue-jsonld";
-import { CopyableScript } from "@/components/design-system/copyable-script";
-import { MethodologyLink } from "@/components/design-system/methodology-link";
+import { DemoBanner } from "@/components/trust/DemoBanner";
+import { BeforeYouGo } from "@/components/venue/BeforeYouGo";
+import { KnownUnknowns } from "@/components/venue/KnownUnknowns";
+import { isDemoVenue } from "@/lib/venue-card";
 import { suggestVenueMailto } from "@/lib/venue-submission";
-
-const BEFORE_TRAVEL_SCRIPT =
-  "Hi, I'm planning to visit and need to check a few access details before booking. Could you confirm the step-free entrance location, narrowest doorway width, accessible toilet layout, and whether staff can keep a clear route to the table?";
 
 export function generateStaticParams() {
   return SAMPLE_VENUES.map((v) => ({ slug: v.slug }));
@@ -116,7 +115,7 @@ const VENUE_COPY: Record<
   },
   "riverside-cinema-leeds": {
     about:
-      "Riverside Cinema is one of the stronger Access Stamp checked venues. Automatic doors, lift to every screen, clearly marked wheelchair spaces with companion seating, and a hearing loop in all auditoriums. The accessible toilet is on the ground floor near the main foyer.",
+      "Riverside Cinema has automatic doors, lift access to every screen, clearly marked wheelchair spaces with companion seating, and a hearing loop in all auditoriums. The accessible toilet is on the ground floor near the main foyer.",
     beforeYouGo: [
       "Book wheelchair spaces online or by phone — walk-up availability depends on showtime.",
       "If you use a powered chair wider than 70 cm, confirm the wheelchair space width matches your needs.",
@@ -159,6 +158,7 @@ export default async function VenueDetailPage({
     .filter(([, value]) => value === "yes")
     .map(([feature]) => feature);
   const custom = VENUE_COPY[v.slug];
+  const isDemo = isDemoVenue(v);
   const canonical = getVenueBySlug(v.slug);
   const accessScore = computeAccessScore(v);
   const featureChips = getVenueFeatureChipItems(v);
@@ -191,6 +191,7 @@ export default async function VenueDetailPage({
           />
 
           <FadeIn>
+            {isDemo ? <DemoBanner /> : null}
             <Card className="overflow-hidden p-0">
               <div className="border-b border-[#F1D8C7] bg-gradient-to-br from-[#FFE2D3] via-white to-[#FFF8F1] px-5 py-8 sm:px-8">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -207,9 +208,6 @@ export default async function VenueDetailPage({
                         <div className="mt-2 flex flex-wrap items-center gap-2">
                           <span className="text-sm font-semibold text-muted">{v.location}</span>
                           <span className="rounded-full bg-blue-pale px-3 py-1 text-xs font-semibold text-blue">{v.type}</span>
-                          <span className="rounded-full border border-[#F1D8C7] bg-white px-3 py-1 text-xs font-semibold text-muted">
-                            Rating {v.rating.toFixed(1)}
-                          </span>
                         </div>
                       </div>
                     </div>
@@ -298,15 +296,7 @@ export default async function VenueDetailPage({
             unknownFeatureCount={unknownCount}
           />
 
-          <Card className="p-5">
-            <h2 className="text-lg font-semibold text-heading">Before you travel, confirm these details</h2>
-            <p className="mt-2 text-sm leading-6 text-muted">
-              Access information can change. If this visit is important, confirm the details below with the venue before
-              travelling.
-            </p>
-            <CopyableScript script={BEFORE_TRAVEL_SCRIPT} className="mt-4" />
-            <MethodologyLink className="mt-4" />
-          </Card>
+          <BeforeYouGo tips={beforeYouGo} />
 
           <div className="grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
             <Card className="p-5">
@@ -442,11 +432,9 @@ export default async function VenueDetailPage({
                 <div>
                   <div className="text-sm font-semibold text-heading">Community access notes</div>
                   <p className="mt-1 text-sm text-muted">
-                    This listing is built from{" "}
-                    {v.verification === "Access Stamp checked"
-                      ? "an Access Stamp audit"
-                      : v.verification.toLowerCase()}
-                    . We do not run star ratings or user reviews yet — practical feature checks instead.
+                    This listing is labelled{" "}
+                    <span className="font-semibold text-heading">{v.verification.toLowerCase()}</span>.
+                    We do not run star ratings or user reviews — practical feature checks instead.
                   </p>
                 </div>
                 <Link href="/venue-finder" className="shrink-0 text-sm font-semibold text-blue">

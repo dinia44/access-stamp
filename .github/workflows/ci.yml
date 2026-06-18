@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate venue data and production copy
+        run: npm run validate:venues
+
+      - name: Build
+        run: npm run build
+
+      - name: Launch gate (HTTP smoke + links)
+        run: |
+          npm run start -- -H 127.0.0.1 -p 3000 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:3000/ >/dev/null && break
+            sleep 2
+          done
+          npm run test:smoke:fetch
+        env:
+          SMOKE_BASE_URL: http://127.0.0.1:3000
+
+      - name: Install Playwright browser
+        run: npx playwright install chromium --with-deps
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+        env:
+          CI: true

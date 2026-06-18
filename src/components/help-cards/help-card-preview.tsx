@@ -110,13 +110,16 @@ export function HelpCardPreview({
   id,
   size = "default",
   forExport = false,
+  customKeyLine,
 }: {
   card: HelpCard;
   className?: string;
   id?: string;
   size?: "default" | "large" | "compact";
   forExport?: boolean;
+  customKeyLine?: string;
 }) {
+  const displayKeyLine = customKeyLine?.trim() || card.quickLine || card.keyLine;
   const checkOnce = getCheckOnceItems(card);
   const mustAsk = card.mustAsk.slice(0, 2);
   const adjustments = getAdjustmentsItems(card);
@@ -200,7 +203,7 @@ export function HelpCardPreview({
               </div>
               <PreviewBlock title="Key line" icon="“" isLarge accent className="mt-4">
                 <blockquote className="text-sm font-semibold leading-6 text-[#17212b] sm:text-base sm:leading-7">
-                  &ldquo;{card.keyLine}&rdquo;
+                  &ldquo;{displayKeyLine}&rdquo;
                 </blockquote>
               </PreviewBlock>
             </>
@@ -235,7 +238,7 @@ export function HelpCardPreview({
                   Key line
                 </h4>
                 <blockquote className="mt-3 text-[11px] font-semibold leading-6 text-[#17212b] sm:text-xs sm:leading-6">
-                  &ldquo;{card.keyLine}&rdquo;
+                  &ldquo;{displayKeyLine}&rdquo;
                 </blockquote>
               </section>
             </div>

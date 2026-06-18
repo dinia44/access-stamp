@@ -10,6 +10,8 @@ export type ToolkitToolMeta = {
   shortTitle: string;
   description: string;
   badge: string;
+  experimental?: boolean;
+  sensitiveDataAck?: boolean;
 };
 
 export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
@@ -21,6 +23,7 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
     description:
       "Answer a few simple questions and get a personalised action plan with next steps, evidence to gather, useful wording, and related Access Stamp guides.",
     badge: "Action plan",
+    sensitiveDataAck: true,
   },
   {
     id: "letter-builder",
@@ -30,6 +33,7 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
     description:
       "Create a clear draft letter or email for PIP, Access to Work, reasonable adjustments, school support, train assistance, care assessments, Blue Badge, or home adaptations.",
     badge: "Letters",
+    sensitiveDataAck: true,
   },
   {
     id: "evidence-checklist",
@@ -39,6 +43,7 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
     description:
       "Generate a tailored checklist of documents, examples, notes, and supporting evidence to prepare before making a request or challenge.",
     badge: "Checklists",
+    sensitiveDataAck: true,
   },
   {
     id: "article-companion",
@@ -75,8 +80,12 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
     description:
       "Turn a benefits dispute into a structured chronology, key submission points, and hearing-day checklist.",
     badge: "Appeals",
+    experimental: true,
+    sensitiveDataAck: true,
   },
 ];
+
+export const PUBLIC_AI_TOOLKIT_TOOLS = AI_TOOLKIT_TOOLS.filter((tool) => !tool.experimental);
 
 export function getToolkitToolMeta(id: string): ToolkitToolMeta | undefined {
   return AI_TOOLKIT_TOOLS.find((t) => t.id === id);

@@ -1,27 +1,19 @@
 import Link from "next/link";
 import { Container } from "@/components/container";
-import { FooterNewsletterSignup } from "@/components/footer-newsletter-signup";
+import { NewsletterBlock } from "@/components/layout/NewsletterBlock";
 import { SiteLogo } from "@/components/site-logo";
-import { CONTACT_EMAIL } from "@/lib/contact";
-import { FOOTER_RESOURCE_LINKS } from "@/lib/site";
+import { SITE_CONFIG } from "@/lib/site-config";
+import {
+  FOOTER_ABOUT_LINKS,
+  FOOTER_EXPLORE_LINKS,
+  FOOTER_RESOURCE_LINKS,
+  FOOTER_VENUE_LINKS,
+} from "@/lib/navigation";
 import { suggestVenueMailto } from "@/lib/venue-submission";
 
-const EXPLORE_LINKS = [
-  { label: "Find Venues", href: "/venue-finder" },
-  { label: "Guides", href: "/advice" },
-  { label: "Tools", href: "/ai-toolkit" },
-  { label: "Help Cards", href: "/help-cards" },
-] as const;
-
-const ABOUT_LINKS = [
-  { label: "About", href: "/about" },
-  { label: "For Venues", href: "/for-venues" },
-] as const;
-
 const VENUE_LINKS = [
-  { label: "List your venue", href: "/submit-venue" },
+  ...FOOTER_VENUE_LINKS,
   { label: "Suggest a venue", href: suggestVenueMailto() },
-  { label: "Methodology", href: "/methodology" },
 ] as const;
 
 function FooterColumn({ title, links }: { title: string; links: readonly { label: string; href: string }[] }) {
@@ -51,7 +43,7 @@ export function Footer() {
   return (
     <footer className="footer-brand text-[#f8fafc] print:hidden">
       <Container className="py-14 sm:py-16">
-        <FooterNewsletterSignup />
+        <NewsletterBlock />
 
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)_minmax(0,0.9fr)] lg:gap-12">
           <div className="space-y-5">
@@ -65,8 +57,8 @@ export function Footer() {
           </div>
 
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
-            <FooterColumn title="Explore" links={EXPLORE_LINKS} />
-            <FooterColumn title="About" links={ABOUT_LINKS} />
+            <FooterColumn title="Explore" links={FOOTER_EXPLORE_LINKS} />
+            <FooterColumn title="About" links={FOOTER_ABOUT_LINKS} />
             <FooterColumn title="Venues" links={VENUE_LINKS} />
             <FooterColumn title="Resources" links={FOOTER_RESOURCE_LINKS} />
           </div>
@@ -80,14 +72,14 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href={`mailto:${CONTACT_EMAIL}`} className="footer-link">
-                  {CONTACT_EMAIL}
+                <a href={`mailto:${SITE_CONFIG.email}`} className="footer-link">
+                  {SITE_CONFIG.email}
                 </a>
               </li>
               <li className="leading-6 text-[#94a3b8]">
                 Access Stamp Ltd
                 <br />
-                Manchester, United Kingdom
+                {SITE_CONFIG.location}
               </li>
             </ul>
           </div>

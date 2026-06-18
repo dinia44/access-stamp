@@ -13,6 +13,7 @@ export type AccessConfidence = {
 
 export function getAccessConfidence(venue: Venue): AccessConfidence {
   const score = computeAccessScore(venue);
+  if (score === null) return { label: "Score not published", score: 0 };
   if (score >= 85) return { label: "Excellent access", score };
   if (score >= 70) return { label: "Good access", score };
   return { label: "Limited access", score };
@@ -72,12 +73,7 @@ export function getVenueAccessSnapshot(venue: Venue): AccessSnapshotLine[] {
     support = "Hearing loop listed";
   }
 
-  const confidenceNote =
-    venue.verification === "Access Stamp checked"
-      ? `${venue.confidence} confidence · Access Stamp checked`
-      : venue.verification === "Community reported"
-        ? `${venue.confidence} confidence · Community reported`
-        : `${venue.confidence} confidence · Report needs checking`;
+  const confidenceNote = `${venue.confidence} confidence · ${venue.verification}`;
 
   return [
     { category: "Entrance", value: entrance },

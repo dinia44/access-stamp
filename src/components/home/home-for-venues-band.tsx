@@ -6,8 +6,8 @@ import { HOME_FOCUS } from "@/components/home/home-theme";
 const STATS = [
   { value: "1 in 4", label: "UK adults are disabled" },
   { value: "£274bn", label: "Purple Pound spending power" },
-  { value: "June 2025", label: "European Accessibility Act in force" },
-  { value: "3 tiers", label: "Bronze, Silver, and Gold certification" },
+  { value: "June 2025", label: "European Accessibility Act — EU member states from 28 June 2025" },
+  { value: "3 tiers", label: "Access Snapshot, Measured Access Report, Full Access Review" },
 ] as const;
 
 export function HomeForVenuesBand() {
@@ -25,8 +25,8 @@ export function HomeForVenuesBand() {
                 Show customers your venue works for them
               </h2>
               <p className="mt-4 max-w-xl text-base leading-7 text-[#c8d0dc]">
-                Access Stamp audits and certifies UK venues so disabled customers can choose you with confidence — and
-                you can prove accessibility, not just claim it.
+                Access Stamp reviews UK venues and publishes practical access information so disabled customers can choose
+                you with confidence — and you can show accessibility, not just claim it.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link

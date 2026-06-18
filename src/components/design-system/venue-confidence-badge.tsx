@@ -2,7 +2,8 @@ import { Badge } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 export type VenueConfidenceStatus =
-  | "Access Stamp checked"
+  | "On-site audited"
+  | "Desk reviewed"
   | "Community reported"
   | "Venue submitted"
   | "Demo listing"
@@ -12,13 +13,14 @@ const STATUS_META: Record<
   VenueConfidenceStatus,
   { label: string; tone: "verified" | "community" | "warning" | "neutral" | "blue"; hint?: string }
 > = {
-  "Access Stamp checked": { label: "Access Stamp checked", tone: "verified" },
+  "On-site audited": { label: "On-site audited", tone: "verified" },
+  "Desk reviewed": { label: "Desk reviewed", tone: "verified" },
   "Community reported": { label: "Community reported", tone: "community" },
   "Venue submitted": { label: "Venue submitted", tone: "blue" },
   "Demo listing": {
     label: "Demo listing",
-    tone: "neutral",
-    hint: "Used to show how Access Stamp venue reports work — not live venue data.",
+    tone: "warning",
+    hint: "Demonstrates how Access Stamp venue reports could work — not live venue data.",
   },
   "Not yet verified": { label: "Not yet verified", tone: "warning" },
 };

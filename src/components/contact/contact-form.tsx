@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { ErrorSummary } from "@/components/forms/ErrorSummary";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +21,7 @@ type FormState = {
   enquiryType: string;
   message: string;
   consent: boolean;
+  website: string;
 };
 
 const INITIAL: FormState = {
@@ -28,35 +30,49 @@ const INITIAL: FormState = {
   enquiryType: "",
   message: "",
   consent: false,
+  website: "",
 };
+
+type FieldError = { id: string; message: string };
+
+function validateForm(form: FormState): FieldError[] {
+  const errors: FieldError[] = [];
+  if (!form.name.trim()) errors.push({ id: "contact-name", message: "Enter your name" });
+  if (!form.email.trim()) errors.push({ id: "contact-email", message: "Enter your email address" });
+  else if (!form.email.includes("@")) errors.push({ id: "contact-email", message: "Enter a valid email address" });
+  if (!form.enquiryType) errors.push({ id: "contact-enquiry-type", message: "Select an enquiry type" });
+  if (!form.message.trim()) errors.push({ id: "contact-message", message: "Enter your message" });
+  if (!form.consent) errors.push({ id: "contact-consent", message: "Confirm you agree to be contacted" });
+  return errors;
+}
 
 export function ContactForm({ className }: { className?: string }) {
   const [form, setForm] = useState<FormState>(INITIAL);
-  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldError[]>([]);
+  const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
 
   const update = <K extends keyof FormState>(field: K, value: FormState[K]) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+    setFieldErrors((prev) => prev.filter((error) => error.id !== `contact-${field === "enquiryType" ? "enquiry-type" : field}`));
   };
+
+  function fieldError(id: string) {
+    return fieldErrors.find((error) => error.id === id)?.message;
+  }
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    setError("");
+    setSubmitError("");
 
-    if (!form.name.trim() || !form.email.trim() || !form.enquiryType || !form.message.trim()) {
-      setError("Please complete all required fields.");
-      return;
-    }
-    if (!form.email.includes("@")) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-    if (!form.consent) {
-      setError("Please confirm you agree to be contacted about this enquiry.");
+    const errors = validateForm(form);
+    if (errors.length) {
+      setFieldErrors(errors);
       return;
     }
 
+    setFieldErrors([]);
     setSubmitting(true);
     try {
       const res = await fetch("/api/contact", {
@@ -67,16 +83,18 @@ export function ContactForm({ className }: { className?: string }) {
           email: form.email.trim(),
           enquiryType: form.enquiryType,
           message: form.message.trim(),
+          consent: form.consent,
+          website: form.website,
         }),
       });
       const data = (await res.json()) as { ok?: boolean; error?: string };
       if (!res.ok) {
-        setError(data.error ?? "Something went wrong. Please try again.");
+        setSubmitError(data.error ?? "Something went wrong. Please try again.");
         return;
       }
       setSent(true);
     } catch {
-      setError(`Could not send your enquiry. Please email ${CONTACT_EMAIL} instead.`);
+      setSubmitError(`Could not send your enquiry. Please email ${CONTACT_EMAIL} instead.`);
     } finally {
       setSubmitting(false);
     }
@@ -101,11 +119,24 @@ export function ContactForm({ className }: { className?: string }) {
 
   return (
     <form onSubmit={(e) => void handleSubmit(e)} className={cn("space-y-5", className)} noValidate>
-      {error ? (
+      <ErrorSummary errors={fieldErrors} />
+      {submitError ? (
         <div role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-          {error}
+          {submitError}
         </div>
       ) : null}
+
+      <div className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden" aria-hidden>
+        <label htmlFor="contact-website">Website</label>
+        <input
+          id="contact-website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={form.website}
+          onChange={(e) => update("website", e.target.value)}
+        />
+      </div>
 
       <div>
         <label htmlFor="contact-name" className="block text-sm font-semibold text-[#20242E]">
@@ -116,10 +147,17 @@ export function ContactForm({ className }: { className?: string }) {
           type="text"
           autoComplete="name"
           required
+          aria-invalid={Boolean(fieldError("contact-name"))}
+          aria-describedby={fieldError("contact-name") ? "contact-name-error" : undefined}
           value={form.name}
           onChange={(e) => update("name", e.target.value)}
           className="mt-2 h-12 w-full rounded-2xl border border-[#EFE5DA] bg-white px-4 text-base text-[#20242E] focus:border-[#F04A16] focus:outline-none focus:ring-4 focus:ring-[#F04A16]/15"
         />
+        {fieldError("contact-name") ? (
+          <p id="contact-name-error" className="mt-1 text-sm text-red-700" role="alert">
+            {fieldError("contact-name")}
+          </p>
+        ) : null}
       </div>
 
       <div>
@@ -131,13 +169,20 @@ export function ContactForm({ className }: { className?: string }) {
           type="email"
           autoComplete="email"
           required
+          aria-invalid={Boolean(fieldError("contact-email"))}
+          aria-describedby={fieldError("contact-email") ? "contact-email-error" : undefined}
           value={form.email}
           onChange={(e) => update("email", e.target.value)}
           className="mt-2 h-12 w-full rounded-2xl border border-[#EFE5DA] bg-white px-4 text-base text-[#20242E] focus:border-[#F04A16] focus:outline-none focus:ring-4 focus:ring-[#F04A16]/15"
         />
+        {fieldError("contact-email") ? (
+          <p id="contact-email-error" className="mt-1 text-sm text-red-700" role="alert">
+            {fieldError("contact-email")}
+          </p>
+        ) : null}
       </div>
 
-      <fieldset>
+      <fieldset id="contact-enquiry-type">
         <legend className="block text-sm font-semibold text-[#20242E]">
           Enquiry type <span className="text-[#C8430F]">*</span>
         </legend>
@@ -156,6 +201,11 @@ export function ContactForm({ className }: { className?: string }) {
             </label>
           ))}
         </div>
+        {fieldError("contact-enquiry-type") ? (
+          <p id="contact-enquiry-type-error" className="mt-1 text-sm text-red-700" role="alert">
+            {fieldError("contact-enquiry-type")}
+          </p>
+        ) : null}
       </fieldset>
 
       <div>
@@ -166,17 +216,26 @@ export function ContactForm({ className }: { className?: string }) {
           id="contact-message"
           required
           rows={5}
+          aria-invalid={Boolean(fieldError("contact-message"))}
+          aria-describedby={fieldError("contact-message") ? "contact-message-error" : undefined}
           value={form.message}
           onChange={(e) => update("message", e.target.value)}
           className="mt-2 w-full rounded-2xl border border-[#EFE5DA] bg-white px-4 py-3 text-base text-[#20242E] focus:border-[#F04A16] focus:outline-none focus:ring-4 focus:ring-[#F04A16]/15"
         />
+        {fieldError("contact-message") ? (
+          <p id="contact-message-error" className="mt-1 text-sm text-red-700" role="alert">
+            {fieldError("contact-message")}
+          </p>
+        ) : null}
       </div>
 
-      <label className="flex min-h-11 cursor-pointer items-start gap-3 text-sm leading-6 text-[#4A5263]">
+      <label id="contact-consent" className="flex min-h-11 cursor-pointer items-start gap-3 text-sm leading-6 text-[#4A5263]">
         <input
           type="checkbox"
           checked={form.consent}
           onChange={(e) => update("consent", e.target.checked)}
+          aria-invalid={Boolean(fieldError("contact-consent"))}
+          aria-describedby={fieldError("contact-consent") ? "contact-consent-error" : undefined}
           className="mt-1 h-4 w-4 accent-[#F04A16]"
         />
         <span>
@@ -187,6 +246,11 @@ export function ContactForm({ className }: { className?: string }) {
           .
         </span>
       </label>
+      {fieldError("contact-consent") ? (
+        <p id="contact-consent-error" className="text-sm text-red-700" role="alert">
+          {fieldError("contact-consent")}
+        </p>
+      ) : null}
 
       <Button type="submit" isLoading={submitting} className="w-full sm:w-auto">
         Send enquiry

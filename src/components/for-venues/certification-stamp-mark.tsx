@@ -1,31 +1,31 @@
-import type { CertificationTier } from "@/lib/for-venues-config";
+import type { ReviewTier } from "@/lib/for-venues-config";
 
 const STAMP_STYLES: Record<
-  CertificationTier["stampTone"],
+  ReviewTier["stampTone"],
   { ring: string; fill: string; text: string; label: string }
 > = {
-  bronze: {
+  snapshot: {
     ring: "border-[#B87333]",
     fill: "bg-gradient-to-br from-[#E8C9A0] via-[#C98A4A] to-[#8B5A2B]",
     text: "text-[#4A2F14]",
-    label: "BRONZE",
+    label: "SNAPSHOT",
   },
-  silver: {
+  measured: {
     ring: "border-[#9CA3AF]",
     fill: "bg-gradient-to-br from-[#F3F4F6] via-[#D1D5DB] to-[#9CA3AF]",
     text: "text-[#374151]",
-    label: "SILVER",
+    label: "MEASURED",
   },
-  gold: {
+  full: {
     ring: "border-[#C9A227]",
     fill: "bg-gradient-to-br from-[#FDE68A] via-[#EAB308] to-[#A16207]",
     text: "text-[#713F12]",
-    label: "GOLD",
+    label: "FULL",
   },
 };
 
-/** Bronze / Silver / Gold certification stamp — distinct from the olive access-score ring. */
-export function CertificationStampMark({ tone }: { tone: CertificationTier["stampTone"] }) {
+/** Venue review tier stamp mark — distinct from the olive access-score ring. */
+export function CertificationStampMark({ tone }: { tone: ReviewTier["stampTone"] }) {
   const style = STAMP_STYLES[tone];
   return (
     <div

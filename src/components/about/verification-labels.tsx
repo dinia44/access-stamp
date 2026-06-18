@@ -5,10 +5,16 @@ import { FadeIn } from "@/components/fade-in";
 
 const LABELS = [
   {
-    status: "Access Stamp checked" as const,
-    title: "Access Stamp checked",
-    body: "Information reviewed against Access Stamp’s practical access criteria.",
+    status: "On-site audited" as const,
+    title: "On-site audited",
+    body: "Measured on site with photographed evidence, audit record, and published methodology version.",
     panel: "bg-verified-pale border-[#C8E6C9]/70",
+  },
+  {
+    status: "Desk reviewed" as const,
+    title: "Desk reviewed",
+    body: "Reviewed remotely against our checklist using submitted or public evidence.",
+    panel: "bg-emerald-50 border-emerald-100",
   },
   {
     status: "Community reported" as const,
@@ -17,10 +23,16 @@ const LABELS = [
     panel: "bg-blue-pale border-[#F1D8C7]",
   },
   {
+    status: "Demo listing" as const,
+    title: "Demo listing",
+    body: "Shows how a venue report could work. Not live venue data and must not be relied on for travel.",
+    panel: "bg-amber-pale border-[#FDE68A]/70",
+  },
+  {
     status: "Not yet verified" as const,
     title: "Not yet verified",
     body: "A listing exists, but users should confirm details before relying on it.",
-    panel: "bg-amber-pale border-[#FDE68A]/70",
+    panel: "bg-background-2 border-border",
   },
 ] as const;
 
@@ -30,10 +42,10 @@ export function VerificationLabels() {
       <AboutSectionHeader
         id="verification-heading"
         title="Clear labels. Honest confidence levels."
-        description="Access information is only useful when people understand how reliable it is. Access Stamp uses clear labels so visitors know whether a listing has been checked, reported by the community, or still needs verification."
+        description="Access information is only useful when people understand how reliable it is. Access Stamp uses verification labels so visitors know where information came from and how much to rely on it."
       />
 
-      <ul className="mt-10 grid gap-5 md:grid-cols-3">
+      <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {LABELS.map((label, index) => (
           <FadeIn key={label.title} delayMs={index * 50}>
             <li className={`h-full rounded-[20px] border p-6 ${label.panel}`}>
