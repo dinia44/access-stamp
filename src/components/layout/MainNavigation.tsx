@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MAIN_NAV_GROUPS, navGroupActive, navLinkActive } from "@/lib/navigation";
+import { HOME_NAV_LINK, MAIN_NAV_GROUPS, navGroupActive, navLinkActive } from "@/lib/navigation";
 import { SITE_FOCUS } from "@/lib/site-design";
 import { cn } from "@/lib/utils";
 
@@ -36,6 +36,14 @@ export function MainNavigation({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <nav ref={navRef} className="hidden items-center gap-1 lg:flex xl:gap-2" aria-label="Primary navigation">
+      <Link
+        href={HOME_NAV_LINK.href}
+        onClick={onNavigate}
+        aria-current={navLinkActive(path, HOME_NAV_LINK.href) ? "page" : undefined}
+        className={cn(NAV_LINK, navLinkActive(path, HOME_NAV_LINK.href) && NAV_ACTIVE)}
+      >
+        {HOME_NAV_LINK.label}
+      </Link>
       {MAIN_NAV_GROUPS.map((group) => {
         const menuId = `nav-menu-${group.label.replace(/\s+/g, "-").toLowerCase()}`;
         const active = navGroupActive(path, group);

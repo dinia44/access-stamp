@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ButtonLink } from "@/components/ui/ButtonLink";
-import { MAIN_NAV_GROUPS, PRIMARY_NAV_CTA, navLinkActive } from "@/lib/navigation";
+import { HOME_NAV_LINK, MAIN_NAV_GROUPS, PRIMARY_NAV_CTA, navLinkActive } from "@/lib/navigation";
 import { SITE_FOCUS } from "@/lib/site-design";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +21,18 @@ export function MobileNavigation({ onNavigate }: Props) {
   return (
     <nav id="site-mobile-nav" className="border-t border-[#EFE5DA] px-4 pb-4 pt-3 lg:hidden" aria-label="Mobile navigation">
       <div className="grid gap-1 rounded-2xl border border-[#EFE5DA] bg-white p-2 shadow-lg">
+        <Link
+          href={HOME_NAV_LINK.href}
+          aria-current={navLinkActive(path, HOME_NAV_LINK.href) ? "page" : undefined}
+          className={cn(
+            "rounded-xl px-3 py-2.5 text-sm font-medium text-[#4A5263] transition-colors hover:bg-[#FAF4ED] hover:text-[#20242E]",
+            navLinkActive(path, HOME_NAV_LINK.href) && NAV_ACTIVE,
+            SITE_FOCUS,
+          )}
+          onClick={onNavigate}
+        >
+          {HOME_NAV_LINK.label}
+        </Link>
         {MAIN_NAV_GROUPS.map((group) => {
           const isExpanded = expanded === group.label;
           const singleItem = group.items.length === 1 && group.items[0]?.href === group.href;

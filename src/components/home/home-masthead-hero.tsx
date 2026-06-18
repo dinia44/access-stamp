@@ -32,10 +32,10 @@ export function HomeMastheadHero() {
             Find practical guidance
           </ButtonLink>
           <Link
-            href="/ai-toolkit/letter-builder"
+            href="/ai-toolkit"
             className={`inline-flex min-h-[44px] w-full items-center justify-center text-sm font-semibold text-[#C8430F] hover:underline sm:w-auto ${HOME_FOCUS}`}
           >
-            Create a letter or checklist
+            Use Access Stamp tools
           </Link>
         </div>
 

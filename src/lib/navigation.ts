@@ -13,6 +13,8 @@ export type NavGroup = {
 };
 
 /** Primary desktop navigation with dropdown groups. */
+export const HOME_NAV_LINK = { label: "Home", href: "/" } as const;
+
 export const MAIN_NAV_GROUPS: NavGroup[] = [
   {
     label: "Venue Access",
