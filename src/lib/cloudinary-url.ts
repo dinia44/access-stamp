@@ -67,6 +67,11 @@ export function venueCardImageUrl(src: string): string {
   return cloudinaryUrl(src, { width: 640, height: 360, crop: "fill", dpr: "auto" });
 }
 
+/** Homepage hero portrait — organic blob crop on the right of the masthead. */
+export function heroPortraitImageUrl(src: string): string {
+  return cloudinaryUrl(src, { width: 800, height: 1000, crop: "fill", dpr: "auto" });
+}
+
 /** Homepage hero backdrop — wide, moderate weight. */
 export function heroBackdropImageUrl(src: string): string {
   return cloudinaryUrl(src, { width: 1400, crop: "limit", dpr: "auto" });

@@ -17,10 +17,9 @@ export const CLOUDINARY_MEDIA = {
     `${CLOUDINARY}/v1778451836/8819d7d9-417c-49ce-9923-421d287d3e5d_pfvjhq.png`,
   /** Advice Hub hero — accessible street scene (Riverside Library) */
   adviceHubHero: "/images/advice-hub-hero.png",
-  /** Homepage hero section — wide map backdrop (pins + routes, fades left) */
+  /** Homepage hero section — wheelchair user arriving at an accessible café */
   homepageHeroBackdrop:
-    process.env.NEXT_PUBLIC_CLOUDINARY_HOMEPAGE_BACKDROP ??
-    `${CLOUDINARY_BRAND}/v1780860637/ChatGPT_Image_Jun_7_2026_08_29_43_PM_e1brui.png`,
+    process.env.NEXT_PUBLIC_CLOUDINARY_HOMEPAGE_BACKDROP ?? "/images/homepage-hero.png",
   /** Homepage hero — stylised map with route pins */
   homepageMapPreview:
     process.env.NEXT_PUBLIC_CLOUDINARY_HOMEPAGE_MAP ??

@@ -5,9 +5,9 @@ import { RouteDecoration } from "@/components/home/route-decoration";
 import { HOME_FOCUS } from "@/components/home/home-theme";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
-import { heroBackdropImageUrl } from "@/lib/cloudinary-url";
+import { heroPortraitImageUrl } from "@/lib/cloudinary-url";
 
-const HERO_IMAGE = heroBackdropImageUrl(CLOUDINARY_MEDIA.homepageHeroBackdrop);
+const HERO_IMAGE = heroPortraitImageUrl(CLOUDINARY_MEDIA.homepageHeroBackdrop);
 
 export function HomeMastheadHero() {
   return (
@@ -59,7 +59,7 @@ export function HomeMastheadHero() {
                 fill
                 priority
                 sizes="(max-width: 1024px) 90vw, 44vw"
-                className="object-cover object-center"
+                className="object-cover object-[50%_58%]"
               />
             </div>
           </figure>
