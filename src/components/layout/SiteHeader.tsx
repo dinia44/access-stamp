@@ -12,6 +12,7 @@ import { PRIMARY_NAV_CTA } from "@/lib/navigation";
 export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
 
   const closeMobileMenu = useCallback(() => {
     setMobileOpen(false);
@@ -26,13 +27,34 @@ export function SiteHeader() {
     return () => document.removeEventListener("keydown", onEscape);
   }, [mobileOpen, closeMobileMenu]);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    function onPointerDown(event: MouseEvent) {
+      if (!headerRef.current?.contains(event.target as Node)) closeMobileMenu();
+    }
+    document.addEventListener("mousedown", onPointerDown);
+    return () => document.removeEventListener("mousedown", onPointerDown);
+  }, [mobileOpen, closeMobileMenu]);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-[#EFE5DA] bg-[#FDFBF8]/95 shadow-sm backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-50 border-b border-[#EFE5DA] bg-[#FDFBF8]/95 backdrop-blur-sm"
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
         <Link
           href="/"
-          className="flex shrink-0 items-center"
-          aria-label="Access Stamp home"
+          className="flex shrink-0 items-center rounded-md transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EF5B25]/40"
+          aria-label="Access Stamp homepage"
           onClick={closeMobileMenu}
         >
           <SiteLogo priority className="h-auto max-h-[52px] w-auto object-contain sm:max-h-[56px]" />
@@ -40,19 +62,8 @@ export function SiteHeader() {
 
         <MainNavigation onNavigate={closeMobileMenu} />
 
-        <div className="hidden shrink-0 items-center gap-2 lg:flex">
-          <Link
-            href="/#platform-search"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full text-[#4A5263] transition hover:bg-[#FAF4ED] hover:text-[#20242E]"
-            aria-label="Search Access Stamp"
-            onClick={closeMobileMenu}
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <circle cx="11" cy="11" r="7" />
-              <path d="M20 20l-3.5-3.5" />
-            </svg>
-          </Link>
-          <ButtonLink href={PRIMARY_NAV_CTA.href} className="rounded-full" onClick={closeMobileMenu}>
+        <div className="hidden shrink-0 lg:block">
+          <ButtonLink href={PRIMARY_NAV_CTA.href} className="rounded-full px-5" onClick={closeMobileMenu}>
             {PRIMARY_NAV_CTA.label}
           </ButtonLink>
         </div>
@@ -62,7 +73,7 @@ export function SiteHeader() {
           type="button"
           variant="secondary"
           size="icon"
-          className="lg:hidden"
+          className="ml-auto lg:hidden"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
           aria-controls="site-mobile-nav"

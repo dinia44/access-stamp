@@ -20,8 +20,8 @@ export const VENUE_FINDER_PROMO_VIDEO_SRC =
 export const VENUE_FINDER_PROMO_VIDEO_POSTER =
   "https://res.cloudinary.com/dtl4syjuh/video/upload/so_0,f_jpg,q_auto/accessstamp_16x9_correct_end_screen_osaycc.jpg";
 
-/** @deprecated Use MAIN_NAV_GROUPS from @/lib/navigation */
-export { MAIN_NAV_GROUPS as NAV_ITEMS, PRIMARY_NAV_CTA } from "@/lib/navigation";
+/** @deprecated Use MAIN_NAV_LINKS from @/lib/navigation */
+export { MAIN_NAV_LINKS as NAV_ITEMS, PRIMARY_NAV_CTA } from "@/lib/navigation";
 
 /** Resources dropdown — grouped for homepage header */
 export type ResourceGroup = { label: string; description?: string; items: NavItem[] };
