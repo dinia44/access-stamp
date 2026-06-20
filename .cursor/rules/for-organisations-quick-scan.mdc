@@ -4,32 +4,30 @@ globs: src/app/for-venues/**,src/app/submit-venue/**,src/app/scan/**,src/compone
 alwaysApply: false
 ---
 
-# For Organisations — Quick Feature Scan
+# For Organisations — Submit your own venue (Quick Feature Scan)
 
-When working on **For Organisations**, **List your venue** (`/submit-venue`), or **Quick Scan** (`/scan`), follow this product direction.
+## Product summary
 
-## What it is
+Organisations and venue owners **submit their own venue** on `/submit-venue` (beta). Pricing/charging TBD — currently free during beta.
 
-Organisations listing a venue should get a **Quick Feature Scan** — a self-serve first step before (or alongside) paid Access Snapshot / Measured / Full reviews.
+**Quick Feature Scan** is the core tool on that page (not a separate product). Venues:
 
-The scan helps venue owners:
+1. **Scan** areas or **upload photos** (entrances, routes, toilets, parking, signage).
+2. See **what already looks accessible** vs **what may need improvement**.
+3. Get **small practical next steps** in plain English (AI-assisted).
+4. **Submit** venue details for Access Stamp team review before publishing.
 
-1. **Scan** entrances, routes, toilets, parking, signage, and other observable access features (photos + AI).
-2. **Measure** where possible (door widths, turning space, step heights) — clearly label estimates vs verified measurements.
-3. **Improve** with **small, practical next steps** in plain English (AI-generated actionable suggestions, not vague “be more accessible” advice).
+`/scan` redirects to `/submit-venue#quick-scan`.
 
-## UX placement
+## Distinction from paid tiers
 
-- Primary surface: **For Organisations** section and **List your venue** flow.
-- `/scan` is the internal/home for the Quick Scan tool (not indexed; see `robots.ts`).
-- Photo scan on submit (`VenuePhotoScan` + `/api/venue-photo-scan`) is the **first slice** of this — extend it, don’t replace the paid audit tiers on `/for-venues`.
+- Quick Scan = **self-serve, AI-assisted, beta** — not verified.
+- Access Snapshot / Measured / Full = **on-site verified reviews** on `/for-venues`.
+
+Never present beta scan results as verified Access Stamp audits.
 
 ## Trust rules
 
-- Never invent measurements; say when something is unclear or needs on-site verification.
-- Distinguish **self-scan / AI-assisted** from **Access Stamp verified** tiers.
-- Suggestions should be specific and low-cost where possible (e.g. clear signage, clutter-free routes, booking notes, hearing loop info).
-
-## Naming
-
-Use **Quick Feature Scan** or **Quick Scan** in UI copy — not “AdWords” (user likely meant AI-generated actionable wording).
+- Never invent measurements; label estimates vs unclear.
+- Review all beta submissions before they go live.
+- Suggestions must be specific and low-cost where possible.

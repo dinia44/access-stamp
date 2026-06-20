@@ -92,10 +92,16 @@ export default function ForVenuesPage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="#book-audit"
+                href="/submit-venue"
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[#EF5B25] px-6 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(239,91,37,0.45)] transition hover:bg-[#D93E10]"
               >
-                Request pilot details
+                Submit your venue (beta)
+              </Link>
+              <Link
+                href="#book-audit"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#EFE5DA] bg-white px-6 text-sm font-semibold text-[#20242E] transition hover:bg-[#FAF4ED]"
+              >
+                Request verified review
               </Link>
               <Link
                 href="#what-we-check"
@@ -132,6 +138,60 @@ export default function ForVenuesPage() {
           <p className="mx-auto mt-4 max-w-3xl text-center text-sm leading-7 text-[#76808F]">
             {EAA_REGULATORY_NOTE} <span className="text-[#4A5263]">Reviewed June 2026.</span>
           </p>
+        </Container>
+      </section>
+
+      {/* Submit your own venue — Quick Scan beta */}
+      <section
+        id="submit-your-venue"
+        className="scroll-mt-24 border-t border-[#EFE5DA] bg-[#FAF4ED] py-16 sm:py-20"
+        aria-labelledby="submit-your-venue-heading"
+      >
+        <Container>
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-center">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C8430F]">Beta</p>
+              <h2
+                id="submit-your-venue-heading"
+                className="mt-3 font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[#20242E] sm:text-4xl"
+              >
+                Submit your own venue with Quick Feature Scan
+              </h2>
+              <p className="mt-4 max-w-xl text-base leading-7 text-[#4A5263]">
+                Organisations and venue owners can list their own place on Access Stamp. Scan entrances, routes,
+                toilets, parking, or signage with photos — we show what already looks accessible, what may need work, and
+                small practical steps you could take before you submit for review.
+              </p>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-[#76808F]">
+                Free during beta while we refine the scanner and listing flow. Verified Access Snapshot and measured
+                audit tiers remain available when you want an on-site review.
+              </p>
+              <Link
+                href="/submit-venue"
+                className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-[#EF5B25] px-6 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(239,91,37,0.45)] transition hover:bg-[#D93E10]"
+              >
+                Start Quick Feature Scan
+              </Link>
+            </div>
+            <ul className="grid gap-4">
+              {[
+                "Scan areas or upload photos from your phone",
+                "See accessible features and gaps in plain English",
+                "Get small improvement steps you can act on",
+                "Submit your venue listing for team review",
+              ].map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 rounded-[20px] border border-[#EFE5DA] bg-white p-4 text-sm leading-6 text-[#4A5263] shadow-[0_8px_24px_-16px_rgba(122,80,48,0.08)]"
+                >
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#EDF7ED] text-xs font-bold text-[#5F7444]">
+                    ✓
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </Container>
       </section>
 

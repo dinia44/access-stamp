@@ -18,10 +18,10 @@ const corePages: SearchItem[] = [
     url: "/venue-finder",
   },
   {
-    title: "List your venue",
-    description: "List your venue on Access Stamp with access details and photo scanning.",
+    title: "Submit your own venue",
+    description: "Beta venue submission with Quick Feature Scan — scan photos, review access, and submit your listing.",
     category: "Venue",
-    tags: ["submit", "list", "venue owner", "directory"],
+    tags: ["submit", "list", "venue owner", "directory", "quick scan", "beta"],
     url: "/submit-venue",
   },
   {

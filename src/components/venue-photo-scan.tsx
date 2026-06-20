@@ -1,11 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { VenueQuickScanResults } from "@/components/venue-quick-scan-results";
 import { Button } from "@/components/ui";
 import { PHOTO_UPLOAD_NOTICE } from "@/lib/privacy-content";
+import type { QuickScanResult } from "@/lib/venue-quick-scan";
 
 type Props = {
-  onFeaturesDetected: (features: string, notes?: string) => void;
+  onScanComplete: (result: QuickScanResult) => void;
   disabled?: boolean;
 };
 
@@ -37,12 +39,13 @@ async function stripExifFromFile(file: File): Promise<{ blob: Blob; mimeType: st
   return { blob, mimeType };
 }
 
-export function VenuePhotoScan({ onFeaturesDetected, disabled }: Props) {
+export function VenuePhotoScan({ onScanComplete, disabled }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "scanning" | "ok" | "error">("idle");
   const [message, setMessage] = useState("");
   const [uploadConsent, setUploadConsent] = useState(false);
+  const [scanResult, setScanResult] = useState<QuickScanResult | null>(null);
 
   async function scanFile(file: File) {
     if (!uploadConsent) {
@@ -65,6 +68,7 @@ export function VenuePhotoScan({ onFeaturesDetected, disabled }: Props) {
 
     setStatus("scanning");
     setMessage("");
+    setScanResult(null);
 
     try {
       const { blob, mimeType } = await stripExifFromFile(file);
@@ -91,20 +95,26 @@ export function VenuePhotoScan({ onFeaturesDetected, disabled }: Props) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ imageBase64: base64, mimeType }),
           });
-          const data = (await response.json()) as { features?: string; notes?: string; error?: string };
+          const data = (await response.json()) as QuickScanResult & { error?: string; ok?: boolean };
           if (!response.ok) {
             setStatus("error");
             setMessage(data.error ?? "Scan failed. Describe access in text instead.");
             return;
           }
 
-          onFeaturesDetected(data.features ?? "", data.notes);
+          const result: QuickScanResult = {
+            features: data.features ?? "",
+            alreadyAccessible: data.alreadyAccessible ?? [],
+            needsImprovement: data.needsImprovement ?? [],
+            smallSteps: data.smallSteps ?? [],
+            measurements: data.measurements,
+            notes: data.notes,
+          };
+
+          setScanResult(result);
+          onScanComplete(result);
           setStatus("ok");
-          setMessage(
-            data.notes
-              ? `${data.notes} We added what we could see to the form below.`
-              : "Scan complete — check the access features field below.",
-          );
+          setMessage("Scan complete — review the results below and edit your listing details before you submit.");
         } catch {
           setStatus("error");
           setMessage("Could not reach the scan service. Describe access in text instead.");
@@ -131,10 +141,13 @@ export function VenuePhotoScan({ onFeaturesDetected, disabled }: Props) {
 
   return (
     <div className="rounded-2xl border border-[#EFE5DA] bg-[#FDFBF8] p-5">
-      <h3 className="text-sm font-semibold text-heading">Scan access with AI</h3>
+      <div className="flex flex-wrap items-center gap-2">
+        <h3 className="text-sm font-semibold text-heading">Quick Feature Scan</h3>
+        <span className="rounded-full bg-[#FDE9DD] px-2.5 py-0.5 text-xs font-semibold text-[#C8430F]">Beta</span>
+      </div>
       <p className="mt-2 text-sm leading-6 text-muted">
-        Take or upload photos of entrances, routes, toilets, or parking. We&apos;ll suggest access features you can
-        review before you submit your listing.
+        Scan entrances, routes, toilets, parking, or signage. Upload photos and we&apos;ll show what already looks
+        accessible, what may need work, and small steps you could take — before you submit your venue listing.
       </p>
 
       <aside className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-950">
@@ -163,7 +176,7 @@ export function VenuePhotoScan({ onFeaturesDetected, disabled }: Props) {
 
       <div className="mt-4 flex flex-wrap gap-3">
         <Button type="button" variant="secondary" disabled={uploadDisabled} onClick={() => inputRef.current?.click()}>
-          {status === "scanning" ? "Scanning photo…" : "Take or upload photo"}
+          {status === "scanning" ? "Scanning photo…" : "Scan an area or upload a photo"}
         </Button>
       </div>
 
@@ -186,6 +199,12 @@ export function VenuePhotoScan({ onFeaturesDetected, disabled }: Props) {
         <p className="form-success-text mt-3 text-sm" role="status">
           {message}
         </p>
+      ) : null}
+
+      {scanResult ? (
+        <div className="mt-4">
+          <VenueQuickScanResults result={scanResult} />
+        </div>
       ) : null}
     </div>
   );

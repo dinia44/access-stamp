@@ -1,11 +1,40 @@
 import { NextResponse } from "next/server";
+import type { QuickScanMeasurement, QuickScanResult } from "@/lib/venue-quick-scan";
 
 const MAX_BASE64_LENGTH = 6_000_000;
 
-type ScanResponse = {
-  features: string;
-  notes?: string;
-};
+type ScanResponse = QuickScanResult;
+
+function asStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === "string" && item.trim().length > 0).map((s) => s.trim());
+}
+
+function parseScanResponse(parsed: Record<string, unknown>): ScanResponse | null {
+  if (typeof parsed.features !== "string" || !parsed.features.trim()) return null;
+
+  const measurements: QuickScanMeasurement[] | undefined = Array.isArray(parsed.measurements)
+    ? parsed.measurements
+        .map((item) => {
+          if (!item || typeof item !== "object") return null;
+          const row = item as Record<string, unknown>;
+          if (typeof row.label !== "string" || typeof row.value !== "string") return null;
+          const confidence: QuickScanMeasurement["confidence"] =
+            row.confidence === "unclear" ? "unclear" : "estimate";
+          return { label: row.label.trim(), value: row.value.trim(), confidence };
+        })
+        .filter((item): item is QuickScanMeasurement => item !== null)
+    : undefined;
+
+  return {
+    features: parsed.features.trim(),
+    alreadyAccessible: asStringArray(parsed.alreadyAccessible),
+    needsImprovement: asStringArray(parsed.needsImprovement),
+    smallSteps: asStringArray(parsed.smallSteps),
+    measurements: measurements?.length ? measurements : undefined,
+    notes: typeof parsed.notes === "string" ? parsed.notes.trim() : undefined,
+  };
+}
 
 export async function POST(req: Request) {
   let body: unknown;
@@ -32,7 +61,7 @@ export async function POST(req: Request) {
   if (!apiKey) {
     return NextResponse.json(
       {
-        error: "Photo scanning is not available yet. Describe access features in the form for now.",
+        error: "Quick Scan is not available yet. Describe access features in the form for now.",
       },
       { status: 503 },
     );
@@ -57,11 +86,14 @@ export async function POST(req: Request) {
               {
                 type: "text",
                 text: [
-                  "You help build honest UK venue accessibility listings.",
-                  "Look at this venue photo and describe observable access features and possible barriers in plain English.",
-                  "Cover what you can see: step-free entry, ramps, doors, toilets, parking, signage, lighting, seating, clutter, and turning space.",
-                  "If something is unclear, say so — do not invent measurements.",
-                  'Return STRICT JSON only: {"features":"bullet-style plain text for a listing form","notes":"optional short caveat"}',
+                  "You help UK venues submit honest accessibility information to Access Stamp.",
+                  "Look at this venue photo and assess observable access features and barriers.",
+                  "Cover entrances, steps, ramps, doors, routes, toilets, parking, signage, lighting, seating, clutter, and turning space.",
+                  "Do not invent exact measurements — only give approximate values when clearly visible, otherwise mark confidence as unclear.",
+                  "Split findings into what already looks accessible, what may need improvement, and small practical next steps a venue could take.",
+                  "Keep language plain, specific, and actionable for venue staff.",
+                  'Return STRICT JSON only with this shape:',
+                  '{"features":"bullet-style plain text for a listing form","alreadyAccessible":["…"],"needsImprovement":["…"],"smallSteps":["…"],"measurements":[{"label":"…","value":"…","confidence":"estimate|unclear"}],"notes":"optional short caveat"}',
                 ].join("\n"),
               },
               {
@@ -86,17 +118,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No scan result returned. Try again or describe access in text." }, { status: 502 });
     }
 
-    const parsed = JSON.parse(content) as ScanResponse;
-    if (!parsed.features || typeof parsed.features !== "string") {
+    const parsed = JSON.parse(content) as Record<string, unknown>;
+    const scan = parseScanResponse(parsed);
+    if (!scan) {
       return NextResponse.json({ error: "Scan result was unclear. Try another photo or describe access in text." }, { status: 502 });
     }
 
-    console.info("[venue-photo-scan] scanned photo for listing draft");
-    return NextResponse.json({
-      ok: true,
-      features: parsed.features.trim(),
-      notes: typeof parsed.notes === "string" ? parsed.notes.trim() : undefined,
-    });
+    console.info("[venue-photo-scan] quick scan completed for listing draft");
+    return NextResponse.json({ ok: true, ...scan });
   } catch (err) {
     console.error("[venue-photo-scan] failed", err);
     return NextResponse.json({ error: "We could not scan that photo. Try again or describe access in text." }, { status: 502 });

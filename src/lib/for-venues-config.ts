@@ -86,6 +86,11 @@ export const EAA_REGULATORY_NOTE =
 
 export const FOR_VENUES_FAQ = [
   {
+    question: "Can we submit our own venue without a full audit?",
+    answer:
+      "Yes — during beta, organisations and venue owners can use Quick Feature Scan on the Submit your venue page. Upload photos of entrances, routes, toilets, and parking to see what already looks accessible, what may need work, and small practical next steps. Submissions are reviewed before anything goes live. This is AI-assisted self-serve listing, not a verified Access Stamp audit.",
+  },
+  {
     question: "Is this a legal requirement?",
     answer: `No — Access Stamp reviews are voluntary. The Equality Act already requires reasonable adjustments for disabled customers. ${EAA_REGULATORY_NOTE} An Access Stamp review is evidence of good faith and practical progress, not a substitute for your legal duties.`,
   },

@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui";
 import { VenuePhotoScan } from "@/components/venue-photo-scan";
 import { saveSubmission } from "@/lib/submission-store";
+import { formatQuickScanForSubmission, type QuickScanResult } from "@/lib/venue-quick-scan";
 
 export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: string }) {
   const [sent, setSent] = useState(false);
@@ -11,11 +12,11 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
   const [deliveredToTeam, setDeliveredToTeam] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [features, setFeatures] = useState("");
-  const [scanNotes, setScanNotes] = useState("");
+  const [scanSummaries, setScanSummaries] = useState<string[]>([]);
 
-  function onFeaturesDetected(nextFeatures: string, notes?: string) {
-    setFeatures((current) => (current.trim() ? `${current.trim()}\n\n${nextFeatures}` : nextFeatures));
-    if (notes) setScanNotes(notes);
+  function onScanComplete(result: QuickScanResult) {
+    setFeatures((current) => (current.trim() ? `${current.trim()}\n\n${result.features}` : result.features));
+    setScanSummaries((current) => [...current, formatQuickScanForSubmission(result)]);
   }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -28,6 +29,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
     const notes = String(form.get("notes") ?? "").trim();
     const contactEmail = String(form.get("contactEmail") ?? "").trim();
     const featuresValue = features.trim();
+    const scanBlock = scanSummaries.length ? scanSummaries.join("\n\n") : "";
 
     if (!name || !location || !type) {
       setError("Please fill in venue name, location, and venue type.");
@@ -36,6 +38,8 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
 
     setSubmitting(true);
     let apiDelivered = false;
+
+    const combinedNotes = [notes, scanBlock].filter(Boolean).join("\n\n");
 
     try {
       const res = await fetch("/api/submit-venue", {
@@ -46,7 +50,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
           location,
           type,
           features: featuresValue,
-          notes: [notes, scanNotes ? `AI scan note: ${scanNotes}` : ""].filter(Boolean).join("\n\n"),
+          notes: combinedNotes || undefined,
           contactEmail: contactEmail || undefined,
         }),
       });
@@ -58,7 +62,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
       }
       apiDelivered = Boolean(data.delivered);
     } catch {
-      saveSubmission({ name, location, type, features: featuresValue, notes });
+      saveSubmission({ name, location, type, features: featuresValue, notes: combinedNotes });
       setDeliveredToTeam(false);
       setSent(true);
       setSubmitting(false);
@@ -67,7 +71,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
       setSubmitting(false);
     }
 
-    saveSubmission({ name, location, type, features: featuresValue, notes });
+    saveSubmission({ name, location, type, features: featuresValue, notes: combinedNotes });
     setDeliveredToTeam(apiDelivered);
     setSent(true);
   }
@@ -78,7 +82,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
         <p className="form-success-text text-base">Thanks — we&apos;ve received your venue listing.</p>
         <p className="text-sm text-muted">
           {deliveredToTeam
-            ? "It was sent to the Access Stamp team for review. We aim to triage within 3 working days."
+            ? "It was sent to the Access Stamp team for review. We aim to triage beta submissions within 3 working days."
             : `It is saved on this device and logged on our server for review. Email hello@accessstamp.co.uk with the venue name if you need a faster response.`}
         </p>
       </div>
@@ -87,10 +91,16 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
 
   return (
     <form className="grid gap-5" onSubmit={onSubmit}>
-      <p className="text-sm text-muted">
-        Tell us about your venue so we can build your listing. Optional email lets us follow up if we need
-        clarification.
-      </p>
+      <div id="quick-scan">
+        <VenuePhotoScan onScanComplete={onScanComplete} disabled={submitting} />
+      </div>
+
+      <div className="rounded-xl border border-[#EFE5DA] bg-white p-4">
+        <h3 className="text-sm font-semibold text-heading">Venue details</h3>
+        <p className="mt-1 text-sm text-muted">
+          Add your venue information after scanning. You can scan more areas first, then submit once you&apos;re ready.
+        </p>
+      </div>
 
       <label className="grid gap-1 text-sm font-semibold text-heading">
         Venue name
@@ -136,17 +146,15 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
         </select>
       </label>
 
-      <VenuePhotoScan onFeaturesDetected={onFeaturesDetected} disabled={submitting} />
-
       <label className="grid gap-1 text-sm font-semibold text-heading">
-        Access features you know about
+        Access features for your listing
         <textarea
           name="features"
           rows={4}
           value={features}
           onChange={(event) => setFeatures(event.target.value)}
           className="form-input px-3 py-2 font-normal"
-          placeholder="Step-free entry, accessible toilet, parking, turning space, hearing loop…"
+          placeholder="Filled in from Quick Scan — edit anything that needs correcting before you submit."
         />
       </label>
 
@@ -156,7 +164,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
           name="notes"
           rows={3}
           className="form-input px-3 py-2 font-normal"
-          placeholder="Optional context or sources"
+          placeholder="Optional context, opening hours, or contact details for review"
         />
       </label>
 
@@ -176,7 +184,7 @@ export function SubmitVenueForm({ defaultVenueName }: { defaultVenueName?: strin
           {error}
         </p>
       ) : null}
-      <Button type="submit">{submitting ? "Sending…" : "Submit listing"}</Button>
+      <Button type="submit">{submitting ? "Sending…" : "Submit your venue (beta)"}</Button>
     </form>
   );
 }

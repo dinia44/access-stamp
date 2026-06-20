@@ -39,7 +39,7 @@ export function HomeForVenuesBand() {
                   href="/submit-venue"
                   className={`inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/25 px-6 text-sm font-semibold text-white transition hover:bg-white/10 ${HOME_FOCUS}`}
                 >
-                  List your venue free
+                  Submit your venue (beta)
                 </Link>
               </div>
             </div>

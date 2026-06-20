@@ -89,13 +89,14 @@ export const STATIC_PAGE_SEO = {
     path: "/complaints",
   },
   submitVenue: {
-    title: "List your venue",
-    description: "List your venue on Access Stamp with access details, photos, and AI-assisted scanning before review.",
+    title: "Submit your own venue",
+    description:
+      "Beta self-serve venue submission with Quick Feature Scan — upload photos, see what is accessible, get small improvement steps, and submit for review.",
     path: "/submit-venue",
   },
   scan: {
-    title: "Quick Scan",
-    description: "Internal venue scan tool.",
+    title: "Quick Feature Scan",
+    description: "Beta venue scan tool for organisations submitting their own venue.",
     path: "/scan",
     noIndex: true,
   },
