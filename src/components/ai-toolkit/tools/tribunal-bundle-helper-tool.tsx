@@ -37,6 +37,7 @@ export function TribunalBundleHelperTool() {
       meta={meta}
       resultsRef={resultsRef}
       onPrint={() => window.print()}
+      hasResult={Boolean(error || out)}
       results={
         error ? (
           <ToolkitError message={error} />

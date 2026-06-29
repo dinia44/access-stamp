@@ -11,7 +11,7 @@ export const MAIN_NAV_LINKS: NavLink[] = [
   { label: "Venue Finder", href: "/venue-finder" },
   { label: "Guides", href: "/advice" },
   { label: "Templates", href: "/help-cards" },
-  { label: "Tools", href: "/ai-toolkit" },
+  { label: "Practical Tools", href: "/ai-toolkit" },
   { label: "For Organisations", href: "/for-venues" },
   { label: "About", href: "/about" },
 ];
@@ -25,7 +25,7 @@ export const FOOTER_EXPLORE_LINKS: NavLink[] = [
   { label: "Venue Finder", href: "/venue-finder" },
   { label: "Guides", href: "/advice" },
   { label: "Templates", href: "/help-cards" },
-  { label: "Tools", href: "/ai-toolkit" },
+  { label: "Practical Tools", href: "/ai-toolkit" },
 ];
 
 export const FOOTER_ACCESS_STAMP_LINKS: NavLink[] = [
