@@ -1,7 +1,7 @@
 import type { ToolkitToolId } from "@/lib/ai-toolkit/types";
 
 export const TOOLKIT_DISCLAIMER =
-  "These tools help you prepare. They do not replace legal, medical, benefits, safeguarding, emergency, or professional advice.";
+  "This tool gives general information and practical wording support. It is not legal advice. Check official guidance or get specialist advice for your situation.";
 
 export type ToolkitToolMeta = {
   id: ToolkitToolId;
@@ -48,8 +48,8 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
   {
     id: "article-companion",
     href: "/ai-toolkit/article-companion",
-    title: "Guide Companion",
-    shortTitle: "Guide Companion",
+    title: "AI Article Companion",
+    shortTitle: "Article Companion",
     description:
       "Turn any Access Stamp guide into a personalised checklist, next-step plan, or draft wording based on your situation.",
     badge: "Guides",

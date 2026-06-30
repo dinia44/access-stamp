@@ -28,13 +28,13 @@ export type ResourceGroup = { label: string; description?: string; items: NavIte
 
 export const RESOURCE_GROUPS: ResourceGroup[] = [
   {
-    label: "Practical Tools",
-    description: "Guided tools for planning, wording, and next steps.",
+    label: "AI Tools",
+    description: "Practical AI helpers for planning, wording, and next steps.",
     items: [
       {
-        label: "Practical Tools",
+        label: "AI Toolkit",
         href: "/ai-toolkit",
-        description: "Prepare letters, checklists, questions, and access plans.",
+        description: "Ask Access Stamp for practical next steps and visit planning.",
       },
     ],
   },

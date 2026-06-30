@@ -32,10 +32,10 @@ const corePages: SearchItem[] = [
     url: "/advice",
   },
   {
-    title: "Practical Tools",
+    title: "AI Toolkit",
     description: "Guided tools for action plans, letters, evidence checklists, and venue questions.",
     category: "AI Assistant",
-    tags: ["tools", "letter", "checklist", "evidence", "action plan", "practical tools"],
+    tags: ["toolkit", "letter", "checklist", "evidence", "action plan"],
     url: "/ai-toolkit",
   },
   {

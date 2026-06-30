@@ -292,7 +292,7 @@ export default async function AdviceArticlePage({
 
               <div className="mt-8 grid gap-3 border-t border-border pt-6 print:hidden">
                 <div className="flex flex-wrap gap-2">
-                  <Button href="/ai-toolkit">Practical Tools</Button>
+                  <Button href="/ai-toolkit">AI Toolkit</Button>
                   <Button href="/?openChat=1">Open AI Assistant</Button>
                   {a.slug === "employing-a-personal-assistant-basics" ? (
                     <>
