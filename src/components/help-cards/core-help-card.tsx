@@ -9,8 +9,9 @@ import { cn } from "@/lib/utils";
 export function HelpCardItem({ card, className }: { card: CoreHelpCard; className?: string }) {
   return (
     <article
+      id={card.id}
       className={cn(
-        "flex h-full flex-col rounded-[24px] border border-[#EFE5DA] bg-white p-6 shadow-[0_8px_24px_-16px_rgba(122,80,48,0.1)]",
+        "flex h-full scroll-mt-28 flex-col rounded-[24px] border border-[#EFE5DA] bg-white p-6 shadow-[0_8px_24px_-16px_rgba(122,80,48,0.1)]",
         className,
       )}
     >
