@@ -20,7 +20,7 @@ export function SiteLogo({ className, priority, width = SITE_LOGO_WIDTH, height 
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={SITE_LOGO_SRC}
-        alt="Access Stamp"
+        alt="Access Stamp — home"
         width={width}
         height={height}
         decoding="async"
@@ -33,7 +33,7 @@ export function SiteLogo({ className, priority, width = SITE_LOGO_WIDTH, height 
   return (
     <Image
       src={SITE_LOGO_SRC}
-      alt="Access Stamp"
+      alt="Access Stamp — home"
       width={width}
       height={height}
       priority={priority}

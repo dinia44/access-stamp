@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SiteLogo } from "@/components/site-logo";
 import { Button } from "@/components/ui/Button";
@@ -10,6 +11,8 @@ import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import { PRIMARY_NAV_CTA } from "@/lib/navigation";
 
 export function SiteHeader() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [mobileOpen, setMobileOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
@@ -48,16 +51,20 @@ export function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-50 border-b border-[#EFE5DA] bg-[#FDFBF8]/95 backdrop-blur-sm"
+      className={`sticky top-0 z-50 ${
+        isHome
+          ? "border-b border-transparent bg-[var(--background)]/80 backdrop-blur-md"
+          : "border-b border-[#EFE5DA] bg-[#FDFBF8]/95 backdrop-blur-sm"
+      }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
         <Link
           href="/"
           className="flex shrink-0 items-center rounded-md transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EF5B25]/40"
-          aria-label="Access Stamp homepage"
+          aria-label="Access Stamp — home"
           onClick={closeMobileMenu}
         >
-          <SiteLogo priority className="h-auto max-h-[52px] w-auto object-contain sm:max-h-[56px]" />
+          <SiteLogo priority className="h-auto max-h-8 w-auto object-contain sm:max-h-10" />
         </Link>
 
         <MainNavigation onNavigate={closeMobileMenu} />
