@@ -78,6 +78,7 @@ export function FooterNewsletterSignup() {
             className="mt-2 h-11 w-full rounded-full border border-[#EFE5DA] bg-[#FDFBF8] px-4 text-sm text-[#20242E] focus:border-[#F6CFB8] focus:outline-none focus:ring-2 focus:ring-[#FDE9DD] disabled:opacity-70"
             placeholder="you@example.com"
             aria-invalid={status === "error"}
+            aria-describedby="footer-newsletter-helper"
           />
         </div>
         <button
@@ -90,8 +91,8 @@ export function FooterNewsletterSignup() {
         </button>
       </div>
 
-      <p className="mt-4 text-xs leading-5 text-[#76808F]">
-        We&apos;ll only use your email for Access Stamp updates. See our{" "}
+      <p id="footer-newsletter-helper" className="mt-4 text-xs leading-5 text-[#76808F]">
+        We only use this to send the newsletter. See our{" "}
         <Link href="/legal/privacy" className="underline underline-offset-2 hover:text-[#4A5263]">
           Privacy Policy
         </Link>
