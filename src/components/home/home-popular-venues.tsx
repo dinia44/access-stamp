@@ -5,6 +5,10 @@ import { getHomepageVenues } from "@/data/venues";
 import { toLegacyVenue } from "@/lib/venue-legacy";
 import { mockVenueDistanceKm } from "@/lib/venue-access-score";
 
+function formatHomeVenueDistance(slug: string): string {
+  return `${mockVenueDistanceKm(slug)} from Liverpool city centre`;
+}
+
 export function HomePopularVenues() {
   const featured = getHomepageVenues()
     .map((venue) => toLegacyVenue(venue))
@@ -20,13 +24,14 @@ export function HomePopularVenues() {
               Venue access information to explore
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-[#4A5263]">
-              Access information can change. Check the confidence label, review any known unknowns, and confirm
-              important details directly with the venue before travelling.
+              These are demo listings while we grow venue coverage. Access information can change — check the
+              confidence label, review any known unknowns, and confirm important details directly with the venue before
+              travelling.
             </p>
           </div>
           <Link
             href="/venue-finder"
-            className="inline-flex min-h-[44px] shrink-0 items-center text-sm font-semibold text-[#C8430F] hover:underline"
+            className="link-arrow inline-flex min-h-[44px] shrink-0 items-center text-sm font-semibold text-[#C8430F] hover:underline"
           >
             View all venues
           </Link>
@@ -40,7 +45,7 @@ export function HomePopularVenues() {
             <HomeFeaturedVenueCard
               key={venue.slug}
               venue={venue}
-              distance={mockVenueDistanceKm(venue.slug)}
+              distance={formatHomeVenueDistance(venue.slug)}
               index={index}
             />
           ))}
