@@ -7,7 +7,6 @@ import { HomePopularGuides } from "@/components/home/home-popular-guides";
 import { HomePopularVenues } from "@/components/home/home-popular-venues";
 import { HomeUserPathways } from "@/components/home/home-user-pathways";
 import { HomeWhyTrust } from "@/components/home/home-why-trust";
-import { HomeWillItFitDemo } from "@/components/home/home-will-it-fit-demo";
 
 export default function HomePage() {
   return (
@@ -15,7 +14,6 @@ export default function HomePage() {
       <SetChatContext page={{ kind: "home" }} />
 
       <HomeMastheadHero />
-      <HomeWillItFitDemo />
       <HomeUserPathways />
       <HomePopularVenues />
       <HomeWhyTrust />
