@@ -609,6 +609,31 @@ body[data-dyslexia-font="on"] {
   }
 }
 
+.link-arrow::after {
+  content: " →";
+}
+
+.venue-card {
+  position: relative;
+}
+
+.venue-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.venue-secondary {
+  position: relative;
+  z-index: 1;
+}
+
+.venue-card:has(.venue-link:focus-visible) {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 /* Prevent floating accessibility controls from covering page content */
 .accessibility-controls,
 .accessibility-widget,

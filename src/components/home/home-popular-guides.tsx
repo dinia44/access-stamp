@@ -23,7 +23,7 @@ export async function HomePopularGuides() {
           </div>
           <Link
             href="/advice"
-            className="inline-flex min-h-[44px] shrink-0 items-center text-sm font-semibold text-[#C8430F] hover:underline"
+            className="link-arrow inline-flex min-h-[44px] shrink-0 items-center text-sm font-semibold text-[#C8430F] hover:underline"
           >
             Browse all guides
           </Link>

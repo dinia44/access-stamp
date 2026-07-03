@@ -21,7 +21,7 @@ export function HomeHelpCardsPreview() {
           </div>
           <Link
             href="/help-cards"
-            className={`inline-flex min-h-[44px] shrink-0 items-center text-sm font-semibold text-[#C8430F] hover:underline ${HOME_FOCUS}`}
+            className={`link-arrow inline-flex min-h-[44px] shrink-0 items-center text-sm font-semibold text-[#C8430F] hover:underline ${HOME_FOCUS}`}
           >
             View all help cards
           </Link>
@@ -34,8 +34,8 @@ export function HomeHelpCardsPreview() {
                 <h3 className="text-lg font-semibold text-[#20242E]">{card.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-[#4A5263]">{card.situation}</p>
                 <Link
-                  href="/help-cards"
-                  className={`mt-4 inline-flex min-h-[44px] items-center text-sm font-semibold text-[#C8430F] hover:underline ${HOME_FOCUS}`}
+                  href={`/help-cards#${card.id}`}
+                  className={`link-arrow mt-4 inline-flex min-h-[44px] items-center text-sm font-semibold text-[#C8430F] hover:underline ${HOME_FOCUS}`}
                 >
                   Open help card
                 </Link>
