@@ -314,7 +314,7 @@ Yours sincerely,
 
   buildGuide({
     slug: "access-to-work",
-    title: "Access to Work: What You Can Ask For and How to Apply",
+    title: "Access to Work: what you can ask for and how to apply",
     seoTitle: "Access to Work: what to ask for and how to apply",
     metaDescription:
       "Practical guide to UK Access to Work — eligible support, examples of funded items, application steps, and employer involvement.",
@@ -490,7 +490,7 @@ Thank you,
 
   buildGuide({
     slug: "book-train-assistance-passenger-assist",
-    title: "How to Book Train Assistance with Passenger Assist",
+    title: "How to book train assistance with Passenger Assist",
     seoTitle: "How to book train assistance (Passenger Assist)",
     metaDescription:
       "Book UK rail Passenger Assist: ramps, boarding, connections, turn-up-and-go, and what to record when assistance fails.",
@@ -573,8 +573,8 @@ Thank you,
 
   buildGuide({
     slug: "school-reasonable-adjustments",
-    title: "School Reasonable Adjustments: A Parent’s Guide",
-    seoTitle: "School reasonable adjustments: a parent’s guide",
+    title: "School reasonable adjustments: a parent's guide",
+    seoTitle: "School reasonable adjustments: a parent's guide",
     metaDescription:
       "How to request school reasonable adjustments in the UK, evidence to use, meeting tips, and escalation if support is not delivered.",
     excerpt:
@@ -858,7 +858,7 @@ Adaptations I think would help: [ramp / shower / stairlift — open to OT advice
 
   buildGuide({
     slug: "care-needs-assessment-social-services",
-    title: "Care Needs Assessment: How to Ask Social Services for Help",
+    title: "Care needs assessment: how to ask social services for help",
     seoTitle: "Care needs assessment: ask social services for help",
     metaDescription:
       "Request a UK adult social care needs assessment: who qualifies, how to ask, carer assessments, and if the council says no.",
