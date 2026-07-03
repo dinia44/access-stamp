@@ -6,7 +6,7 @@ import { HOME_FOCUS } from "@/components/home/home-theme";
 const STATS = [
   { value: "1 in 4", label: "UK adults are disabled" },
   { value: "£274bn", label: "Purple Pound spending power" },
-  { value: "June 2025", label: "European Accessibility Act — EU member states from 28 June 2025" },
+  { value: "Since 2025", label: "European Accessibility Act — in force across EU member states since June 2025" },
   { value: "3 tiers", label: "Access Snapshot, Measured Access Report, Full Access Review" },
 ] as const;
 
