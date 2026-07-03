@@ -1,13 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import { AccessStampSearchBox } from "@/components/home/access-stamp-search-box";
+import { HeroWillItFitChecker } from "@/components/home/hero-will-it-fit-checker";
 import { RouteDecoration } from "@/components/home/route-decoration";
 import { HOME_FOCUS } from "@/components/home/home-theme";
 import { ButtonLink } from "@/components/ui/ButtonLink";
-import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
-import { heroPortraitImageUrl } from "@/lib/cloudinary-url";
-
-const HERO_IMAGE = heroPortraitImageUrl(CLOUDINARY_MEDIA.homepageHeroBackdrop);
 
 export function HomeMastheadHero() {
   return (
@@ -31,38 +27,22 @@ export function HomeMastheadHero() {
               asking the right questions — without vague accessibility claims or hidden unknowns.
             </p>
 
-            <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <div className="mt-8 flex flex-col items-stretch gap-4 sm:flex-row sm:flex-wrap sm:items-center">
               <ButtonLink href="/venue-finder" className="w-full rounded-full sm:w-auto">
                 Check venue access
               </ButtonLink>
-              <ButtonLink href="/advice" variant="secondary" className="w-full rounded-full sm:w-auto">
-                Find practical guidance
-              </ButtonLink>
               <Link
-                href="/ai-toolkit"
-                className={`inline-flex min-h-[44px] w-full items-center justify-center gap-1 text-sm font-semibold text-[#C8430F] hover:underline sm:w-auto ${HOME_FOCUS}`}
+                href="/advice"
+                className={`link-arrow inline-flex min-h-[44px] w-full items-center justify-center text-sm font-semibold text-[#C8430F] hover:underline sm:w-auto ${HOME_FOCUS}`}
               >
-                Use Access Stamp tools
-                <span aria-hidden="true">→</span>
+                Find practical guidance
               </Link>
             </div>
           </div>
 
-          <figure className="relative mx-auto w-full max-w-[520px] lg:mx-0 lg:ml-auto lg:max-w-none">
-            <div
-              className="relative aspect-[4/5] w-full overflow-hidden shadow-[0_24px_64px_-24px_rgba(122,80,48,0.28)] sm:aspect-[5/6]"
-              style={{ borderRadius: "58% 42% 55% 45% / 48% 52% 47% 53%" }}
-            >
-              <Image
-                src={HERO_IMAGE}
-                alt="People arriving at a café with step-free access, including a wheelchair user"
-                fill
-                priority
-                sizes="(max-width: 1024px) 90vw, 44vw"
-                className="object-cover object-[50%_58%]"
-              />
-            </div>
-          </figure>
+          <div className="mx-auto w-full max-w-[520px] lg:mx-0 lg:ml-auto lg:max-w-none">
+            <HeroWillItFitChecker />
+          </div>
         </div>
 
         <div className="relative z-20 mx-auto mt-10 max-w-5xl lg:-mt-14 xl:-mt-16">
