@@ -99,6 +99,11 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
   const isVenueSearch = mode === "venue";
   const isAiSearch = mode === "ai";
 
+  const venueSubmitLabel =
+    selectedFilters.length === 0
+      ? "Search venues"
+      : `Search with ${selectedFilters.length} filter${selectedFilters.length > 1 ? "s" : ""}`;
+
   const toggleFilter = (key: string) => {
     setSelectedFilters((prev) => (prev.includes(key) ? prev.filter((f) => f !== key) : [...prev, key]));
   };
@@ -334,9 +339,8 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
           </div>
 
           {isVenueSearch ? (
-            <Button type="submit" className="mt-4 w-full" aria-label="Search accessible places">
-              Search accessible places
-              <span aria-hidden>→</span>
+            <Button type="submit" className="mt-4 w-full">
+              {venueSubmitLabel}
             </Button>
           ) : null}
         </form>
@@ -373,9 +377,6 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
               );
             })}
 
-            <button type="button" onClick={() => goToVenueFinder()} className={homeChipClass(false)}>
-              Search with selected filters
-            </button>
           </div>
 
         </>
@@ -392,7 +393,7 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
           </div>
           <Link
             href="/advice"
-            className="inline-flex min-h-[44px] items-center text-sm font-semibold text-[#C8430F] hover:underline"
+            className="link-arrow inline-flex min-h-[44px] items-center text-sm font-semibold text-[#C8430F] hover:underline"
           >
             Browse all guides
           </Link>
