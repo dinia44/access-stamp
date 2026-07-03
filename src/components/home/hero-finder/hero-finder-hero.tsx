@@ -2,13 +2,14 @@ import { HeroMapBackdrop } from "@/components/home/hero-finder/hero-map-backdrop
 import { HeroPopularSearches } from "@/components/home/hero-finder/hero-popular-searches";
 import { HeroSearchConsole } from "@/components/home/hero-finder/hero-search-console";
 import { HeroStampSeal } from "@/components/home/hero-finder/hero-stamp-seal";
+import { MeasureTicker } from "@/components/measure-ticker";
 
 export function HeroFinderHero() {
   return (
-    <section className="hero-finder relative overflow-hidden bg-[var(--background)] pb-16 pt-24 sm:pb-20 sm:pt-28 min-[880px]:flex min-[880px]:min-h-[92vh] min-[880px]:items-center min-[880px]:pb-24">
+    <section className="hero-finder relative flex flex-col overflow-hidden bg-[var(--background)] pt-24 sm:pt-28 min-[880px]:min-h-[92vh]">
       <HeroMapBackdrop />
 
-      <div className="relative z-10 mx-auto w-full max-w-[880px] px-4 text-center sm:px-6">
+      <div className="relative z-10 mx-auto flex w-full max-w-[880px] flex-1 flex-col justify-center px-4 pb-10 text-center sm:px-6 sm:pb-12 min-[880px]:pb-14">
         <HeroStampSeal />
 
         <h1 className="font-[family-name:var(--font-heading)] text-[clamp(2.1rem,5.4vw,3.5rem)] font-medium leading-[1.08] tracking-[-0.03em] text-[var(--color-text)]">
@@ -31,6 +32,8 @@ export function HeroFinderHero() {
           on site, verified with the venue, or honestly unknown.
         </p>
       </div>
+
+      <MeasureTicker />
     </section>
   );
 }
