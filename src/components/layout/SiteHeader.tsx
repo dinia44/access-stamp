@@ -57,14 +57,14 @@ export function SiteHeader() {
           : "border-b border-[#EFE5DA] bg-[#FDFBF8]/95 backdrop-blur-sm"
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
+      <div className="mx-auto flex min-h-[5.5rem] max-w-7xl items-center gap-4 px-4 py-2.5 sm:min-h-[6.25rem] sm:px-6 sm:py-3 lg:min-h-[8.75rem] lg:px-8">
         <Link
           href="/"
           className="flex shrink-0 items-center rounded-md transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EF5B25]/40"
           aria-label="Access Stamp — home"
           onClick={closeMobileMenu}
         >
-          <SiteLogo priority className="h-auto max-h-11 w-auto object-contain sm:max-h-[3.25rem] lg:max-h-[3.75rem]" />
+          <SiteLogo priority className="h-auto w-[5.25rem] object-contain sm:w-24 lg:w-28" />
         </Link>
 
         <MainNavigation onNavigate={closeMobileMenu} />
