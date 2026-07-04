@@ -64,7 +64,7 @@ export function SiteHeader() {
           aria-label="Access Stamp — home"
           onClick={closeMobileMenu}
         >
-          <SiteLogo priority className="h-auto max-h-8 w-auto object-contain sm:max-h-10" />
+          <SiteLogo priority className="h-auto max-h-11 w-auto object-contain sm:max-h-[3.25rem] lg:max-h-[3.75rem]" />
         </Link>
 
         <MainNavigation onNavigate={closeMobileMenu} />
