@@ -13,12 +13,14 @@ export function HeroFinderHero() {
         <HeroStampSeal />
 
         <h1 className="font-[family-name:var(--font-heading)] text-[clamp(2.1rem,5.4vw,3.5rem)] font-medium leading-[1.08] tracking-[-0.03em] text-[var(--color-text)]">
-          Where do you want{" "}
-          <span className="hero-finder__heading-accent italic">to go?</span>
+          Welcome to{" "}
+          <span className="hero-finder__heading-accent italic">Access Stamp</span>
         </h1>
 
-        <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[var(--color-muted)] sm:text-lg">
-          Search access-checked venues with real measurements, photos, and honest confidence labels.
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[var(--color-muted)] sm:text-lg">
+          Access Stamp is a disability-led platform for practical venue access, plain-English guidance, and tools that
+          help disabled people, families, and carers plan with confidence — without vague accessibility claims or hidden
+          unknowns.
         </p>
 
         <div className="mt-8 sm:mt-10">
