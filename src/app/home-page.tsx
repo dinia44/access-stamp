@@ -2,7 +2,7 @@ import { SetChatContext } from "@/components/chat/set-context";
 import { HomeForVenuesBand } from "@/components/home/home-for-venues-band";
 import { HomeFounderMission } from "@/components/home/home-founder-mission";
 import { HomeHelpCardsPreview } from "@/components/home/home-help-cards-preview";
-import { HeroFinderHero } from "@/components/home/hero-finder/hero-finder-hero";
+import { HomeMastheadHero } from "@/components/home/home-masthead-hero";
 import { HomePopularGuides } from "@/components/home/home-popular-guides";
 import { HomePopularVenues } from "@/components/home/home-popular-venues";
 import { HomeUserPathways } from "@/components/home/home-user-pathways";
@@ -13,7 +13,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#FDFBF8] text-[#20242E]">
       <SetChatContext page={{ kind: "home" }} />
 
-      <HeroFinderHero />
+      <HomeMastheadHero />
       <HomeUserPathways />
       <HomePopularVenues />
       <HomeWhyTrust />

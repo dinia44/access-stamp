@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { ToolkitHubHero } from "@/components/ai-toolkit/toolkit-hub-hero";
+import { ToolkitTrustStrip } from "@/components/ai-toolkit/toolkit-trust-strip";
 import { ToolCard } from "@/components/design-system/tool-card";
-import { TrustPanel } from "@/components/design-system/trust-panel";
-import { PageHero, PageLayout } from "@/components/page-layout";
-import { Badge } from "@/components/ui";
-import { ToolkitDisclaimer } from "@/components/ai-toolkit/toolkit-disclaimer";
-import { AI_TOOLKIT_TOOLS, PUBLIC_AI_TOOLKIT_TOOLS } from "@/lib/ai-toolkit/tools-meta";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { PUBLIC_AI_TOOLKIT_TOOLS } from "@/lib/ai-toolkit/tools-meta";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -57,41 +55,29 @@ const TOOL_CTA: Record<string, string> = {
 
 export default function AiToolkitPage() {
   return (
-    <PageLayout stack="relaxed" hero>
-      <PageHero
-        badge={<Badge tone="blue">Access Stamp tools</Badge>}
-        title="Access Stamp tools"
-        subtitle="Turn your disability problem into a practical action plan, letter, checklist, or support request. Each tool starts with a short guided form — not a blank chat box."
-      />
+    <div className="min-h-screen bg-[#FDFBF8] text-[#20242E]">
+      <ToolkitHubHero />
+      <ToolkitTrustStrip />
 
-      <TrustPanel />
-
-      <p className="max-w-[85ch] text-sm leading-relaxed text-muted">
-        Access Stamp tools use guided questions to help you create practical drafts, checklists, and next steps. They
-        are designed to support preparation, not replace professional legal, medical, emergency, or official advice. Use
-        them alongside our{" "}
-        <Link href="/advice" className="font-semibold text-blue underline-offset-2 hover:underline">
-          practical guides
-        </Link>{" "}
-        when you need fuller context.
-      </p>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        {PUBLIC_AI_TOOLKIT_TOOLS.map((tool) => (
-          <ToolCard
-            key={tool.id}
-            title={tool.title}
-            creates={TOOL_CREATES[tool.id] ?? "Structured output"}
-            bestFor={TOOL_BEST_FOR[tool.id] ?? "Practical planning"}
-            time={TOOL_TIME[tool.id] ?? "5–10 minutes"}
-            cta={TOOL_CTA[tool.id] ?? "Open tool"}
-            href={tool.href}
-            badge={tool.badge}
-          />
-        ))}
-      </div>
-
-      <ToolkitDisclaimer className="max-w-[85ch]" />
-    </PageLayout>
+      <section className="px-4 py-12 sm:px-6 sm:py-16" aria-label="Access Stamp tools">
+        <PageContainer>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {PUBLIC_AI_TOOLKIT_TOOLS.map((tool, index) => (
+              <ToolCard
+                key={tool.id}
+                title={tool.title}
+                creates={TOOL_CREATES[tool.id] ?? "Structured output"}
+                bestFor={TOOL_BEST_FOR[tool.id] ?? "Practical planning"}
+                time={TOOL_TIME[tool.id] ?? "5–10 minutes"}
+                cta={TOOL_CTA[tool.id] ?? "Open tool"}
+                href={tool.href}
+                badge={tool.badge}
+                index={index}
+              />
+            ))}
+          </div>
+        </PageContainer>
+      </section>
+    </div>
   );
 }

@@ -614,6 +614,119 @@ body[data-dyslexia-font="on"] {
   content: " →";
 }
 
+/* Homepage masthead — first-load entrance + stamp accent */
+@keyframes home-masthead-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes home-stamp-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes home-stamp-settle {
+  from {
+    transform: rotate(-2deg) scale(1.06);
+  }
+  to {
+    transform: rotate(-2deg) scale(1);
+  }
+}
+
+.home-masthead-hero__enter {
+  opacity: 0;
+  animation: home-masthead-rise 500ms ease-out forwards;
+}
+
+.home-masthead-hero__enter--0 {
+  animation-delay: 0ms;
+}
+
+.home-masthead-hero__enter--1 {
+  animation-delay: 120ms;
+}
+
+.home-masthead-hero__enter--2 {
+  animation-delay: 240ms;
+}
+
+.home-masthead-hero__enter--3 {
+  animation-delay: 360ms;
+}
+
+.home-masthead-hero__enter--4 {
+  animation-delay: 480ms;
+}
+
+.hero-stamp-word {
+  padding: 0.08em 0.18em;
+}
+
+.hero-stamp-outline {
+  inset: -0.12em -0.2em;
+  width: calc(100% + 0.4em);
+  height: calc(100% + 0.24em);
+  transform: rotate(-2deg) scale(1.06);
+  overflow: visible;
+}
+
+.hero-stamp-outline__path {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-stamp-outline {
+    animation: home-stamp-settle 180ms ease-out 1.3s forwards;
+  }
+
+  .hero-stamp-outline__path {
+    animation: home-stamp-draw 450ms ease-out 900ms forwards;
+  }
+}
+
+html.home-masthead-hero--instant .home-masthead-hero__enter {
+  opacity: 1;
+  animation: none;
+  transform: none;
+}
+
+html.home-masthead-hero--instant .hero-stamp-outline {
+  transform: rotate(-2deg) scale(1);
+  animation: none;
+}
+
+html.home-masthead-hero--instant .hero-stamp-outline__path {
+  stroke-dashoffset: 0;
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-masthead-hero__enter {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+
+  .hero-stamp-outline {
+    transform: rotate(-2deg) scale(1);
+    animation: none;
+  }
+
+  .hero-stamp-outline__path {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+}
+
 .venue-card {
   position: relative;
 }
