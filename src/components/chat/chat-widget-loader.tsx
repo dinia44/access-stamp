@@ -9,11 +9,16 @@ const ChatWidget = dynamic(() => import("@/components/chat-widget").then((m) => 
   loading: () => null,
 });
 
+type Props = {
+  /** When true, render as a labelled dock button instead of a floating sparkle FAB. */
+  docked?: boolean;
+};
+
 /**
  * Loads the full chat widget only after the user opens chat (or clicks the launcher).
  * Keeps ~1900 lines of chat UI off the initial homepage bundle.
  */
-export function ChatWidgetLoader() {
+export function ChatWidgetLoader({ docked = false }: Props) {
   const { open, openChat } = useChat();
   const [loaded, setLoaded] = useState(false);
 
@@ -22,17 +27,33 @@ export function ChatWidgetLoader() {
   }, [open]);
 
   if (!loaded) {
+    if (docked) {
+      return (
+        <button
+          type="button"
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-[var(--color-brand)] px-3 text-sm font-semibold text-white hover:bg-[var(--color-brand-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)] focus-visible:ring-offset-2"
+          aria-label="Open AI assistant"
+          onClick={() => {
+            setLoaded(true);
+            openChat();
+          }}
+        >
+          AI assistant
+        </button>
+      );
+    }
+
     return (
       <button
         type="button"
-        className="fixed bottom-5 right-5 z-[60] inline-flex h-14 min-h-[44px] w-14 items-center justify-center rounded-full bg-[#F04A16] text-xl text-white shadow-lg shadow-[#F04A16]/25 transition-colors hover:bg-[#D93E10] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-4 print:hidden"
+        className="fixed bottom-5 right-5 z-[60] inline-flex min-h-[44px] items-center gap-2 rounded-full bg-[var(--color-brand)] px-4 text-sm font-semibold text-white shadow-[var(--shadow-soft)] transition-colors hover:bg-[var(--color-brand-hover)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-focus-ring)] focus-visible:outline-offset-4 print:hidden"
         aria-label="Open AI assistant"
         onClick={() => {
           setLoaded(true);
           openChat();
         }}
       >
-        <span aria-hidden>✦</span>
+        AI assistant
       </button>
     );
   }

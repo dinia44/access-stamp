@@ -10,9 +10,9 @@ export type NavLink = {
 export const MAIN_NAV_LINKS: NavLink[] = [
   { label: "Venue Finder", href: "/venue-finder" },
   { label: "Guides", href: "/advice" },
-  { label: "Templates", href: "/help-cards" },
+  { label: "Help cards", href: "/help-cards" },
   { label: "Tools", href: "/ai-toolkit" },
-  { label: "For Organisations", href: "/for-venues" },
+  { label: "For venues", href: "/for-venues" },
   { label: "About", href: "/about" },
 ];
 
@@ -24,13 +24,13 @@ export const PRIMARY_NAV_CTA = {
 export const FOOTER_EXPLORE_LINKS: NavLink[] = [
   { label: "Venue Finder", href: "/venue-finder" },
   { label: "Guides", href: "/advice" },
-  { label: "Templates", href: "/help-cards" },
+  { label: "Help cards", href: "/help-cards" },
   { label: "Tools", href: "/ai-toolkit" },
 ];
 
 export const FOOTER_ACCESS_STAMP_LINKS: NavLink[] = [
   { label: "About", href: "/about" },
-  { label: "For Organisations", href: "/for-venues" },
+  { label: "For venues", href: "/for-venues" },
   { label: "Methodology", href: "/methodology" },
   { label: "Accessibility", href: "/accessibility" },
 ];

@@ -7,7 +7,6 @@ import { FadeIn } from "@/components/fade-in";
 import { Container } from "@/components/container";
 import { PageSectionTitle } from "@/components/page-layout";
 import { Button, Card } from "@/components/ui";
-import { ConfidenceBadge, VerificationBadge } from "@/components/verification-badge";
 import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { AccessCheckedMethodology } from "@/components/venue/access-checked-methodology";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
@@ -25,7 +24,7 @@ import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import { buildBreadcrumbJsonLd, buildVenueLocalBusinessJsonLd } from "@/lib/seo/venue-jsonld";
 import { DemoBanner } from "@/components/trust/DemoBanner";
 import { BeforeYouGo } from "@/components/venue/BeforeYouGo";
-import { KnownUnknowns } from "@/components/venue/KnownUnknowns";
+import { VenueDecisionSummary } from "@/components/venue/VenueDecisionSummary";
 import { isDemoVenue } from "@/lib/venue-card";
 import { suggestVenueMailto } from "@/lib/venue-submission";
 
@@ -53,9 +52,9 @@ const ACCESS_AREAS = [
 ] as const;
 
 function statusDetails(v: "yes" | "no" | "unknown" | undefined) {
-  if (v === "yes") return { icon: "✅", label: "Available", cls: "text-verified" };
-  if (v === "no") return { icon: "❌", label: "Not available", cls: "text-error" };
-  return { icon: "❓", label: "Check before visiting", cls: "text-warning" };
+  if (v === "yes") return { icon: "✓", label: "Confirmed", cls: "text-verified" };
+  if (v === "no") return { icon: "×", label: "Not available", cls: "text-error" };
+  return { icon: "!", label: "Check before visiting", cls: "text-warning" };
 }
 
 function venueEmoji(type: string) {
@@ -157,6 +156,9 @@ export default async function VenueDetailPage({
   const confirmedFeatures = Object.entries(v.features)
     .filter(([, value]) => value === "yes")
     .map(([feature]) => feature);
+  const unavailableFeatures = Object.entries(v.features)
+    .filter(([, value]) => value === "no")
+    .map(([feature]) => feature);
   const custom = VENUE_COPY[v.slug];
   const isDemo = isDemoVenue(v);
   const canonical = getVenueBySlug(v.slug);
@@ -193,21 +195,26 @@ export default async function VenueDetailPage({
           <FadeIn>
             {isDemo ? <DemoBanner /> : null}
             <Card className="overflow-hidden p-0">
-              <div className="border-b border-[#F1D8C7] bg-gradient-to-br from-[#FFE2D3] via-white to-[#FFF8F1] px-5 py-8 sm:px-8">
+              <div className="border-b border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-6 sm:px-8 sm:py-8">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                   <div className="space-y-4">
                     <div className="flex items-center gap-4">
-                      <span className="grid h-14 w-14 place-items-center rounded-2xl border border-[#F1D8C7] bg-white text-2xl shadow-[var(--shadow-soft)]">
+                      <span
+                        className="grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] text-xl"
+                        aria-hidden
+                      >
                         {venueEmoji(v.type)}
                       </span>
                       <div>
                         <p className="page-hero-eyebrow">Access report</p>
-                        <h1 className="mt-1 text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-heading sm:text-5xl">
+                        <h1 className="mt-1 text-3xl font-bold leading-[1.05] tracking-[-0.03em] text-heading sm:text-4xl">
                           {v.name}
                         </h1>
                         <div className="mt-2 flex flex-wrap items-center gap-2">
                           <span className="text-sm font-semibold text-muted">{v.location}</span>
-                          <span className="rounded-full bg-blue-pale px-3 py-1 text-xs font-semibold text-blue">{v.type}</span>
+                          <span className="rounded-full bg-[var(--color-information-soft)] px-3 py-1 text-xs font-semibold text-[var(--color-information)]">
+                            {v.type}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -229,50 +236,18 @@ export default async function VenueDetailPage({
                 </div>
               </div>
 
-              <div className="px-5 sm:px-8">
+              <div className="space-y-4 px-5 py-5 sm:px-8">
+                <VenueDecisionSummary
+                  venue={v}
+                  confirmedFeatures={confirmedFeatures}
+                  unavailableFeatures={unavailableFeatures}
+                  unknownCount={unknownCount}
+                />
                 <AccessCheckedMethodology
                   verification={v.verification}
                   confidence={v.confidence}
                   lastUpdated={v.lastUpdated}
                 />
-              </div>
-
-              <div className="grid gap-3 px-5 py-5 text-xs sm:grid-cols-2 lg:grid-cols-4 sm:px-8">
-                <div className="rounded-2xl border border-border bg-background-2 p-4">
-                  <span className="font-semibold text-heading">Verification</span>
-                  <div className="mt-2">
-                    <VerificationBadge status={v.verification} />
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-border bg-background-2 p-4">
-                  <span className="font-semibold text-heading">Last updated:</span> {v.lastUpdated}
-                </div>
-                <div className="rounded-2xl border border-border bg-background-2 p-4">
-                  <span className="font-semibold text-heading">Confidence</span>
-                  <div className="mt-2">
-                    <ConfidenceBadge level={v.confidence} />
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-border bg-background-2 p-4">
-                  <span className="font-semibold text-heading">Known access features:</span> {yesCount} confirmed
-                  {confirmedFeatures.length ? (
-                    <details className="mt-2">
-                      <summary className="cursor-pointer text-[11px] font-semibold text-blue">
-                        Show all confirmed features ({confirmedFeatures.length})
-                      </summary>
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {confirmedFeatures.map((feature) => (
-                          <span
-                            key={feature}
-                            className="rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-semibold text-heading"
-                          >
-                            {feature}
-                          </span>
-                        ))}
-                      </div>
-                    </details>
-                  ) : null}
-                </div>
               </div>
             </Card>
           </FadeIn>

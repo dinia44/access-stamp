@@ -27,7 +27,7 @@ export default async function SubmitVenuePage({
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
-              { label: "For Organisations", href: "/for-venues" },
+              { label: "For venues", href: "/for-venues" },
               { label: "Submit your venue" },
             ]}
           />

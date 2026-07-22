@@ -4,74 +4,122 @@
 @import "../styles/hero-finder.css";
 
 /*
- * Access Stamp — premium product design system
- * Warm ivory surfaces · burnt orange actions · olive trust accents
+ * Access Stamp — Warm Evidence design system
+ * Cream canvas · orange actions · sage trust · honest status colours
  */
 :root {
-  --color-bg: #fff8f1;
-  --color-surface: #ffffff;
-  --color-surface-warm: #fff3e8;
-  --color-text: #13201f;
-  --color-muted: #5e6a66;
-  --color-primary: #f04a16;
-  --color-primary-hover: #d93e10;
-  --color-primary-soft: #ffe2d3;
-  --color-secondary: #59682a;
-  --color-secondary-hover: #45521f;
-  --color-success: #2f7d32;
-  --color-border: #f1d8c7;
-  --color-footer: #102120;
+  color-scheme: light;
+
+  /* Foundations (OKLCH) */
+  --color-canvas: oklch(98% 0.018 80);
+  --color-surface: oklch(100% 0 0);
+  --color-surface-subtle: oklch(95% 0.025 80);
+  --color-border: oklch(87% 0.02 80);
+
+  /* Typography */
+  --color-ink: oklch(24% 0.025 185);
+  --color-text-muted: oklch(46% 0.025 185);
+
+  /* Brand action */
+  --color-brand: oklch(56% 0.20 35);
+  --color-brand-hover: oklch(50% 0.18 35);
+  --color-brand-pressed: oklch(46% 0.16 35);
+  --color-brand-soft: oklch(94% 0.035 35);
+
+  /* Confirmed evidence / trust */
+  --color-trust: oklch(42% 0.09 145);
+  --color-trust-soft: oklch(94% 0.04 145);
+
+  /* Neutral information */
+  --color-information: oklch(45% 0.12 245);
+  --color-information-soft: oklch(94% 0.035 245);
+
+  /* Confirm-before-travel / warning */
+  --color-warning: oklch(43% 0.11 75);
+  --color-warning-soft: oklch(95% 0.055 85);
+
+  /* Unavailable / error */
+  --color-danger: oklch(45% 0.18 25);
+  --color-danger-soft: oklch(94% 0.04 25);
+
+  /* Focus */
+  --color-focus-ring: oklch(48% 0.15 250);
+
+  /* Spacing (8px-derived) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+  --space-6: 3rem;
+  --space-7: 4rem;
+  --space-8: 6rem;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-pill: 999px;
+
+  /* Legacy aliases — keep existing classnames working */
+  --color-bg: var(--color-canvas);
+  --color-surface-warm: var(--color-surface-subtle);
+  --color-text: var(--color-ink);
+  --color-muted: var(--color-text-muted);
+  --color-primary: var(--color-brand);
+  --color-primary-hover: var(--color-brand-hover);
+  --color-primary-soft: var(--color-brand-soft);
+  --color-secondary: var(--color-trust);
+  --color-secondary-hover: oklch(36% 0.08 145);
+  --color-success: var(--color-trust);
+  --color-footer: oklch(18% 0.03 185);
 
   /* Venue finder legend tokens */
-  --vf-teal: var(--color-secondary);
-  --vf-teal-soft: #edf7ed;
-  --vf-blue: var(--color-primary);
-  --vf-blue-soft: var(--color-primary-soft);
+  --vf-teal: var(--color-trust);
+  --vf-teal-soft: var(--color-trust-soft);
+  --vf-blue: var(--color-brand);
+  --vf-blue-soft: var(--color-brand-soft);
   --vf-amber: var(--color-warning);
-  --vf-amber-soft: var(--amber-pale);
-  --vf-red: var(--color-error);
-  --vf-red-soft: var(--error-pale);
+  --vf-amber-soft: var(--color-warning-soft);
+  --vf-red: var(--color-danger);
+  --vf-red-soft: var(--color-danger-soft);
   --vf-ink: var(--color-ink);
-  --vf-muted: var(--color-muted);
+  --vf-muted: var(--color-text-muted);
   --vf-border: var(--color-border);
-  --vf-hero-subtitle: #c8d4d0;
+  --vf-hero-subtitle: oklch(72% 0.02 185);
 
-  --color-navy: #13201f;
-  --color-ink: #13201f;
-  --color-card: #ffffff;
-  --color-border-mid: #e8c4a8;
-  --color-accent: #59682a;
-  --color-gold: #d6a84f;
-  --color-verified: #2f7d32;
-  --color-warning: #b45309;
-  --color-error: #b91c1c;
+  --color-navy: var(--color-ink);
+  --color-card: var(--color-surface);
+  --color-border-mid: oklch(82% 0.03 70);
+  --color-accent: var(--color-trust);
+  --color-gold: oklch(72% 0.12 85);
+  --color-verified: var(--color-trust);
+  --color-error: var(--color-danger);
 
-  --background: var(--color-bg);
-  --background-2: #fff3e8;
-  --background-3: #fff0e4;
-  --card: var(--color-card);
+  --background: var(--color-canvas);
+  --background-2: var(--color-surface-subtle);
+  --background-3: oklch(96% 0.03 70);
+  --card: var(--color-surface);
   --heading: var(--color-ink);
-  --text: #2a3836;
-  --muted: var(--color-muted);
-  --navy: var(--color-navy);
-  --blue: var(--color-primary);
+  --text: oklch(32% 0.02 185);
+  --muted: var(--color-text-muted);
+  --navy: var(--color-ink);
+  --blue: var(--color-brand);
   --gold: var(--color-gold);
   --amber: var(--color-warning);
-  --verified: var(--color-verified);
-  --error: var(--color-error);
-  --blue-pale: #ffe2d3;
-  --amber-pale: #fffbeb;
-  --verified-pale: #edf7ed;
-  --error-pale: #fef2f2;
-  --navy-pale: #fff3e8;
+  --verified: var(--color-trust);
+  --error: var(--color-danger);
+  --blue-pale: var(--color-brand-soft);
+  --amber-pale: var(--color-warning-soft);
+  --verified-pale: var(--color-trust-soft);
+  --error-pale: var(--color-danger-soft);
+  --navy-pale: var(--color-surface-subtle);
   --border: var(--color-border);
-  --ring: var(--color-primary);
-  --shadow: 0 16px 40px -16px rgba(240, 74, 22, 0.12);
-  --shadow-soft: 0 4px 16px -6px rgba(240, 74, 22, 0.07);
-  --shadow-lift: 0 20px 48px -20px rgba(240, 74, 22, 0.16);
-  --radius-card: 20px;
-  --radius-ui: 14px;
-  --radius-pill: 999px;
+  --ring: var(--color-focus-ring);
+  --shadow: 0 12px 32px -16px oklch(40% 0.05 35 / 0.12);
+  --shadow-soft: 0 4px 14px -8px oklch(40% 0.04 35 / 0.08);
+  --shadow-lift: 0 16px 40px -20px oklch(40% 0.05 35 / 0.14);
+  --radius-card: var(--radius-lg);
+  --radius-ui: var(--radius-md);
 }
 
 @theme inline {
@@ -156,9 +204,15 @@ svg[data-as-icon="true"] {
 }
 
 :where(a, button, input, textarea, select, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 4px;
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
   border-radius: var(--radius-ui);
+}
+
+/* Sticky header clearance for in-page anchors */
+:target,
+[id] {
+  scroll-margin-top: 6.5rem;
 }
 
 .form-input {
@@ -174,9 +228,9 @@ svg[data-as-icon="true"] {
 }
 
 .form-input:focus-visible {
-  border-color: var(--color-primary);
-  outline: 3px solid var(--color-primary);
-  outline-offset: 4px;
+  border-color: var(--color-brand);
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
 }
 
 .form-label {

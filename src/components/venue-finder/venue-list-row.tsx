@@ -31,8 +31,8 @@ export function VenueListRow({ venue, userCenter, selected, onSelect }: Props) {
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-xs text-muted">{venue.type}</p>
           {isDemo ? (
-            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-950">
-              Demo listing
+            <span className="rounded-full bg-[var(--color-information-soft)] px-2 py-0.5 text-[10px] font-semibold text-[var(--color-information)]">
+              Demo example
             </span>
           ) : null}
         </div>
@@ -42,7 +42,7 @@ export function VenueListRow({ venue, userCenter, selected, onSelect }: Props) {
           {userCenter ? ` · ${distance}` : ""}
         </p>
         <div className="mt-2">
-          <VenueConfidenceBadge status={confidenceStatus} showHint={isDemo} />
+          <VenueConfidenceBadge status={confidenceStatus} showHint={false} />
         </div>
       </div>
 

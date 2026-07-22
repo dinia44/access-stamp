@@ -1,33 +1,40 @@
 /*
  * Access Stamp interaction tokens
- * Maps to the warm ivory / burnt orange design system in globals.css
+ * Maps to the Warm Evidence system in globals.css
  */
 :root {
-  --as-bg: var(--color-bg);
-  --as-bg-soft: var(--background-2);
-  --as-surface: var(--color-card);
+  --as-bg: var(--color-canvas);
+  --as-bg-soft: var(--color-surface-subtle);
+  --as-surface: var(--color-surface);
   --as-surface-raised: var(--background-3);
   --as-border: var(--color-border);
 
   --as-text: var(--color-ink);
-  --as-text-muted: var(--color-muted);
-  --as-text-soft: #8fa0b6;
+  --as-text-muted: var(--color-text-muted);
+  --as-text-soft: oklch(58% 0.02 185);
 
   --as-gold: var(--color-gold);
-  --as-blue: var(--color-secondary);
-  --as-green: var(--color-verified);
-  --as-red: var(--color-error);
-  --as-primary: var(--color-primary);
+  --as-blue: var(--color-information);
+  --as-green: var(--color-trust);
+  --as-red: var(--color-danger);
+  --as-primary: var(--color-brand);
 
-  --as-focus: var(--color-primary);
+  --as-focus: var(--color-focus-ring);
 
-  --as-radius-sm: 10px;
-  --as-radius-md: var(--radius-ui);
-  --as-radius-lg: var(--radius-card);
-  --as-radius-xl: calc(var(--radius-card) + 12px);
+  --as-radius-sm: var(--radius-sm);
+  --as-radius-md: var(--radius-md);
+  --as-radius-lg: var(--radius-lg);
+  --as-radius-xl: calc(var(--radius-lg) + 0.5rem);
 
   --as-shadow-soft: var(--shadow-soft);
   --as-shadow-card: var(--shadow-lift);
 
   --as-touch-min: 44px;
+
+  --as-space-1: var(--space-1);
+  --as-space-2: var(--space-2);
+  --as-space-3: var(--space-3);
+  --as-space-4: var(--space-4);
+  --as-space-5: var(--space-5);
+  --as-space-6: var(--space-6);
 }

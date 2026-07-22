@@ -51,26 +51,26 @@ export function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`sticky top-0 z-50 ${
+      className={`sticky top-0 z-50 border-b ${
         isHome
-          ? "border-b border-transparent bg-[var(--background)]/80 backdrop-blur-md"
-          : "border-b border-[#EFE5DA] bg-[#FDFBF8]/95 backdrop-blur-sm"
+          ? "border-[var(--color-border)]/60 bg-[var(--color-canvas)]/95 backdrop-blur-sm"
+          : "border-[var(--color-border)] bg-[var(--color-canvas)]/97 backdrop-blur-sm"
       }`}
     >
-      <div className="mx-auto flex min-h-[5.5rem] max-w-7xl items-center gap-4 px-4 py-2.5 sm:min-h-[6.25rem] sm:px-6 sm:py-3 lg:min-h-[8.75rem] lg:px-8">
+      <div className="mx-auto flex h-20 max-w-7xl items-center gap-3 px-4 sm:h-[5.5rem] sm:gap-4 sm:px-6 lg:h-24 lg:px-8">
         <Link
           href="/"
-          className="flex shrink-0 items-center rounded-md transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EF5B25]/40"
+          className="flex shrink-0 items-center rounded-md transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)]"
           aria-label="Access Stamp — home"
           onClick={closeMobileMenu}
         >
-          <SiteLogo priority className="h-auto w-[5.25rem] object-contain sm:w-24 lg:w-28" />
+          <SiteLogo priority className="h-auto w-[4.25rem] object-contain sm:w-[4.75rem] lg:w-[5.25rem]" />
         </Link>
 
         <MainNavigation onNavigate={closeMobileMenu} />
 
         <div className="hidden shrink-0 lg:block">
-          <ButtonLink href={PRIMARY_NAV_CTA.href} className="rounded-full px-5" onClick={closeMobileMenu}>
+          <ButtonLink href={PRIMARY_NAV_CTA.href} className="rounded-full px-4 text-sm" onClick={closeMobileMenu}>
             {PRIMARY_NAV_CTA.label}
           </ButtonLink>
         </div>

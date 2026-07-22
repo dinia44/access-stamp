@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ChatProvider } from "@/components/chat/provider";
-import { ChatWidgetLoader } from "@/components/chat/chat-widget-loader";
-import { AccessibilityControls } from "@/components/layout/AccessibilityControls";
+import { SiteUtilityDock } from "@/components/site-utility-dock";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteChrome } from "@/components/site-chrome";
 import { JsonLdScript } from "@/components/seo/json-ld-script";
@@ -72,8 +71,7 @@ export default function RootLayout({
             <main id="main-content" className="flex-1">{children}</main>
           </SiteChrome>
           <SiteFooter />
-          <AccessibilityControls />
-          <ChatWidgetLoader />
+          <SiteUtilityDock />
         </ChatProvider>
       </body>
     </html>
