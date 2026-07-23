@@ -2,6 +2,7 @@
 
 import type { GuideStep } from "@/lib/guide-content/types";
 import { Button } from "@/components/ui/Button";
+import { InteractiveChecklist } from "@/components/guide/interactive-checklist";
 import { cn } from "@/lib/utils";
 
 type GuideStepCardProps = {
@@ -29,6 +30,7 @@ function StatusBadge({ label, status }: { label: string; status: GuideStep["stat
 export function GuideStepCard({ step, expanded, onToggle, onAskAi }: GuideStepCardProps) {
   const { content } = step;
   const panelId = `guide-step-panel-${step.id}`;
+  const accessibleName = `Step ${step.number}: ${step.title} (${step.statusLabel})`;
 
   if (!expanded) {
     return (
@@ -37,6 +39,7 @@ export function GuideStepCard({ step, expanded, onToggle, onAskAi }: GuideStepCa
         id={`guide-step-trigger-${step.id}`}
         aria-expanded={false}
         aria-controls={panelId}
+        aria-label={accessibleName}
         onClick={onToggle}
         className="flex w-full min-h-[88px] items-start gap-4 rounded-2xl border border-[#F1D8C7] bg-white px-4 py-4 text-left shadow-[var(--shadow-soft)] transition-all hover:border-[#E8C4A8] hover:shadow-md focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-2 sm:items-center sm:px-5"
       >
@@ -53,21 +56,10 @@ export function GuideStepCard({ step, expanded, onToggle, onAskAi }: GuideStepCa
         >
           {step.status === "completed" ? "✓" : step.number}
         </span>
-        <span className="min-w-0 flex-1">
+        <span className="min-w-0 flex-1" aria-hidden>
           <span className="block text-sm font-bold text-heading">{step.title}</span>
           <span className="mt-1 block text-sm leading-6 text-muted">{step.preview}</span>
-          <ul className="mt-3 space-y-1.5" aria-label="Step highlights">
-            {content.checklist.slice(0, 3).map((item) => (
-              <li key={item} className="flex items-start gap-2 text-xs leading-5 text-[#2A3836]">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#59682A]" aria-hidden />
-                {item}
-              </li>
-            ))}
-          </ul>
           <span className="mt-2 flex flex-wrap items-center gap-2">
-            <span className="inline-flex rounded-full bg-[#FFF8F1] px-2 py-0.5 text-[10px] font-semibold text-[#59682A] ring-1 ring-[#F1D8C7]">
-              {step.outcome}
-            </span>
             <StatusBadge label={step.statusLabel} status={step.status} />
           </span>
         </span>
@@ -90,6 +82,7 @@ export function GuideStepCard({ step, expanded, onToggle, onAskAi }: GuideStepCa
         id={`guide-step-trigger-${step.id}`}
         aria-expanded={true}
         aria-controls={panelId}
+        aria-label={accessibleName}
         onClick={onToggle}
         className="flex w-full items-start gap-3 border-b border-[#F1D8C7] px-5 py-4 text-left transition-colors hover:bg-[#FFF8F1]/60 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-[-2px] sm:px-6"
       >
@@ -106,7 +99,7 @@ export function GuideStepCard({ step, expanded, onToggle, onAskAi }: GuideStepCa
         >
           {step.status === "completed" ? "✓" : step.number}
         </span>
-        <span className="min-w-0 flex-1">
+        <span className="min-w-0 flex-1" aria-hidden>
           <span className="block text-lg font-bold tracking-[-0.02em] text-heading">{step.title}</span>
           <span className="mt-1 block text-sm text-muted">{step.preview}</span>
         </span>
@@ -141,19 +134,7 @@ export function GuideStepCard({ step, expanded, onToggle, onAskAi }: GuideStepCa
           <h3 id={`${step.id}-checklist`} className="text-sm font-bold text-heading">
             Practical checklist
           </h3>
-          <ul className="mt-3 space-y-2 rounded-2xl border border-[#F1D8C7] bg-[#FFF8F1]/70 p-4">
-            {content.checklist.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-sm leading-6 text-text">
-                <span
-                  className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-[#E8C4A8] bg-white text-[10px] text-[#59682A]"
-                  aria-hidden
-                >
-                  □
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
+          <InteractiveChecklist items={content.checklist} labelledBy={`${step.id}-checklist`} />
         </section>
 
         {content.extraSections?.map((section) => (

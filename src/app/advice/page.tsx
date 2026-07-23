@@ -24,6 +24,7 @@ export default async function AdviceHubPage() {
     <>
       <SetChatContext page={{ kind: "advice" }} />
       <JsonLdScript data={buildAdviceHubCollectionJsonLd(articles)} />
+      {/* Order: identity + search → urgent help → topics → popular guides → standards */}
       {mostReadGuide ? <AdviceHubHero articles={articles} mostReadGuide={mostReadGuide} /> : null}
       <AdviceHubUrgentStrip />
       <AdviceHubTopicGrid />

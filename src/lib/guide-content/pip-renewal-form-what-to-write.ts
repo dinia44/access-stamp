@@ -137,7 +137,7 @@ export const PIP_RENEWAL_WORKFLOW: PracticalGuideWorkflow = {
   aiDisclaimer:
     "This guide is general information, not legal advice. Check GOV.UK and get welfare rights advice for your situation.",
   primaryCta: { label: "Start with my deadline" },
-  learnMoreHref: "https://www.gov.uk/pip/when-your-pip-claim-is-reviewed",
+  learnMoreHref: "/advice/rights",
   steps: [
     step({
       id: "deadline-and-changes",

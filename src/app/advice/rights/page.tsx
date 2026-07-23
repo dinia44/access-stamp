@@ -68,12 +68,9 @@ export default async function RightsPage() {
               <h1 className="font-[var(--font-heading)] text-4xl text-heading md:text-[2.75rem] md:leading-tight">
                 Your rights: built around what actually goes wrong
               </h1>
-              <p className="max-w-[80ch] text-base text-muted md:text-lg">
-                Across the UK the same friction points show up in search logs, advice centres, and community groups: reasonable
-                adjustments ignored or delayed, inaccessible booking systems, benefit decisions that do not match real life,
-                NHS pathways that are hard to navigate, housing and adaptations stuck in process, and complaints that go
-                nowhere without a clear paper trail. This hub links practical Access Stamp guides with those scenarios, pocket
-                cards you can download, and national services when you need backup.
+              <p className="max-w-[65ch] text-base text-muted md:text-lg">
+                Practical starting points for Equality Act barriers, delayed adjustments, benefit decisions, NHS access, and
+                complaints that need a clear paper trail — with guides, pocket cards, and national services when you need backup.
               </p>
               <p className="max-w-[80ch] text-sm text-muted">
                 Access Stamp is practical information, not legal advice. For court claims, complex discrimination cases, or
@@ -112,14 +109,14 @@ export default async function RightsPage() {
                     href={u.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-heading underline-offset-2 hover:underline"
+                    className="inline-flex min-h-[44px] items-center rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-heading underline-offset-2 hover:underline"
                   >
-                    {u.label}
+                    {u.label} (opens in a new tab)
                   </a>
                 ))}
                 <Link
                   href="/advice/mental-health-crisis"
-                  className="rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-blue underline-offset-2 hover:underline"
+                  className="inline-flex min-h-[44px] items-center rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-blue underline-offset-2 hover:underline"
                 >
                   Our crisis & rights guide →
                 </Link>
@@ -127,22 +124,40 @@ export default async function RightsPage() {
             </div>
           </Card>
 
-          <section className="space-y-6 scroll-mt-8" id="rights-essentials" aria-labelledby="rights-essentials-heading">
-            <h2 id="rights-essentials-heading" className="sr-only">
-              How UK disability rights work
-            </h2>
-            <RightsEssentials />
-          </section>
+          <Card className="border border-border p-5 sm:p-6">
+            <h2 className="font-[var(--font-heading)] text-xl font-semibold text-heading">Start here</h2>
+            <p className="mt-1 text-sm text-muted">High-value first moves before you dig into every guide.</p>
+            <ol className="mt-4 space-y-2.5 text-sm text-text">
+              {START_HERE.slice(0, 3).map((item, idx) => (
+                <li key={item} className="flex gap-2">
+                  <span className="font-semibold text-blue">{idx + 1}.</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button href="#rights-tracks">What are you trying to do?</Button>
+              <Button href="#rights-guides" variant="secondary">
+                Browse all rights guides
+              </Button>
+            </div>
+          </Card>
 
-          <section className="space-y-4">
+          <section className="space-y-4 scroll-mt-28" id="rights-tracks">
             <div className="max-w-3xl space-y-2">
-              <h2 className="font-[var(--font-heading)] text-2xl text-heading">Pick a situation (guided tracks)</h2>
+              <h2 className="font-[var(--font-heading)] text-2xl text-heading">What are you trying to do?</h2>
               <p className="text-sm text-muted md:text-base">
-                Six common “where do I even start?” paths. Each opens a hub or a strong entry guide; you can still search all
-                rights articles below.
+                Guided tracks for common starting points. Each opens a strong entry guide or focused hub.
               </p>
             </div>
             <RightsSituationPaths />
+          </section>
+
+          <section className="space-y-6 scroll-mt-28" id="rights-essentials" aria-labelledby="rights-essentials-heading">
+            <h2 id="rights-essentials-heading" className="font-[var(--font-heading)] text-2xl text-heading">
+              Plain-English overview
+            </h2>
+            <RightsEssentials />
           </section>
 
           <Card className="overflow-hidden border border-border p-0 sm:p-0">
@@ -151,40 +166,27 @@ export default async function RightsPage() {
                 <div>
                   <h2 className="font-[var(--font-heading)] text-xl font-semibold text-heading">Common sticking points</h2>
                   <p className="mt-1 text-sm text-muted">
-                    {situationCount} topics that mirror what people search for and what advice services see under the Equality
-                    Act, NHS, housing, benefits, and public services — each links to an on-site guide (or focused hub) plus
-                    independent references where helpful.
+                    A manageable set first — expand to see all {situationCount} scenarios with guide links and trusted sources.
                   </p>
                 </div>
                 <RightsCommonIssuesGrid />
               </div>
               <div className="border-t border-border bg-background-2 p-5 sm:p-6 lg:border-l lg:border-t-0 lg:p-8">
-                <div className="text-sm font-semibold text-heading">Start here</div>
-                <ol className="mt-3 space-y-2.5 text-sm text-text">
-                  {START_HERE.map((item, idx) => (
-                    <li key={item} className="flex gap-2">
-                      <span className="font-semibold text-blue">{idx + 1}.</span>
-                      <span>{item}</span>
+                <div className="text-sm font-semibold text-heading">National pointers</div>
+                <ul className="mt-3 space-y-2">
+                  {TRUSTED_LINKS.map((l) => (
+                    <li key={l.href}>
+                      <a
+                        href={l.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-semibold text-blue underline-offset-2 hover:underline"
+                      >
+                        {l.label} (opens in a new tab)
+                      </a>
                     </li>
                   ))}
-                </ol>
-                <div className="mt-5 rounded-[var(--radius-ui)] border border-border bg-card p-4">
-                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">National pointers</div>
-                  <ul className="mt-2 space-y-2">
-                    {TRUSTED_LINKS.map((l) => (
-                      <li key={l.href}>
-                        <a
-                          href={l.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm font-semibold text-blue underline-offset-2 hover:underline"
-                        >
-                          {l.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                </ul>
               </div>
             </div>
           </Card>
@@ -223,9 +225,9 @@ export default async function RightsPage() {
             </div>
           </section>
 
-          <section className="space-y-3">
+          <section className="space-y-3 scroll-mt-28" id="rights-guides">
             <div>
-              <h2 className="font-[var(--font-heading)] text-2xl text-heading">All rights guides (A–Z search)</h2>
+              <h2 className="font-[var(--font-heading)] text-2xl text-heading">All rights guides</h2>
               <p className="text-sm text-muted">
                 Reference library: every article in the Rights category. For context first, read the{" "}
                 <Link href="#rights-essentials" className="font-semibold text-blue underline-offset-2 hover:underline">

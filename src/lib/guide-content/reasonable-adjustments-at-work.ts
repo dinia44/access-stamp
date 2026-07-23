@@ -87,7 +87,7 @@ export const REASONABLE_ADJUSTMENTS_WORKFLOW: PracticalGuideWorkflow = {
   aiDisclaimer:
     "AI can make mistakes. Use this as practical guidance, not legal advice. Check important decisions with GOV.UK, Acas, Citizens Advice, your union or a legal adviser.",
   primaryCta: { label: "I'm ready to make my request" },
-  learnMoreHref: "/laws-guidance",
+  learnMoreHref: "/advice/workplace",
   steps: [
     step({
       id: "know-rights",

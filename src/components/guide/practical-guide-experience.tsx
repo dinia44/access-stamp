@@ -20,7 +20,6 @@ import { GuideScrollProgress } from "@/components/guide/guide-scroll-progress";
 import { GuideStepCard } from "@/components/guide/guide-step-card";
 import { GuideSupportColumn } from "@/components/guide/guide-support-column";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
 
 type PracticalGuideExperienceProps = {
   article: AdviceArticle;
@@ -108,13 +107,14 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
         <div className="mt-8">
           <GuideOverviewSection
             workflow={workflow}
-            categoryHref={workflow.learnMoreHref}
+            categoryHref={`/advice/${article.categorySlug}`}
             onAskAi={() => askAi()}
           />
         </div>
 
         <div className="mt-8">
-          <GuideJumpNav sections={jumpSections} className="mb-6 xl:hidden" />
+          {/* One primary in-page nav on mobile; sticky TOC on wide screens only */}
+          <GuideJumpNav sections={jumpSections} className="mb-6" />
           <GuideDetailSections workflow={workflow} onAskAi={(prefill) => askAi(prefill)} part="intro" />
         </div>
 
@@ -124,56 +124,68 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
           </div>
         ) : null}
 
-        <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px_300px] xl:gap-8">
-          {/* Main column */}
-          <div className="min-w-0 space-y-5 xl:col-span-1">
+        <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px] xl:gap-8">
+          <div className="min-w-0 space-y-5">
             <div ref={stepsRef} id="guide-steps" className="scroll-mt-28 space-y-5">
-            <h2 className="text-xl font-bold text-heading">Step-by-step</h2>
-            <GuideProgressStepper
-              currentStep={activeStep}
-              totalSteps={workflow.totalSteps}
-              stepLabels={stepLabels}
-              onJumpToStep={jumpToStep}
-            />
+              <h2 className="text-xl font-bold text-heading">Step-by-step</h2>
+              {/* Desktop-only progress dots — mobile uses On this page + step cards */}
+              <GuideProgressStepper
+                currentStep={activeStep}
+                totalSteps={workflow.totalSteps}
+                stepLabels={stepLabels}
+                onJumpToStep={jumpToStep}
+                className="hidden lg:block"
+              />
 
-            <div className="space-y-3" role="list" aria-label="Guide steps">
-              {stepsWithStatus.map((step) => (
-                <div key={step.id} role="listitem">
-                  <GuideStepCard
-                    step={step}
-                    expanded={expandedStepId === step.id}
-                    onToggle={() => toggleStep(step.id)}
-                    onAskAi={(prompt) => askAi(prompt)}
-                  />
-                </div>
-              ))}
-            </div>
-
-            <GuideBottomActionBar
-              completedCount={completedCount}
-              totalSteps={workflow.totalSteps}
-              primaryLabel={workflow.primaryCta.label}
-              onPrimary={() => askAi("I'm ready to make my request. Help me plan what to say.")}
-            />
-
-            {resources ? (
-              <div id="guide-full-guide-cta">
-                <GuideFullGuideCta resources={resources} className="print:hidden" />
+              <div className="space-y-3" role="list" aria-label="Guide steps">
+                {stepsWithStatus.map((step) => (
+                  <div key={step.id} role="listitem">
+                    <GuideStepCard
+                      step={step}
+                      expanded={expandedStepId === step.id}
+                      onToggle={() => toggleStep(step.id)}
+                      onAskAi={(prompt) => askAi(prompt)}
+                    />
+                  </div>
+                ))}
               </div>
-            ) : null}
 
-            <GuideDetailSections workflow={workflow} onAskAi={(prefill) => askAi(prefill)} part="detail" />
+              <GuideBottomActionBar
+                completedCount={completedCount}
+                totalSteps={workflow.totalSteps}
+                primaryLabel={workflow.primaryCta.label}
+                onPrimary={() => askAi("I'm ready to make my request. Help me plan what to say.")}
+              />
+
+              {resources ? (
+                <div id="guide-full-guide-cta">
+                  <GuideFullGuideCta resources={resources} className="print:hidden" />
+                </div>
+              ) : null}
+
+              <GuideDetailSections workflow={workflow} onAskAi={(prefill) => askAi(prefill)} part="detail" />
             </div>
           </div>
 
-          {/* Support column — below main on tablet, middle on desktop */}
-          <div className="order-3 xl:order-2">
-            <GuideJumpNav sections={jumpSections} className="mb-4 hidden xl:block" />
+          <div>
             <GuideSupportColumn workflow={workflow} article={article} resources={resources} onAskAi={() => askAi()} />
           </div>
+        </div>
 
-          {/* AI sidebar */}
-          <div className={cn("order-2 xl:order-3", !aiPanelOpen && "hidden xl:block")}>
+        {/* Single AI assistance panel — after substantive content */}
+        <div className="mt-8 max-w-3xl">
+          {!aiPanelOpen ? (
+            <Button
+              type="button"
+              variant="secondary"
+              size="lg"
+              className="w-full sm:w-auto"
+              onClick={() => setAiPanelOpen(true)}
+              aria-label="Open Access Stamp AI assistant for this guide"
+            >
+              Open Access Stamp AI for this guide
+            </Button>
+          ) : (
             <GuideAiSidebar
               intro={workflow.aiIntro}
               suggestions={workflow.aiSuggestions}
@@ -184,23 +196,7 @@ export function PracticalGuideExperience({ article, workflow, resources }: Pract
               guideTitle={title}
               onClose={() => setAiPanelOpen(false)}
             />
-          </div>
-        </div>
-
-        {/* Mobile AI toggle */}
-        <div className="mt-4 xl:hidden">
-          {!aiPanelOpen ? (
-            <Button
-              type="button"
-              variant="secondary"
-              size="lg"
-              className="w-full"
-              onClick={() => setAiPanelOpen(true)}
-              aria-label="Open Access Stamp AI assistant for this guide"
-            >
-              <span aria-hidden>✦</span> Open Access Stamp AI
-            </Button>
-          ) : null}
+          )}
         </div>
       </div>
     </div>

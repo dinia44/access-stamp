@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { PracticalGuideWorkflow } from "@/lib/guide-content/types";
+import { InteractiveChecklist } from "@/components/guide/interactive-checklist";
 import { Button } from "@/components/ui/Button";
 
 type GuideDetailSectionsProps = {
@@ -100,19 +101,11 @@ export function GuideDetailSections({ workflow, onAskAi, part = "all" }: GuideDe
             Evidence checklist
           </h2>
           <p className="mt-1 text-sm text-muted">Keep or gather these before you contact an organisation or submit a form.</p>
-          <ul className="mt-4 space-y-2 rounded-2xl border border-[#F1D8C7] bg-white p-4">
-            {evidenceChecklist.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-sm leading-6 text-text">
-                <span
-                  className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-[#E8C4A8] bg-[#FFF8F1] text-[10px] text-[#59682A]"
-                  aria-hidden
-                >
-                  □
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
+          <InteractiveChecklist
+            items={evidenceChecklist}
+            labelledBy="guide-evidence-heading"
+            className="mt-4 space-y-2 rounded-2xl border border-[var(--color-border)] bg-white p-4"
+          />
         </section>
       ) : null}
 

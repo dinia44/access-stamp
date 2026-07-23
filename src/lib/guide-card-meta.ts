@@ -29,7 +29,8 @@ export function getGuideCardPreviewBullets(article: AdviceArticle): string[] {
   if (steps.length >= 2) return steps.slice(0, 3);
 
   if (article.excerpt) return [article.excerpt];
-  return ["Practical steps you can take today", "Evidence prompts and copyable wording", "Official links where available"];
+  // Prefer a specific excerpt over generic template promises that do not distinguish guides.
+  return [];
 }
 
 export function getGuideIncludesLabel(article: AdviceArticle): string {

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { AdviceArticle } from "@/lib/content/types";
+import { InteractiveChecklist } from "@/components/guide/interactive-checklist";
 import { CopyableScript } from "@/components/design-system/copyable-script";
 import {
   getGuideEvidenceItems,
@@ -70,16 +71,11 @@ export function GuideArticleStructuredSections({ article }: { article: AdviceArt
           <h2 id="guide-evidence-heading" className="text-lg font-semibold text-heading">
             Evidence / checklist
           </h2>
-          <ul className="mt-3 space-y-2 rounded-2xl border border-border bg-background-2 p-4">
-            {evidence.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-sm leading-6 text-text">
-                <span className="mt-0.5 text-xs text-muted" aria-hidden>
-                  □
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
+          <InteractiveChecklist
+            items={evidence}
+            labelledBy="guide-evidence-heading"
+            className="mt-3 space-y-2 rounded-2xl border border-border bg-background-2 p-4"
+          />
         </section>
       ) : null}
 

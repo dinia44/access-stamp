@@ -87,7 +87,7 @@ export const ACCESS_TO_WORK_WORKFLOW: PracticalGuideWorkflow = {
   aiDisclaimer:
     "AI can make mistakes. Use this as practical guidance, not legal advice. Check important decisions with GOV.UK, Access to Work, Acas, Citizens Advice, your union or a legal adviser.",
   primaryCta: { label: "I'm ready to apply" },
-  learnMoreHref: "https://www.gov.uk/access-to-work",
+  learnMoreHref: "/advice/workplace",
   steps: [
     step({
       id: "understand-access-to-work",

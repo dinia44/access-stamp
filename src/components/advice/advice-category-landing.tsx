@@ -1,4 +1,5 @@
 import { AdviceArticleCard } from "@/components/advice/advice-article-card";
+import { AdviceCategoryGuideList } from "@/components/advice/advice-category-guide-list";
 import { AdviceManualCard } from "@/components/advice/advice-manual-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { PageHero, PageLayout, PageSectionTitle } from "@/components/page-layout";
@@ -159,23 +160,9 @@ export async function AdviceCategoryLanding({
           <section className="space-y-3">
             <PageSectionTitle
               title="All guides in this section"
-              description="Plain-language routes through transport, paperwork, and practical barriers."
+              description="Start with featured guides above, then browse the full list."
             />
-
-            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-              {articles.map((a) => (
-                <AdviceArticleCard
-                  key={a.slug}
-                  article={a}
-                  badgeTone="blue"
-                  meta={
-                    <div className="mt-2 text-xs font-semibold text-muted">
-                      Updated: {a.updated} · {readMinutes(a)} min read
-                    </div>
-                  }
-                />
-              ))}
-            </div>
+            <AdviceCategoryGuideList articles={articles} />
           </section>
     </PageLayout>
   );

@@ -37,7 +37,7 @@ export function GuideOverviewSection({ workflow, categoryHref, onAskAi }: GuideO
     <section className="space-y-6" aria-labelledby="guide-overview-heading">
       <div className="rounded-2xl border border-[#F1D8C7] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-8">
         <h2 id="guide-overview-heading" className="text-xl font-bold tracking-[-0.02em] text-heading sm:text-2xl">
-          Guide summary
+          At a glance
         </h2>
         <p className="mt-2 text-base leading-7 text-muted">{workflow.subtitle}</p>
         <ul className="mt-5 grid gap-3 sm:grid-cols-2">
