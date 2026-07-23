@@ -36,6 +36,7 @@ export function SiteUtilityDock() {
         bottom: "max(1rem, env(safe-area-inset-bottom))",
       }}
       data-testid="site-utility-dock"
+      aria-label="Site utilities dock"
     >
       {a11yOpen ? (
         <div id={panelId} className="max-h-[min(60vh,440px)] overflow-auto">

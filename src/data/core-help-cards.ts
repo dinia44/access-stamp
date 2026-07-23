@@ -1,9 +1,13 @@
+import type { HelpCardTaskCategoryId } from "@/lib/help-cards/categories";
+
 export type CoreHelpCard = {
   id: string;
   title: string;
   situation: string;
   checklist: string[];
   script: string;
+  categoryKey: Exclude<HelpCardTaskCategoryId, "all">;
+  cardTypeLabel: string;
   guideHref?: string;
 };
 
@@ -12,6 +16,8 @@ export const CORE_HELP_CARDS: CoreHelpCard[] = [
     id: "wheelchair-access-venue",
     title: "Ask a venue about wheelchair access",
     situation: 'Use this when a venue says "wheelchair accessible" but gives no useful detail.',
+    categoryKey: "venues",
+    cardTypeLabel: "Quick script",
     checklist: [
       "Step-free entrance location",
       "Narrowest doorway width",
@@ -26,6 +32,8 @@ export const CORE_HELP_CARDS: CoreHelpCard[] = [
     id: "reasonable-adjustments-work",
     title: "Ask for reasonable adjustments at work",
     situation: "Use this when work is becoming difficult, unsafe, or inaccessible.",
+    categoryKey: "work",
+    cardTypeLabel: "Quick script",
     checklist: [
       "What task is affected",
       "What barrier is causing the issue",
@@ -40,6 +48,8 @@ export const CORE_HELP_CARDS: CoreHelpCard[] = [
     id: "appointment-access",
     title: "Explain access needs before an appointment",
     situation: "Use this before a medical, council, Jobcentre, education, or service appointment.",
+    categoryKey: "healthcare",
+    cardTypeLabel: "Quick script",
     checklist: [
       "Step-free access",
       "Accessible toilet",
@@ -55,6 +65,8 @@ export const CORE_HELP_CARDS: CoreHelpCard[] = [
     id: "inaccessible-information",
     title: "Report inaccessible information",
     situation: "Use this when a website, document, form, or service is difficult to use.",
+    categoryKey: "information",
+    cardTypeLabel: "Quick script",
     checklist: [
       "What format is inaccessible",
       "What you need instead",

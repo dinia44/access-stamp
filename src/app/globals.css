@@ -445,7 +445,8 @@ body[data-dyslexia-font="on"] {
   footer,
   nav,
   .no-print,
-  .print\:hidden {
+  .print\:hidden,
+  .site-utility-dock {
     display: none !important;
   }
 

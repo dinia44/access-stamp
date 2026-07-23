@@ -3,7 +3,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { helpCardPacks } from "@/data/helpCardPacks";
 import { RenderHelpCard } from "@/components/help-cards/HelpCardComponents";
+import { HelpCardPackActionBar } from "@/components/help-cards/help-card-pack-actions";
+import { HelpCardAiPanel } from "@/components/help-cards/help-card-ai-panel";
+import { HelpCardReviewMetadata } from "@/components/help-cards/help-card-review-metadata";
+import { HelpCardPrintFooter } from "@/components/help-cards/help-card-print-footer";
 import { SetChatContext } from "@/components/chat/set-context";
+import { Container } from "@/components/container";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import "../help-cards.css";
 
@@ -40,68 +45,111 @@ export default async function HelpCardPackPage({ params }: PageProps) {
     notFound();
   }
 
+  const relatedPacks = helpCardPacks.filter((item) => item.slug !== pack.slug && item.categoryKey === pack.categoryKey).slice(0, 2);
+  const allSources = pack.cards.flatMap((card) => card.sources ?? []);
+
   return (
     <>
       <SetChatContext page={{ kind: "none" }} />
-      <main className="hc-landing min-h-screen bg-[#FFF7EF] text-[#132033]">
-        <section className="border-b border-[#EED8C6] bg-[linear-gradient(180deg,#FFF1E6_0%,#FFF8F1_58%,#FFF7EF_100%)] px-5 py-14 sm:px-8 lg:px-10 lg:py-20">
-          <div className="mx-auto max-w-[1100px]">
+      <div className="hc-landing help-cards-page min-h-screen bg-[var(--color-canvas)] text-[var(--color-ink)]">
+        <Container className="help-cards-content py-8 md:py-12">
+          <nav aria-label="Breadcrumb" className="no-print">
             <Link
               href="/help-cards"
-              className="inline-flex min-h-[44px] items-center rounded-2xl border border-[#E0C8B3] bg-white/70 px-4 text-sm font-extrabold text-[#132033] transition hover:border-[#F05A1A] hover:bg-white focus:outline-none focus:ring-4 focus:ring-[#F97316]/20"
+              className="inline-flex min-h-[44px] items-center text-sm font-semibold text-[var(--color-brand)] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)]"
             >
-              ← Back to help cards
+              ← Back to Help Cards
             </Link>
+          </nav>
 
-            <p className="mt-10 text-xs font-black uppercase tracking-[0.22em] text-[#F05A1A]">
-              {pack.category}
-            </p>
-
-            <h1 className="mt-4 max-w-[880px] text-balance text-[clamp(3rem,6vw,6rem)] font-black leading-[0.94] tracking-[-0.06em] text-[#132033]">
+          <header className="mt-6 max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-brand)]">{pack.category}</p>
+            <h1 className="mt-3 font-[family-name:var(--font-heading)] text-4xl font-medium tracking-[-0.03em] sm:text-5xl">
               {pack.title}
             </h1>
+            <p className="mt-4 text-base leading-7 text-[var(--color-text-muted)] sm:text-lg">{pack.description}</p>
 
-            <p className="mt-6 max-w-[760px] text-lg leading-8 text-[#5F6875] sm:text-xl sm:leading-9">
-              {pack.description}
-            </p>
-
-            <div className="mt-7 rounded-[28px] border border-[#EAD5C2] bg-white/70 p-5">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#F05A1A]">
-                Use this when
-              </p>
-              <p className="mt-2 text-base font-semibold leading-7 text-[#132033]">
-                {pack.useWhen}
-              </p>
+            <div className="mt-5 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-brand)]">Use this when</p>
+              <p className="mt-2 text-base font-medium leading-7 text-[var(--color-ink)]">{pack.useWhen}</p>
             </div>
 
-            <div className="no-print mt-7 flex flex-wrap gap-3">
-              {["Save pack", "Print pack", "Copy quick line", "Tailor with AI"].map((action) => (
-                <button
-                  key={action}
-                  type="button"
-                  className="inline-flex min-h-[46px] items-center justify-center rounded-2xl border border-[#E0C8B3] bg-white/70 px-5 text-sm font-extrabold text-[#132033] transition hover:border-[#F05A1A] hover:bg-white focus:outline-none focus:ring-4 focus:ring-[#F97316]/20"
-                >
-                  {action}
-                </button>
+            <div className="mt-5">
+              <HelpCardReviewMetadata pack={pack} />
+            </div>
+
+            <div className="mt-6">
+              <HelpCardPackActionBar pack={pack} />
+            </div>
+          </header>
+
+          <section className="mt-12" aria-labelledby="cards-in-pack-heading">
+            <h2 id="cards-in-pack-heading" className="text-2xl font-semibold text-[var(--color-ink)]">
+              Cards in this pack
+            </h2>
+            <div className="mt-6 grid gap-6">
+              {pack.cards.map((card) => (
+                <RenderHelpCard key={card.id} card={card} />
               ))}
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section className="px-5 py-12 sm:px-8 lg:px-10 lg:py-16">
-          <div className="mx-auto grid max-w-[1100px] gap-6">
-            {pack.cards.map((card) => (
-              <RenderHelpCard key={card.id} card={card} />
-            ))}
-          </div>
-        </section>
+          {allSources.length > 0 ? (
+            <section id="official-sources" className="mt-12 max-w-3xl" aria-labelledby="official-sources-heading">
+              <h2 id="official-sources-heading" className="text-xl font-semibold text-[var(--color-ink)]">
+                Official sources
+              </h2>
+              <ul className="mt-4 list-disc space-y-2 pl-5" role="list">
+                {allSources.map((source) => (
+                  <li key={`${source.label}-${source.href ?? "nolink"}`}>
+                    {source.href ? (
+                      <a
+                        href={source.href}
+                        className="text-sm font-semibold text-[var(--color-brand)] underline underline-offset-4"
+                      >
+                        {source.label}
+                      </a>
+                    ) : (
+                      <span className="text-sm font-semibold text-[var(--color-ink)]">{source.label}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
-        <section className="px-5 pb-20 sm:px-8 lg:px-10">
-          <div className="mx-auto max-w-[1100px] rounded-[28px] border border-[#EAD5C2] bg-white/70 p-6 text-sm leading-7 text-[#68717E]">
-            <strong className="text-[#132033]">Important:</strong> Access Stamp provides practical prompts and source-backed summaries. It does not provide medical, legal or financial advice. Always check the official source before relying on a card.
+          <section className="mt-10 max-w-3xl rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 text-sm leading-7 text-[var(--color-text-muted)]">
+            <strong className="text-[var(--color-ink)]">Important:</strong> Access Stamp provides practical prompts and
+            source-backed summaries. It does not provide medical, legal or financial advice. Always check the official
+            source before relying on a card. This pack is not an official document.
+            <HelpCardPrintFooter packSlug={pack.slug} />
+          </section>
+
+          <div className="mt-10 max-w-3xl">
+            <HelpCardAiPanel pack={pack} />
           </div>
-        </section>
-      </main>
+
+          {relatedPacks.length > 0 ? (
+            <section className="no-print mt-12" aria-labelledby="related-packs-heading">
+              <h2 id="related-packs-heading" className="text-xl font-semibold text-[var(--color-ink)]">
+                Related packs
+              </h2>
+              <ul className="mt-4 grid list-none gap-3 p-0 sm:grid-cols-2" role="list">
+                {relatedPacks.map((item) => (
+                  <li key={item.slug}>
+                    <Link
+                      href={`/help-cards/${item.slug}`}
+                      className="inline-flex min-h-[44px] items-center text-sm font-semibold text-[var(--color-brand)] underline-offset-4 hover:underline"
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+        </Container>
+      </div>
     </>
   );
 }

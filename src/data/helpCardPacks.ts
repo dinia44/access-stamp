@@ -1,3 +1,5 @@
+import type { HelpCardTaskCategoryId } from "@/lib/help-cards/categories";
+
 export type HelpCardType =
   | "quick-script"
   | "adjustment-request"
@@ -20,6 +22,7 @@ export type HelpCard = {
     label: string;
     href?: string;
   }[];
+  /** ISO date YYYY-MM-DD. Never use placeholders. */
   lastChecked?: string;
   disclaimer?: string;
 };
@@ -28,9 +31,14 @@ export type HelpCardPack = {
   slug: string;
   title: string;
   category: string;
+  categoryKey: Exclude<HelpCardTaskCategoryId, "all">;
   description: string;
   useWhen: string;
   urgency: "low" | "medium" | "high";
+  jurisdiction?: string;
+  /** ISO date YYYY-MM-DD. Omit when unavailable — never invent or use placeholders. */
+  lastReviewed?: string;
+  highStakes?: boolean;
   cards: HelpCard[];
 };
 
@@ -39,11 +47,14 @@ export const helpCardPacks: HelpCardPack[] = [
     slug: "section-88-driving-licence",
     title: "Section 88 driving licence pack",
     category: "Driving / DVLA",
+    categoryKey: "driving",
     description:
       "Cards for explaining a DVLA application situation clearly, carrying the right evidence, and checking official sources.",
     useWhen:
       "Use this when someone needs to explain that they have applied to DVLA and need clear wording about their position.",
     urgency: "high",
+    highStakes: true,
+    jurisdiction: "UK-wide",
     cards: [
       {
         id: "section-88-quick-script",
@@ -82,7 +93,6 @@ export const helpCardPacks: HelpCardPack[] = [
             href: "https://www.legislation.gov.uk/ukpga/1988/52/section/88",
           },
         ],
-        lastChecked: "Add latest review date",
         disclaimer:
           "This is a practical summary, not a legal document. Check official sources before relying on it.",
       },
@@ -117,11 +127,13 @@ export const helpCardPacks: HelpCardPack[] = [
     slug: "job-interview-adjustments",
     title: "Job interview adjustment pack",
     category: "Work & interviews",
+    categoryKey: "work",
     description:
       "Cards for asking for interview adjustments, explaining access needs and following up in writing.",
     useWhen:
       "Use this before or during a job interview process where reasonable adjustments may be needed.",
     urgency: "medium",
+    jurisdiction: "UK-wide",
     cards: [
       {
         id: "job-interview-quick-script",
@@ -168,11 +180,14 @@ export const helpCardPacks: HelpCardPack[] = [
     slug: "blue-badge-issue",
     title: "Blue Badge issue pack",
     category: "Parking / Travel",
+    categoryKey: "driving",
     description:
       "Cards for explaining Blue Badge access issues, parking disputes, and evidence to keep available.",
     useWhen:
       "Use this when there is confusion, challenge or dispute around Blue Badge parking access.",
     urgency: "high",
+    highStakes: true,
+    jurisdiction: "England, Scotland and Wales (local rules vary)",
     cards: [
       {
         id: "blue-badge-quick-script",
@@ -205,11 +220,13 @@ export const helpCardPacks: HelpCardPack[] = [
     slug: "gp-appointment-access",
     title: "GP appointment access pack",
     category: "Healthcare",
+    categoryKey: "healthcare",
     description:
       "Cards for explaining access needs, communication needs, symptoms, and practical support before or during a GP appointment.",
     useWhen:
       "Use this when booking, attending, or following up after a GP appointment.",
     urgency: "medium",
+    jurisdiction: "UK-wide (local practice procedures vary)",
     cards: [
       {
         id: "gp-reception-script",
@@ -241,11 +258,13 @@ export const helpCardPacks: HelpCardPack[] = [
     slug: "social-care-assessment",
     title: "Social care assessment pack",
     category: "Care / Support",
+    categoryKey: "care",
     description:
       "Cards for explaining daily needs, safety risks, carer impact and support needs during a care assessment.",
     useWhen:
       "Use this before or during a social care assessment or review.",
     urgency: "medium",
+    jurisdiction: "England (procedures differ across the UK)",
     cards: [
       {
         id: "social-care-quick-script",
@@ -277,3 +296,11 @@ export const helpCardPacks: HelpCardPack[] = [
     ],
   },
 ];
+
+export function getHelpCardPack(slug: string): HelpCardPack | undefined {
+  return helpCardPacks.find((pack) => pack.slug === slug);
+}
+
+export function getPackCardTypes(pack: HelpCardPack): string[] {
+  return Array.from(new Set(pack.cards.map((card) => card.label)));
+}

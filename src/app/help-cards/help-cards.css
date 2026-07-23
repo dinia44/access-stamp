@@ -1,48 +1,37 @@
-/* Help Cards landing — page shell tokens */
+/* Help Cards — Warm Evidence card wallet */
 
 .hc-landing {
-  --hc-bg: #fff7ef;
-  --hc-ink: #132033;
-  --hc-muted: #5b6472;
-  --hc-orange: #f97316;
-  --hc-border: #ead7c5;
-  --hc-card: rgba(255, 255, 255, 0.78);
+  --hc-bg: var(--color-canvas);
+  --hc-ink: var(--color-ink);
+  --hc-muted: var(--color-text-muted);
+  --hc-orange: var(--color-brand);
+  --hc-border: var(--color-border);
+  --hc-card: var(--color-surface);
 }
 
-.hc-landing :where(a, button):focus-visible {
-  outline: 3px solid rgba(249, 115, 22, 0.42);
+.help-cards-page {
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.help-cards-content {
+  max-width: 72rem;
+}
+
+.hc-landing :where(a, button, input, summary):focus-visible {
+  outline: 3px solid color-mix(in oklch, var(--color-focus-ring) 70%, transparent);
   outline-offset: 3px;
 }
 
-/* Prevent floating accessibility controls from covering hero content */
-.accessibility-controls,
-.accessibility-widget,
-.accessibility-button,
-[data-accessibility-widget],
-[data-testid="accessibility-widget"] {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  left: auto;
-  z-index: 50;
+/* Keep floating utilities clear of help-card actions and safe areas */
+.help-cards-page ~ .site-utility-dock,
+body:has(.help-cards-page) .site-utility-dock {
+  bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+  right: max(1rem, env(safe-area-inset-right, 0px));
 }
 
 @media (max-width: 640px) {
-  .accessibility-controls,
-  .accessibility-widget,
-  .accessibility-button,
-  [data-accessibility-widget],
-  [data-testid="accessibility-widget"] {
-    right: 16px;
-    bottom: 16px;
-  }
-
-  .accessibility-controls button:first-of-type {
-    max-width: 52px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: clip;
-    padding-inline: 12px;
+  body:has(.help-cards-page) .site-utility-dock {
+    bottom: max(1rem, env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -54,5 +43,36 @@
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+@media print {
+  .help-cards-page {
+    padding-bottom: 0 !important;
+    background: white !important;
+    color: #000 !important;
+  }
+
+  .help-cards-page .no-print,
+  .site-utility-dock,
+  header,
+  footer,
+  nav {
+    display: none !important;
+  }
+
+  .help-card-print-area {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 1px solid #111 !important;
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+
+  .help-cards-page a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    word-break: break-all;
   }
 }

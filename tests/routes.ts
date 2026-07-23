@@ -5,6 +5,7 @@ export const SMOKE_ROUTES = [
   "/advice",
   "/advice/pip-in-plain-english",
   "/help-cards",
+  "/help-cards/section-88-driving-licence",
   "/ai-toolkit",
   "/ai-toolkit/letter-builder",
   "/ai-toolkit/article-companion",

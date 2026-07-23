@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node --experimental-strip-types scripts/validate-venues.ts",
+    "prebuild": "node --experimental-strip-types scripts/validate-venues.ts && node --experimental-strip-types scripts/validate-help-cards.ts",
     "validate:venues": "node --experimental-strip-types scripts/validate-venues.ts",
+    "validate:help-cards": "node --experimental-strip-types scripts/validate-help-cards.ts",
     "build": "next build",
     "analyze": "ANALYZE=true next build --webpack",
     "start": "next start",
