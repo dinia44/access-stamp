@@ -180,16 +180,44 @@ export function buildDefaultGuideFaqs(article: AdviceArticle): GuideFaq[] {
   const who = extractSectionItems(article, "Who this applies to");
   const mistakes = extractSectionItems(article, "Common mistakes to avoid");
   const ifRefused = extractSectionItems(article, "If you are refused, delayed, or ignored");
+  const evidence = extractSectionItems(article, "What evidence helps");
   const summary = article.excerpt ?? article.sections.find((s) => s.type === "p" && "text" in s)?.text ?? "";
+  const template = article.sections.find((s) => s.type === "pre" && "text" in s && s.text.trim());
+  const templateBody = template?.type === "pre" ? template.text.trim() : undefined;
 
   const faqs: GuideFaq[] = [];
 
-  if (who.length) {
+  if (who.length || summary) {
     faqs.push({
       id: "who-applies",
       question: "Who does this guide apply to?",
-      explanation: summary,
-      whatToDoNext: who.slice(0, 4),
+      explanation: summary || "This guide is for people facing this barrier and anyone supporting them.",
+      whatToDoNext: who.length ? who.slice(0, 4) : ["Read the At a glance section", "Start with step 1"],
+    });
+  }
+
+  const steps = extractSectionItems(article, "Step-by-step process");
+  // Steps may live in a callout body for buildGuide articles
+  let stepActions = steps;
+  if (!stepActions.length) {
+    const stepsCallout = article.sections.find((s) => s.type === "callout" && s.tone === "steps");
+    if (stepsCallout?.type === "callout") {
+      stepActions = stepsCallout.body
+        .split(/\n+/)
+        .map((line) => line.replace(/^\d+\)\s*/, "").trim())
+        .filter(Boolean);
+    }
+  }
+  if (stepActions.length) {
+    faqs.push({
+      id: "first-steps",
+      question: "What should I do first?",
+      explanation:
+        article.quickAnswer ??
+        "Work through the steps in order. Keep notes and copies as you go — the same approach as our detailed PIP and workplace guides.",
+      whatToDoNext: (article.firstThreeActions ?? stepActions).slice(0, 5),
+      evidenceChecklist: evidence.slice(0, 4),
+      exampleWording: templateBody?.slice(0, 400),
     });
   }
 
@@ -197,7 +225,7 @@ export function buildDefaultGuideFaqs(article: AdviceArticle): GuideFaq[] {
     faqs.push({
       id: "common-mistakes",
       question: "What mistakes should I avoid?",
-      explanation: "These are the errors that most often slow people down or weaken their case.",
+      explanation: "These are the errors that most often weaken evidence or miss deadlines.",
       whatToDoNext: mistakes.slice(0, 5),
     });
   }
@@ -210,16 +238,16 @@ export function buildDefaultGuideFaqs(article: AdviceArticle): GuideFaq[] {
         extractParagraphAfterH2(article, "If you are refused, delayed, or ignored") ??
         "Keep written records and use the escalation routes below.",
       whatToDoNext: ifRefused.slice(0, 5),
+      exampleWording: templateBody?.slice(0, 400),
     });
   }
 
-  const steps = extractSectionItems(article, "Step-by-step process");
-  if (steps.length) {
+  if (evidence.length && !faqs.some((f) => f.id === "first-steps")) {
     faqs.push({
-      id: "first-steps",
-      question: "What should I do first?",
-      explanation: "Work through these steps in order. You can return to earlier steps if your situation changes.",
-      whatToDoNext: steps.slice(0, 5),
+      id: "evidence",
+      question: "What evidence helps?",
+      explanation: "Match evidence to the barrier or activity you describe — not only a diagnosis label.",
+      evidenceChecklist: evidence.slice(0, 6),
     });
   }
 

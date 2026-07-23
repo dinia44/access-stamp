@@ -310,6 +310,18 @@ Yours sincerely,
       { label: "PIP renewal form guide", href: "/advice/pip-renewal-form-what-to-write" },
       { label: "PIP in plain English", href: "/advice/pip-in-plain-english" },
     ],
+    quickAnswer:
+      "Ask DWP to look again within the deadline on your decision letter. Challenge each reason with dated functional examples — not only a diagnosis letter.",
+    firstThreeActions: [
+      "Note the decision date and MR deadline on your letter.",
+      "Request the assessment report if you had an assessment.",
+      "Draft a point-by-point response to DWP’s stated reasons.",
+    ],
+    cardPreviewBullets: [
+      "Deadlines are usually one month from the decision letter",
+      "Address DWP’s reasons with dated examples",
+      "Keep proof of submission for MR and appeal",
+    ],
   }),
 
   buildGuide({
@@ -790,6 +802,18 @@ Why closer parking is needed: [cannot reliably reach destination from standard p
     ],
     relatedLinks: [
       { label: "Driving, Blue Badge and enforcement", href: "/advice/driving-parking-enforcement-basics" },
+    ],
+    quickAnswer:
+      "Check automatic eligibility first. For discretionary awards, describe how far you can walk, what aids you use, and why closer parking is needed — then renew before expiry.",
+    firstThreeActions: [
+      "Check GOV.UK automatic eligibility criteria.",
+      "Note your badge expiry date and council processing times.",
+      "Draft a short mobility impact summary for discretionary evidence.",
+    ],
+    cardPreviewBullets: [
+      "Automatic vs discretionary routes differ",
+      "Functional walking evidence beats diagnosis alone",
+      "Renew before expiry to avoid gaps",
     ],
   }),
 

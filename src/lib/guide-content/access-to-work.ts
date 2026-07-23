@@ -2,11 +2,28 @@ import type { PracticalGuideWorkflow } from "@/lib/guide-content/types";
 import { step } from "@/lib/guide-content/types";
 
 export const ACCESS_TO_WORK_WORKFLOW: PracticalGuideWorkflow = {
+  displayTitle: "Access to Work: what you can ask for and how to apply",
   subtitle:
     "A practical, step-by-step guide to what Access to Work can fund, how to apply, and how to ask for the right support with confidence.",
-  currentStep: 2,
+  quickAnswer:
+    "Describe the work barrier, the impact on your job, and the support you need. Access to Work can help with extra disability-related costs — it does not replace your employer’s duty to make reasonable adjustments.",
+  whoThisIsFor: [
+    "Disabled people starting or staying in paid work who face extra costs because of disability.",
+    "Employees and self-employed people who need equipment, travel support, or a support worker.",
+    "Supporters helping someone prepare an Access to Work application with consent.",
+  ],
+  firstThreeActions: [
+    "List your main work barriers and the tasks they affect.",
+    "Check GOV.UK eligibility and what Access to Work may fund.",
+    "Gather job details, employer contacts, and quotes before you apply.",
+  ],
+  warningBox: {
+    title: "Practical information only",
+    text: "Access to Work rules and funding can change. Check GOV.UK and keep copies of applications, decisions, and receipts. This is not legal advice.",
+  },
+  currentStep: 1,
   totalSteps: 6,
-  completedCount: 1,
+  completedCount: 0,
   summary: [
     "Understand what Access to Work is",
     "Identify support you may need",
@@ -96,7 +113,7 @@ export const ACCESS_TO_WORK_WORKFLOW: PracticalGuideWorkflow = {
       preview: "Learn what Access to Work can help with and where it fits alongside reasonable adjustments.",
       outcome: "Outcome: support overview",
       statusLabel: "Start here",
-      status: "completed",
+      status: "active",
       content: {
         intro:
           "Access to Work is a UK government support scheme that can help disabled people and people with health conditions get or stay in work. It can help with extra work-related costs linked to disability or a health condition.",
@@ -129,8 +146,8 @@ export const ACCESS_TO_WORK_WORKFLOW: PracticalGuideWorkflow = {
       title: "Work out what support you might need",
       preview: "Identify the work barriers and turn them into possible support needs.",
       outcome: "Outcome: support needs list",
-      statusLabel: "In progress",
-      status: "active",
+      statusLabel: "Core process",
+      status: "upcoming",
       content: {
         intro:
           "Before applying, get clear about what is making work difficult. Access to Work is more likely to make sense when you can explain the barrier, how it affects your work, and what support could help.",

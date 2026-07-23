@@ -3,10 +3,27 @@ import { step } from "@/lib/guide-content/types";
 
 export const REASONABLE_ADJUSTMENTS_WORKFLOW: PracticalGuideWorkflow = {
   displayTitle: "Reasonable adjustments at work: your rights",
-  subtitle: "A practical, step-by-step guide with AI support",
-  currentStep: 2,
+  subtitle:
+    "How to identify workplace barriers, write a clear request, and know what to do if your employer delays or refuses.",
+  quickAnswer:
+    "Explain the barrier, the impact on your work, and a practical adjustment that would help. You do not need a formal diagnosis to ask — keep it in writing and track the response.",
+  whoThisIsFor: [
+    "Employees and workers who face a substantial disadvantage at work because of disability or long-term condition.",
+    "People returning to work after illness or diagnosis who need changes to hours, equipment, or environment.",
+    "Supporters helping someone draft an adjustment request with consent.",
+  ],
+  firstThreeActions: [
+    "List the workplace barriers that affect specific tasks.",
+    "Match each barrier to one or two practical adjustments.",
+    "Send a short written request and keep a dated copy.",
+  ],
+  warningBox: {
+    title: "Time limits matter if things escalate",
+    text: "If you later need ACAS early conciliation or a tribunal claim, deadlines are strict. Keep records from day one — this guide is practical information, not legal advice.",
+  },
+  currentStep: 1,
   totalSteps: 6,
-  completedCount: 1,
+  completedCount: 0,
   summary: [
     "Understand what reasonable adjustments are",
     "Identify the workplace barriers affecting you",
@@ -95,8 +112,8 @@ export const REASONABLE_ADJUSTMENTS_WORKFLOW: PracticalGuideWorkflow = {
       title: "Know your rights",
       preview: "Understand what reasonable adjustments are and when employers must act.",
       outcome: "Outcome: rights overview",
-      statusLabel: "Completed",
-      status: "completed",
+      statusLabel: "Start here",
+      status: "active",
       content: {
         intro:
           "Under the Equality Act 2010, employers must make reasonable adjustments where a disabled worker or job applicant faces a substantial disadvantage compared with non-disabled people.",
@@ -129,8 +146,8 @@ export const REASONABLE_ADJUSTMENTS_WORKFLOW: PracticalGuideWorkflow = {
       title: "Identify adjustments that could help",
       preview: "Map workplace barriers to practical changes in environment, patterns and communication.",
       outcome: "Outcome: barrier map",
-      statusLabel: "In progress",
-      status: "active",
+      statusLabel: "Core process",
+      status: "upcoming",
       content: {
         intro:
           "Think about the barriers you face and what could make work more accessible. Strong requests link a specific barrier to a practical change that would reduce disadvantage.",
