@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { helpCardPacks } from "@/data/helpCardPacks";
-import { RenderHelpCard } from "@/components/help-cards/HelpCardComponents";
-import { HelpCardPackActionBar } from "@/components/help-cards/help-card-pack-actions";
+import { getHelpCard, getPublishedHelpCards, HELP_CARDS } from "@/data/helpCards";
+import { HelpCardDetailBody } from "@/components/help-cards/help-card-detail-body";
 import { HelpCardAiPanel } from "@/components/help-cards/help-card-ai-panel";
-import { HelpCardReviewMetadata } from "@/components/help-cards/help-card-review-metadata";
+import { OfficialSourceList } from "@/components/help-cards/official-source-list";
 import { HelpCardPrintFooter } from "@/components/help-cards/help-card-print-footer";
 import { SetChatContext } from "@/components/chat/set-context";
 import { Container } from "@/components/container";
@@ -17,36 +16,31 @@ type PageProps = {
 };
 
 export function generateStaticParams() {
-  return helpCardPacks.map((pack) => ({
-    slug: pack.slug,
-  }));
+  return HELP_CARDS.map((card) => ({ slug: card.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await Promise.resolve(params);
-  const pack = helpCardPacks.find((item) => item.slug === slug);
-
-  if (!pack) {
-    return {};
-  }
-
+  const card = getHelpCard(slug);
+  if (!card) return {};
   return buildPageMetadata({
-    title: pack.title,
-    description: pack.description,
-    path: `/help-cards/${pack.slug}`,
+    title: card.title,
+    description: card.summary,
+    path: `/help-cards/${card.slug}`,
   });
 }
 
-export default async function HelpCardPackPage({ params }: PageProps) {
+export default async function HelpCardDetailPage({ params }: PageProps) {
   const { slug } = await Promise.resolve(params);
-  const pack = helpCardPacks.find((item) => item.slug === slug);
+  const card = getHelpCard(slug);
 
-  if (!pack) {
+  if (!card || card.publicationState !== "published") {
     notFound();
   }
 
-  const relatedPacks = helpCardPacks.filter((item) => item.slug !== pack.slug && item.categoryKey === pack.categoryKey).slice(0, 2);
-  const allSources = pack.cards.flatMap((card) => card.sources ?? []);
+  const related = getPublishedHelpCards()
+    .filter((item) => item.slug !== card.slug && item.categoryKey === card.categoryKey)
+    .slice(0, 2);
 
   return (
     <>
@@ -63,79 +57,46 @@ export default async function HelpCardPackPage({ params }: PageProps) {
           </nav>
 
           <header className="mt-6 max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-brand)]">{pack.category}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-brand)]">{card.category}</p>
             <h1 className="mt-3 font-[family-name:var(--font-heading)] text-4xl font-medium tracking-[-0.03em] sm:text-5xl">
-              {pack.title}
+              {card.title}
             </h1>
-            <p className="mt-4 text-base leading-7 text-[var(--color-text-muted)] sm:text-lg">{pack.description}</p>
-
-            <div className="mt-5 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-brand)]">Use this when</p>
-              <p className="mt-2 text-base font-medium leading-7 text-[var(--color-ink)]">{pack.useWhen}</p>
-            </div>
-
-            <div className="mt-5">
-              <HelpCardReviewMetadata pack={pack} />
-            </div>
-
-            <div className="mt-6">
-              <HelpCardPackActionBar pack={pack} />
-            </div>
+            <p className="mt-4 max-w-[68ch] text-base leading-7 text-[var(--color-text-muted)] sm:text-lg">
+              {card.summary}
+            </p>
           </header>
 
-          <section className="mt-12" aria-labelledby="cards-in-pack-heading">
-            <h2 id="cards-in-pack-heading" className="text-2xl font-semibold text-[var(--color-ink)]">
-              Cards in this pack
+          <div className="mt-8 max-w-3xl">
+            <HelpCardDetailBody card={card} />
+          </div>
+
+          <section id="official-sources" className="mt-12 max-w-3xl" aria-labelledby="official-sources-heading">
+            <h2 id="official-sources-heading" className="text-2xl font-semibold text-[var(--color-ink)]">
+              Official rules and sources
             </h2>
-            <div className="mt-6 grid gap-6">
-              {pack.cards.map((card) => (
-                <RenderHelpCard key={card.id} card={card} />
-              ))}
+            <div className="mt-4">
+              <OfficialSourceList sources={card.sources} headingId="official-sources-heading" />
             </div>
           </section>
 
-          {allSources.length > 0 ? (
-            <section id="official-sources" className="mt-12 max-w-3xl" aria-labelledby="official-sources-heading">
-              <h2 id="official-sources-heading" className="text-xl font-semibold text-[var(--color-ink)]">
-                Official sources
-              </h2>
-              <ul className="mt-4 list-disc space-y-2 pl-5" role="list">
-                {allSources.map((source) => (
-                  <li key={`${source.label}-${source.href ?? "nolink"}`}>
-                    {source.href ? (
-                      <a
-                        href={source.href}
-                        className="text-sm font-semibold text-[var(--color-brand)] underline underline-offset-4"
-                      >
-                        {source.label}
-                      </a>
-                    ) : (
-                      <span className="text-sm font-semibold text-[var(--color-ink)]">{source.label}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-
           <section className="mt-10 max-w-3xl rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 text-sm leading-7 text-[var(--color-text-muted)]">
-            <strong className="text-[var(--color-ink)]">Important:</strong> Access Stamp provides practical prompts and
-            source-backed summaries. It does not provide medical, legal or financial advice. Always check the official
-            source before relying on a card. This pack is not an official document.
-            <HelpCardPrintFooter packSlug={pack.slug} />
+            <strong className="text-[var(--color-ink)]">Important:</strong>{" "}
+            {card.disclaimer ||
+              "Access Stamp provides practical prompts and source-backed summaries. It does not provide medical, legal or financial advice. Always check the official source before relying on a card."}
+            <HelpCardPrintFooter packSlug={card.slug} />
           </section>
 
           <div className="mt-10 max-w-3xl">
-            <HelpCardAiPanel pack={pack} />
+            <HelpCardAiPanel card={card} />
           </div>
 
-          {relatedPacks.length > 0 ? (
-            <section className="no-print mt-12" aria-labelledby="related-packs-heading">
-              <h2 id="related-packs-heading" className="text-xl font-semibold text-[var(--color-ink)]">
-                Related packs
+          {related.length > 0 ? (
+            <section className="no-print mt-12" aria-labelledby="related-heading">
+              <h2 id="related-heading" className="text-xl font-semibold text-[var(--color-ink)]">
+                Related help cards
               </h2>
               <ul className="mt-4 grid list-none gap-3 p-0 sm:grid-cols-2" role="list">
-                {relatedPacks.map((item) => (
+                {related.map((item) => (
                   <li key={item.slug}>
                     <Link
                       href={`/help-cards/${item.slug}`}

@@ -14,6 +14,6 @@ export function isHelpCardTaskCategoryId(value: string | null): value is HelpCar
   return Boolean(value && HELP_CARD_TASK_CATEGORIES.some((category) => category.id === value));
 }
 
-export function helpCardTaskCategoryLabel(id: HelpCardTaskCategoryId): string {
+export function helpCardTaskCategoryLabel(id: string): string {
   return HELP_CARD_TASK_CATEGORIES.find((category) => category.id === id)?.label ?? "All cards";
 }

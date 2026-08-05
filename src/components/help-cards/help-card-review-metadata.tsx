@@ -1,66 +1,57 @@
-import type { HelpCardPack } from "@/data/helpCardPacks";
+import type { HelpCard, HelpCardVariant } from "@/data/help-cards/types";
 import { formatReviewDate, isValidIsoDate } from "@/lib/help-cards/format";
+import { authorityLabel, isAuthoritativeSource } from "@/lib/help-cards/authority";
 
 export function HelpCardReviewMetadata({
-  pack,
+  card,
+  variant,
   sourcesHref = "#official-sources",
 }: {
-  pack: HelpCardPack;
+  card: HelpCard;
+  variant: HelpCardVariant;
   sourcesHref?: string;
 }) {
-  const hasReviewDate = isValidIsoDate(pack.lastReviewed);
-  const highStakes = Boolean(pack.highStakes || pack.urgency === "high");
-  const hasOfficialSources = pack.cards.some((card) =>
-    (card.sources ?? []).some((source) => Boolean(source.href?.trim())),
-  );
+  const hasReviewDate = isValidIsoDate(variant.reviewedAt);
+  const highStakes = Boolean(card.highStakes);
+  const hasAuthoritative = card.sources.some((source) => isAuthoritativeSource(source.authorityType));
+  const authorityTypes = Array.from(new Set(card.sources.map((source) => source.authorityType)));
 
   return (
     <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 sm:p-5">
       <dl className="grid gap-3 text-sm sm:grid-cols-2">
-        {pack.jurisdiction ? (
-          <div>
-            <dt className="font-semibold text-[var(--color-ink)]">Jurisdiction</dt>
-            <dd className="mt-1 text-[var(--color-text-muted)]">{pack.jurisdiction}</dd>
-          </div>
-        ) : null}
+        <div>
+          <dt className="font-semibold text-[var(--color-ink)]">Applies to</dt>
+          <dd className="mt-1 text-[var(--color-text-muted)]">{variant.contextLabel}</dd>
+        </div>
         <div>
           <dt className="font-semibold text-[var(--color-ink)]">Last reviewed</dt>
           <dd className="mt-1 text-[var(--color-text-muted)]">
-            {hasReviewDate && pack.lastReviewed ? (
-              <time dateTime={pack.lastReviewed}>{formatReviewDate(pack.lastReviewed)}</time>
+            {hasReviewDate && variant.reviewedAt ? (
+              <time dateTime={variant.reviewedAt}>{formatReviewDate(variant.reviewedAt)}</time>
             ) : (
-              <span>
-                Unavailable
-                {highStakes ? " — check official sources before relying on this pack" : ""}
-              </span>
+              <span>Unavailable{highStakes ? " — check official sources before relying on this card" : ""}</span>
             )}
           </dd>
         </div>
         <div className="sm:col-span-2">
-          <dt className="font-semibold text-[var(--color-ink)]">Source status</dt>
+          <dt className="font-semibold text-[var(--color-ink)]">Authority</dt>
           <dd className="mt-1 text-[var(--color-text-muted)]">
-            {hasOfficialSources && hasReviewDate ? (
-              <>
-                Checked against official sources.{" "}
-                <a href={sourcesHref} className="font-semibold text-[var(--color-brand)] underline-offset-2 hover:underline">
-                  View official sources
-                </a>
-              </>
-            ) : hasOfficialSources ? (
-              <>
-                Official sources are listed below. A full Access Stamp review date is not yet available.{" "}
-                <a href={sourcesHref} className="font-semibold text-[var(--color-brand)] underline-offset-2 hover:underline">
-                  View official sources
-                </a>
-              </>
-            ) : (
-              "Practical prompts only — no official source links are attached to this pack."
-            )}
+            {authorityTypes.map((type) => authorityLabel(type)).join(" · ")}
+            {". "}
+            <a href={sourcesHref} className="font-semibold text-[var(--color-brand)] underline-offset-2 hover:underline">
+              Check the latest official information
+            </a>
           </dd>
         </div>
       </dl>
-      {highStakes ? (
+      {highStakes && !hasAuthoritative ? (
         <p className="mt-4 rounded-[var(--radius-md)] border border-[var(--color-warning)] bg-[var(--color-warning-soft)] px-3 py-2 text-sm leading-6 text-[var(--color-ink)]">
+          This high-stakes card does not yet have a verified official source. Treat it as a prompt only and
+          check the official information.
+        </p>
+      ) : null}
+      {highStakes ? (
+        <p className="mt-3 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] px-3 py-2 text-sm leading-6 text-[var(--color-ink)]">
           This is not an official document and does not prove entitlement, legal status or eligibility.
         </p>
       ) : null}

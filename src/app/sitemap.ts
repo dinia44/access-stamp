@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { VENUES } from "@/data/venues";
-import { helpCardPacks } from "@/data/helpCardPacks";
+import { getPublishedHelpCards } from "@/data/helpCards";
 import { getAdviceArticles } from "@/lib/content/advice";
 import { getBlogPosts } from "@/lib/content/blog";
 import { getSiteUrl } from "@/lib/seo/site-url";
@@ -67,8 +67,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(venue.lastUpdated),
   }));
 
-  const helpCardRoutes = helpCardPacks.map((pack) => ({
-    url: `${base}/help-cards/${pack.slug}`,
+  const helpCardRoutes = getPublishedHelpCards().map((card) => ({
+    url: `${base}/help-cards/${card.slug}`,
     lastModified: now,
   }));
 

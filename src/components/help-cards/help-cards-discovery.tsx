@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { Suspense, useCallback, useEffect, useId, useMemo, useState, type FormEvent } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { CoreHelpCardsGrid } from "@/components/help-cards/core-help-card";
-import { HelpCardPackPreview } from "@/components/help-cards/HelpCardComponents";
-import { CORE_HELP_CARDS, type CoreHelpCard } from "@/data/core-help-cards";
-import { helpCardPacks, type HelpCardPack } from "@/data/helpCardPacks";
+import { HelpCardHubPreview } from "@/components/help-cards/help-card-hub-preview";
+import { getPublishedHelpCards } from "@/data/helpCards";
+import type { HelpCard } from "@/data/help-cards/types";
 import {
   HELP_CARD_TASK_CATEGORIES,
   helpCardTaskCategoryLabel,
@@ -15,30 +14,28 @@ import {
 } from "@/lib/help-cards/categories";
 import { cn } from "@/lib/utils";
 
+const CARDS = getPublishedHelpCards();
+
+const REGIONS = ["All regions", ...Array.from(new Set(CARDS.map((card) => card.region)))];
+
 function chipClass(active: boolean) {
   return active
     ? "border-[var(--color-brand)] bg-[var(--color-brand-soft)] text-[var(--color-brand-pressed)]"
     : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-brand)] hover:bg-[var(--color-surface-subtle)]";
 }
 
-function matchesQuery(haystack: string, query: string): boolean {
-  if (!query) return true;
-  return haystack.toLowerCase().includes(query.toLowerCase());
-}
-
-function coreHaystack(card: CoreHelpCard): string {
-  return [card.title, card.situation, card.script, card.checklist.join(" "), card.cardTypeLabel].join(" ");
-}
-
-function packHaystack(pack: HelpCardPack): string {
+function haystack(card: HelpCard): string {
   return [
-    pack.title,
-    pack.description,
-    pack.useWhen,
-    pack.category,
-    pack.jurisdiction ?? "",
-    ...pack.cards.flatMap((card) => [card.title, card.shortDescription, card.keyLine ?? "", ...(card.checklist ?? [])]),
-  ].join(" ");
+    card.title,
+    card.summary,
+    card.category,
+    card.region,
+    ...card.variants.flatMap((variant) =>
+      variant.rules.flatMap((rule) => [rule.headline, rule.plainEnglish, rule.applicability]),
+    ),
+  ]
+    .join(" ")
+    .toLowerCase();
 }
 
 function HelpCardsDiscoveryInner() {
@@ -47,53 +44,57 @@ function HelpCardsDiscoveryInner() {
   const searchParams = useSearchParams();
   const statusId = useId();
   const categoryGroupId = useId();
+  const regionLabelId = useId();
 
   const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const [category, setCategory] = useState<HelpCardTaskCategoryId>(() => {
     const value = searchParams.get("category");
     return isHelpCardTaskCategoryId(value) ? value : "all";
   });
+  const [region, setRegion] = useState<string>(() => {
+    const value = searchParams.get("region");
+    return value && REGIONS.includes(value) ? value : "All regions";
+  });
 
   const syncUrl = useCallback(
-    (next: { q?: string; category?: HelpCardTaskCategoryId }) => {
+    (next: { q?: string; category?: HelpCardTaskCategoryId; region?: string }) => {
       const params = new URLSearchParams(searchParams.toString());
       const nextQuery = next.q ?? query;
       const nextCategory = next.category ?? category;
+      const nextRegion = next.region ?? region;
 
       if (nextQuery.trim()) params.set("q", nextQuery.trim());
       else params.delete("q");
-
       if (nextCategory && nextCategory !== "all") params.set("category", nextCategory);
       else params.delete("category");
+      if (nextRegion && nextRegion !== "All regions") params.set("region", nextRegion);
+      else params.delete("region");
 
       const qs = params.toString();
       router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
     },
-    [category, pathname, query, router, searchParams],
+    [category, pathname, query, region, router, searchParams],
   );
 
   useEffect(() => {
     setQuery(searchParams.get("q") ?? "");
-    const value = searchParams.get("category");
-    setCategory(isHelpCardTaskCategoryId(value) ? value : "all");
+    const cat = searchParams.get("category");
+    setCategory(isHelpCardTaskCategoryId(cat) ? cat : "all");
+    const reg = searchParams.get("region");
+    setRegion(reg && REGIONS.includes(reg) ? reg : "All regions");
   }, [searchParams]);
 
-  const filteredCards = useMemo(() => {
-    return CORE_HELP_CARDS.filter((card) => {
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return CARDS.filter((card) => {
       if (category !== "all" && card.categoryKey !== category) return false;
-      return matchesQuery(coreHaystack(card), query.trim());
+      if (region !== "All regions" && card.region !== region) return false;
+      if (q && !haystack(card).includes(q)) return false;
+      return true;
     });
-  }, [category, query]);
+  }, [category, query, region]);
 
-  const filteredPacks = useMemo(() => {
-    return helpCardPacks.filter((pack) => {
-      if (category !== "all" && pack.categoryKey !== category) return false;
-      return matchesQuery(packHaystack(pack), query.trim());
-    });
-  }, [category, query]);
-
-  const totalResults = filteredCards.length + filteredPacks.length;
-  const filtersActive = Boolean(query.trim() || category !== "all");
+  const filtersActive = Boolean(query.trim() || category !== "all" || region !== "All regions");
 
   function onSubmit(event: FormEvent) {
     event.preventDefault();
@@ -103,25 +104,26 @@ function HelpCardsDiscoveryInner() {
   function clearFilters() {
     setQuery("");
     setCategory("all");
-    syncUrl({ q: "", category: "all" });
+    setRegion("All regions");
+    syncUrl({ q: "", category: "all", region: "All regions" });
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <section aria-labelledby="find-help-card-heading" className="space-y-5">
         <div>
           <h2 id="find-help-card-heading" className="text-xl font-semibold text-[var(--color-ink)]">
-            Find a help card
+            What do you need to know about?
           </h2>
           <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
-            Search a situation or choose what you need help with.
+            Search a situation, then narrow by topic or region.
           </p>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-4" role="search">
           <div>
             <label htmlFor="help-card-search" className="block text-sm font-semibold text-[var(--color-ink)]">
-              Search situations or wording
+              Search situations
             </label>
             <div className="mt-2 flex flex-col gap-2 sm:flex-row">
               <input
@@ -131,7 +133,7 @@ function HelpCardsDiscoveryInner() {
                 onChange={(event) => setQuery(event.target.value)}
                 onBlur={() => syncUrl({ q: query })}
                 className="min-h-[44px] w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-base text-[var(--color-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)]"
-                placeholder="e.g. wheelchair access, interview, Blue Badge"
+                placeholder="e.g. Section 88, interview, Blue Badge, GP"
                 autoComplete="off"
               />
               <button
@@ -145,7 +147,7 @@ function HelpCardsDiscoveryInner() {
 
           <fieldset>
             <legend id={categoryGroupId} className="text-sm font-semibold text-[var(--color-ink)]">
-              What do you need help with?
+              Category
             </legend>
             <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-labelledby={categoryGroupId}>
               {HELP_CARD_TASK_CATEGORIES.map((option) => {
@@ -171,13 +173,35 @@ function HelpCardsDiscoveryInner() {
               })}
             </div>
           </fieldset>
+
+          <div>
+            <label id={regionLabelId} htmlFor="help-card-region" className="block text-sm font-semibold text-[var(--color-ink)]">
+              Region
+            </label>
+            <select
+              id="help-card-region"
+              value={region}
+              onChange={(event) => {
+                setRegion(event.target.value);
+                syncUrl({ region: event.target.value });
+              }}
+              className="mt-2 min-h-[44px] w-full max-w-sm rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-base text-[var(--color-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)]"
+            >
+              {REGIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
         </form>
 
         <div className="flex flex-wrap items-center gap-3">
           <p id={statusId} className="text-sm text-[var(--color-text-muted)]" aria-live="polite">
-            Showing {totalResults} result{totalResults === 1 ? "" : "s"}
+            Showing {results.length} card{results.length === 1 ? "" : "s"}
             {category !== "all" ? ` in ${helpCardTaskCategoryLabel(category)}` : ""}
-            {query.trim() ? ` for “${query.trim()}”` : ""}.
+            {region !== "All regions" ? ` for ${region}` : ""}
+            {query.trim() ? ` matching “${query.trim()}”` : ""}.
           </p>
           {filtersActive ? (
             <button
@@ -191,11 +215,11 @@ function HelpCardsDiscoveryInner() {
         </div>
       </section>
 
-      {totalResults === 0 ? (
+      {results.length === 0 ? (
         <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
           <h2 className="text-lg font-semibold text-[var(--color-ink)]">No matching help cards</h2>
           <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
-            Try another search, clear filters, or browse practical guides for longer checklists and templates.
+            Try another search, clear filters, or browse guides and official sources for more detail.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <button
@@ -214,37 +238,18 @@ function HelpCardsDiscoveryInner() {
           </div>
         </div>
       ) : (
-        <>
-          {filteredCards.length > 0 ? (
-            <section aria-labelledby="quick-cards-heading">
-              <h2 id="quick-cards-heading" className="text-xl font-semibold text-[var(--color-ink)]">
-                Quick cards
-              </h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-muted)]">
-                Compact wording you can copy now. Open details for the full checklist and related guide.
-              </p>
-              <div className="mt-5">
-                <CoreHelpCardsGrid cards={filteredCards} />
-              </div>
-            </section>
-          ) : null}
-
-          {filteredPacks.length > 0 ? (
-            <section aria-labelledby="packs-heading">
-              <h2 id="packs-heading" className="text-xl font-semibold text-[var(--color-ink)] sm:text-2xl">
-                Card packs
-              </h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-muted)]">
-                Situation packs with scripts, checklists and evidence summaries.
-              </p>
-              <div className="mt-5 grid gap-5 md:grid-cols-2">
-                {filteredPacks.map((pack) => (
-                  <HelpCardPackPreview key={pack.slug} pack={pack} />
-                ))}
-              </div>
-            </section>
-          ) : null}
-        </>
+        <section aria-labelledby="results-heading">
+          <h2 id="results-heading" className="sr-only">
+            Help cards
+          </h2>
+          <ul className="grid list-none gap-5 p-0 md:grid-cols-2" role="list">
+            {results.map((card) => (
+              <li key={card.slug}>
+                <HelpCardHubPreview card={card} />
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
     </div>
   );
