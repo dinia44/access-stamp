@@ -12,7 +12,7 @@ import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import "../help-cards.css";
 
 type PageProps = {
-  params: Promise<{ slug: string }> | { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export function generateStaticParams() {
@@ -20,7 +20,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await Promise.resolve(params);
+  const { slug } = await params;
   const card = getHelpCard(slug);
   if (!card) return {};
   return buildPageMetadata({
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function HelpCardDetailPage({ params }: PageProps) {
-  const { slug } = await Promise.resolve(params);
+  const { slug } = await params;
   const card = getHelpCard(slug);
 
   if (!card || card.publicationState !== "published") {

@@ -697,8 +697,7 @@ body[data-dyslexia-font="on"] {
 }
 
 .home-masthead-hero__enter {
-  opacity: 0;
-  animation: home-masthead-rise 500ms ease-out forwards;
+  opacity: 1;
 }
 
 .home-masthead-hero__enter--0 {

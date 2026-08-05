@@ -3,7 +3,7 @@ import { buildPageMetadata } from "@/lib/seo/page-metadata";
 
 export const STATIC_PAGE_SEO = {
   home: {
-    title: "Access Stamp — accessible venues, advice and AI tools",
+    title: "Access Stamp — practical venue access and disability guidance",
     description:
       "Venue access information, plain-English advice on rights, benefits and equipment, and practical tools — built by disabled people.",
     path: "/",

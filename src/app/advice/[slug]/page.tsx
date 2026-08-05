@@ -29,9 +29,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }> | { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await Promise.resolve(params);
+  const { slug } = await params;
   const a = await getAdviceArticleBySlug(slug);
   if (!a) return {};
   const firstParagraph = a.sections.find((s) => s.type === "p");
@@ -69,9 +69,9 @@ function slugifyHeading(s: string) {
 export default async function AdviceArticlePage({
   params,
 }: {
-  params: Promise<{ slug: string }> | { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const resolved = await Promise.resolve(params);
+  const resolved = await params;
   const a = await getAdviceArticleBySlug(resolved.slug);
   if (!a) return notFound();
 

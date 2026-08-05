@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { AccessStampSearchBox } from "@/components/home/access-stamp-search-box";
-import { HomeMastheadEntranceGate } from "@/components/home/home-masthead-entrance-gate";
 import { HeroWillItFitChecker } from "@/components/home/hero-will-it-fit-checker";
 import { RouteDecoration } from "@/components/home/route-decoration";
 import { HOME_FOCUS } from "@/components/home/home-theme";
@@ -38,7 +37,6 @@ function StampedBefore() {
 export function HomeMastheadHero() {
   return (
     <section className="home-masthead-hero relative overflow-hidden bg-[var(--color-canvas)] pb-10 pt-5 sm:pb-12 sm:pt-6 lg:pb-14 lg:pt-8">
-      <HomeMastheadEntranceGate />
       <RouteDecoration className="right-[-5%] top-8 hidden h-28 w-[min(55vw,420px)] opacity-70 sm:block" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -86,6 +84,16 @@ export function HomeMastheadHero() {
           {" · "}
           <Link href="/help-cards" className={`font-semibold text-[var(--color-brand)] hover:underline ${HOME_FOCUS}`}>
             Help cards
+          </Link>
+        </p>
+
+        <p className="mt-4 max-w-2xl border-l-2 border-[var(--color-brand)] pl-3 text-sm leading-6 text-[var(--color-text-muted)]">
+          <strong className="font-semibold text-[var(--color-ink)]">Early access.</strong> Trying Access Stamp today?{" "}
+          <Link
+            href="/contact"
+            className={`inline-flex min-h-[44px] items-center font-semibold text-[var(--color-brand)] hover:underline ${HOME_FOCUS}`}
+          >
+            Tell us what worked or what was missing.
           </Link>
         </p>
 

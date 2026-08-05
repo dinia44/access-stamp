@@ -126,9 +126,9 @@ const VENUE_COPY: Record<
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }> | { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const resolved = await Promise.resolve(params);
+  const resolved = await params;
   const v = SAMPLE_VENUES.find((x) => x.slug === resolved.slug);
   if (!v) return {};
   const canonical = getVenueBySlug(resolved.slug);
@@ -146,9 +146,9 @@ export async function generateMetadata({
 export default async function VenueDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string }> | { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const resolved = await Promise.resolve(params);
+  const resolved = await params;
   const v = SAMPLE_VENUES.find((x) => x.slug === resolved.slug);
   if (!v) return notFound();
   const yesCount = Object.values(v.features).filter((x) => x === "yes").length;

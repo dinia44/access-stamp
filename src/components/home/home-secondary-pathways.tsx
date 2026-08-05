@@ -16,14 +16,14 @@ const PATHWAYS = [
     href: "/help-cards",
   },
   {
-    title: "Tools",
-    body: "Planning aids and AI-assisted drafts that support evidence — never replace it.",
-    cta: "Use tools",
+    title: "Planning tools",
+    body: "Practical planning aids and optional drafting support for real situations.",
+    cta: "Open planning tools",
     href: "/ai-toolkit",
   },
 ] as const;
 
-/** Consolidated secondary pathways — Guides, Help cards, Tools. */
+/** Consolidated secondary pathways — Guides, Help cards, and planning tools. */
 export function HomeSecondaryPathways() {
   return (
     <section className="border-t border-[var(--color-border)] bg-[var(--color-canvas)] py-14 sm:py-16" aria-labelledby="secondary-pathways-heading">

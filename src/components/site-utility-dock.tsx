@@ -6,25 +6,22 @@ import { ChatWidgetLoader } from "@/components/chat/chat-widget-loader";
 import { useChat } from "@/components/chat/provider";
 
 /**
- * Coordinated bottom-right utility group: Accessibility + AI assistant.
- * Collapses to one launcher on narrow screens; respects safe-area insets.
+ * Persistent accessibility launcher. The optional assistant remains available
+ * only where a user deliberately opens it from a relevant tool or guide.
  */
 export function SiteUtilityDock() {
   const [a11yOpen, setA11yOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const { open: chatOpen } = useChat();
   const panelId = useId();
-  const menuId = useId();
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key !== "Escape") return;
       if (a11yOpen) setA11yOpen(false);
-      if (menuOpen) setMenuOpen(false);
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [a11yOpen, menuOpen]);
+  }, [a11yOpen]);
 
   if (chatOpen) return <ChatWidgetLoader docked />;
 
@@ -54,47 +51,19 @@ export function SiteUtilityDock() {
         </div>
       ) : null}
 
-      {/* Mobile: single launcher */}
       <div className="sm:hidden">
-        {menuOpen ? (
-          <div
-            id={menuId}
-            className="mb-2 flex w-[min(calc(100vw-2rem),280px)] flex-col gap-1 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-2 shadow-[var(--shadow)]"
-            role="menu"
-            aria-label="Site utilities"
-          >
-            <button
-              type="button"
-              role="menuitem"
-              className="inline-flex min-h-[44px] items-center rounded-[var(--radius-md)] px-3 text-left text-sm font-semibold text-[var(--color-ink)] hover:bg-[var(--color-surface-subtle)]"
-              onClick={() => {
-                setMenuOpen(false);
-                setA11yOpen(true);
-              }}
-            >
-              Accessibility options
-            </button>
-            <div className="px-1">
-              <ChatWidgetLoader docked />
-            </div>
-          </div>
-        ) : null}
         <button
           type="button"
           className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-4 text-sm font-semibold text-[var(--color-ink)] shadow-[var(--shadow-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)]"
-          aria-expanded={menuOpen || a11yOpen}
-          aria-controls={menuOpen ? menuId : a11yOpen ? panelId : undefined}
-          aria-label="Open site utilities"
-          onClick={() => {
-            if (a11yOpen) setA11yOpen(false);
-            setMenuOpen((open) => !open);
-          }}
+          aria-expanded={a11yOpen}
+          aria-controls={panelId}
+          aria-label="Open accessibility options"
+          onClick={() => setA11yOpen((open) => !open)}
         >
-          Tools
+          Accessibility
         </button>
       </div>
 
-      {/* sm+: labelled utility group */}
       <div
         className="hidden max-w-[calc(100vw-2rem)] flex-wrap items-center justify-end gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] p-1.5 shadow-[var(--shadow-soft)] sm:flex"
         role="group"
@@ -109,8 +78,6 @@ export function SiteUtilityDock() {
         >
           Accessibility
         </button>
-        <span className="h-6 w-px bg-[var(--color-border)]" aria-hidden />
-        <ChatWidgetLoader docked />
       </div>
     </div>
   );

@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import { useChat } from "@/components/chat/provider";
+import { useState } from "react";
 import { searchAccessStamp } from "@/data/searchIndex";
 import { Button } from "@/components/ui/Button";
 import {
@@ -54,11 +53,10 @@ function ChipIcon({ label }: { label: string }) {
   );
 }
 
-type SearchMode = "venue" | "ai" | "advice";
+type SearchMode = "venue" | "advice";
 
 const SEARCH_MODES: { id: SearchMode; label: string }[] = [
   { id: "venue", label: "Find venues" },
-  { id: "ai", label: "Ask AI" },
   { id: "advice", label: "Get advice" },
 ];
 
@@ -68,13 +66,6 @@ const VENUE_CHIPS = [
   { label: "Parking", key: "Nearby Blue Badge parking", href: null },
   { label: "Seating", key: "Turning space (150cm+)", href: null },
   { label: "Hearing support", key: null, href: "/venue-finder?filters=Hearing+loop" },
-] as const;
-
-const AI_PROMPT_CHIPS = [
-  "Find step-free restaurants near me",
-  "What should I check before visiting a new venue?",
-  "Help me understand Blue Badge parking rules",
-  "Explain PIP in plain English",
 ] as const;
 
 const ADVICE_TOPIC_CHIPS = [
@@ -89,15 +80,12 @@ type AccessStampSearchBoxProps = {
 
 export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBoxProps) {
   const router = useRouter();
-  const { openChat } = useChat();
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
-  const [aiQuery, setAiQuery] = useState("");
   const [mode, setMode] = useState<SearchMode>("venue");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   const isVenueSearch = mode === "venue";
-  const isAiSearch = mode === "ai";
 
   const venueSubmitLabel =
     selectedFilters.length === 0
@@ -108,16 +96,14 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
     setSelectedFilters((prev) => (prev.includes(key) ? prev.filter((f) => f !== key) : [...prev, key]));
   };
 
-  const selectMode = useCallback((id: SearchMode) => setMode(id), []);
-
   const onTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
-    const order: SearchMode[] = ["venue", "ai", "advice"];
+    const order: SearchMode[] = ["venue", "advice"];
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      selectMode(order[(index + 1) % order.length]);
+      setMode(order[(index + 1) % order.length]);
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
-      selectMode(order[(index - 1 + order.length) % order.length]);
+      setMode(order[(index - 1 + order.length) % order.length]);
     }
   };
 
@@ -153,13 +139,6 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
       return;
     }
 
-    if (isAiSearch) {
-      openChat({
-        prefill: aiQuery.trim() || "Help me with a practical accessibility question for the UK.",
-      });
-      return;
-    }
-
     handleAdviceSearch();
   };
 
@@ -169,9 +148,7 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
 
   const modeDescription = isVenueSearch
     ? "Search access-checked venues by place, town, or access need."
-    : isAiSearch
-      ? "Ask practical questions about venues, rights, travel, care, work, and equipment."
-      : "Search practical UK guidance on rights, travel, care, work, and equipment.";
+    : "Search practical UK guidance on rights, travel, care, work, and equipment.";
 
   return (
     <div id="platform-search" className={panelClass}>
@@ -198,7 +175,7 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
             aria-selected={mode === id}
             aria-controls={`search-panel-${id}`}
             tabIndex={mode === id ? 0 : -1}
-            onClick={() => selectMode(id)}
+            onClick={() => setMode(id)}
             onKeyDown={(event) => onTabKeyDown(event, index)}
             className={homeTabClass(mode === id)}
           >
@@ -207,91 +184,15 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
         ))}
       </div>
 
-      {isAiSearch ? (
-        <div
-          role="tabpanel"
-          id="search-panel-ai"
-          aria-labelledby="search-tab-ai"
-          className="space-y-4"
-        >
-          <div className="rounded-2xl border border-[#F1D8C7] bg-[#FFF3E8]/80 p-4 sm:p-5">
-            <div className="flex items-start gap-3">
-              <span
-                className="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FFE2D3] text-lg text-[#F04A16]"
-                aria-hidden="true"
-              >
-                ✦
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-base font-semibold text-[#13201F]">Ask the AI Access Assistant</p>
-                <p className="mt-1 text-sm leading-6 text-[#5E6A66]">
-                  Get practical next steps on venues, rights, travel, care, and equipment — grounded in UK
-                  accessibility guidance.
-                </p>
-              </div>
-            </div>
-
-            <label htmlFor="platform-ai-query" className="mt-4 block text-base font-medium text-[#2A3836]">
-              Your question
-            </label>
-            <input
-              id="platform-ai-query"
-              type="text"
-              value={aiQuery}
-              onChange={(e) => setAiQuery(e.target.value)}
-              placeholder="e.g. Find step-free cafés near Manchester with accessible toilets"
-              className={`${HOME_INPUT} mt-2`}
-              autoComplete="off"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  openChat({
-                    prefill: aiQuery.trim() || "Help me with a practical accessibility question for the UK.",
-                  });
-                }
-              }}
-            />
-
-            <Button
-              type="button"
-              className="mt-4 w-full sm:w-auto"
-              aria-label="Ask the AI Access Assistant"
-              onClick={() =>
-                openChat({
-                  prefill: aiQuery.trim() || "Help me with a practical accessibility question for the UK.",
-                })
-              }
-            >
-              Ask the AI Access Assistant
-            </Button>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {AI_PROMPT_CHIPS.map((prompt) => (
-              <button
-                key={prompt}
-                type="button"
-                onClick={() => {
-                  setAiQuery(prompt);
-                  openChat({ prefill: prompt });
-                }}
-                className={homeChipClass(false)}
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <form
-          role="tabpanel"
-          id={`search-panel-${mode}`}
-          aria-labelledby={`search-tab-${mode}`}
-          onSubmit={(e) => {
-            e.preventDefault();
-            handlePlatformSearch();
-          }}
-        >
+      <form
+        role="tabpanel"
+        id={`search-panel-${mode}`}
+        aria-labelledby={`search-tab-${mode}`}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handlePlatformSearch();
+        }}
+      >
           <div className={`grid gap-4 ${isVenueSearch ? "lg:grid-cols-2" : "lg:grid-cols-[minmax(0,1fr)_auto]"}`}>
             <div>
               <label htmlFor="platform-search-query" className="mb-2 block text-base font-medium text-[#2A3836]">
@@ -343,8 +244,7 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
               {venueSubmitLabel}
             </Button>
           ) : null}
-        </form>
-      )}
+      </form>
 
       {isVenueSearch ? (
         <>
@@ -382,7 +282,7 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
         </>
       ) : null}
 
-      {!isAiSearch && !isVenueSearch ? (
+      {!isVenueSearch ? (
         <div className="mt-5 space-y-4">
           <div className="flex flex-wrap gap-2">
             {ADVICE_TOPIC_CHIPS.map(({ label, href }) => (

@@ -4,10 +4,10 @@ import { RouteDecoration } from "@/components/home/route-decoration";
 import { HOME_FOCUS } from "@/components/home/home-theme";
 
 const STATS = [
-  { value: "1 in 4", label: "UK adults are disabled" },
-  { value: "£274bn", label: "Purple Pound spending power" },
-  { value: "Since 2025", label: "European Accessibility Act — in force across EU member states since June 2025" },
-  { value: "3 tiers", label: "Access Snapshot, Measured Access Report, Full Access Review" },
+  { value: "Measured", label: "Doorways, routes and facilities — not vague access claims" },
+  { value: "Photographed", label: "Useful evidence customers can review before travelling" },
+  { value: "Clear unknowns", label: "Unconfirmed details stay visible instead of being guessed" },
+  { value: "3 review tiers", label: "From an access snapshot to a full on-site review" },
 ] as const;
 
 export function HomeForVenuesBand() {

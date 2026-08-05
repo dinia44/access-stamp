@@ -39,7 +39,7 @@ export function Footer() {
               <SiteLogo className="h-auto max-h-7 w-auto object-contain" />
             </Link>
             <p className="max-w-sm text-sm leading-7 text-[#c8d4d0]">
-              Practical access information, plain-English guides, and structured tools — built to help disabled people,
+              Practical access information, plain-English guides, and planning tools — built to help disabled people,
               families, carers, and venues make confident decisions.
             </p>
             <ul className="space-y-2 text-sm">

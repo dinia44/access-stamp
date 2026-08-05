@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     template: "%s · Access Stamp",
   },
   description:
-    "A UK-focused accessibility platform for practical advice, venue access details, and an AI assistant.",
+    "A UK-focused accessibility platform for practical advice, source-backed help cards, and venue access details.",
   openGraph: {
     title: "Access Stamp",
     description:
