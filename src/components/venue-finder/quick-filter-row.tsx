@@ -47,7 +47,6 @@ const FILTER_ICONS: Record<string, ReactNode> = {
   "Quiet environment": (
     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
       <path d="M11 5L6 9H3v6h3l5 4V5z" />
-      <path d="M15.5 8.5a5 5 0 0 1 0 7" />
     </svg>
   ),
   "__hearing_loop": (
@@ -65,6 +64,15 @@ const FILTER_ICONS: Record<string, ReactNode> = {
 };
 
 function formatFilterLabel(label: string) {
+  if (label === "Parking/drop-off") {
+    return (
+      <>
+        Parking/<wbr />
+        drop-off
+      </>
+    );
+  }
+
   const parts = label.split(" ");
   if (parts.length <= 2) return label;
   const mid = Math.ceil(parts.length / 2);
@@ -91,20 +99,17 @@ export function QuickFilterRow({ selectedFilters, onToggleFilter, onOpenMoreFilt
       aria-label="Quick access filters"
       className="mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8"
     >
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-8">
         {VENUE_FINDER_QUICK_FILTERS.map(({ label, key }) => {
           const pressed = active.has(key);
-          const displayLabel =
-            label.includes(" ")
-              ? formatFilterLabel(label)
-              : label;
+          const displayLabel = formatFilterLabel(label);
 
           return (
             <button
               key={key}
               type="button"
               className={cn(
-                "flex min-h-[64px] items-center gap-3 rounded-2xl border bg-card px-4 py-3 text-left text-sm font-semibold text-heading shadow-sm transition hover:-translate-y-0.5 hover:shadow-md",
+                "flex min-h-[64px] min-w-0 items-center gap-2 rounded-2xl border bg-card px-3 py-3 text-left text-sm font-semibold text-heading shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:gap-3 sm:px-4",
                 pressed
                   ? "border-[var(--color-border-mid)] bg-background-2 shadow-md"
                   : "border-border hover:border-[var(--color-border-mid)]",
@@ -113,14 +118,14 @@ export function QuickFilterRow({ selectedFilters, onToggleFilter, onOpenMoreFilt
               aria-pressed={pressed}
               onClick={() => onToggleFilter(key)}
             >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-verified-pale text-[var(--color-secondary)]">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-verified-pale text-[var(--color-secondary)] sm:h-9 sm:w-9">
                 {FILTER_ICONS[key] ?? (
                   <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
                     <path d="M5 12h14M12 5v14" />
                   </svg>
                 )}
               </span>
-              <span>{displayLabel}</span>
+              <span className="min-w-0 leading-5">{displayLabel}</span>
             </button>
           );
         })}
@@ -128,18 +133,18 @@ export function QuickFilterRow({ selectedFilters, onToggleFilter, onOpenMoreFilt
         <button
           type="button"
           className={cn(
-            "flex min-h-[64px] items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 text-left text-sm font-semibold text-heading shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--color-border-mid)] hover:shadow-md",
+            "flex min-h-[64px] min-w-0 items-center gap-2 rounded-2xl border border-border bg-card px-3 py-3 text-left text-sm font-semibold text-heading shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--color-border-mid)] hover:shadow-md sm:gap-3 sm:px-4",
             SITE_FOCUS,
           )}
           onClick={onOpenMoreFilters}
         >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-verified-pale text-[var(--color-secondary)]">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-verified-pale text-[var(--color-secondary)] sm:h-9 sm:w-9">
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
               <path d="M4 7h16M4 12h16M4 17h10" />
               <circle cx="18" cy="17" r="2" />
             </svg>
           </span>
-          <span>
+          <span className="min-w-0 leading-5">
             More
             <br />
             filters
