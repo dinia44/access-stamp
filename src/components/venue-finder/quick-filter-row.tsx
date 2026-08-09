@@ -74,7 +74,9 @@ function formatFilterLabel(label: string) {
   }
 
   const parts = label.split(" ");
-  if (parts.length <= 2) return label;
+  if (parts.length < 2) return label;
+  // Prefer a controlled mid-label break so two-word chips don't overflow
+  // when the grid is still relatively narrow (e.g. 4-up on laptop).
   const mid = Math.ceil(parts.length / 2);
   return (
     <>
@@ -99,7 +101,7 @@ export function QuickFilterRow({ selectedFilters, onToggleFilter, onOpenMoreFilt
       aria-label="Quick access filters"
       className="mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8"
     >
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-8">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {VENUE_FINDER_QUICK_FILTERS.map(({ label, key }) => {
           const pressed = active.has(key);
           const displayLabel = formatFilterLabel(label);
@@ -125,7 +127,7 @@ export function QuickFilterRow({ selectedFilters, onToggleFilter, onOpenMoreFilt
                   </svg>
                 )}
               </span>
-              <span className="min-w-0 leading-5">{displayLabel}</span>
+              <span className="min-w-0 break-words leading-5">{displayLabel}</span>
             </button>
           );
         })}
@@ -144,7 +146,7 @@ export function QuickFilterRow({ selectedFilters, onToggleFilter, onOpenMoreFilt
               <circle cx="18" cy="17" r="2" />
             </svg>
           </span>
-          <span className="min-w-0 leading-5">
+          <span className="min-w-0 break-words leading-5">
             More
             <br />
             filters
