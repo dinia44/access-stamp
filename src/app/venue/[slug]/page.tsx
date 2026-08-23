@@ -6,7 +6,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FadeIn } from "@/components/fade-in";
 import { Container } from "@/components/container";
 import { PageSectionTitle } from "@/components/page-layout";
-import { Button, Card } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { AccessCheckedMethodology } from "@/components/venue/access-checked-methodology";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
@@ -19,6 +19,7 @@ import { FeatureChip, getVenueFeatureChipItems } from "@/components/venue/featur
 import { ScoreDisplay } from "@/components/venue/score-display";
 import { WillItFitCard } from "@/components/venue/will-it-fit-card";
 import { VenueFitPlannerInline } from "@/components/venue/venue-fit-planner-inline";
+import { VenueDetailSectionNav } from "@/components/venue/venue-detail-section-nav";
 import { computeAccessScore } from "@/lib/venue-access-score";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import { buildBreadcrumbJsonLd, buildVenueLocalBusinessJsonLd } from "@/lib/seo/venue-jsonld";
@@ -152,7 +153,10 @@ export default async function VenueDetailPage({
   const v = SAMPLE_VENUES.find((x) => x.slug === resolved.slug);
   if (!v) return notFound();
   const yesCount = Object.values(v.features).filter((x) => x === "yes").length;
-  const unknownCount = Object.values(v.features).filter((x) => x === "unknown").length;
+  const unknownFeatures = Object.entries(v.features)
+    .filter(([, value]) => value === "unknown")
+    .map(([feature]) => feature);
+  const unknownCount = unknownFeatures.length;
   const confirmedFeatures = Object.entries(v.features)
     .filter(([, value]) => value === "yes")
     .map(([feature]) => feature);
@@ -164,6 +168,7 @@ export default async function VenueDetailPage({
   const canonical = getVenueBySlug(v.slug);
   const accessScore = computeAccessScore(v);
   const featureChips = getVenueFeatureChipItems(v);
+  const hasPhotos = Boolean(v.photos?.length);
   const beforeYouGo = custom?.beforeYouGo ?? [
     "Call ahead to confirm current layout and staff support.",
     "Check Blue Badge parking and nearest drop-off before leaving.",
@@ -183,7 +188,7 @@ export default async function VenueDetailPage({
       <JsonLdScript data={schema} />
       <JsonLdScript data={breadcrumbSchema} />
       <Container className="py-12 md:py-16">
-        <div className="space-y-10">
+        <div className="space-y-8 md:space-y-10">
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
@@ -192,162 +197,81 @@ export default async function VenueDetailPage({
             ]}
           />
 
+          {/* 1. Demo / evidence warning */}
+          {isDemo ? <DemoBanner /> : null}
+
+          <VenueDetailSectionNav hasPhotos={hasPhotos} />
+
           <FadeIn>
-            {isDemo ? <DemoBanner /> : null}
-            <Card className="overflow-hidden p-0">
-              <div className="border-b border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-6 sm:px-8 sm:py-8">
-                <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4">
-                      <span
-                        className="grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] text-xl"
-                        aria-hidden
-                      >
-                        {venueEmoji(v.type)}
-                      </span>
-                      <div>
-                        <p className="page-hero-eyebrow">Access report</p>
-                        <h1 className="mt-1 text-3xl font-bold leading-[1.05] tracking-[-0.03em] text-heading sm:text-4xl">
-                          {v.name}
-                        </h1>
-                        <div className="mt-2 flex flex-wrap items-center gap-2">
-                          <span className="text-sm font-semibold text-muted">{v.location}</span>
-                          <span className="rounded-full bg-[var(--color-information-soft)] px-3 py-1 text-xs font-semibold text-[var(--color-information)]">
-                            {v.type}
-                          </span>
-                        </div>
+            {/* 2. Venue identity / location */}
+            <div className="border-b border-[var(--color-border)] pb-6">
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <span
+                      className="grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] text-xl"
+                      aria-hidden
+                    >
+                      {venueEmoji(v.type)}
+                    </span>
+                    <div>
+                      <p className="page-hero-eyebrow">Access report</p>
+                      <h1 className="mt-1 text-3xl font-bold leading-[1.05] tracking-[-0.03em] text-heading sm:text-4xl">
+                        {v.name}
+                      </h1>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <span className="text-sm font-semibold text-muted">{v.location}</span>
+                        <span className="rounded-full bg-[var(--color-information-soft)] px-3 py-1 text-xs font-semibold text-[var(--color-information)]">
+                          {v.type}
+                        </span>
                       </div>
                     </div>
-                    <p className="max-w-[65ch] text-base leading-7 text-text">{v.summary}</p>
-                    {featureChips.length > 0 ? (
-                      <ul className="flex flex-wrap gap-2 pt-1" aria-label="Key access features">
-                        {featureChips.map((chip) => (
-                          <li key={chip.label}>
-                            <FeatureChip icon={chip.icon} label={chip.label} />
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
                   </div>
-                  <div className="flex flex-col items-start gap-4 lg:items-end">
-                    <ScoreDisplay score={accessScore} showRing size="md" />
-                    <VenueDetailActions slug={v.slug} venueName={v.name} />
-                  </div>
+                  <p className="max-w-[65ch] text-base leading-7 text-text">{v.summary}</p>
+                  {featureChips.length > 0 ? (
+                    <ul className="flex flex-wrap gap-2 pt-1" aria-label="Key access features">
+                      {featureChips.map((chip) => (
+                        <li key={chip.label}>
+                          <FeatureChip icon={chip.icon} label={chip.label} />
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+                <div className="flex flex-col items-start gap-4 lg:items-end">
+                  <ScoreDisplay score={accessScore} showRing size="md" />
+                  <VenueDetailActions slug={v.slug} venueName={v.name} />
                 </div>
               </div>
-
-              <div className="space-y-4 px-5 py-5 sm:px-8">
-                <VenueDecisionSummary
-                  venue={v}
-                  confirmedFeatures={confirmedFeatures}
-                  unavailableFeatures={unavailableFeatures}
-                  unknownCount={unknownCount}
-                />
-                <AccessCheckedMethodology
-                  verification={v.verification}
-                  confidence={v.confidence}
-                  lastUpdated={v.lastUpdated}
-                />
-              </div>
-            </Card>
+            </div>
           </FadeIn>
 
-          {v.photos?.length ? (
-            <Card className="p-5">
-              <div className="mb-3 text-sm font-semibold text-heading">Photo guide with measurements</div>
-              <p className="mb-4 text-sm text-muted">
-                Click through images of the venue, entrance, doorway width, bathroom, and internal layout.
-              </p>
-              <VenuePhotoGallery photos={v.photos} />
-            </Card>
-          ) : null}
-
-          <WillItFitCard venue={v} />
-          <VenueFitPlannerInline
-            venueName={v.name}
-            location={v.location}
-            venueSummary={v.summary}
+          {/* 3–4. Critical measurements + access summary + confirmed/unavailable/unknown */}
+          <VenueDecisionSummary
+            venue={v}
             confirmedFeatures={confirmedFeatures}
-            unknownFeatureCount={unknownCount}
+            unavailableFeatures={unavailableFeatures}
+            unknownFeatures={unknownFeatures}
+            unknownCount={unknownCount}
           />
 
-          <BeforeYouGo tips={beforeYouGo} />
-
-          <div className="grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
-            <Card className="p-5">
-              <div className="text-sm font-semibold text-heading">What this means for your visit</div>
-              <p className="mt-2 text-sm text-muted">
-                This venue currently has <span className="font-semibold text-heading">{yesCount}</span> confirmed access points.
-                {unknownCount > 0 ? (
-                  <>
-                    {" "}
-                    <span className="font-semibold text-heading">{unknownCount}</span> details are still unknown, so it is worth
-                    calling ahead for exact measurements and on-the-day setup.
-                  </>
-                ) : (
-                  " Key details are mostly documented, but confirming current layout before travel is still sensible."
-                )}
+          {/* 5. Photos */}
+          {hasPhotos ? (
+            <section id="venue-photos" className="scroll-mt-24 space-y-3" aria-labelledby="venue-photos-heading">
+              <h2 id="venue-photos-heading" className="text-lg font-semibold text-heading">
+                Photo guide with measurements
+              </h2>
+              <p className="text-sm text-muted">
+                Click through images of the venue, entrance, doorway width, bathroom, and internal layout.
               </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {v.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-heading"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <VenueVisitPlanActions
-                venueName={v.name}
-                location={v.location}
-                summary={v.summary}
-                tags={v.tags}
-                beforeYouGo={beforeYouGo}
-              />
-            </Card>
-
-            <Card className="p-5">
-              <div className="text-sm font-semibold text-heading">Location snapshot</div>
-              {v.locationSnapshot ? (
-                <div className="relative mt-3 aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)] border border-border bg-background">
-                  <Image
-                    src={v.locationSnapshot.src}
-                    alt={v.locationSnapshot.alt}
-                    fill
-                    className="object-cover object-center"
-                    sizes="(max-width: 1024px) 100vw, 400px"
-                  />
-                </div>
-              ) : (
-                <div className="mt-3 grid h-44 place-items-center rounded-[var(--radius-card)] border border-border bg-background px-4 text-center text-sm font-semibold text-muted">
-                  Use the address area below with your route planner. A map view is available from the venue finder list.
-                </div>
-              )}
-              <p className="mt-3 text-xs text-muted">
-                Address area: <span className="font-semibold text-heading">{v.location}</span>. Use this with your route planner and
-                check Blue Badge options or drop-off points before leaving.
-              </p>
-            </Card>
-          </div>
-
-          {custom ? (
-            <div className="grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
-              <Card className="p-5">
-                <div className="text-sm font-semibold text-heading">About this location</div>
-                <p className="mt-2 text-sm leading-6 text-muted">{custom.about}</p>
-              </Card>
-              <Card className="p-5">
-                <div className="text-sm font-semibold text-heading">Before you go</div>
-                <ul className="mt-2 list-disc space-y-2 pl-5 text-sm text-muted">
-                  {beforeYouGo.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </Card>
-            </div>
+              <VenuePhotoGallery photos={v.photos!} />
+            </section>
           ) : null}
 
+          {/* 6. Chair-fit */}
+          <WillItFitCard venue={v} />
+
+          {/* 7. Full accessibility breakdown */}
           <section className="space-y-6">
             <PageSectionTitle
               title="Accessibility breakdown"
@@ -355,7 +279,10 @@ export default async function VenueDetailPage({
             />
             <div className="grid gap-4 md:grid-cols-2">
               {ACCESS_AREAS.map((area) => (
-                <Card key={area.title} className="p-5">
+                <div
+                  key={area.title}
+                  className="rounded-[var(--radius-card)] border border-border bg-[var(--color-surface)] p-5"
+                >
                   <div className="text-sm font-semibold text-heading">{area.title}</div>
                   <div className="mt-3 grid gap-2">
                     {area.points.map((key) => {
@@ -373,14 +300,104 @@ export default async function VenueDetailPage({
                       );
                     })}
                   </div>
-                </Card>
+                </div>
               ))}
             </div>
           </section>
 
-          <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-            <Card className="p-5">
-              <div className="text-sm font-semibold text-heading">Contact &amp; updates</div>
+          {/* 8. Planning / AI */}
+          <section id="venue-plan" className="scroll-mt-24 space-y-6" aria-labelledby="venue-plan-heading">
+            <h2 id="venue-plan-heading" className="text-xl font-bold tracking-[-0.02em] text-heading">
+              Plan your visit
+            </h2>
+
+            <BeforeYouGo tips={beforeYouGo} />
+
+            <VenueFitPlannerInline
+              venueName={v.name}
+              location={v.location}
+              venueSummary={v.summary}
+              confirmedFeatures={confirmedFeatures}
+              unknownFeatureCount={unknownCount}
+            />
+
+            <div className="grid gap-6 lg:grid-cols-[1.25fr_.75fr]">
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-heading">What this means for your visit</h3>
+                <p className="text-sm text-muted">
+                  This venue currently has <span className="font-semibold text-heading">{yesCount}</span> confirmed access
+                  points.
+                  {unknownCount > 0 ? (
+                    <>
+                      {" "}
+                      <span className="font-semibold text-heading">{unknownCount}</span> details are still unknown, so it is
+                      worth calling ahead for exact measurements and on-the-day setup.
+                    </>
+                  ) : (
+                    " Key details are mostly documented, but confirming current layout before travel is still sensible."
+                  )}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {v.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-border bg-[var(--color-surface)] px-3 py-1 text-xs font-semibold text-heading"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <VenueVisitPlanActions
+                  venueName={v.name}
+                  location={v.location}
+                  summary={v.summary}
+                  tags={v.tags}
+                  beforeYouGo={beforeYouGo}
+                />
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-heading">Location snapshot</h3>
+                {v.locationSnapshot ? (
+                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)] border border-border bg-background">
+                    <Image
+                      src={v.locationSnapshot.src}
+                      alt={v.locationSnapshot.alt}
+                      fill
+                      className="object-cover object-center"
+                      sizes="(max-width: 1024px) 100vw, 400px"
+                    />
+                  </div>
+                ) : (
+                  <div className="grid h-44 place-items-center rounded-[var(--radius-card)] border border-border bg-background px-4 text-center text-sm font-semibold text-muted">
+                    Use the address area below with your route planner. A map view is available from the venue finder list.
+                  </div>
+                )}
+                <p className="text-xs text-muted">
+                  Address area: <span className="font-semibold text-heading">{v.location}</span>. Use this with your route
+                  planner and check Blue Badge options or drop-off points before leaving.
+                </p>
+              </div>
+            </div>
+
+            {custom ? (
+              <div>
+                <h3 className="text-sm font-semibold text-heading">About this location</h3>
+                <p className="mt-2 text-sm leading-6 text-muted">{custom.about}</p>
+              </div>
+            ) : null}
+          </section>
+
+          {/* 9. Methodology */}
+          <AccessCheckedMethodology
+            verification={v.verification}
+            confidence={v.confidence}
+            lastUpdated={v.lastUpdated}
+          />
+
+          <div className="grid gap-6 border-t border-border pt-8 lg:grid-cols-2">
+            <div>
+              <h2 className="text-sm font-semibold text-heading">Contact &amp; updates</h2>
               <p className="mt-2 text-sm text-muted">
                 We do not host venue phone numbers or opening hours yet. Area shown:{" "}
                 <span className="font-semibold text-heading">{v.location}</span>.
@@ -400,23 +417,23 @@ export default async function VenueDetailPage({
                   Suggest an update
                 </Button>
               </div>
-            </Card>
+            </div>
 
-            <Card className="p-5">
+            <div>
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="text-sm font-semibold text-heading">Community access notes</div>
+                  <h2 className="text-sm font-semibold text-heading">Community access notes</h2>
                   <p className="mt-1 text-sm text-muted">
                     This listing is labelled{" "}
-                    <span className="font-semibold text-heading">{v.verification.toLowerCase()}</span>.
-                    We do not run star ratings or user reviews — practical feature checks instead.
+                    <span className="font-semibold text-heading">{v.verification.toLowerCase()}</span>. We do not run star
+                    ratings or user reviews — practical feature checks instead.
                   </p>
                 </div>
                 <Link href="/venue-finder" className="shrink-0 text-sm font-semibold text-blue">
                   Back to search →
                 </Link>
               </div>
-            </Card>
+            </div>
           </div>
         </div>
       </Container>

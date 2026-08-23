@@ -20,10 +20,11 @@
   --color-ink: oklch(24% 0.025 185);
   --color-text-muted: oklch(46% 0.025 185);
 
-  /* Brand action */
-  --color-brand: oklch(56% 0.20 35);
-  --color-brand-hover: oklch(50% 0.18 35);
-  --color-brand-pressed: oklch(46% 0.16 35);
+  /* Brand action — bright accent for decoration; accessible rust for functional UI */
+  --color-brand-accent: oklch(56% 0.20 35);
+  --color-brand: #b83a12;
+  --color-brand-hover: #9a2f0e;
+  --color-brand-pressed: #7f270c;
   --color-brand-soft: oklch(94% 0.035 35);
 
   /* Confirmed evidence / trust */
@@ -68,6 +69,7 @@
   --color-primary: var(--color-brand);
   --color-primary-hover: var(--color-brand-hover);
   --color-primary-soft: var(--color-brand-soft);
+  --color-primary-accent: var(--color-brand-accent);
   --color-secondary: var(--color-trust);
   --color-secondary-hover: oklch(36% 0.08 145);
   --color-success: var(--color-trust);
@@ -809,12 +811,12 @@ html.home-masthead-hero--instant .hero-stamp-outline__path {
   outline-offset: 2px;
 }
 
-/* Prevent floating accessibility controls from covering page content */
-.accessibility-controls,
-.accessibility-widget,
+/* Prevent floating accessibility controls from covering page content.
+   Scope to the standalone launcher only — never clip the dock-embedded panel. */
+.accessibility-controls:not([data-embedded-accessibility-widget]),
+.accessibility-widget:not([data-embedded-accessibility-widget]),
 .accessibility-button,
-[data-accessibility-widget],
-[data-testid="accessibility-widget"] {
+[data-accessibility-widget]:not([data-embedded-accessibility-widget]) {
   position: fixed;
   right: 24px;
   bottom: 24px;
@@ -822,14 +824,56 @@ html.home-masthead-hero--instant .hero-stamp-outline__path {
 }
 
 @media (max-width: 640px) {
-  .accessibility-controls,
-  .accessibility-widget,
+  .accessibility-controls:not([data-embedded-accessibility-widget]),
+  .accessibility-widget:not([data-embedded-accessibility-widget]),
   .accessibility-button,
-  [data-accessibility-widget],
-  [data-testid="accessibility-widget"] {
+  [data-accessibility-widget]:not([data-embedded-accessibility-widget]) {
     right: 16px;
     bottom: 16px;
-    max-width: 52px;
-    overflow: hidden;
   }
+}
+
+/* Dock-owned accessibility panel — viewport-anchored, independent of trigger width */
+.site-a11y-panel.accessibility-panel {
+  position: fixed;
+  inset-inline: 16px;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  width: auto;
+  max-width: min(28rem, calc(100vw - 32px));
+  max-height: calc(100dvh - 110px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 60;
+  margin-inline-start: auto;
+  animation: site-a11y-panel-in 160ms ease-out;
+}
+
+@media (min-width: 640px) {
+  .site-a11y-panel.accessibility-panel {
+    inset-inline: auto;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+    width: 280px;
+  }
+}
+
+@keyframes site-a11y-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-a11y-panel.accessibility-panel {
+    animation: none;
+  }
+}
+
+body[data-reduce-motion="on"] .site-a11y-panel.accessibility-panel {
+  animation: none;
 }

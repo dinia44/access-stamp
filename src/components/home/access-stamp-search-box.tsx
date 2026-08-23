@@ -196,7 +196,7 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
           <div className={`grid gap-4 ${isVenueSearch ? "lg:grid-cols-2" : "lg:grid-cols-[minmax(0,1fr)_auto]"}`}>
             <div>
               <label htmlFor="platform-search-query" className="mb-2 block text-base font-medium text-[#2A3836]">
-                {isVenueSearch ? "Search for a venue or place" : "Search topic"}
+                {isVenueSearch ? "Venue name or category" : "Search topic"}
               </label>
               <input
                 id="platform-search-query"
@@ -204,7 +204,7 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={
-                  isVenueSearch ? "Search for a venue or place" : "Search PIP, travel, care, work, equipment…"
+                  isVenueSearch ? "e.g. Harbour Kitchen or café" : "Search PIP, travel, care, work, equipment…"
                 }
                 className={HOME_INPUT}
                 autoComplete="off"
@@ -215,14 +215,14 @@ export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBo
             {isVenueSearch ? (
               <div>
                 <label htmlFor="platform-search-location" className="mb-2 block text-base font-medium text-[#2A3836]">
-                  Location or postcode
+                  Town or postcode
                 </label>
                 <input
                   id="platform-search-location"
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Location or postcode"
+                  placeholder="e.g. Liverpool or L1"
                   className={HOME_INPUT}
                   autoComplete="postal-code"
                   aria-describedby="platform-search-description"

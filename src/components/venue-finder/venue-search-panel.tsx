@@ -24,8 +24,6 @@ export function VenueSearchPanel({
   onSearch,
   onUseLocation,
 }: Props) {
-  const searchValue = query || location;
-
   return (
     <div className="relative z-20 mx-auto -mt-12 max-w-6xl px-4 sm:px-6 lg:px-8">
       <div className="rounded-[2rem] border border-border bg-card p-4 shadow-[var(--shadow-lift)]">
@@ -37,18 +35,24 @@ export function VenueSearchPanel({
             onSearch();
           }}
         >
-          <div className="grid gap-3 lg:grid-cols-[1fr_auto_auto] lg:items-center">
+          <div className="grid gap-3 lg:grid-cols-[1fr_1fr_auto_auto] lg:items-end">
             <TextInput
-              name="search"
-              label="Search by town, postcode or venue name"
-              value={searchValue}
-              onChange={(e) => {
-                const value = e.target.value;
-                onQueryChange(value);
-                onLocationChange(value);
-              }}
-              placeholder="Search by town, postcode or venue name"
+              name="q"
+              label="Venue name or category"
+              value={query}
+              onChange={(e) => onQueryChange(e.target.value)}
+              placeholder="e.g. Harbour Kitchen or café"
               autoComplete="off"
+              className="h-16 rounded-2xl border-border px-5 text-base focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/15"
+            />
+
+            <TextInput
+              name="location"
+              label="Town or postcode"
+              value={location}
+              onChange={(e) => onLocationChange(e.target.value)}
+              placeholder="e.g. Liverpool or L1"
+              autoComplete="postal-code"
               error={locationError ?? undefined}
               className="h-16 rounded-2xl border-border px-5 text-base focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/15"
             />

@@ -1,7 +1,10 @@
 "use client";
 
 import { SITE_FOCUS } from "@/lib/site-design";
-import type { VenueFinderSort } from "@/lib/venue-finder-params";
+import {
+  formatVenueFinderLocationLine,
+  type VenueFinderSort,
+} from "@/lib/venue-finder-params";
 import { VenueFinderActiveFiltersSummary } from "./venue-finder-active-filters";
 
 const SORT_OPTIONS: VenueFinderSort[] = ["Best match", "Evidence confidence", "Distance"];
@@ -9,7 +12,9 @@ const SORT_OPTIONS: VenueFinderSort[] = ["Best match", "Evidence confidence", "D
 type Props = {
   resultCount: number;
   locating: boolean;
+  geocoding?: boolean;
   location?: string;
+  query?: string;
   hasSearchContext: boolean;
   selectedFilters: string[];
   sortBy: VenueFinderSort;
@@ -24,7 +29,9 @@ type Props = {
 export function VenueResultsHeader({
   resultCount,
   locating,
+  geocoding = false,
   location,
+  query,
   hasSearchContext,
   selectedFilters,
   sortBy,
@@ -36,8 +43,20 @@ export function VenueResultsHeader({
   onViewModeChange,
 }: Props) {
   const venueLabel = resultCount === 1 ? "venue" : "venues";
-  const trimmedLocation = location?.trim();
-  const locationLine = trimmedLocation ? `Venues in ${trimmedLocation}` : "Venues across the UK";
+  const locationLine = formatVenueFinderLocationLine(location);
+  const trimmedQuery = query?.trim();
+
+  let statusMessage: string;
+  if (locating) {
+    statusMessage = "Finding your location…";
+  } else if (geocoding) {
+    statusMessage = `Looking up ${location?.trim() || "that place"}…`;
+  } else if (hasSearchContext) {
+    const queryPart = trimmedQuery ? ` for “${trimmedQuery}”` : "";
+    statusMessage = `${resultCount} ${venueLabel} found${queryPart}. ${locationLine}.`;
+  } else {
+    statusMessage = locationLine;
+  }
 
   return (
     <header className="flex flex-col gap-4">
@@ -61,11 +80,22 @@ export function VenueResultsHeader({
             aria-live="polite"
             aria-atomic="true"
           >
-            {locating ? (
-              "Finding your location…"
+            {locating || geocoding ? (
+              statusMessage
             ) : (
               <>
                 <span className="font-medium text-heading">{locationLine}</span>
+                {trimmedQuery ? (
+                  <span className="sr-only">
+                    {" "}
+                    Searching for {trimmedQuery}. {resultCount} {venueLabel} found.
+                  </span>
+                ) : (
+                  <span className="sr-only">
+                    {" "}
+                    {resultCount} {venueLabel} shown.
+                  </span>
+                )}
                 {onChangeLocation ? (
                   <>
                     {" "}

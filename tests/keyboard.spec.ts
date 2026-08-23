@@ -3,11 +3,11 @@ import { test, expect } from "@playwright/test";
 test("venue search can be submitted by keyboard", async ({ page }) => {
   await page.goto("/venue-finder");
 
-  await page.getByLabel(/^search$/i).fill("cafe");
-  await page.getByLabel(/^location$/i).fill("Manchester");
+  await page.getByLabel(/venue name or category/i).fill("cafe");
+  await page.getByLabel(/town or postcode/i).fill("Manchester");
   await page.keyboard.press("Enter");
 
-  await expect(page.getByRole("status")).toContainText(/venues|finding your location/i);
+  await expect(page.getByRole("status")).toContainText(/venues|finding|looking up/i);
 });
 
 test("mobile menu closes with Escape and returns focus", async ({ page }) => {

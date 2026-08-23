@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useFocusTrap } from "@/lib/use-focus-trap";
 import { useChat } from "@/components/chat/provider";
 import { ChatMessageContent } from "@/components/chat/chat-message-content";
+import { aiInputDisclosure } from "@/lib/privacy-content";
 
 type Msg = { role: "user" | "assistant"; text: string; sentAt: number };
 
@@ -1831,6 +1832,7 @@ export function ChatWidget() {
                 <input
                   id="chat-input"
                   aria-label="Chat message"
+                  aria-describedby="chat-sensitive-data-note"
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   placeholder="Ask about a venue or accessibility feature..."
@@ -1915,6 +1917,9 @@ export function ChatWidget() {
                 {typing ? "Stop" : <IconSend />}
               </button>
             </div>
+            <p id="chat-sensitive-data-note" className="mt-2 text-[11px] leading-4 text-muted">
+              {aiInputDisclosure("OpenAI")}
+            </p>
             {!speechSupported ? (
               <p className="mt-2 text-[11px] text-muted">Voice input is not supported in this browser. You can still type messages.</p>
             ) : null}

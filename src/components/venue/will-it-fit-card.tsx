@@ -3,8 +3,7 @@
 import { useMemo, useState } from "react";
 import type { Venue } from "@/lib/mock-data";
 import { assessChairAgainstVenue, DOOR_CLEARANCE_CM } from "@/lib/venue-fit";
-import { Button, Card } from "@/components/ui";
-import { useChat } from "@/components/chat/provider";
+import { Card } from "@/components/ui";
 
 function InlineBold({ text }: { text: string }) {
   const parts = text.split(/(\*\*.+?\*\*)/g);
@@ -26,7 +25,6 @@ function InlineBold({ text }: { text: string }) {
 }
 
 export function WillItFitCard({ venue }: { venue: Venue }) {
-  const { openChat } = useChat();
   const [widthCm, setWidthCm] = useState("");
 
   const widthNum = parseFloat(widthCm.replace(",", "."));
@@ -78,22 +76,6 @@ export function WillItFitCard({ venue }: { venue: Venue }) {
       ) : widthCm.trim() ? (
         <p className="mt-4 text-sm text-muted">Enter a width between 40 and 130 cm.</p>
       ) : null}
-
-      <Button
-        type="button"
-        variant="secondary"
-        className="mt-5 w-full max-w-md"
-        onClick={() =>
-          openChat({
-            prefill:
-              widthCm.trim() !== ""
-                ? `I'm viewing ${venue.name}. My wheelchair outer width is about ${widthCm.trim()} cm — what should I double-check before I go?`
-                : `I'm viewing ${venue.name}. Help me plan my visit for wheelchair access (doors, turning, toilets).`,
-          })
-        }
-      >
-        Ask Access Stamp AI about this venue
-      </Button>
     </Card>
   );
 }

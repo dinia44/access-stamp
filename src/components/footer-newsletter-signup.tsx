@@ -2,22 +2,37 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { track, trackNewsletterFailure } from "@/lib/analytics";
+
+type Status =
+  | { kind: "idle" }
+  | { kind: "loading" }
+  | { kind: "success"; message: string }
+  | { kind: "invalid_email"; message: string }
+  | { kind: "already_subscribed"; message: string }
+  | { kind: "provider_error"; message: string }
+  | { kind: "retry"; message: string };
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function FooterNewsletterSignup() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
-  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<Status>({ kind: "idle" });
 
-  async function onSubscribe() {
+  async function onSubscribe(event?: React.FormEvent) {
+    event?.preventDefault();
     const trimmed = email.trim();
-    if (!trimmed) {
-      setStatus("error");
-      setMessage("Please enter your email address.");
+
+    if (!trimmed || !EMAIL_RE.test(trimmed)) {
+      setStatus({
+        kind: "invalid_email",
+        message: "Please enter a valid email address.",
+      });
+      trackNewsletterFailure("invalid_email");
       return;
     }
 
-    setStatus("loading");
-    setMessage("");
+    setStatus({ kind: "loading" });
 
     try {
       const response = await fetch("/api/newsletter-signup", {
@@ -25,20 +40,65 @@ export function FooterNewsletterSignup() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: trimmed }),
       });
-      const data = (await response.json()) as { message?: string; error?: string };
+      const data = (await response.json()) as {
+        message?: string;
+        error?: string;
+        errorCategory?: string;
+        alreadySubscribed?: boolean;
+      };
+
       if (!response.ok) {
-        setStatus("error");
-        setMessage(data.error ?? "Something went wrong. Please try again.");
+        if (data.errorCategory === "invalid_email" || response.status === 400) {
+          setStatus({
+            kind: "invalid_email",
+            message: data.error ?? "Please enter a valid email address.",
+          });
+          trackNewsletterFailure("invalid_email");
+          return;
+        }
+        setStatus({
+          kind: "provider_error",
+          message: data.error ?? "Something went wrong. Please try again.",
+        });
+        trackNewsletterFailure(data.errorCategory ?? "provider_error");
         return;
       }
-      setStatus("ok");
-      setMessage(data.message ?? "Thanks — you're subscribed.");
+
+      if (data.alreadySubscribed) {
+        setStatus({
+          kind: "already_subscribed",
+          message: data.message ?? "You're already subscribed — thank you.",
+        });
+        track("newsletter_success", { category: "already_subscribed" });
+        setEmail("");
+        return;
+      }
+
+      setStatus({
+        kind: "success",
+        message: data.message ?? "Thanks — you're subscribed.",
+      });
+      track("newsletter_success");
       setEmail("");
     } catch {
-      setStatus("error");
-      setMessage("Could not reach the server. Please try again later.");
+      setStatus({
+        kind: "retry",
+        message: "Could not reach the server. Please try again later.",
+      });
+      trackNewsletterFailure("network");
     }
   }
+
+  const isBusy = status.kind === "loading" || status.kind === "success" || status.kind === "already_subscribed";
+  const invalid = status.kind === "invalid_email";
+  const errorAlert =
+    status.kind === "invalid_email" ||
+    status.kind === "provider_error" ||
+    status.kind === "retry"
+      ? status.message
+      : null;
+  const statusMessage =
+    status.kind === "success" || status.kind === "already_subscribed" ? status.message : null;
 
   return (
     <div
@@ -56,13 +116,22 @@ export function FooterNewsletterSignup() {
         update what&apos;s changed — no spam, unsubscribe anytime.
       </p>
 
-      {status === "error" && message ? (
+      {errorAlert ? (
         <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
-          {message}
+          {errorAlert}
+          {status.kind === "provider_error" || status.kind === "retry" ? (
+            <button
+              type="button"
+              className="mt-2 block font-semibold underline underline-offset-2"
+              onClick={() => setStatus({ kind: "idle" })}
+            >
+              Dismiss and retry
+            </button>
+          ) : null}
         </div>
       ) : null}
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-end">
+      <form className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-end" onSubmit={(e) => void onSubscribe(e)} noValidate>
         <div className="flex-1">
           <label htmlFor="footer-newsletter-email" className="block text-sm font-medium text-[#20242E]">
             Email address
@@ -73,23 +142,37 @@ export function FooterNewsletterSignup() {
             type="email"
             autoComplete="email"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            disabled={status === "loading" || status === "ok"}
-            className="mt-2 h-11 w-full rounded-full border border-[#EFE5DA] bg-[#FDFBF8] px-4 text-sm text-[#20242E] focus:border-[#F6CFB8] focus:outline-none focus:ring-2 focus:ring-[#FDE9DD] disabled:opacity-70"
+            onChange={(event) => {
+              setEmail(event.target.value);
+              if (status.kind !== "idle" && status.kind !== "loading") setStatus({ kind: "idle" });
+            }}
+            disabled={isBusy}
+            className="mt-2 h-11 w-full rounded-full border border-[#EFE5DA] bg-[#FDFBF8] px-4 text-sm text-[#20242E] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 disabled:opacity-70"
             placeholder="you@example.com"
-            aria-invalid={status === "error"}
-            aria-describedby="footer-newsletter-helper"
+            required
+            aria-invalid={invalid ? true : undefined}
+            aria-describedby={
+              invalid ? "footer-newsletter-error footer-newsletter-helper" : "footer-newsletter-helper"
+            }
           />
+          {invalid ? (
+            <p id="footer-newsletter-error" className="sr-only">
+              {status.message}
+            </p>
+          ) : null}
         </div>
         <button
-          type="button"
-          onClick={onSubscribe}
-          disabled={status === "loading" || status === "ok"}
-          className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-[#EF5B25] px-6 text-sm font-semibold text-white transition hover:bg-[#D94E1C] disabled:opacity-70"
+          type="submit"
+          disabled={isBusy}
+          className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)] px-6 text-sm font-semibold text-white transition hover:bg-[var(--color-primary-hover)] disabled:opacity-70"
         >
-          {status === "loading" ? "Subscribing…" : status === "ok" ? "Subscribed" : "Subscribe"}
+          {status.kind === "loading"
+            ? "Subscribing…"
+            : status.kind === "success" || status.kind === "already_subscribed"
+              ? "Subscribed"
+              : "Subscribe"}
         </button>
-      </div>
+      </form>
 
       <p id="footer-newsletter-helper" className="mt-4 text-xs leading-5 text-[#76808F]">
         We only use this to send the newsletter. See our{" "}
@@ -99,9 +182,9 @@ export function FooterNewsletterSignup() {
         .
       </p>
 
-      {status === "ok" && message ? (
+      {statusMessage ? (
         <p className="mt-3 text-sm text-[#5F7444]" role="status">
-          {message}
+          {statusMessage}
         </p>
       ) : null}
     </div>

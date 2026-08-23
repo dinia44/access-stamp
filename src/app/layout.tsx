@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteChrome } from "@/components/site-chrome";
 import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { buildOrganizationJsonLd } from "@/lib/seo/organization-jsonld";
-import { getSiteUrl } from "@/lib/seo/site-url";
+import { getSiteUrl, shouldNoIndexDeployment } from "@/lib/seo/site-url";
 import { defaultOgImageUrl } from "@/lib/seo/default-images";
 
 const heading = Fraunces({
@@ -25,6 +25,8 @@ const body = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const previewNoIndex = shouldNoIndexDeployment();
+
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
@@ -33,6 +35,7 @@ export const metadata: Metadata = {
   },
   description:
     "A UK-focused accessibility platform for practical advice, source-backed help cards, and venue access details.",
+  robots: previewNoIndex ? { index: false, follow: false } : undefined,
   openGraph: {
     title: "Access Stamp",
     description:

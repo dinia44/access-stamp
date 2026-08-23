@@ -59,7 +59,7 @@ export function AccessibilityControls({ embedded = false, open: controlledOpen, 
   const panel = open || embedded ? (
     <div
       id={panelId}
-      className={`${embedded ? "" : "mt-2"} w-[280px] max-w-[calc(100vw-2rem)] rounded-[var(--radius-card)] border border-border bg-card p-3 shadow-[var(--shadow)]`}
+      className={`${embedded ? "w-full" : "w-[280px]"} max-w-[calc(100vw-2rem)] rounded-[var(--radius-card)] border border-border bg-card p-3 pt-12 shadow-[var(--shadow)] sm:pt-3`}
     >
       <div className="text-sm font-semibold text-heading">Accessibility options</div>
       <div className="mt-3 grid gap-3 text-sm">
@@ -125,7 +125,7 @@ export function AccessibilityControls({ embedded = false, open: controlledOpen, 
 
   if (embedded) {
     return (
-      <div data-accessibility-widget data-testid="accessibility-widget">
+      <div data-embedded-accessibility-widget data-testid="accessibility-widget">
         {panel}
       </div>
     );

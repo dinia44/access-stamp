@@ -109,7 +109,12 @@ export const PRIVACY_PROCESSING: ProcessingActivity[] = [
 ];
 
 export const SENSITIVE_DATA_NOTICE =
-  "Avoid entering names, addresses, National Insurance numbers, medical record numbers, dates of birth, employer case numbers, or other identifying information unless it is genuinely necessary. Access Stamp tools support preparation and do not replace qualified legal, medical, benefits, employment, or safeguarding advice.";
+  "Don’t enter names, addresses, NHS or National Insurance numbers, medical records, or other identifying details. Your text is sent to OpenAI to generate this draft. Access Stamp tools support preparation and do not replace qualified legal, medical, benefits, employment, or safeguarding advice.";
+
+/** Prefer this when the surface may or may not call OpenAI — pass the resolved provider label. */
+export function aiInputDisclosure(providerLabel = "OpenAI"): string {
+  return `Don’t enter names, addresses, NHS or National Insurance numbers, medical records, or other identifying details. Your text is sent to ${providerLabel} to generate this draft.`;
+}
 
 export const PHOTO_UPLOAD_NOTICE =
   "Do not upload photographs containing identifiable people, children, private documents, personal belongings, vehicle registration numbers, or other personal information. Remove location metadata where possible. AI suggestions are not measurements or verification and must be reviewed before publication.";

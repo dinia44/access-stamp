@@ -8,7 +8,10 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid JSON body.", errorCategory: "validation" },
+      { status: 400 },
+    );
   }
 
   const email =
@@ -17,12 +20,27 @@ export async function POST(req: Request) {
       : "";
 
   if (!email || !EMAIL_RE.test(email)) {
-    return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Please enter a valid email address.", errorCategory: "invalid_email" },
+      { status: 400 },
+    );
   }
 
   const result = await subscribeToNewsletter(email);
   if (!result.ok) {
-    return NextResponse.json({ error: result.error }, { status: 502 });
+    return NextResponse.json(
+      { error: result.error, errorCategory: "provider_error" },
+      { status: 502 },
+    );
+  }
+
+  if (result.alreadySubscribed) {
+    return NextResponse.json({
+      ok: true,
+      alreadySubscribed: true,
+      message: "You're already subscribed — thank you.",
+      stored: result.stored,
+    });
   }
 
   return NextResponse.json({

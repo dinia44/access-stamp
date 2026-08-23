@@ -21,26 +21,36 @@ export function AccessCheckedMethodology({ verification, confidence, lastUpdated
   };
 
   return (
-    <aside className="rounded-2xl border border-[#EFE5DA] bg-[#FAF4ED] p-5 text-sm leading-7 text-[#4A5263]">
-      <h2 className="text-base font-semibold text-[#20242E]">How to read this listing</h2>
-      <p className="mt-2">
-        <span className="font-semibold text-[#20242E]">{verificationLabel}</span> means this listing is based on{" "}
-        {sourceDescription[verificationType] ?? sourceDescription.unverified}
-      </p>
-      <p className="mt-2">
-        Confidence is rated <span className="font-semibold text-[#20242E]">{confidence}</span> based on how complete
-        and recent the evidence is. Last updated {lastUpdated}. We show features as confirmed, not available, or
-        unknown — colour and icons are never the only signal.
-      </p>
-      <p className="mt-2">
-        Access information can change. Check the confidence label, review any known unknowns, and confirm important
-        details directly with the venue before travelling.
-      </p>
-      <p className="mt-2">
-        <Link href="/methodology" className="font-semibold text-[#C8430F] underline-offset-2 hover:underline">
-          Read our methodology
-        </Link>
-      </p>
+    <aside className="rounded-2xl border border-[#EFE5DA] bg-[#FAF4ED] p-4 text-sm leading-7 text-[#4A5263]">
+      <details className="group">
+        <summary className="cursor-pointer list-none text-base font-semibold text-[#20242E] marker:content-none [&::-webkit-details-marker]:hidden">
+          <span className="inline-flex items-center gap-2">
+            How to read this listing
+            <span className="text-xs font-medium text-[#76808F] group-open:hidden">Show</span>
+            <span className="hidden text-xs font-medium text-[#76808F] group-open:inline">Hide</span>
+          </span>
+        </summary>
+        <div className="mt-3 border-t border-[#EFE5DA] pt-3">
+          <p>
+            <span className="font-semibold text-[#20242E]">{verificationLabel}</span> means this listing is based on{" "}
+            {sourceDescription[verificationType] ?? sourceDescription.unverified}
+          </p>
+          <p className="mt-2">
+            Confidence is rated <span className="font-semibold text-[#20242E]">{confidence}</span> based on how complete
+            and recent the evidence is. Last updated {lastUpdated}. We show features as confirmed, not available, or
+            unknown — colour and icons are never the only signal.
+          </p>
+          <p className="mt-2">
+            Access information can change. Check the confidence label, review any known unknowns, and confirm important
+            details directly with the venue before travelling.
+          </p>
+          <p className="mt-2">
+            <Link href="/methodology" className="font-semibold text-[#C8430F] underline-offset-2 hover:underline">
+              Read our methodology
+            </Link>
+          </p>
+        </div>
+      </details>
     </aside>
   );
 }

@@ -157,6 +157,55 @@ function matchesFeatureFilter(venue: Venue, key: string): boolean {
   return venue.features[key] === "yes";
 }
 
+const QUERY_STOPWORDS = new Set(["a", "an", "and", "at", "for", "in", "of", "on", "or", "the", "to", "no"]);
+
+export function significantQueryTokens(input: string): string[] {
+  return tokenize(input).filter((term) => term.length >= 3 && !QUERY_STOPWORDS.has(term));
+}
+
+export function scoreVenueQueryMatch(venue: Venue, query: string): number {
+  const q = query.trim();
+  if (!q) return 0;
+
+  const normalizedQuery = normalize(q);
+  const normalizedName = normalize(venue.name);
+  if (!normalizedQuery) return 0;
+
+  // Exact and near-exact venue names always win ranking.
+  if (normalizedName === normalizedQuery) return 10_000;
+  if (normalizedName.startsWith(normalizedQuery) || normalizedQuery.startsWith(normalizedName)) {
+    return 5_000;
+  }
+  if (normalizedName.includes(normalizedQuery)) return 2_500;
+
+  const terms = significantQueryTokens(q);
+  if (!terms.length) return 0;
+
+  const expandedTerms = terms.flatMap((term) => [term, ...(QUERY_SYNONYMS[term] ?? []).flatMap((s) => tokenize(s))]);
+  const featureKeys = Object.entries(venue.features)
+    .filter(([, value]) => value === "yes")
+    .map(([key]) => key.toLowerCase());
+  const haystack = [
+    venue.name.toLowerCase(),
+    venue.location.toLowerCase(),
+    venue.type.toLowerCase(),
+    venue.summary.toLowerCase(),
+    ...venue.tags.map((t) => t.toLowerCase()),
+    ...featureKeys,
+  ];
+
+  // Every significant token must match somewhere — prevents silent unrelated hits.
+  const allTermsMatch = terms.every((term) => haystack.some((field) => field.includes(term)));
+  if (!allTermsMatch) return 0;
+
+  return expandedTerms.reduce((acc, term) => {
+    if (!term || term.length < 3) return acc;
+    if (normalize(venue.name).includes(term)) return acc + 12;
+    if (haystack.some((field) => field.includes(term))) return acc + 3;
+    return acc;
+  }, 0);
+}
+
 export function filterVenues(
   venues: Venue[],
   {
@@ -175,27 +224,8 @@ export function filterVenues(
 
   const q = query.trim();
   if (q) {
-    const terms = tokenize(q);
-    const expandedTerms = terms.flatMap((term) => [term, ...(QUERY_SYNONYMS[term] ?? [])]);
     items = items
-      .map((v) => {
-        const featureKeys = Object.entries(v.features)
-          .filter(([, value]) => value === "yes")
-          .map(([key]) => key.toLowerCase());
-        const haystack = [
-          v.name.toLowerCase(),
-          v.location.toLowerCase(),
-          v.type.toLowerCase(),
-          v.summary.toLowerCase(),
-          ...v.tags.map((t) => t.toLowerCase()),
-          ...featureKeys,
-        ];
-        const score = expandedTerms.reduce((acc, term) => {
-          if (haystack.some((field) => field.includes(term))) return acc + 3;
-          return acc;
-        }, 0);
-        return { venue: v, score };
-      })
+      .map((v) => ({ venue: v, score: scoreVenueQueryMatch(v, q) }))
       .filter((x) => x.score > 0)
       .sort((a, b) => b.score - a.score)
       .map((x) => x.venue);

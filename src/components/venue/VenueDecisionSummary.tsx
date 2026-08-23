@@ -8,6 +8,7 @@ type Props = {
   venue: Venue;
   confirmedFeatures: string[];
   unavailableFeatures: string[];
+  unknownFeatures?: string[];
   unknownCount: number;
 };
 
@@ -51,6 +52,7 @@ export function VenueDecisionSummary({
   venue,
   confirmedFeatures,
   unavailableFeatures,
+  unknownFeatures = [],
   unknownCount,
 }: Props) {
   const outcome = getDecisionOutcome(venue, unknownCount, unavailableFeatures.length);
@@ -70,10 +72,16 @@ export function VenueDecisionSummary({
       measurements.push(measuredPhoto.measurement.replace(/^Door width measured:\s*/i, measuredPhoto.label + ": "));
     }
   }
+  const unknowns = unknownFeatures.length
+    ? unknownFeatures
+    : Object.entries(venue.features)
+        .filter(([, value]) => value === "unknown")
+        .map(([feature]) => feature);
 
   return (
     <aside
-      className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-soft)]"
+      id="venue-summary"
+      className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-soft)] scroll-mt-24"
       aria-labelledby="decision-summary-heading"
     >
       <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold ${copy.tone}`}>
@@ -116,16 +124,24 @@ export function VenueDecisionSummary({
         </div>
       </dl>
 
-      {measurements.length > 0 ? (
-        <div className="mt-4 rounded-[var(--radius-md)] border border-dashed border-[var(--color-border-mid)] bg-[var(--color-surface-subtle)] px-3 py-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-brand)]">Critical measurements</p>
-          <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--color-ink)]">
-            {measurements.map((m) => (
-              <li key={m}>{m}</li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
+      <div id="venue-measurements" className="scroll-mt-24">
+        {measurements.length > 0 ? (
+          <div className="mt-4 rounded-[var(--radius-md)] border border-dashed border-[var(--color-border-mid)] bg-[var(--color-surface-subtle)] px-3 py-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-brand)]">
+              Critical measurements
+            </p>
+            <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--color-ink)]">
+              {measurements.map((m) => (
+                <li key={m}>{m}</li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p className="mt-4 text-sm text-[var(--color-text-muted)]">
+            No audited doorway or toilet measurements published for this listing yet.
+          </p>
+        )}
+      </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <FeatureList title="Confirmed" items={confirmedFeatures.slice(0, 6)} tone="trust" empty="No confirmed features yet" />
@@ -134,6 +150,15 @@ export function VenueDecisionSummary({
           items={unavailableFeatures.slice(0, 6)}
           tone="danger"
           empty="None listed as unavailable"
+        />
+      </div>
+
+      <div id="venue-unknowns" className="mt-4 scroll-mt-24">
+        <FeatureList
+          title="Unknown — confirm before you go"
+          items={unknowns.slice(0, 8)}
+          tone="warning"
+          empty="No unknowns flagged"
         />
       </div>
 
@@ -152,11 +177,21 @@ function FeatureList({
 }: {
   title: string;
   items: string[];
-  tone: "trust" | "danger";
+  tone: "trust" | "danger" | "warning";
   empty: string;
 }) {
-  const color = tone === "trust" ? "text-[var(--color-trust)]" : "text-[var(--color-danger)]";
-  const dot = tone === "trust" ? "bg-[var(--color-trust)]" : "bg-[var(--color-danger)]";
+  const color =
+    tone === "trust"
+      ? "text-[var(--color-trust)]"
+      : tone === "danger"
+        ? "text-[var(--color-danger)]"
+        : "text-[var(--color-warning)]";
+  const dot =
+    tone === "trust"
+      ? "bg-[var(--color-trust)]"
+      : tone === "danger"
+        ? "bg-[var(--color-danger)]"
+        : "bg-[var(--color-warning)]";
   return (
     <div>
       <p className={`text-xs font-semibold uppercase tracking-[0.08em] ${color}`}>{title}</p>

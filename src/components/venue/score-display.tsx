@@ -13,7 +13,7 @@ export function ScoreDisplay({ score, showRing = false, size = "sm", className =
   if (score === null) {
     return (
       <p className={`text-sm text-muted ${className}`}>
-        Access score not published for this listing.
+        No single access score — review the evidence and unknowns below.
       </p>
     );
   }
