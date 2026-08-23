@@ -4,11 +4,15 @@ Do not treat coding as complete until these are done in the deployment environme
 
 ## Required env / DNS
 
-1. Set `NEXT_PUBLIC_SITE_URL=https://accessstamp.co.uk` on the **production** Vercel project.
+1. Set `NEXT_PUBLIC_SITE_URL=https://accessstamp.co.uk` on the **production** Vercel project **only after** the domain resolves.
 2. Point DNS for `accessstamp.co.uk` (and `www` if used) at the Vercel project.
-3. In Vercel → Project → Domains, attach the custom domain and keep the project hostname as a secondary alias or redirect.
+3. In Vercel → Project → Domains, attach the custom domain.
 4. Confirm preview deployments stay `noindex` (app sets robots noindex when `VERCEL_ENV=preview`).
-5. Confirm production redirect from `access-stamp-allister-diniz-s-projects.vercel.app` → `accessstamp.co.uk` (configured in `next.config.ts` for `VERCEL_ENV=production`, plus Vercel domain settings).
+5. **Only then** add a host redirect from the `*.vercel.app` project hostname → `accessstamp.co.uk` in Vercel Domains (not in `next.config.ts` while the custom domain is offline). Redirecting early sends every visitor to a dead host and looks like a site-wide 404.
+
+Until steps 1–3 are done, leave the site on:
+
+`https://access-stamp-allister-diniz-s-projects.vercel.app`
 
 ## Providers to verify (without submitting live user data)
 

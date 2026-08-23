@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 import path from "path";
 import bundleAnalyzer from "@next/bundle-analyzer";
-import { SITE_CONFIG } from "./src/lib/site-config";
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
@@ -68,19 +67,9 @@ const nextConfig: NextConfig = {
         destination: "/about",
         permanent: true,
       },
-      // Prefer the approved public domain once DNS and NEXT_PUBLIC_SITE_URL are live.
-      // Host-based redirects for the Vercel hostname should also be configured in the
-      // Vercel project Domains settings so preview URLs are not force-redirected.
-      ...(process.env.VERCEL_ENV === "production"
-        ? [
-            {
-              source: "/:path*",
-              has: [{ type: "host" as const, value: SITE_CONFIG.vercelHostname }],
-              destination: `${SITE_CONFIG.url}/:path*`,
-              permanent: true,
-            },
-          ]
-        : []),
+      // Do NOT redirect the Vercel project hostname to accessstamp.co.uk here until
+      // that domain is attached in Vercel Domains and DNS resolves. Configure the
+      // host redirect in the Vercel project settings when the custom domain is live.
     ];
   },
   images: {
