@@ -2,6 +2,7 @@ import type { HelpCard } from "@/data/help-cards/types";
 import { HELP_CARDS } from "@/data/helpCards";
 import { isPlaceholderValue, isValidIsoDate } from "@/lib/help-cards/format";
 import { isAuthoritativeSource } from "@/lib/help-cards/authority";
+import { validatePublishedDownloadDocuments } from "@/lib/help-cards/download-document";
 
 export type HelpCardValidationIssue = {
   cardSlug: string;
@@ -65,6 +66,11 @@ export function validateHelpCards(cards: HelpCard[] = HELP_CARDS): HelpCardValid
         }
       }
     }
+  }
+
+  for (const message of validatePublishedDownloadDocuments(cards)) {
+    const slug = message.split(":")[0] ?? "unknown";
+    issues.push({ cardSlug: slug, message, severity: "error" });
   }
 
   return issues;

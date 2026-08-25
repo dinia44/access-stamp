@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { HelpCard } from "@/data/help-cards/types";
+import type { HelpCardDownloadResolveResult } from "@/data/help-cards/download-types";
 import { HelpCardContextSelector } from "@/components/help-cards/help-card-context-selector";
 import { HelpCardReviewMetadata } from "@/components/help-cards/help-card-review-metadata";
 import { HelpCardAtAGlance } from "@/components/help-cards/help-card-at-a-glance";
@@ -10,7 +11,13 @@ import { HelpCardRuleSections } from "@/components/help-cards/help-card-rule-sec
 import { IfChallenged } from "@/components/help-cards/if-challenged";
 import { HelpCardDetailActions } from "@/components/help-cards/help-card-detail-actions";
 
-function HelpCardDetailBodyInner({ card }: { card: HelpCard }) {
+function HelpCardDetailBodyInner({
+  card,
+  download,
+}: {
+  card: HelpCard;
+  download: HelpCardDownloadResolveResult;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -77,20 +84,26 @@ function HelpCardDetailBodyInner({ card }: { card: HelpCard }) {
         </section>
       ) : null}
 
-      <section aria-labelledby="save-print-heading">
-        <h2 id="save-print-heading" className="sr-only">
-          Save or print this card
+      <section aria-labelledby="download-print-heading">
+        <h2 id="download-print-heading" className="sr-only">
+          Download or print this card
         </h2>
-        <HelpCardDetailActions card={card} variant={variant} />
+        <HelpCardDetailActions card={card} download={download} />
       </section>
     </div>
   );
 }
 
-export function HelpCardDetailBody({ card }: { card: HelpCard }) {
+export function HelpCardDetailBody({
+  card,
+  download,
+}: {
+  card: HelpCard;
+  download: HelpCardDownloadResolveResult;
+}) {
   return (
     <Suspense fallback={<div className="text-sm text-[var(--color-text-muted)]">Loading card…</div>}>
-      <HelpCardDetailBodyInner card={card} />
+      <HelpCardDetailBodyInner card={card} download={download} />
     </Suspense>
   );
 }

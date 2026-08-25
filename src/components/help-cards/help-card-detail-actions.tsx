@@ -1,62 +1,166 @@
 "use client";
 
 import { useId, useState } from "react";
-import type { HelpCard, HelpCardVariant } from "@/data/help-cards/types";
-import { getHelpCardPlainText } from "@/lib/help-cards/copy-text";
+import type { HelpCard } from "@/data/help-cards/types";
+import type { HelpCardDownloadResolveResult } from "@/data/help-cards/download-types";
+import { helpCardDownloadFilename } from "@/lib/help-cards/download-filename";
 
-export function HelpCardDetailActions({ card, variant }: { card: HelpCard; variant: HelpCardVariant }) {
+type SaveState = "idle" | "preparing" | "saved" | "failed" | "unavailable";
+type Format = "pdf" | "txt";
+
+function triggerBlobDownload(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
+function announcementFor(state: SaveState, format: Format | null, title: string): string {
+  if (!format) return "";
+  const label = format === "pdf" ? "designed PDF" : "plain-text version";
+  if (state === "preparing") return `Preparing the ${label} of ${title}`;
+  if (state === "saved") return `${title} ${label} download started`;
+  if (state === "failed") return `Could not download the ${label} of ${title}. You can try again.`;
+  if (state === "unavailable") {
+    return `The designed PDF of ${title} is unavailable because curated card content has not been approved.`;
+  }
+  return "";
+}
+
+export function HelpCardDetailActions({
+  card,
+  download,
+}: {
+  card: HelpCard;
+  download: HelpCardDownloadResolveResult;
+}) {
   const liveId = useId();
-  const [saveState, setSaveState] = useState<"idle" | "saved" | "failed">("idle");
+  const [pdfState, setPdfState] = useState<SaveState>(download.ok ? "idle" : "unavailable");
+  const [txtState, setTxtState] = useState<SaveState>(download.ok ? "idle" : "unavailable");
+  const [activeFormat, setActiveFormat] = useState<Format | null>(null);
 
-  function saveCard() {
+  const available = download.ok;
+  const reviewedAt = available ? download.document.reviewedAt : "";
+
+  async function downloadFormat(format: Format) {
+    if (!available) {
+      setActiveFormat(format);
+      if (format === "pdf") setPdfState("unavailable");
+      else setTxtState("unavailable");
+      return;
+    }
+
+    const setState = format === "pdf" ? setPdfState : setTxtState;
+    setActiveFormat(format);
+    setState("preparing");
+
     try {
-      const blob = new Blob([getHelpCardPlainText(card, variant)], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `${card.slug}.txt`;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      URL.revokeObjectURL(url);
-      setSaveState("saved");
-      window.setTimeout(() => setSaveState("idle"), 2500);
+      const response = await fetch(`/api/help-cards/${card.slug}/${format}`, {
+        method: "GET",
+        headers: { Accept: format === "pdf" ? "application/pdf" : "text/plain" },
+      });
+
+      if (response.status === 409) {
+        setState("unavailable");
+        return;
+      }
+      if (!response.ok) {
+        setState("failed");
+        return;
+      }
+
+      const blob = await response.blob();
+      triggerBlobDownload(blob, helpCardDownloadFilename(card.slug, reviewedAt, format));
+      setState("saved");
+      window.setTimeout(() => setState("idle"), 2500);
     } catch {
-      setSaveState("failed");
-      window.setTimeout(() => setSaveState("idle"), 3500);
+      setState("failed");
     }
   }
 
+  const pdfLabel =
+    pdfState === "preparing"
+      ? "Preparing PDF…"
+      : pdfState === "saved"
+        ? "PDF download started"
+        : pdfState === "failed"
+          ? "PDF failed — try again"
+          : pdfState === "unavailable"
+            ? "PDF unavailable"
+            : "Download designed card (PDF)";
+
+  const txtLabel =
+    txtState === "preparing"
+      ? "Preparing text…"
+      : txtState === "saved"
+        ? "Text download started"
+        : txtState === "failed"
+          ? "Text failed — try again"
+          : txtState === "unavailable"
+            ? "Plain text unavailable"
+            : "Download plain-text version";
+
+  const buttonClass =
+    "inline-flex min-h-[44px] items-center justify-center rounded-[var(--radius-md)] border px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)] disabled:cursor-not-allowed disabled:opacity-60";
+
   return (
     <div className="no-print space-y-3">
+      <p className="text-sm leading-6 text-[var(--color-text-muted)]">
+        Download a concise, print-ready version of this Help Card. It includes the practical steps, suggested
+        wording, scope, review date and official sources.
+      </p>
       <div className="flex flex-wrap gap-3">
         <button
           type="button"
-          onClick={saveCard}
-          aria-label={`Save ${card.title} card as a text file on this device`}
-          className="inline-flex min-h-[44px] items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 text-sm font-semibold text-[var(--color-ink)] transition hover:border-[var(--color-brand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)]"
+          onClick={() => downloadFormat("pdf")}
+          disabled={pdfState === "preparing" || pdfState === "unavailable"}
+          aria-label={`Download designed PDF of ${card.title}`}
+          className={`${buttonClass} border-[var(--color-brand)] bg-[var(--color-brand)] text-white hover:bg-[var(--color-brand-hover)]`}
         >
-          {saveState === "saved" ? "Downloaded" : saveState === "failed" ? "Save failed" : "Save card"}
+          {pdfLabel}
+        </button>
+        <button
+          type="button"
+          onClick={() => downloadFormat("txt")}
+          disabled={txtState === "preparing" || txtState === "unavailable"}
+          aria-label={`Download plain-text version of ${card.title}`}
+          className={`${buttonClass} border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] hover:border-[var(--color-brand)]`}
+        >
+          {txtLabel}
         </button>
         <button
           type="button"
           onClick={() => window.print()}
+          disabled={!available}
           aria-label={`Print ${card.title} card`}
-          className="inline-flex min-h-[44px] items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 text-sm font-semibold text-[var(--color-ink)] transition hover:border-[var(--color-brand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)]"
+          className={`${buttonClass} border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] hover:border-[var(--color-brand)]`}
         >
           Print card
         </button>
       </div>
-      <p className="text-sm leading-6 text-[var(--color-text-muted)]">
-        Save downloads a text file to this device. It is not stored in an Access Stamp account and may be
-        visible to other people who use this browser profile.
-      </p>
-      <p id={liveId} className="sr-only" aria-live="polite">
-        {saveState === "saved"
-          ? `${card.title} card downloaded to this device`
-          : saveState === "failed"
-            ? `Could not save ${card.title} card`
-            : ""}
+      {!available ? (
+        <p role="status" className="text-sm leading-6 text-[var(--color-ink)]">
+          The designed PDF is not available yet because curated card content has not been approved. The live page
+          remains the reviewed source.
+        </p>
+      ) : (
+        <p className="text-sm leading-6 text-[var(--color-text-muted)]">
+          Downloads are saved to this device and may be visible to other people who use it. Access Stamp does not
+          save them to an account.
+        </p>
+      )}
+      <p
+        id={liveId}
+        className="sr-only"
+        data-help-card-download-status=""
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {announcementFor(activeFormat === "txt" ? txtState : pdfState, activeFormat, card.title)}
       </p>
     </div>
   );

@@ -8,6 +8,7 @@
  */
 import { HELP_CARDS } from "../src/data/helpCards.ts";
 import { FLYING_WITH_MOBILITY_EQUIPMENT_FIXTURE } from "../src/data/help-cards/__fixtures__/flying-with-mobility-equipment.ts";
+import { HELP_CARD_DOWNLOAD_COPY } from "../src/data/help-cards/download-copy.ts";
 
 const AUTHORITATIVE = new Set(["law-or-regulation", "regulator-guidance", "government-guidance"]);
 const PLACEHOLDERS = [/^add latest review date$/i, /^tbc$/i, /^todo$/i, /^tba$/i, /^n\/?a$/i];
@@ -86,6 +87,21 @@ if (FLYING_WITH_MOBILITY_EQUIPMENT_FIXTURE.variants.length < 2)
   fixtureErrors.push("flying fixture must have multiple context variants");
 if (HELP_CARDS.some((card) => card.slug === FLYING_WITH_MOBILITY_EQUIPMENT_FIXTURE.slug))
   fixtureErrors.push("flying fixture must not be added to production HELP_CARDS");
+
+for (const card of HELP_CARDS) {
+  if (card.publicationState !== "published") continue;
+  const copy = HELP_CARD_DOWNLOAD_COPY[card.slug];
+  if (!copy) {
+    productionErrors.push(`${card.slug}: missing curated download copy`);
+    continue;
+  }
+  if (copy.status !== "reviewed" && copy.status !== "published") {
+    productionErrors.push(`${card.slug}: download copy is not approved`);
+  }
+  if (!copy.title?.trim()) productionErrors.push(`${card.slug}: download copy missing title`);
+  if (!copy.purpose?.trim()) productionErrors.push(`${card.slug}: download copy missing purpose`);
+  if (!copy.actions?.length) productionErrors.push(`${card.slug}: download copy missing actions`);
+}
 
 const allErrors = [...productionErrors, ...fixtureErrors];
 if (allErrors.length > 0) {

@@ -3,12 +3,14 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getHelpCard, getPublishedHelpCards, HELP_CARDS } from "@/data/helpCards";
 import { HelpCardDetailBody } from "@/components/help-cards/help-card-detail-body";
+import { HelpCardDownloadDocumentView } from "@/components/help-cards/help-card-download-document";
 import { HelpCardAiPanel } from "@/components/help-cards/help-card-ai-panel";
 import { OfficialSourceList } from "@/components/help-cards/official-source-list";
 import { HelpCardPrintFooter } from "@/components/help-cards/help-card-print-footer";
 import { SetChatContext } from "@/components/chat/set-context";
 import { Container } from "@/components/container";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
+import { resolveHelpCardDownloadDocument } from "@/lib/help-cards/download-document";
 import "../help-cards.css";
 
 type PageProps = {
@@ -41,12 +43,13 @@ export default async function HelpCardDetailPage({ params }: PageProps) {
   const related = getPublishedHelpCards()
     .filter((item) => item.slug !== card.slug && item.categoryKey === card.categoryKey)
     .slice(0, 2);
+  const download = resolveHelpCardDownloadDocument(card);
 
   return (
     <>
       <SetChatContext page={{ kind: "none" }} />
       <div className="hc-landing help-cards-page min-h-screen bg-[var(--color-canvas)] text-[var(--color-ink)]">
-        <Container className="help-cards-content py-8 md:py-12">
+        <Container className="help-cards-content help-card-web-only py-8 md:py-12">
           <nav aria-label="Breadcrumb" className="no-print">
             <Link
               href="/help-cards"
@@ -67,7 +70,7 @@ export default async function HelpCardDetailPage({ params }: PageProps) {
           </header>
 
           <div className="mt-8 max-w-3xl">
-            <HelpCardDetailBody card={card} />
+            <HelpCardDetailBody card={card} download={download} />
           </div>
 
           <section id="official-sources" className="mt-12 max-w-3xl" aria-labelledby="official-sources-heading">
@@ -110,6 +113,7 @@ export default async function HelpCardDetailPage({ params }: PageProps) {
             </section>
           ) : null}
         </Container>
+        {download.ok ? <HelpCardDownloadDocumentView document={download.document} /> : null}
       </div>
     </>
   );
