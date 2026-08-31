@@ -29,16 +29,14 @@ export function buildHelpCardDownloadPlainText(document: HelpCardDownloadDocumen
   pushSection(lines, "WHAT TO ASK", document.questionsToAsk);
 
   if (document.suggestedWording) {
-    lines.push("SUGGESTED WORDING");
-    if (document.suggestedWording.label) lines.push(document.suggestedWording.label);
+    lines.push(document.suggestedWording.label.toUpperCase());
     lines.push(document.suggestedWording.text);
     lines.push("");
   }
 
-  pushSection(lines, "CONDITIONS AND LIMITS", document.conditions);
+  pushSection(lines, "WHAT THIS DOES NOT COVER", document.conditions);
   pushSection(lines, "BEFORE YOU GO", document.beforeYouGo);
-  pushSection(lines, "APPLIES TO", document.appliesTo);
-  pushSection(lines, "AUTHORITY", document.authorityLabel);
+  pushSection(lines, "WHERE THIS APPLIES", document.appliesTo);
 
   if (document.sources.length > 0) {
     lines.push("OFFICIAL SOURCES");
@@ -54,7 +52,6 @@ export function buildHelpCardDownloadPlainText(document: HelpCardDownloadDocumen
 
   lines.push(document.disclaimer);
   lines.push(document.footerNote);
-  lines.push(`Document version ${document.version}`);
   lines.push("");
 
   return lines.join("\n");

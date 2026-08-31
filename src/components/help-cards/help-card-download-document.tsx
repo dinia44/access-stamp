@@ -67,7 +67,7 @@ export function HelpCardDownloadDocumentView({
 
       {document.conditions?.length ? (
         <section className="help-card-section">
-          <h2>Conditions and limits</h2>
+          <h2>What this does not cover</h2>
           <ul>
             {document.conditions.map((item) => (
               <li key={item}>{item}</li>
@@ -88,13 +88,8 @@ export function HelpCardDownloadDocumentView({
       ) : null}
 
       <section className="help-card-section">
-        <h2>Applies to</h2>
+        <h2>Where this applies</h2>
         <p>{document.appliesTo}</p>
-      </section>
-
-      <section className="help-card-section">
-        <h2>Authority</h2>
-        <p>{document.authorityLabel}</p>
       </section>
 
       <section className="help-card-source">
@@ -125,7 +120,7 @@ export function HelpCardDownloadDocumentView({
             dangerouslySetInnerHTML={{ __html: qr }}
           />
           <div>
-            <p>Scan or visit the live card for the latest reviewed detail. No tracking is added to this link.</p>
+            <p>If anything has changed, this is the live page.</p>
             <p>
               <a href={document.liveUrl}>{document.liveUrlLabel}</a>
             </p>
@@ -136,7 +131,6 @@ export function HelpCardDownloadDocumentView({
       <footer className="help-card-document__footer">
         <p>{document.disclaimer}</p>
         <p>{document.footerNote}</p>
-        <p>Document version {document.version}. Access Stamp Help Card.</p>
       </footer>
     </article>
   );

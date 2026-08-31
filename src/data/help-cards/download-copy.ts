@@ -21,13 +21,13 @@ export const HELP_CARD_DOWNLOAD_COPY: Record<string, HelpCardDownloadCopy> = {
       "Ask for time to show your documents if you are stopped or challenged.",
     ],
     questionsToAsk: [
-      "Can I show evidence that my application is currently with DVLA?",
+      "Would it help if I show you evidence that my application is with DVLA?",
       "What information do you need from me?",
       "Would you like my DVLA reference or previous licence details?",
     ],
     suggestedWording: {
       label: "You could say",
-      text: "I have submitted my DVLA application and I understand Section 88 may apply if the required conditions are met. I can show evidence of my application.",
+      text: "I’ve sent my application to DVLA. I may be able to keep driving under Section 88 if the conditions are met — I can show you the application evidence.",
     },
     conditions: [
       "Section 88 only applies if you have submitted a valid DVLA application, previously held the relevant licence entitlement, are not disqualified, and meet any relevant medical standards.",
@@ -99,7 +99,7 @@ export const HELP_CARD_DOWNLOAD_COPY: Record<string, HelpCardDownloadCopy> = {
     ],
     suggestedWording: {
       label: "You could write or say",
-      text: "I’m asking for reasonable adjustments so I can take part in the interview fairly. Please confirm whether the room is step-free, whether an accessible toilet is nearby, and whether extra time, breaks, a remote option or communication support can be arranged.",
+      text: "I’m asking for reasonable adjustments so I can take part in the interview fairly. Could we confirm access to the room, and whether extra time, breaks, a remote option or communication support is possible?",
     },
     conditions: [
       "The Equality Act 2010 applies in England, Scotland and Wales. Northern Ireland has separate disability discrimination law.",
@@ -134,7 +134,7 @@ export const HELP_CARD_DOWNLOAD_COPY: Record<string, HelpCardDownloadCopy> = {
     ],
     suggestedWording: {
       label: "You could write or say",
-      text: "I’m requesting reasonable adjustments because my current setup is creating barriers that affect my ability to work safely and effectively. I would like to discuss practical changes to reduce strain, prevent worsening symptoms, and allow me to continue working sustainably.",
+      text: "I’m asking for reasonable adjustments. My current setup is making this work harder than it needs to be, and I’d like to talk through a few practical changes.",
     },
     conditions: [
       "The Equality Act 2010 applies in England, Scotland and Wales.",

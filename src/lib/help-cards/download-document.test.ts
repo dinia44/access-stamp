@@ -82,9 +82,9 @@ test("plain-text download uses curated reading order", () => {
     "USE THIS WHEN",
     "KEY MESSAGE",
     "WHAT TO ASK",
-    "SUGGESTED WORDING",
+    "YOU COULD SEND OR SAY",
     "BEFORE YOU GO",
-    "APPLIES TO",
+    "WHERE THIS APPLIES",
     "OFFICIAL SOURCES",
     "LAST REVIEWED",
     "LIVE CARD",
@@ -158,6 +158,17 @@ test("PDF builder returns selectable-text PDFs with expected page counts", () =>
   const onePage = resolveHelpCardDownloadDocument(information);
   if (twoPage.ok) assert.equal(twoPage.document.layout, "two-page");
   if (onePage.ok) assert.equal(onePage.document.layout, "one-page");
+
+  const spoken = resolveHelpCardDownloadDocument(section88);
+  if (spoken.ok) {
+    assert.match(spoken.document.suggestedWording?.text ?? "", /sent my application to DVLA/);
+  }
+  const work = getHelpCard("reasonable-adjustments-at-work");
+  assert.ok(work);
+  const workDoc = resolveHelpCardDownloadDocument(work);
+  if (workDoc.ok) {
+    assert.match(workDoc.document.suggestedWording?.text ?? "", /making this work harder than it needs to be/);
+  }
 });
 
 test("layout fixtures wrap long titles, sources and wording without dropping sections", () => {
@@ -172,6 +183,6 @@ test("layout fixtures wrap long titles, sources and wording without dropping sec
   assert.match(longText, /substantial disadvantage/);
   const optionalText = buildHelpCardDownloadPlainText(OPTIONAL_SECTIONS_FIXTURE);
   assert.doesNotMatch(optionalText, /WHAT TO ASK/);
-  assert.doesNotMatch(optionalText, /SUGGESTED WORDING/);
+  assert.doesNotMatch(optionalText, /SUGGESTED WORDING|YOU COULD SAY/);
   assert.doesNotMatch(optionalText, /BEFORE YOU GO/);
 });

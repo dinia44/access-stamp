@@ -21,12 +21,12 @@ function triggerBlobDownload(blob: Blob, filename: string) {
 
 function announcementFor(state: SaveState, format: Format | null, title: string): string {
   if (!format) return "";
-  const label = format === "pdf" ? "designed PDF" : "plain-text version";
+  const label = format === "pdf" ? "PDF" : "text file";
   if (state === "preparing") return `Preparing the ${label} of ${title}`;
   if (state === "saved") return `${title} ${label} download started`;
   if (state === "failed") return `Could not download the ${label} of ${title}. You can try again.`;
   if (state === "unavailable") {
-    return `The designed PDF of ${title} is unavailable because curated card content has not been approved.`;
+    return `The PDF of ${title} is unavailable because curated card content has not been approved.`;
   }
   return "";
 }
@@ -91,7 +91,7 @@ export function HelpCardDetailActions({
           ? "PDF failed — try again"
           : pdfState === "unavailable"
             ? "PDF unavailable"
-            : "Download designed card (PDF)";
+            : "Download this card";
 
   const txtLabel =
     txtState === "preparing"
@@ -102,7 +102,7 @@ export function HelpCardDetailActions({
           ? "Text failed — try again"
           : txtState === "unavailable"
             ? "Plain text unavailable"
-            : "Download plain-text version";
+            : "Download as text";
 
   const buttonClass =
     "inline-flex min-h-[44px] items-center justify-center rounded-[var(--radius-md)] border px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)] disabled:cursor-not-allowed disabled:opacity-60";
@@ -110,15 +110,14 @@ export function HelpCardDetailActions({
   return (
     <div className="no-print space-y-3">
       <p className="text-sm leading-6 text-[var(--color-text-muted)]">
-        Download a concise, print-ready version of this Help Card. It includes the practical steps, suggested
-        wording, scope, review date and official sources.
+        Take a short version with you — something you can show, read aloud, or keep on your phone.
       </p>
       <div className="flex flex-wrap gap-3">
         <button
           type="button"
           onClick={() => downloadFormat("pdf")}
           disabled={pdfState === "preparing" || pdfState === "unavailable"}
-          aria-label={`Download designed PDF of ${card.title}`}
+          aria-label={`Download this card as a PDF of ${card.title}`}
           className={`${buttonClass} border-[var(--color-brand)] bg-[var(--color-brand)] text-white hover:bg-[var(--color-brand-hover)]`}
         >
           {pdfLabel}
@@ -127,7 +126,7 @@ export function HelpCardDetailActions({
           type="button"
           onClick={() => downloadFormat("txt")}
           disabled={txtState === "preparing" || txtState === "unavailable"}
-          aria-label={`Download plain-text version of ${card.title}`}
+          aria-label={`Download ${card.title} as text`}
           className={`${buttonClass} border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] hover:border-[var(--color-brand)]`}
         >
           {txtLabel}
@@ -144,8 +143,7 @@ export function HelpCardDetailActions({
       </div>
       {!available ? (
         <p role="status" className="text-sm leading-6 text-[var(--color-ink)]">
-          The designed PDF is not available yet because curated card content has not been approved. The live page
-          remains the reviewed source.
+          The downloadable card is not ready yet. The page above is still the reviewed source.
         </p>
       ) : (
         <p className="text-sm leading-6 text-[var(--color-text-muted)]">

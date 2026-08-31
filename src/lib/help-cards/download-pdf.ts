@@ -203,7 +203,7 @@ function drawMeta(cursor: PdfCursor, document: HelpCardDownloadDocument) {
   drawSectionHeading(cursor, "Scope and sources");
   const doc = cursor.doc;
   setBody(doc);
-  const facts = `Applies to ${document.appliesTo}. ${document.authorityLabel}. Last reviewed ${formatReviewDate(document.reviewedAt)}.`;
+  const facts = `Applies to ${document.appliesTo}. Last reviewed ${formatReviewDate(document.reviewedAt)}.`;
   const factLines = wrap(doc, facts, cursor.width);
   ensureSpace(cursor, factLines.length * lineMm() + 1);
   doc.text(factLines, cursor.left, cursor.y);
@@ -242,11 +242,12 @@ function drawQrAndLiveLink(cursor: PdfCursor, document: HelpCardDownloadDocument
   const moduleSize = (qrSize - quiet * 2) / matrix.size;
   const textW = cursor.width - qrSize - 3.2;
   setBody(doc);
-  const intro = wrap(doc, `Live card: ${document.liveUrlLabel}`, textW);
+  const intro = wrap(doc, document.liveUrlLabel, textW);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
-  const note = wrap(doc, `${document.disclaimer} ${document.footerNote} Version ${document.version}.`, textW);
-  const textHeight = intro.length * lineMm(11) + note.length * lineMm(8.5) + 2;
+  const changed = wrap(doc, "If anything has changed, this is the live page.", textW);
+  const note = wrap(doc, `${document.disclaimer} ${document.footerNote}`, textW);
+  const textHeight = intro.length * lineMm(11) + changed.length * lineMm(8.5) + note.length * lineMm(8.5) + 3;
   const height = Math.max(qrSize, textHeight);
   ensureSpace(cursor, height + 1.5);
 
@@ -271,10 +272,14 @@ function drawQrAndLiveLink(cursor: PdfCursor, document: HelpCardDownloadDocument
   if (intro.length > 1) {
     doc.text(intro.slice(1), textX, qrY + 4 + lineMm(10.5));
   }
+  let noteY = qrY + 4 + intro.length * lineMm(10.5) + 1.2;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
+  doc.setTextColor(...T.inkRgb);
+  doc.text(changed, textX, noteY);
+  noteY += changed.length * lineMm(8.5) + 1.2;
   doc.setTextColor(...T.mutedRgb);
-  doc.text(note, textX, qrY + 4 + intro.length * lineMm(10.5) + 1.4);
+  doc.text(note, textX, noteY);
   cursor.y = qrY + height + 1.2;
 }
 
@@ -302,7 +307,7 @@ function drawFrontMatter(cursor: PdfCursor, document: HelpCardDownloadDocument) 
 
 function drawBackMatter(cursor: PdfCursor, document: HelpCardDownloadDocument) {
   if (document.conditions?.length) {
-    drawSectionHeading(cursor, "Conditions and limits");
+    drawSectionHeading(cursor, "What this does not cover");
     drawChecklist(cursor, document.conditions);
   }
   if (document.beforeYouGo?.length) {
