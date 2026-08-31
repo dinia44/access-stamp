@@ -1,51 +1,46 @@
+import Link from "next/link";
 import { MethodologyLink } from "@/components/design-system/methodology-link";
 import { PageContainer } from "@/components/layout/PageContainer";
+import { HOME_FOCUS } from "@/components/home/home-theme";
 
-const PROOF_TILES = [
-  {
-    title: "Photo-evidenced reports",
-    body: "Venue listings show measured doorways, routes, and facilities — not vague tick-box claims.",
-  },
-  {
-    title: "Built by disabled people",
-    body: "Guidance and tools shaped by lived experience in the UK — practical, not performative.",
-  },
-  {
-    title: "Plain-English UK guidance",
-    body: "Rights, benefits, travel, care, and equipment explained without jargon or charity-speak.",
-  },
-  {
-    title: "Free for visitors",
-    body: "Search venues, read guides, and use core tools at no cost — funded by venue reviews.",
-  },
+const EVIDENCE_POINTS = [
+  "Measured and photographed details",
+  "Clear confidence and unknown states",
+  "Disability-led perspective",
+  "Free for visitors",
 ] as const;
 
 export function HomeWhyTrust() {
   return (
-    <section className="border-t border-[#EFE5DA] bg-[#FAF4ED] py-16 sm:py-20" aria-labelledby="why-trust-heading">
+    <section className="border-t border-[#EFE5DA] bg-[#FAF4ED] py-12 sm:py-14" aria-labelledby="why-trust-heading">
       <PageContainer>
-        <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C8430F]">Trust & methodology</p>
-          <h2 id="why-trust-heading" className="mt-3 font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[#20242E] sm:text-4xl">
-            Honest about what we know
+        <div className="max-w-3xl">
+          <h2
+            id="why-trust-heading"
+            className="font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[#20242E] sm:text-4xl"
+          >
+            Built from lived experience. Supported by measurements, photographs, and honest unknowns.
           </h2>
           <p className="mt-3 text-base leading-7 text-[#4A5263]">
-            We label confidence, show unknowns, and explain how access information is gathered.
+            We label confidence, show what is unconfirmed, and explain how access information is gathered.
           </p>
-          <MethodologyLink className="mt-4" />
         </div>
 
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2">
-          {PROOF_TILES.map((tile) => (
-            <li
-              key={tile.title}
-              className="rounded-[24px] border border-[#EFE5DA] bg-white p-6 shadow-[0_8px_24px_-16px_rgba(122,80,48,0.1)]"
-            >
-              <h3 className="text-base font-semibold text-[#20242E]">{tile.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-[#4A5263]">{tile.body}</p>
+        <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+          {EVIDENCE_POINTS.map((point) => (
+            <li key={point} className="flex items-start gap-2 text-sm leading-6 text-[#4A5263]">
+              <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-brand)]" />
+              {point}
             </li>
           ))}
         </ul>
+
+        <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+          <MethodologyLink className="mt-0" />
+          <Link href="/about#founder" className={`inline-flex min-h-[44px] items-center text-[var(--color-brand)] hover:underline ${HOME_FOCUS}`}>
+            Read the founder story
+          </Link>
+        </div>
       </PageContainer>
     </section>
   );

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { MAIN_NAV_LINKS, navLinkActive } from "@/lib/navigation";
 import { SITE_FOCUS } from "@/lib/site-design";
 import { cn } from "@/lib/utils";
+import { ResourcesMenu } from "@/components/layout/ResourcesMenu";
 
 const NAV_LINK = `relative px-1 py-2 text-sm font-medium text-[#4A5263] transition-colors hover:text-[#20242E] ${SITE_FOCUS}`;
 const NAV_ACTIVE =
@@ -15,6 +16,7 @@ export function MainNavigation({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <nav className="hidden flex-1 items-center justify-center gap-5 lg:flex xl:gap-7" aria-label="Primary navigation">
+      <ResourcesMenu />
       {MAIN_NAV_LINKS.map((link) => {
         const active = navLinkActive(path, link.href);
         return (

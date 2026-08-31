@@ -1,6 +1,5 @@
 import { SetChatContext } from "@/components/chat/set-context";
 import { HomeForVenuesBand } from "@/components/home/home-for-venues-band";
-import { HomeFounderMission } from "@/components/home/home-founder-mission";
 import { HomeMastheadHero } from "@/components/home/home-masthead-hero";
 import { HomePopularVenues } from "@/components/home/home-popular-venues";
 import { HomeSecondaryPathways } from "@/components/home/home-secondary-pathways";
@@ -15,7 +14,6 @@ export default function HomePage() {
       <HomePopularVenues />
       <HomeWhyTrust />
       <HomeSecondaryPathways />
-      <HomeFounderMission />
       <HomeForVenuesBand />
     </div>
   );

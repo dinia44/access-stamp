@@ -26,6 +26,7 @@ import { buildBreadcrumbJsonLd, buildVenueLocalBusinessJsonLd } from "@/lib/seo/
 import { DemoBanner } from "@/components/trust/DemoBanner";
 import { BeforeYouGo } from "@/components/venue/BeforeYouGo";
 import { VenueDecisionSummary } from "@/components/venue/VenueDecisionSummary";
+import { VenueNextSteps } from "@/components/venue/venue-next-steps";
 import { isDemoVenue } from "@/lib/venue-card";
 import { suggestVenueMailto } from "@/lib/venue-submission";
 
@@ -253,6 +254,12 @@ export default async function VenueDetailPage({
             unavailableFeatures={unavailableFeatures}
             unknownFeatures={unknownFeatures}
             unknownCount={unknownCount}
+          />
+
+          <VenueNextSteps
+            unknownFeatures={unknownFeatures}
+            confirmedFeatures={confirmedFeatures}
+            unavailableFeatures={unavailableFeatures}
           />
 
           {/* 5. Photos */}

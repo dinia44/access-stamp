@@ -1,16 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { searchAccessStamp } from "@/data/searchIndex";
+import { useId, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import {
-  HOME_GLASS_PANEL,
-  HOME_INPUT,
-  homeChipClass,
-  homeTabClass,
-} from "@/components/home/home-theme";
+import { track } from "@/lib/analytics";
+import { HOME_INPUT, homeChipClass } from "@/components/home/home-theme";
 
 function ChipIcon({ label }: { label: string }) {
   const cls = "h-4 w-4 shrink-0 text-[#F04A16]";
@@ -53,25 +47,12 @@ function ChipIcon({ label }: { label: string }) {
   );
 }
 
-type SearchMode = "venue" | "advice";
-
-const SEARCH_MODES: { id: SearchMode; label: string }[] = [
-  { id: "venue", label: "Find venues" },
-  { id: "advice", label: "Get advice" },
-];
-
 const VENUE_CHIPS = [
-  { label: "Step-free access", key: "Step-free entrance", href: null },
-  { label: "Accessible toilet", key: "Accessible toilet", href: null },
-  { label: "Parking", key: "Nearby Blue Badge parking", href: null },
-  { label: "Seating", key: "Turning space (150cm+)", href: null },
-  { label: "Hearing support", key: null, href: "/venue-finder?filters=Hearing+loop" },
-] as const;
-
-const ADVICE_TOPIC_CHIPS = [
-  { label: "Care support", href: "/advice/care" },
-  { label: "Workplace", href: "/advice/workplace" },
-  { label: "Education", href: "/advice/education" },
+  { label: "Step-free access", key: "Step-free entrance" },
+  { label: "Accessible toilet", key: "Accessible toilet" },
+  { label: "Parking", key: "Nearby Blue Badge parking" },
+  { label: "Seating", key: "Turning space (150cm+)" },
+  { label: "Hearing support", key: "Hearing loop" },
 ] as const;
 
 type AccessStampSearchBoxProps = {
@@ -80,225 +61,140 @@ type AccessStampSearchBoxProps = {
 
 export function AccessStampSearchBox({ integrated = false }: AccessStampSearchBoxProps) {
   const router = useRouter();
+  const filtersId = useId();
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
-  const [mode, setMode] = useState<SearchMode>("venue");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const isVenueSearch = mode === "venue";
-
+  const selectedCount = selectedFilters.length;
   const venueSubmitLabel =
-    selectedFilters.length === 0
-      ? "Search venues"
-      : `Search with ${selectedFilters.length} filter${selectedFilters.length > 1 ? "s" : ""}`;
+    selectedCount === 0 ? "Search venues" : `Search with ${selectedCount} filter${selectedCount > 1 ? "s" : ""}`;
+  const filterButtonLabel =
+    selectedCount === 0 ? "Access filters" : `Access filters, ${selectedCount} selected`;
 
   const toggleFilter = (key: string) => {
-    setSelectedFilters((prev) => (prev.includes(key) ? prev.filter((f) => f !== key) : [...prev, key]));
+    setSelectedFilters((prev) => {
+      const next = prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key];
+      track("filter_selected", { source: "homepage", has_filters: next.length > 0 });
+      return next;
+    });
   };
 
-  const onTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
-    const order: SearchMode[] = ["venue", "advice"];
-    if (event.key === "ArrowRight") {
-      event.preventDefault();
-      setMode(order[(index + 1) % order.length]);
-    } else if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      setMode(order[(index - 1 + order.length) % order.length]);
-    }
-  };
-
-  const goToVenueFinder = (extra?: { filters?: string[] }) => {
+  const goToVenueFinder = () => {
+    track("search_submitted", {
+      source: "homepage",
+      has_query: Boolean(query.trim() || location.trim()),
+      has_filters: selectedCount > 0,
+    });
     const params = new URLSearchParams();
     if (query.trim()) params.set("q", query.trim());
     if (location.trim()) params.set("location", location.trim());
-    const filters = extra?.filters ?? selectedFilters;
-    if (filters.length) params.set("filters", filters.join(","));
+    if (selectedFilters.length) params.set("filters", selectedFilters.join(","));
     router.push(params.toString() ? `/venue-finder?${params.toString()}` : "/venue-finder");
-  };
-
-  const handleAdviceSearch = () => {
-    const trimmed = query.trim();
-
-    if (trimmed) {
-      const results = searchAccessStamp(trimmed, 5);
-      const topHit = results.find((item) => !item.comingSoon);
-      if (topHit) {
-        router.push(topHit.url);
-        return;
-      }
-      router.push(`/advice?q=${encodeURIComponent(trimmed)}`);
-      return;
-    }
-
-    router.push("/advice");
-  };
-
-  const handlePlatformSearch = () => {
-    if (isVenueSearch) {
-      goToVenueFinder();
-      return;
-    }
-
-    handleAdviceSearch();
   };
 
   const panelClass = integrated
     ? "relative z-20 scroll-mt-28 w-full rounded-3xl border border-[#F1D8C7]/80 bg-white/95 p-6 shadow-xl shadow-[#F04A16]/8 backdrop-blur-xl sm:p-7 lg:p-8"
-    : `relative z-20 scroll-mt-28 w-full ${HOME_GLASS_PANEL} p-6 lg:p-8`;
+    : "relative z-20 scroll-mt-28 w-full rounded-3xl border border-[#F1D8C7]/80 bg-white/95 p-6 shadow-xl shadow-[#F04A16]/8 backdrop-blur-xl lg:p-8";
 
-  const modeDescription = isVenueSearch
-    ? "Search access-checked venues by place, town, or access need."
-    : "Search practical UK guidance on rights, travel, care, work, and equipment.";
+  const filterChips = (
+    <div className="flex flex-wrap gap-2">
+      {VENUE_CHIPS.map(({ label, key }) => {
+        const active = selectedFilters.includes(key);
+        return (
+          <button
+            key={label}
+            type="button"
+            onClick={() => toggleFilter(key)}
+            aria-pressed={active}
+            className={homeChipClass(active)}
+          >
+            <ChipIcon label={label} />
+            {label}
+          </button>
+        );
+      })}
+    </div>
+  );
 
   return (
     <div id="platform-search" className={panelClass}>
-      {integrated ? (
-        <p id="platform-search-description" className="sr-only">
-          {modeDescription}
-        </p>
-      ) : (
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold text-[#13201F] sm:text-xl">What do you need help with?</h2>
-          <p id="platform-search-description" className="mt-1.5 text-base leading-relaxed text-[#5E6A66]">
-            {modeDescription}
-          </p>
-        </div>
-      )}
-
-      <div className="mb-5 flex flex-wrap gap-4 border-b border-[#EFE5DA]" role="tablist" aria-label="Search mode">
-        {SEARCH_MODES.map(({ id, label }, index) => (
-          <button
-            key={id}
-            type="button"
-            role="tab"
-            id={`search-tab-${id}`}
-            aria-selected={mode === id}
-            aria-controls={`search-panel-${id}`}
-            tabIndex={mode === id ? 0 : -1}
-            onClick={() => setMode(id)}
-            onKeyDown={(event) => onTabKeyDown(event, index)}
-            className={homeTabClass(mode === id)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      <p id="platform-search-description" className="sr-only">
+        Search access-checked venues by place, town, or access need.
+      </p>
 
       <form
-        role="tabpanel"
-        id={`search-panel-${mode}`}
-        aria-labelledby={`search-tab-${mode}`}
-        onSubmit={(e) => {
-          e.preventDefault();
-          handlePlatformSearch();
+        onSubmit={(event) => {
+          event.preventDefault();
+          goToVenueFinder();
         }}
       >
-          <div className={`grid gap-4 ${isVenueSearch ? "lg:grid-cols-2" : "lg:grid-cols-[minmax(0,1fr)_auto]"}`}>
-            <div>
-              <label htmlFor="platform-search-query" className="mb-2 block text-base font-medium text-[#2A3836]">
-                {isVenueSearch ? "Venue name or category" : "Search topic"}
-              </label>
-              <input
-                id="platform-search-query"
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={
-                  isVenueSearch ? "e.g. Harbour Kitchen or café" : "Search PIP, travel, care, work, equipment…"
-                }
-                className={HOME_INPUT}
-                autoComplete="off"
-                aria-describedby="platform-search-description"
-              />
-            </div>
-
-            {isVenueSearch ? (
-              <div>
-                <label htmlFor="platform-search-location" className="mb-2 block text-base font-medium text-[#2A3836]">
-                  Town or postcode
-                </label>
-                <input
-                  id="platform-search-location"
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g. Liverpool or L1"
-                  className={HOME_INPUT}
-                  autoComplete="postal-code"
-                  aria-describedby="platform-search-description"
-                />
-              </div>
-            ) : null}
-
-            {!isVenueSearch ? (
-              <div className="flex items-end">
-                <Button type="submit" className="w-full lg:min-w-[200px]">
-                  Get advice
-                </Button>
-              </div>
-            ) : null}
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div>
+            <label htmlFor="platform-search-query" className="mb-2 block text-base font-medium text-[#2A3836]">
+              Venue name or category
+            </label>
+            <input
+              id="platform-search-query"
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="e.g. Harbour Kitchen or café"
+              className={HOME_INPUT}
+              autoComplete="off"
+              aria-describedby="platform-search-description"
+            />
           </div>
+          <div>
+            <label htmlFor="platform-search-location" className="mb-2 block text-base font-medium text-[#2A3836]">
+              Town or postcode
+            </label>
+            <input
+              id="platform-search-location"
+              type="text"
+              value={location}
+              onChange={(event) => setLocation(event.target.value)}
+              placeholder="e.g. Liverpool or L1"
+              className={HOME_INPUT}
+              autoComplete="postal-code"
+              aria-describedby="platform-search-description"
+            />
+          </div>
+        </div>
 
-          {isVenueSearch ? (
-            <Button type="submit" className="mt-4 w-full">
-              {venueSubmitLabel}
-            </Button>
-          ) : null}
+        <Button type="submit" className="mt-4 w-full">
+          {venueSubmitLabel}
+        </Button>
       </form>
 
-      {isVenueSearch ? (
-        <>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {VENUE_CHIPS.map(({ label, key, href }) => {
-              if (href) {
-                return (
-                  <button key={label} type="button" onClick={() => router.push(href)} className={homeChipClass(false)}>
-                    <ChipIcon label={label} />
-                    {label}
-                  </button>
-                );
-              }
-
-              const active = key ? selectedFilters.includes(key) : false;
-              return (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={() => {
-                    if (!key) return;
-                    toggleFilter(key);
-                  }}
-                  aria-pressed={active}
-                  className={homeChipClass(active)}
-                >
-                  <ChipIcon label={label} />
-                  {label}
-                </button>
-              );
-            })}
-
+      <div className="mt-5 md:hidden">
+        <button
+          type="button"
+          className="inline-flex min-h-[44px] w-full items-center justify-between rounded-2xl border border-[#F1D8C7] bg-white px-4 text-sm font-semibold text-[#13201F]"
+          aria-expanded={filtersOpen}
+          aria-controls={filtersId}
+          onClick={() => {
+            setFiltersOpen((open) => {
+              const next = !open;
+              if (next) track("access_filters_opened", { source: "homepage" });
+              return next;
+            });
+          }}
+        >
+          {filterButtonLabel}
+          <span aria-hidden>{filtersOpen ? "−" : "+"}</span>
+        </button>
+        {filtersOpen ? (
+          <div id={filtersId} className="mt-3">
+            {filterChips}
           </div>
+        ) : selectedCount > 0 ? (
+          <p className="mt-2 text-sm text-[#5E6A66]">{selectedCount} access filter{selectedCount > 1 ? "s" : ""} selected.</p>
+        ) : null}
+      </div>
 
-        </>
-      ) : null}
-
-      {!isVenueSearch ? (
-        <div className="mt-5 space-y-4">
-          <div className="flex flex-wrap gap-2">
-            {ADVICE_TOPIC_CHIPS.map(({ label, href }) => (
-              <button key={label} type="button" onClick={() => router.push(href)} className={homeChipClass(false)}>
-                {label}
-              </button>
-            ))}
-          </div>
-          <Link
-            href="/advice"
-            className="link-arrow inline-flex min-h-[44px] items-center text-sm font-semibold text-[#C8430F] hover:underline"
-          >
-            Browse all guides
-          </Link>
-        </div>
-      ) : null}
+      <div className="mt-5 hidden md:block">{filterChips}</div>
     </div>
   );
 }

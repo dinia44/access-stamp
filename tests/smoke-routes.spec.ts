@@ -12,8 +12,9 @@ for (const route of SMOKE_ROUTES) {
 
 test("smoke: homepage primary CTAs are present", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("link", { name: /check venue access/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /find practical guidance/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /search venues/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /check a venue/i }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /explore access stamp resources/i })).toBeVisible();
 });
 
 test("smoke: venue page shows demo banner for demo listing", async ({ page }) => {

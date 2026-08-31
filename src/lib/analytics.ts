@@ -9,6 +9,11 @@ export type AnalyticsEventName =
   | "search_zero_results"
   | "venue_opened"
   | "filter_selected"
+  | "access_filters_opened"
+  | "resources_menu_opened"
+  | "homepage_resource_selected"
+  | "venue_next_step_opened"
+  | "for_venues_cta_selected"
   | "a11y_panel_opened"
   | "a11y_panel_closed"
   | "contact_success"
@@ -37,7 +42,7 @@ const DEV = process.env.NODE_ENV === "development";
 function sanitize(props?: AnalyticsProps): AnalyticsProps | undefined {
   if (!props) return undefined;
   const out: AnalyticsProps = {};
-  if (typeof props.category === "string" && props.category.length <= 64) {
+  if (typeof props.category === "string" && /^[a-z0-9_-]{1,48}$/i.test(props.category)) {
     out.category = props.category;
   }
   if (typeof props.result_count === "number" && Number.isFinite(props.result_count)) {

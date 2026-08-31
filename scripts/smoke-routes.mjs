@@ -48,8 +48,9 @@ for (const route of routes) {
 
 try {
   const home = await fetchHtml("/");
-  if (!/check venue access/i.test(home)) failures.push("/ → missing primary CTA copy");
-  if (!/find practical guidance/i.test(home)) failures.push("/ → missing secondary CTA copy");
+  if (!/search venues/i.test(home)) failures.push("/ → missing primary search CTA copy");
+  if (!/check a venue/i.test(home)) failures.push("/ → missing primary nav CTA copy");
+  if (!/explore access stamp resources/i.test(home)) failures.push("/ → missing resources route copy");
 } catch (error) {
   failures.push(`/ content check → ${error instanceof Error ? error.message : String(error)}`);
 }

@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { RouteDecoration } from "@/components/home/route-decoration";
 import { HOME_FOCUS } from "@/components/home/home-theme";
+import { track } from "@/lib/analytics";
 
 const STATS = [
   { value: "Measured", label: "Doorways, routes and facilities — not vague access claims" },
@@ -25,21 +28,23 @@ export function HomeForVenuesBand() {
                 Show customers your venue works for them
               </h2>
               <p className="mt-4 max-w-xl text-base leading-7 text-[#c8d0dc]">
-                Access Stamp reviews UK venues and publishes practical access information so disabled customers can choose
-                you with confidence — and you can show accessibility, not just claim it.
+                Access Stamp reviews venues and publishes practical access information so disabled customers can make
+                better-informed choices.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/for-venues"
+                  onClick={() => track("for_venues_cta_selected", { source: "homepage", category: "for_venues" })}
                   className={`inline-flex min-h-[48px] items-center justify-center rounded-full bg-[#EF5B25] px-6 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(239,91,37,0.5)] transition hover:bg-[#D93E10] ${HOME_FOCUS}`}
                 >
                   For venues
                 </Link>
                 <Link
                   href="/submit-venue"
+                  onClick={() => track("for_venues_cta_selected", { source: "homepage", category: "submit_venue" })}
                   className={`inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/25 px-6 text-sm font-semibold text-white transition hover:bg-white/10 ${HOME_FOCUS}`}
                 >
-                  Submit your venue (beta)
+                  Submit your venue
                 </Link>
               </div>
             </div>

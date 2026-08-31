@@ -1,8 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { HeroConfidenceSeal } from "@/components/home/hero-finder/hero-confidence-seal";
 import { HOME_FOCUS } from "@/components/home/home-theme";
 import type { Venue } from "@/data/venues";
+import { track } from "@/lib/analytics";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 import { venueCardImageUrl } from "@/lib/cloudinary-url";
 import { getVenueConfidenceSealLabel, getVenueLeadMeasurement } from "@/lib/venue-lead-measurement";
@@ -55,7 +58,7 @@ export function HomeRecentlyVerifiedCard({ venue, distance }: Props) {
           </p>
 
           <h3 className="mt-2 text-lg font-semibold text-[var(--color-text)]">
-            <Link href={href} className={`venue-link text-[var(--color-text)] hover:text-[var(--color-primary)] ${HOME_FOCUS}`}>
+          <Link href={href} onClick={() => track("venue_opened", { source: "homepage" })} className={`venue-link text-[var(--color-text)] hover:text-[var(--color-primary)] ${HOME_FOCUS}`}>
               {venue.name}
               <span className="sr-only"> in {town}</span>
             </Link>

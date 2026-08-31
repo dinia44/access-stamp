@@ -1,59 +1,69 @@
+"use client";
+
 import Link from "next/link";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { HOME_FOCUS } from "@/components/home/home-theme";
+import { track } from "@/lib/analytics";
 
 const PATHWAYS = [
   {
     title: "Guides",
-    body: "Plain-English disability guidance on rights, access, support and adjustments.",
+    body: "Understand rights, access, and available support.",
     cta: "Browse guides",
     href: "/advice",
+    category: "guides",
   },
   {
     title: "Help cards",
-    body: "Ready-to-use wording, checklists and cards for conversations that matter.",
+    body: "Prepare wording and checklists for important conversations.",
     cta: "Open help cards",
     href: "/help-cards",
+    category: "help_cards",
   },
   {
     title: "Planning tools",
-    body: "Practical planning aids and optional drafting support for real situations.",
+    body: "Work through a practical access situation, including optional drafting support.",
     cta: "Open planning tools",
     href: "/ai-toolkit",
+    category: "planning_tools",
   },
 ] as const;
 
-/** Consolidated secondary pathways — Guides, Help cards, and planning tools. */
 export function HomeSecondaryPathways() {
   return (
-    <section className="border-t border-[var(--color-border)] bg-[var(--color-canvas)] py-14 sm:py-16" aria-labelledby="secondary-pathways-heading">
+    <section
+      id="more-help"
+      className="scroll-mt-28 border-t border-[var(--color-border)] bg-[var(--color-canvas)] py-12 sm:py-14"
+      aria-labelledby="secondary-pathways-heading"
+    >
       <PageContainer>
         <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-brand)]">Also on Access Stamp</p>
           <h2
             id="secondary-pathways-heading"
-            className="mt-3 font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[var(--color-ink)] sm:text-4xl"
+            className="font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.03em] text-[var(--color-ink)] sm:text-4xl"
           >
-            Guides, help cards and tools
+            More help when you need it
           </h2>
           <p className="mt-3 text-sm leading-6 text-[var(--color-text-muted)]">
-            After checking a venue, use these quieter pathways for advice, wording and planning support.
+            After checking a venue, use practical guidance, ready-to-use wording, and planning tools for what happens
+            next.
           </p>
         </div>
 
-        <ul className="mt-8 grid gap-4 sm:grid-cols-3">
+        <ul className="mt-6 divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
           {PATHWAYS.map((pathway) => (
-            <li key={pathway.title}>
-              <article className="flex h-full flex-col rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
-                <h3 className="text-lg font-semibold text-[var(--color-ink)]">{pathway.title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-6 text-[var(--color-text-muted)]">{pathway.body}</p>
-                <Link
-                  href={pathway.href}
-                  className={`mt-4 inline-flex min-h-[44px] items-center text-sm font-semibold text-[var(--color-brand)] hover:underline ${HOME_FOCUS}`}
-                >
-                  {pathway.cta}
-                </Link>
-              </article>
+            <li key={pathway.title} className="flex flex-col gap-2 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8">
+              <div>
+                <h3 className="text-base font-semibold text-[var(--color-ink)]">{pathway.title}</h3>
+                <p className="mt-1 text-sm leading-6 text-[var(--color-text-muted)]">{pathway.body}</p>
+              </div>
+              <Link
+                href={pathway.href}
+                onClick={() => track("homepage_resource_selected", { source: "homepage", category: pathway.category })}
+                className={`inline-flex min-h-[44px] shrink-0 items-center text-sm font-semibold text-[var(--color-brand)] hover:underline ${HOME_FOCUS}`}
+              >
+                {pathway.cta}
+              </Link>
             </li>
           ))}
         </ul>

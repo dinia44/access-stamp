@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { getHeroSampleVenue } from "@/data/venues";
 
 const CLEARANCE_CM = 5;
 
@@ -49,10 +48,15 @@ const STATE_STYLE: Record<FitState, { title: string; panel: string; text: string
   },
 };
 
-export function HeroWillItFitChecker() {
-  const venue = getHeroSampleVenue();
-  const entranceCm = venue.measurements?.entranceWidthCm ?? 90;
-  const toiletCm = venue.measurements?.toiletDoorWidthCm ?? 80;
+export function HeroWillItFitChecker({
+  venueName,
+  entranceCm,
+  toiletCm,
+}: {
+  venueName: string;
+  entranceCm: number;
+  toiletCm: number;
+}) {
   const [chairWidth, setChairWidth] = useState(68);
 
   const fitState = useMemo(
@@ -63,14 +67,11 @@ export function HeroWillItFitChecker() {
   const doorwayLabel = `Doorway opening ${entranceCm} centimetres wide, chair set to ${chairWidth} centimetres`;
 
   return (
-    <div className="rounded-[24px] border border-[#EFE5DA] bg-white p-6 shadow-[0_16px_40px_-20px_rgba(122,80,48,0.18)] sm:p-7">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C8430F]">Will it fit?</p>
-      <h2 className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.03em] text-[#20242E]">
-        Try our doorway checker
-      </h2>
-      <p className="mt-2 text-sm leading-6 text-[#4A5263]">
+    <div className="rounded-[24px] border border-[#EFE5DA] bg-white p-5 sm:p-6">
+      <p className="text-sm leading-6 text-[#4A5263]">
         Compare your chair width against measured doorways at{" "}
-        <strong className="font-semibold text-[#20242E]">{venue.name}</strong>.
+        <strong className="font-semibold text-[#20242E]">{venueName}</strong>. This is a planning aid — doorway width
+        alone does not prove a venue is accessible. Always confirm changeable details before you travel.
       </p>
 
       <div
@@ -123,7 +124,7 @@ export function HeroWillItFitChecker() {
       <div role="status" aria-live="polite" className={`mt-5 rounded-2xl border p-4 ${style.panel}`}>
         <p className={`text-sm font-semibold ${style.text}`}>{style.title}</p>
         <p className="mt-1.5 text-sm leading-6 text-[#4A5263]">
-          {fitMessage(fitState, chairWidth, entranceCm, toiletCm, venue.name)}
+          {fitMessage(fitState, chairWidth, entranceCm, toiletCm, venueName)}
         </p>
       </div>
     </div>
