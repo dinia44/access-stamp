@@ -872,6 +872,275 @@ AI should feel integrated rather than bolted on.
 
 ---
 
+# 25A. Exact visual treatment for the generated guide
+
+This section is **authoritative for how the personalised guide should look**. If any earlier layout wording is ambiguous, follow this section.
+
+The generated result must look like a **finished Access Stamp guide**, not an AI response, chat transcript, blog post, dashboard widget or generic card stack.
+
+## Overall composition
+
+On desktop, the personalised guide is the **visual centre of the page**.
+
+- Use a wide white or very lightly tinted content surface.
+- Keep the guide column noticeably wider than the input panel and source rail.
+- Give the guide generous internal padding and breathing room.
+- Use the existing Access Stamp page background behind the guide rather than introducing a new AI-specific background.
+- Keep border radius, shadows, border colours and spacing consistent with the current Access Stamp design system.
+- The guide should read top-to-bottom like one coherent document even though it is built from reusable components.
+
+Do **not** make every paragraph its own floating card. Too many separate cards will make the result feel fragmented and machine-generated.
+
+## Guide header
+
+The top of the guide should be clean and editorial.
+
+Required order:
+
+1. small eyebrow or status label such as **Your Access Stamp guide**;
+2. a strong H1-style personalised title;
+3. one short summary sentence;
+4. optional compact metadata row for topic, jurisdiction and review/source status;
+5. restrained actions such as Save, Share or Start again.
+
+Example visual hierarchy:
+
+```text
+YOUR ACCESS STAMP GUIDE
+
+Starting a new job with an inaccessible upstairs workspace
+
+A practical plan based on the situation you described and
+reviewed Access Stamp workplace guidance.
+
+Employment   England   Based on 4 reviewed guides
+
+[ Save ]  [ Share ]  [ Start again ]
+```
+
+The title should be visually dominant. Do not make the words "AI", "generated" or "assistant" the most prominent thing on the page.
+
+## Main section style
+
+The guide should use **clear editorial sections**, separated primarily by whitespace and subtle dividers rather than heavy boxed containers.
+
+Each major section should have:
+
+- a small numbered marker or simple section icon;
+- a strong section heading;
+- a short introductory sentence where useful;
+- normal body copy underneath;
+- lists only where lists genuinely improve scanning.
+
+Recommended pattern:
+
+```text
+01
+What this means
+
+Short explanation of the situation in plain English.
+
+────────────────────────
+
+02
+Options worth discussing
+
+[ option row ]
+[ option row ]
+[ option row ]
+
+────────────────────────
+
+03
+What to do next
+
+1  First practical step
+2  Second practical step
+3  Third practical step
+```
+
+Use the existing dark navy/ink text for headings and normal readable body text beneath it.
+
+Do not use rainbow colour coding for every section.
+
+## "What this means"
+
+This should usually be the simplest section.
+
+- Keep it primarily text-led.
+- Avoid placing the entire explanation inside a coloured alert box.
+- Aim for 1–3 short paragraphs.
+- If there is an important qualification, use a small inline note rather than a giant warning panel.
+
+## "Your options"
+
+Options should be easy to scan.
+
+Use either:
+
+- clean bordered rows; or
+- 2-column option cards on wide desktop screens, collapsing to one column on smaller screens.
+
+Each option can contain:
+
+- short title;
+- one-sentence explanation;
+- optional relevant icon.
+
+Do not turn these into oversized marketing cards.
+
+## "What to do next"
+
+This should be one of the strongest visual sections.
+
+Use a vertical numbered sequence with a visible connecting rhythm.
+
+Example:
+
+```text
+1   Write down the access barrier
+    Keep the description factual and specific.
+
+2   Decide what adjustment would help
+    Focus on what would remove or reduce the barrier.
+
+3   Contact the right person
+    Use the template below if useful.
+```
+
+Numbers should be visually distinct but not decorative for decoration's sake.
+
+## Templates and generated letters
+
+If the guide surfaces a letter, email or message template:
+
+- place it inside one clearly defined inset panel;
+- label it **Template**, **Draft email**, or the relevant content type;
+- use normal readable text, not a fake messaging-app bubble;
+- include clear actions such as **Copy**, **Edit** or **Use this template**;
+- preserve the user's ability to edit the text before using it.
+
+The template panel may use a very light Access Stamp accent tint, but keep contrast strong.
+
+## Important notes and unknowns
+
+Use a distinct but calm information panel for uncertainty.
+
+Recommended visual treatment:
+
+- light neutral or pale amber background;
+- small information icon;
+- heading such as **What we couldn't confirm**;
+- concise text underneath.
+
+This panel must feel informative rather than alarming.
+
+Do not use bright red unless there is a genuine safety-critical warning.
+
+## Source guides
+
+The **Based on these Access Stamp guides** area should feel like evidence supporting the answer, not a generic "related articles" carousel.
+
+Each source item should show:
+
+- guide title;
+- one-line description;
+- optional category;
+- optional reviewed/updated date;
+- clear link affordance.
+
+Use a compact vertical list or small stacked cards.
+
+Do not use large image thumbnails unless the underlying guide genuinely has meaningful imagery.
+
+## Related tools
+
+Related tools should be visually secondary to the guide itself.
+
+Use compact action cards or rows with:
+
+- tool name;
+- one-line explanation;
+- arrow / CTA.
+
+Maximum recommended visible tools: **3** before a "View more" interaction.
+
+## Follow-up area
+
+At the bottom of the guide, use one contained follow-up module.
+
+It should look like:
+
+```text
+Need to go a bit further?
+
+Ask a follow-up about this guide
+
+[ What if my employer says no?                         ]
+
+[ Ask follow-up ]
+```
+
+Do not place chat bubbles underneath the guide.
+
+Do not create an endless conversation transcript.
+
+The follow-up should extend or revise the structured guide above.
+
+## Right-hand supporting rail
+
+On desktop the supporting rail should contain only secondary material, in this order where relevant:
+
+1. **Based on these Access Stamp guides**
+2. **Related tools**
+3. optional trust / privacy note
+
+Keep the rail visually quieter than the main guide.
+
+Do not put critical next steps only in the right rail because it disappears below the guide on mobile.
+
+## Mobile visual behaviour
+
+On mobile:
+
+- guide becomes full-width;
+- retain the same section hierarchy;
+- option grids collapse to one column;
+- numbered next steps remain clearly separated;
+- sources and tools move below the guide;
+- actions may wrap onto multiple rows;
+- maintain generous vertical spacing;
+- do not shrink body text to make desktop layouts fit.
+
+The mobile result should still feel like a polished guide, not a stack of unrelated cards.
+
+## Visual guardrails — do not improvise past these
+
+Do **not**:
+
+- render the answer as one giant grey or white chat bubble;
+- use speech bubbles for main content;
+- make every section a different bright colour;
+- use a generic ChatGPT-style message thread;
+- add a large robot, magic wand or AI illustration;
+- introduce a new purple gradient design language if it is not already part of Access Stamp;
+- create excessive nested cards within cards;
+- put important information behind accordions by default;
+- make the source rail as visually dominant as the guide;
+- use tiny text for citations or disclaimers;
+- replace normal headings with badges;
+- overuse icons, sparkles or decorative AI motifs.
+
+## Visual acceptance test
+
+Before considering the UI complete, compare the result against this test:
+
+> If the AI functionality were invisible, would this still look like a professionally designed Access Stamp guide page?
+
+If the answer is no, simplify the AI styling until the answer is yes.
+
+---
+
 # 26. Accessibility requirements
 
 This feature must be especially strong on accessibility.
