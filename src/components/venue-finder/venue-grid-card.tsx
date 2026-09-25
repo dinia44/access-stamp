@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { VenueReportLink } from "./venue-search-context";
 import { VenueConfidenceBadge } from "@/components/design-system/venue-confidence-badge";
 import type { Venue } from "@/lib/mock-data";
 import { getVenueFeatureChipItems } from "@/components/venue/feature-chip";
@@ -22,7 +23,10 @@ type Props = {
 function DecisionFacts({ venue }: { venue: Venue }) {
   const facts: string[] = [];
   const measuredPhoto = venue.photos?.find((photo) => photo.measurement);
-  if (measuredPhoto?.measurement) {
+  if (venue.measurements?.entranceWidthCm) {
+    facts.push(`Entrance ${venue.measurements.entranceWidthCm} cm`);
+    if (venue.measurements.toiletDoorWidthCm) facts.push(`Toilet door ${venue.measurements.toiletDoorWidthCm} cm`);
+  } else if (measuredPhoto?.measurement) {
     facts.push(measuredPhoto.measurement.replace(/^Door width measured:\s*/i, "Doorway "));
   }
   const chips = getVenueFeatureChipItems(venue).slice(0, 4);
@@ -51,13 +55,13 @@ export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) 
   const showScore = shouldShowAccessScore(toVerificationType(venue.verification)) && score != null;
   const scoreStyle = showScore ? getAccessScorePresentation(score) : null;
   const distance = getVenueDistanceLabel(venue, userCenter);
-  const reportHref = `/venue/${venue.slug}`;
   const unknownCount = countVenueUnknowns(venue);
   const confidenceStatus = mapVenueVerificationStatus(venue.verification);
   const isDemo = isDemoVenue(venue);
 
   return (
     <article
+      id={`venue-${venue.slug}`}
       className={`group overflow-hidden rounded-[var(--radius-lg)] border border-border bg-card transition ${
         selected ? "ring-2 ring-[var(--color-brand)]" : ""
       }`}
@@ -109,12 +113,13 @@ export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) 
         ) : null}
 
         <div className="mt-4 flex flex-col gap-2">
-          <Link href={reportHref} className={`${VF_BTN_PRIMARY} w-full text-sm`}>
+          <VenueReportLink slug={venue.slug} aria-label={`View access details for ${venue.name}`} className={`${VF_BTN_PRIMARY} w-full text-sm`}>
             View access details
-          </Link>
+          </VenueReportLink>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <Link
               href={venueNeedsCheckHref(venue.slug)}
+              aria-label={`Check ${venue.name} against my needs`}
               className="inline-flex min-h-[44px] items-center text-sm font-semibold text-[var(--color-brand)] hover:underline"
             >
               Check against my needs

@@ -1,6 +1,7 @@
 [
   {
     "slug": "harbour-kitchen-liverpool",
+    "measurements": { "entranceWidthCm": 92, "toiletDoorWidthCm": 80, "clearanceCm": 5 },
     "name": "Harbour Kitchen",
     "location": "Liverpool, L1",
     "type": "Restaurant",

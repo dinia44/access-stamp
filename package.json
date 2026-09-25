@@ -22,7 +22,8 @@
     "test:launch-gate": "node scripts/smoke-routes.mjs",
     "studio": "sanity dev",
     "seed:cms": "tsx scripts/seed-sanity.ts",
-    "generate:guide-docx": "node scripts/generate-guide-docx.mjs"
+    "generate:guide-docx": "node scripts/generate-guide-docx.mjs",
+    "test:audit": "node --import tsx --test scripts/accessibility-audit.test.ts scripts/venue-search-intent.test.ts"
   },
   "dependencies": {
     "@sanity/client": "^7.22.1",

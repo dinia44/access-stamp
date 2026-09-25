@@ -39,6 +39,8 @@ export type Venue = {
   locationSnapshot?: { src: string; alt: string };
   /** Canonical access score — hidden for demo listings in UI. */
   accessScore: number;
+  measurements?: CanonicalVenue["measurements"];
+  contact?: CanonicalVenue["contact"];
 };
 
 const LEGACY_TYPE_MAP: Record<CanonicalVenue["category"], Venue["type"]> = {
@@ -74,6 +76,8 @@ export function toLegacyVenue(venue: CanonicalVenue): Venue {
     photos: venue.photos,
     locationSnapshot: venue.locationSnapshot,
     accessScore: venue.accessScore,
+    measurements: venue.measurements,
+    contact: venue.contact,
   };
 }
 

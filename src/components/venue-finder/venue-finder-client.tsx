@@ -17,6 +17,7 @@ import {
 import { VF_BTN_SECONDARY, VF_PAGE_BG } from "@/lib/venue-finder-cro";
 import { suggestVenueMailto } from "@/lib/venue-submission";
 import { track } from "@/lib/analytics";
+import { VenueSearchContext } from "./venue-search-context";
 import { BottomVenueCTA } from "./bottom-venue-cta";
 import { QuickFilterRow } from "./quick-filter-row";
 import { VenueFinderAiCard } from "./venue-finder-ai-card";
@@ -70,7 +71,7 @@ function VenueFinderEmptyState({
             {trimmed ? `No venues match “${trimmed}”` : "No matching venues found"}
           </h2>
           <p role="status" aria-live="polite" className="mt-2 text-base leading-7 text-muted">
-            Try another name, remove a filter, or browse all demonstration venues.
+            Try another name or location, remove a filter, or browse all demonstration venues. Results are never silently expanded to another town.
           </p>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-3 md:justify-start">
             {trimmed && onClearQuery ? (
@@ -135,42 +136,11 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   const [geocodeError, setGeocodeError] = useState<string | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [sortBy, setSortBy] = useState<VenueFinderSort>(initial.center ? "Distance" : "Best match");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = useState<VenueFinderSort>(initial.sortBy ?? (initial.center ? "Distance" : "Best match"));
+  const [viewMode, setViewMode] = useState<"grid" | "list">(initial.viewMode ?? "grid");
   const [MapPanel, setMapPanel] = useState<MapPanelComponent | null>(null);
   const [mapPanelLoading, setMapPanelLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const syncFromHistory = useCallback((state: VenueFinderSearchState) => {
-    setQuery(state.query);
-    setLocation(state.location);
-    setSelectedFilters(state.filters);
-    setMapCenter(state.center ?? null);
-  }, []);
-
-  useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      const next = buildVenueFinderQueryString({
-        query,
-        location,
-        filters: selectedFilters,
-        center: mapCenter ?? undefined,
-      });
-      const current =
-        typeof window !== "undefined"
-          ? buildVenueFinderQueryString(
-              parseVenueFinderSearchParams(new URLSearchParams(window.location.search)),
-            )
-          : "";
-      if (next === current) return;
-      const url = next ? `${pathname}?${next}` : pathname;
-      window.history.replaceState(window.history.state, "", url);
-    }, 200);
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [query, location, selectedFilters, mapCenter, pathname]);
 
   useEffect(() => {
     const parsed = parseCoordinatePair(location);
@@ -222,15 +192,52 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   );
 
   const zeroResultsTracked = useRef(false);
-  const searchEpoch = `${query}|${location}|${selectedFilters.join(",")}|${mapCenter?.lat ?? ""}|${sortBy}|${viewMode}`;
+  const searchEpoch = `${query}|${location}|${selectedFilters.join(",")}|${sortBy}|${viewMode}`;
   const [pageEpoch, setPageEpoch] = useState(searchEpoch);
-  const [pageForEpoch, setPageForEpoch] = useState(1);
+  const [pageForEpoch, setPageForEpoch] = useState(initial.page ?? 1);
   if (pageEpoch !== searchEpoch) {
     setPageEpoch(searchEpoch);
     setPageForEpoch(1);
   }
-  const page = pageForEpoch;
+  const page = Math.min(pageForEpoch, Math.max(1, Math.ceil(filtered.length / VENUES_PER_PAGE)));
   const setPage = setPageForEpoch;
+
+  const syncFromHistory = useCallback((state: VenueFinderSearchState) => {
+    setQuery(state.query);
+    setLocation(state.location);
+    setSelectedFilters(state.filters);
+    setMapCenter(state.center ?? null);
+    setSortBy(state.sortBy ?? (state.center ? "Distance" : "Best match"));
+    setViewMode(state.viewMode ?? "grid");
+    setPageForEpoch(state.page ?? 1);
+    setPageEpoch(`${state.query}|${state.location}|${state.filters.join(",")}|${state.sortBy ?? (state.center ? "Distance" : "Best match")}|${state.viewMode ?? "grid"}`);
+  }, []);
+
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const next = buildVenueFinderQueryString({
+        query,
+        location,
+        filters: selectedFilters,
+        center: mapCenter ?? undefined,
+        sortBy, page, viewMode,
+      });
+      const current =
+        typeof window !== "undefined"
+          ? buildVenueFinderQueryString(
+              parseVenueFinderSearchParams(new URLSearchParams(window.location.search)),
+            )
+          : "";
+      if (next === current) return;
+      const url = (next ? `${pathname}?${next}` : pathname) + window.location.hash;
+      window.history.replaceState(window.history.state, "", url);
+    }, 200);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [query, location, selectedFilters, mapCenter, pathname, sortBy, page, viewMode]);
 
   useEffect(() => {
     if (!isExplicitNoResults) {
@@ -323,17 +330,17 @@ function VenueFinderInteractive({ venues, initial }: Props) {
         has_filters: selectedFilters.length > 0,
       });
     }
-    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    resultsRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   }, [filtered.length, location, mapCenter, query, selectedFilters]);
 
   const handleChangeLocation = useCallback(() => {
-    searchPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    searchPanelRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
     const input = searchPanelRef.current?.querySelector<HTMLInputElement>("input[name='location']");
     input?.focus();
   }, []);
 
   const handleOpenFullMap = useCallback(() => {
-    mapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    mapRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   }, []);
 
   const handleLoadMapPanel = useCallback(() => {
@@ -346,12 +353,13 @@ function VenueFinderInteractive({ venues, initial }: Props) {
 
   const aiPrefill = [query, location].filter(Boolean).join(" — ") || undefined;
   const searchState = useMemo(
-    () => ({ query, location, filters: selectedFilters, center: mapCenter ?? undefined }),
-    [query, location, selectedFilters, mapCenter],
+    () => ({ query, location, filters: selectedFilters, center: mapCenter ?? undefined, sortBy, page, viewMode }),
+    [query, location, selectedFilters, mapCenter, sortBy, page, viewMode],
   );
   const hasSearchContext = hasVenueFinderSearchContext(searchState);
 
   return (
+    <VenueSearchContext.Provider value={`/venue-finder?${buildVenueFinderQueryString(searchState)}`}>
     <div className={`vf-page min-h-screen ${VF_PAGE_BG}`}>
         <VenueFinderHero />
 
@@ -371,6 +379,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
                 setGeocoding(false);
                 return;
               }
+              setMapCenter(null);
               if (!value.trim()) {
                 setMapCenter(null);
                 setGeocodeError(null);
@@ -394,7 +403,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
           ref={resultsRef}
           className="mx-auto grid max-w-7xl gap-8 px-4 py-12 pb-28 sm:px-6 lg:grid-cols-[1fr_360px] lg:px-8 lg:pb-12"
         >
-          <div className="order-2 space-y-6 lg:order-1">
+          <div className="order-1 space-y-6">
             <section
               id="venue-results"
               aria-labelledby="venue-results-heading"
@@ -489,7 +498,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
           </div>
 
           <aside
-            className="order-1 space-y-6 lg:sticky lg:top-28 lg:order-2 lg:self-start"
+            className="order-2 space-y-6 lg:sticky lg:top-28 lg:self-start"
             aria-label="Map and visit planner"
           >
             <div ref={mapRef}>
@@ -549,6 +558,7 @@ function VenueFinderInteractive({ venues, initial }: Props) {
 
         <VenueFinderHistorySync onSync={syncFromHistory} />
     </div>
+    </VenueSearchContext.Provider>
   );
 }
 

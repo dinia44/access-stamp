@@ -86,11 +86,11 @@ export function VenueDecisionSummary({
     >
       <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold ${copy.tone}`}>
         <StatusGlyph outcome={outcome} />
-        <span>{copy.iconLabel}</span>
+        <span>{demo ? "Demonstration only" : copy.iconLabel}</span>
       </div>
 
       <h2 id="decision-summary-heading" className="mt-3 text-xl font-semibold tracking-[-0.02em] text-[var(--color-ink)]">
-        {copy.title}
+        {demo ? "Example access report — not verified for travel" : copy.title}
       </h2>
 
       <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
@@ -108,12 +108,12 @@ export function VenueDecisionSummary({
         </div>
         <div>
           <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Last checked</dt>
-          <dd className="mt-1.5 text-sm font-semibold text-[var(--color-ink)]">{venue.lastUpdated}</dd>
+          <dd className="mt-1.5 text-sm font-semibold text-[var(--color-ink)]">{demo ? "Not independently checked" : venue.lastUpdated}</dd>
         </div>
         <div>
           <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Confidence</dt>
           <dd className="mt-1.5">
-            <ConfidenceBadge level={venue.confidence} />
+            {demo ? <span className="text-sm text-heading">Not assessed — demonstration</span> : <ConfidenceBadge level={venue.confidence} />}
           </dd>
         </div>
         <div>
@@ -128,7 +128,7 @@ export function VenueDecisionSummary({
         {measurements.length > 0 ? (
           <div className="mt-4 rounded-[var(--radius-md)] border border-dashed border-[var(--color-border-mid)] bg-[var(--color-surface-subtle)] px-3 py-2">
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-brand)]">
-              Critical measurements
+              {demo ? "Example measurements" : "Critical measurements"}
             </p>
             <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--color-ink)]">
               {measurements.map((m) => (
@@ -138,15 +138,15 @@ export function VenueDecisionSummary({
           </div>
         ) : (
           <p className="mt-4 text-sm text-[var(--color-text-muted)]">
-            No audited doorway or toilet measurements published for this listing yet.
+            No doorway or toilet measurements published for this listing yet.
           </p>
         )}
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <FeatureList title="Confirmed" items={confirmedFeatures.slice(0, 6)} tone="trust" empty="No confirmed features yet" />
+        <FeatureList title={demo ? "Illustrative features" : "Reported present"} items={confirmedFeatures.slice(0, 6)} tone="trust" empty="No features documented yet" />
         <FeatureList
-          title="Unavailable"
+          title={demo ? "Illustrated as unavailable" : "Reported unavailable"}
           items={unavailableFeatures.slice(0, 6)}
           tone="danger"
           empty="None listed as unavailable"

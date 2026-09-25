@@ -8,15 +8,15 @@ const DEFAULT_SCRIPT =
 type Props = {
   script?: string;
   tips?: string[];
+  demo?: boolean;
 };
 
-export function BeforeYouGo({ script = DEFAULT_SCRIPT, tips }: Props) {
+export function BeforeYouGo({ script = DEFAULT_SCRIPT, tips, demo = false }: Props) {
   return (
     <Card className="p-5">
-      <h2 className="text-lg font-semibold text-heading">Before you travel, confirm these details</h2>
+      <h2 className="text-lg font-semibold text-heading">{demo ? "Example questions for a real venue" : "Before you travel, confirm these details"}</h2>
       <p className="mt-2 text-sm leading-6 text-muted">
-        Access information can change. If this visit is important, confirm the details below with the venue before
-        travelling.
+        {demo ? "This is an example script. Use it with a real venue whose identity and contact details you have verified." : "Access information can change. Confirm important details directly with the venue before travelling."}
       </p>
       <CopyableScript script={script} className="mt-4" />
       {tips?.length ? (

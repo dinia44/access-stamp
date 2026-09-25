@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { VenueReportLink } from "./venue-search-context";
 import { VenueConfidenceBadge } from "@/components/design-system/venue-confidence-badge";
 import type { Venue } from "@/lib/mock-data";
 import { getVenueDistanceLabel } from "@/lib/venue-access-score";
@@ -23,6 +23,7 @@ export function VenueListRow({ venue, userCenter, selected, onSelect }: Props) {
 
   return (
     <article
+      id={`venue-${venue.slug}`}
       className={`flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm transition hover:border-[var(--color-border-mid)] sm:flex-row sm:items-center sm:justify-between ${
         selected ? "ring-2 ring-[var(--color-primary)]" : ""
       }`}
@@ -52,9 +53,9 @@ export function VenueListRow({ venue, userCenter, selected, onSelect }: Props) {
             Show on map
           </button>
         ) : null}
-        <Link href={`/venue/${venue.slug}`} className={`${VF_BTN_PRIMARY} min-h-11 px-4 text-sm`}>
+        <VenueReportLink slug={venue.slug} aria-label={`View report for ${venue.name}`} className={`${VF_BTN_PRIMARY} min-h-11 px-4 text-sm`}>
           View report
-        </Link>
+        </VenueReportLink>
       </div>
     </article>
   );

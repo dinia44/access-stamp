@@ -15,6 +15,8 @@ export type VenueFinderSearchState = {
   filters: string[];
   center?: VenueCoordinates;
   sortBy?: VenueFinderSort;
+  page?: number;
+  viewMode?: "grid" | "list";
 };
 
 export type VenueFinderResultMeta = {
@@ -24,6 +26,8 @@ export type VenueFinderResultMeta = {
   /** True when results are limited by a town/postcode string match. */
   usedLocationTextMatch: boolean;
 };
+
+const FULL_POSTCODE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
 type SearchParamsInput =
   | Record<string, string | string[] | undefined>
@@ -58,7 +62,11 @@ export function parseVenueFinderSearchParams(input: SearchParamsInput): VenueFin
   const centerRaw = readParam(input, "center");
   const center = parseCoordinatePair(centerRaw) ?? undefined;
 
-  return { query, location, filters, center };
+  const sort = readParam(input, "sort");
+  const sortBy = (["Best match", "Evidence confidence", "Distance"] as const).find((item) => item === sort);
+  const page = Math.max(1, Math.min(10000, Number.parseInt(readParam(input, "page"), 10) || 1));
+  const viewMode = readParam(input, "view") === "list" ? "list" : "grid";
+  return { query, location, filters, center, sortBy, page, viewMode };
 }
 
 function filterByLocationText(venues: Venue[], location: string): Venue[] {
@@ -67,7 +75,7 @@ function filterByLocationText(venues: Venue[], location: string): Venue[] {
 
   const matched = venues.filter((venue) => {
     const haystack = normalize(venue.location);
-    return terms.every((term) => haystack.includes(term));
+    return terms.every((term) => haystack.split(" ").includes(term));
   });
 
   return matched;
@@ -95,19 +103,20 @@ export function getFilteredVenuesWithMeta(
           : "Relevance",
   });
 
-  const isExplicitNoResults = hasQuery && filtered.length === 0;
-
   let usedLocationTextMatch = false;
-  if (!isExplicitNoResults && hasLocation && !parseCoordinatePair(state.location)) {
-    const byPlace = filterByLocationText(filtered, state.location);
-    if (byPlace.length > 0) {
-      filtered = byPlace;
-      usedLocationTextMatch = true;
-    }
-    // If the place string matches no venue locations but a map center exists,
-    // keep the keyword/filter set and let distance sorting provide geographic bias.
-    // Never invent unrelated keyword matches for a failed `q`.
+  const nearby = Boolean(parseCoordinatePair(state.location)) || /^near me$/i.test(state.location.trim()) || FULL_POSTCODE.test(state.location.trim());
+  if (hasLocation && !nearby) {
+    filtered = filterByLocationText(filtered, state.location);
+    usedLocationTextMatch = true;
+  } else if (state.center) {
+    filtered = filtered.filter((venue) => {
+      const coordinates = getVenueCoordinates(venue);
+      return coordinates != null && haversineDistanceKm(state.center!, coordinates) <= 25;
+    });
+  } else if (nearby) {
+    filtered = [];
   }
+  const isExplicitNoResults = (hasQuery || hasLocation || state.filters.length > 0) && filtered.length === 0;
 
   // Preserve relevance ranking when the visitor searched by name/category.
   if (!hasQuery) {
@@ -138,6 +147,9 @@ export function buildVenueFinderQueryString(state: VenueFinderSearchState): stri
   if (state.location.trim()) params.set("location", state.location.trim());
   if (state.filters.length) params.set("filters", state.filters.join(","));
   if (state.center) params.set("center", `${state.center.lat},${state.center.lng}`);
+  if (state.sortBy) params.set("sort", state.sortBy);
+  if (state.page && state.page > 1) params.set("page", String(state.page));
+  if (state.viewMode === "list") params.set("view", "list");
   return params.toString();
 }
 
@@ -149,7 +161,8 @@ export function hasVenueFinderSearchContext(state: VenueFinderSearchState): bool
 export function formatVenueFinderLocationLine(location?: string | null): string {
   const trimmed = location?.trim();
   if (!trimmed) return "Venues across the UK";
-  if (parseCoordinatePair(trimmed)) return "Venues near your location";
-  if (/^near me$/i.test(trimmed)) return "Venues near your location";
+  if (parseCoordinatePair(trimmed)) return "Venues within 25 km of your location";
+  if (/^near me$/i.test(trimmed)) return "Venues within 25 km of your location";
+  if (FULL_POSTCODE.test(trimmed)) return `Venues within 25 km of ${trimmed}`;
   return `Venues in ${trimmed}`;
 }

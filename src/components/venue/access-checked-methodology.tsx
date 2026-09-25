@@ -26,8 +26,8 @@ export function AccessCheckedMethodology({ verification, confidence, lastUpdated
         <summary className="cursor-pointer list-none text-base font-semibold text-[#20242E] marker:content-none [&::-webkit-details-marker]:hidden">
           <span className="inline-flex items-center gap-2">
             How to read this listing
-            <span className="text-xs font-medium text-[#76808F] group-open:hidden">Show</span>
-            <span className="hidden text-xs font-medium text-[#76808F] group-open:inline">Hide</span>
+            <span className="text-xs font-medium text-[#596474] group-open:hidden">Show</span>
+            <span className="hidden text-xs font-medium text-[#596474] group-open:inline">Hide</span>
           </span>
         </summary>
         <div className="mt-3 border-t border-[#EFE5DA] pt-3">
@@ -36,9 +36,7 @@ export function AccessCheckedMethodology({ verification, confidence, lastUpdated
             {sourceDescription[verificationType] ?? sourceDescription.unverified}
           </p>
           <p className="mt-2">
-            Confidence is rated <span className="font-semibold text-[#20242E]">{confidence}</span> based on how complete
-            and recent the evidence is. Last updated {lastUpdated}. We show features as confirmed, not available, or
-            unknown — colour and icons are never the only signal.
+            {verificationType === "demo" ? "Confidence and audit dates are not assessed for demonstration listings. Features and images illustrate the report format and must not be used to plan a real visit." : `Confidence is rated ${confidence} based on evidence completeness and recency. Last updated ${lastUpdated}. Features are reported present, unavailable or unknown.`}
           </p>
           <p className="mt-2">
             Access information can change. Check the confidence label, review any known unknowns, and confirm important
