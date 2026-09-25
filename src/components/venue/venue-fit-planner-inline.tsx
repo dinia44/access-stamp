@@ -13,12 +13,14 @@ export function VenueFitPlannerInline({
   venueSummary,
   confirmedFeatures,
   unknownFeatureCount,
+  demo = false,
 }: {
   venueName: string;
   location: string;
   venueSummary: string;
   confirmedFeatures: string[];
   unknownFeatureCount: number;
+  demo?: boolean;
 }) {
   const { submit, loading, error, result, reset } = useToolkitSubmit("venue-fit-planner");
   const [userNeeds, setUserNeeds] = useState("");
@@ -37,6 +39,8 @@ export function VenueFitPlannerInline({
       travelContext: travelContext || undefined,
     });
   }
+
+  if (demo) return <Card className="p-5"><h2 className="text-xl font-bold text-heading">AI venue fit planner</h2><p className="mt-2 text-sm text-muted">This demonstration has no verified access evidence. Use the example questions above to gather measurements from a real venue before generating a fit plan.</p></Card>;
 
   return (
     <Card className="space-y-4 p-5">

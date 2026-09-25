@@ -1,4 +1,5 @@
 import venueSeed from "./venue-seed.json";
+import { completeVenueFeatures } from "@/lib/venue-access-features";
 
 export type VenueCategory =
   | "Restaurant"
@@ -38,9 +39,17 @@ export type VenuePhoto = VenueImage & {
 };
 
 export type VenueMeasurements = {
-  entranceWidthCm: number;
-  toiletDoorWidthCm: number;
+  entranceWidthCm?: number;
+  toiletDoorWidthCm?: number;
   clearanceCm: number;
+};
+
+export type VenueContactDetails = {
+  website?: string;
+  phone?: string;
+  address?: string;
+  sourceUrl: string;
+  checkedAt: string;
 };
 
 export type Venue = {
@@ -63,6 +72,7 @@ export type Venue = {
   photos: VenuePhoto[];
   locationSnapshot?: { src: string; alt: string };
   measurements?: VenueMeasurements;
+  contact?: VenueContactDetails;
 };
 
 type VenueSeedRecord = {
@@ -76,6 +86,8 @@ type VenueSeedRecord = {
   tags: string[];
   verification: "Community reported" | "Access Stamp checked" | "Not yet verified" | "Demo listing" | VerificationType;
   verificationType?: VerificationType;
+  measurements?: VenueMeasurements;
+  contact?: VenueContactDetails;
   lastUpdated: string;
   confidence: VenueConfidence;
   features: Record<string, "yes" | "no" | "unknown">;
@@ -95,14 +107,6 @@ const CATEGORY_MAP: Record<string, VenueCategory> = {
   "Pub & Bar": "Other",
   Healthcare: "Other",
   "Sports & Fitness": "Other",
-};
-
-const MEASUREMENTS_BY_SLUG: Partial<Record<string, VenueMeasurements>> = {
-  "harbour-kitchen-liverpool": {
-    entranceWidthCm: 90,
-    toiletDoorWidthCm: 80,
-    clearanceCm: 5,
-  },
 };
 
 function parseLocation(location: string): { town: string; area: string; postcodePrefix: string } {
@@ -166,10 +170,11 @@ function toCanonicalVenue(record: VenueSeedRecord): Venue {
     confidence: record.confidence,
     lastUpdated: record.lastUpdated,
     tags: record.tags,
-    featuresDetail: record.features,
+    featuresDetail: completeVenueFeatures(record.features),
     photos,
     locationSnapshot: record.locationSnapshot,
-    measurements: MEASUREMENTS_BY_SLUG[record.slug],
+    measurements: record.measurements,
+    contact: record.contact,
   };
 }
 

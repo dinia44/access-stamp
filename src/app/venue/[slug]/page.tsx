@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { ACCESS_AREAS } from "@/lib/venue-access-features";
+import { VenueBackLink } from "@/components/venue/venue-back-link";
+import { VenueContact } from "@/components/venue/venue-contact";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FadeIn } from "@/components/fade-in";
 import { Container } from "@/components/container";
@@ -34,27 +36,10 @@ export function generateStaticParams() {
   return SAMPLE_VENUES.map((v) => ({ slug: v.slug }));
 }
 
-const ACCESS_AREAS = [
-  {
-    title: "Entrance & approach",
-    points: ["Step-free entrance", "Ramp access", "Automatic doors", "Wide doorways (80cm+)"],
-  },
-  {
-    title: "Inside the venue",
-    points: ["Turning space (150cm+)", "Lift access", "Quiet environment", "Powered wheelchair suitable"],
-  },
-  {
-    title: "Toilets",
-    points: ["Accessible toilet", "Changing Places toilet"],
-  },
-  {
-    title: "Parking & support",
-    points: ["Nearby Blue Badge parking", "Staff disability awareness"],
-  },
-] as const;
 
-function statusDetails(v: "yes" | "no" | "unknown" | undefined) {
-  if (v === "yes") return { icon: "✓", label: "Confirmed", cls: "text-verified" };
+function statusDetails(v: "yes" | "no" | "unknown" | undefined, demo: boolean) {
+  if (demo) return { icon: "·", label: v === "yes" ? "Example: present" : v === "no" ? "Example: unavailable" : "Example: unknown", cls: "text-muted" };
+  if (v === "yes") return { icon: "✓", label: "Reported present", cls: "text-verified" };
   if (v === "no") return { icon: "×", label: "Not available", cls: "text-error" };
   return { icon: "!", label: "Check before visiting", cls: "text-warning" };
 }
@@ -293,11 +278,11 @@ export default async function VenueDetailPage({
                   <div className="text-sm font-semibold text-heading">{area.title}</div>
                   <div className="mt-3 grid gap-2">
                     {area.points.map((key) => {
-                      const s = statusDetails(v.features[key]);
+                      const s = statusDetails(v.features[key], isDemo);
                       return (
                         <div
                           key={key}
-                          className="flex items-center justify-between rounded-[var(--radius-ui)] border border-border bg-background px-3 py-2"
+                          className="flex flex-wrap items-center justify-between gap-2 rounded-[var(--radius-ui)] border border-border bg-background px-3 py-2"
                         >
                           <span className="text-sm text-heading">{key}</span>
                           <span className={`text-xs font-semibold ${s.cls}`} aria-label={s.label}>
@@ -318,12 +303,14 @@ export default async function VenueDetailPage({
               Plan your visit
             </h2>
 
-            <BeforeYouGo tips={beforeYouGo} />
+            <VenueContact venue={v} />
+            <BeforeYouGo tips={beforeYouGo} demo={isDemo} />
 
             <VenueFitPlannerInline
               venueName={v.name}
               location={v.location}
               venueSummary={v.summary}
+              demo={isDemo}
               confirmedFeatures={confirmedFeatures}
               unknownFeatureCount={unknownCount}
             />
@@ -332,8 +319,7 @@ export default async function VenueDetailPage({
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-heading">What this means for your visit</h3>
                 <p className="text-sm text-muted">
-                  This venue currently has <span className="font-semibold text-heading">{yesCount}</span> confirmed access
-                  points.
+                  {isDemo ? "This demonstration illustrates" : "This listing reports"} <span className="font-semibold text-heading">{yesCount}</span> access features. {isDemo ? "None are independently verified. " : ""}
                   {unknownCount > 0 ? (
                     <>
                       {" "}
@@ -357,7 +343,7 @@ export default async function VenueDetailPage({
                 <VenueVisitPlanActions
                   venueName={v.name}
                   location={v.location}
-                  summary={v.summary}
+                  summary={isDemo ? `DEMONSTRATION ONLY — not verified for travel. ${v.summary}` : v.summary}
                   tags={v.tags}
                   beforeYouGo={beforeYouGo}
                 />
@@ -387,7 +373,7 @@ export default async function VenueDetailPage({
               </div>
             </div>
 
-            {custom ? (
+            {custom && !isDemo ? (
               <div>
                 <h3 className="text-sm font-semibold text-heading">About this location</h3>
                 <p className="mt-2 text-sm leading-6 text-muted">{custom.about}</p>
@@ -405,10 +391,7 @@ export default async function VenueDetailPage({
           <div className="grid gap-6 border-t border-border pt-8 lg:grid-cols-2">
             <div>
               <h2 className="text-sm font-semibold text-heading">Contact &amp; updates</h2>
-              <p className="mt-2 text-sm text-muted">
-                We do not host venue phone numbers or opening hours yet. Area shown:{" "}
-                <span className="font-semibold text-heading">{v.location}</span>.
-              </p>
+              <p className="mt-2 text-sm text-muted">{isDemo ? "This demonstration does not provide verified venue contact details. Do not use it to plan a real visit." : "See the venue contact details in Plan your visit above."}</p>
               <p className="mt-2 text-sm text-muted">
                 Spotted something wrong or missing? Tell us what you found on site — measurements and photos help most.
               </p>
@@ -436,9 +419,7 @@ export default async function VenueDetailPage({
                     ratings or user reviews — practical feature checks instead.
                   </p>
                 </div>
-                <Link href="/venue-finder" className="shrink-0 text-sm font-semibold text-blue">
-                  Back to search →
-                </Link>
+                <VenueBackLink />
               </div>
             </div>
           </div>

@@ -3,13 +3,12 @@ import type { Venue } from "@/lib/mock-data";
 /** Extra clearance (cm) assumed between chair outer width and clear opening — hinges, weather strips, approach angle. */
 export const DOOR_CLEARANCE_CM = 5;
 
+export type VenueOpening = { label: string; widthCm: number };
 export type VenueAuditNumbers = {
-  /** Narrowest door clear width found in photo captions, if parseable */
   doorClearCm: number | null;
-  /** Turning space / circle diameter in cm from captions, if parseable */
   turningSpaceCm: number | null;
-  /** Raw measurement strings from the audit */
   measurementNotes: string[];
+  openings: VenueOpening[];
 };
 
 export type UserChairDims = {
@@ -17,41 +16,31 @@ export type UserChairDims = {
   overallLengthCm?: number;
 };
 
-/**
- * Pull numeric doorway / turning data from verified-style photo captions (e.g. "Door width measured: 92cm").
- */
+/** Structured measurements take priority over legacy photo-caption parsing. */
 export function parseVenueAuditMeasurements(venue: Venue): VenueAuditNumbers {
-  const measurementNotes: string[] = [];
-  let doorClearCm: number | null = null;
+  const openings: VenueOpening[] = [];
+  const valid = (value: number | undefined): value is number => value != null && Number.isFinite(value) && value > 0;
+  if (valid(venue.measurements?.entranceWidthCm)) openings.push({ label: "Entrance", widthCm: venue.measurements.entranceWidthCm });
+  if (valid(venue.measurements?.toiletDoorWidthCm)) openings.push({ label: "Toilet door", widthCm: venue.measurements.toiletDoorWidthCm });
   let turningSpaceCm: number | null = null;
-
-  for (const p of venue.photos ?? []) {
-    const m = p.measurement?.trim();
-    if (!m) continue;
-    measurementNotes.push(m);
-
-    const lower = m.toLowerCase();
-    const nums = m.match(/(\d+)\s*cm/gi) ?? [];
-
-    if (/door|doorway|opening|entrance width|clear width/i.test(m) || (/width/i.test(m) && /door|opening/i.test(p.label))) {
-      for (const chunk of nums) {
-        const n = parseInt(chunk.replace(/[^\d]/g, ""), 10);
-        if (!Number.isNaN(n) && n >= 60 && n <= 250) {
-          doorClearCm = doorClearCm == null ? n : Math.min(doorClearCm, n);
-        }
-      }
+  const measurementNotes: string[] = openings.map(({ label, widthCm }) => `${label}: ${widthCm} cm`);
+  const hasStructuredOpenings = openings.length > 0;
+  for (const photo of venue.photos ?? []) {
+    const measurement = photo.measurement?.trim();
+    if (!measurement) continue;
+    if (/turning|circle|diameter/i.test(measurement)) {
+      const value = measurement.match(/(\d+(?:\.\d+)?)\s*cm/i);
+      if (value) turningSpaceCm = Number(value[1]);
     }
-
-    if (/turning|circle|diameter/i.test(lower)) {
-      const t = m.match(/(\d+)\s*cm/i);
-      if (t) {
-        const n = parseInt(t[1], 10);
-        if (!Number.isNaN(n) && n >= 100 && n <= 400) turningSpaceCm = n;
+    if (!hasStructuredOpenings && /door|doorway|opening|entrance width|clear width/i.test(measurement)) {
+      const value = measurement.match(/(\d+(?:\.\d+)?)\s*cm/i);
+      if (value && Number(value[1]) > 0) {
+        openings.push({ label: photo.label, widthCm: Number(value[1]) });
+        measurementNotes.push(measurement);
       }
     }
   }
-
-  return { doorClearCm, turningSpaceCm, measurementNotes };
+  return { openings, doorClearCm: openings.length ? Math.min(...openings.map((opening) => opening.widthCm)) : null, turningSpaceCm, measurementNotes };
 }
 
 /**
@@ -93,72 +82,29 @@ export type FitAssessment = {
   detailLines: string[];
 };
 
-/**
- * Compare user chair outer width to audited doorway / feature flags. Conservative copy — not a guarantee.
- */
+/** Compare every documented opening; never infer whole-venue suitability. */
 export function assessChairAgainstVenue(chair: UserChairDims, venue: Venue): FitAssessment {
+  const width = chair.overallWidthCm;
+  if (width == null || !Number.isFinite(width) || width < 40 || width > 130) {
+    return { summary: "Enter your chair’s overall outer width between 40 and 130 cm.", detailLines: [] };
+  }
   const audit = parseVenueAuditMeasurements(venue);
-  const w = chair.overallWidthCm;
-  const detailLines: string[] = [];
-
-  if (w == null) {
-    return {
-      summary: "Add your chair’s **overall outer width** in cm (widest point) to compare with this listing.",
-      detailLines: [],
-    };
+  const required = width + DOOR_CLEARANCE_CM;
+  const demo = venue.verificationType === "demo" || venue.verification === "Demo listing";
+  const detailLines = [
+    ...(demo ? ["Demonstration measurements only — this result is not evidence for a real visit."] : []),
+    `Chair width ${width} cm + planning allowance ${DOOR_CLEARANCE_CM} cm = ${required} cm required clear opening.`,
+    ...audit.openings.map(({ label, widthCm }) => `${label}: ${widthCm} cm — ${required <= widthCm ? "within the listed width including allowance" : "insufficient clearance including allowance"}.`),
+    "This checks only the listed widths. Internal routes, turning space, door operation and temporary obstructions still need checking.",
+  ];
+  if (!audit.openings.length) {
+    return { summary: "No measured doorway widths are available. A feature label alone cannot establish whether your chair fits.", detailLines };
   }
-
-  const requiredOpening = w + DOOR_CLEARANCE_CM;
-
-  if (audit.doorClearCm != null) {
-    const ok = requiredOpening <= audit.doorClearCm;
-    detailLines.push(
-      `Audited door clear width (from listing photos/captions): **${audit.doorClearCm} cm**.`,
-    );
-    detailLines.push(
-      `Your stated outer width **${w} cm** + allowance **${DOOR_CLEARANCE_CM} cm** → needs about **${requiredOpening} cm** clear opening.`,
-    );
-    return {
-      summary: ok
-        ? `On paper, **${w} cm** should clear an opening documented at **${audit.doorClearCm} cm**, allowing a small margin for approach angle and protruding parts — **confirm on the day** if anything feels tight.`
-        : `The documented opening (**${audit.doorClearCm} cm**) is **tighter** than your chair plus a safe margin (**about ${requiredOpening} cm** needed). There may be another entrance, removable doors, or staff assistance — **call ahead** or choose a venue with confirmed wider openings.`,
-      detailLines,
-    };
-  }
-
-  const wide = venue.features["Wide doorways (80cm+)"];
-  const turning = venue.features["Turning space (150cm+)"];
-
-  if (wide === "yes") {
-    detailLines.push('Listing flags **wide doorways (80 cm+)** — typical building regs reference ~800 mm clear; many chairs are wider than 75 cm outer.');
-    const ok80 = requiredOpening <= 80;
-    return {
-      summary: ok80
-        ? `The venue is flagged as having **doorways at least 80 cm** wide. Your **${w} cm** outer width plus margin (**~${requiredOpening} cm**) may still be snug at the minimum — worth **confirming measured clear width** with staff if you’re close to the limit.`
-        : `Even with **80 cm+** doorways, your **${w} cm** chair needs about **${requiredOpening} cm** clear — **ask the venue for exact measurements** or pick a listing with photo-verified widths.`,
-      detailLines,
-    };
-  }
-
-  if (wide === "no") {
-    detailLines.push('Listing indicates **wide doorways may not** meet the usual 80 cm+ expectation.');
-    return {
-      summary: `This listing suggests **narrow or unknown door widths**. With a **${w} cm** outer chair, **contact the venue** before travelling.`,
-      detailLines,
-    };
-  }
-
-  detailLines.push("No doorway width numbers in this listing yet — compare against photos or ask staff.");
-
-  const turningNote =
-    turning === "yes"
-      ? " Turning space is flagged **150 cm+**, which helps once you’re inside."
-      : turning === "no"
-        ? " Turning space is flagged as **tight** — worth checking routes inside as well as doors."
-        : "";
-
+  const barriers = audit.openings.filter((opening) => required > opening.widthCm);
   return {
-    summary: `We **don’t have a measured door width** on file for this place. Your chair is **${w} cm** wide (outer) — **ask for clear opening widths** at entrances you’ll use.${turningNote}`,
+    summary: barriers.length
+      ? `Insufficient clearance at ${barriers.map((opening) => opening.label.toLowerCase()).join(" and ")}: your chair plus allowance needs ${required} cm.`
+      : "Within the listed doorway widths, including the planning allowance. This does not establish access throughout the venue.",
     detailLines,
   };
 }
@@ -167,12 +113,14 @@ export function formatVenueAuditContextForPrompt(venue: Venue): string {
   const audit = parseVenueAuditMeasurements(venue);
   const lines = [
     `Venue: ${venue.name} (${venue.location})`,
-    `Verification: ${venue.verification}; confidence: ${venue.confidence}; updated: ${venue.lastUpdated}`,
+    venue.verificationType === "demo"
+      ? "DEMONSTRATION ONLY: all features, dates and measurements are illustrative, not verified facts. Do not recommend this listing for a real visit."
+      : `Verification: ${venue.verification}; confidence: ${venue.confidence}; updated: ${venue.lastUpdated}`,
     `Summary: ${venue.summary}`,
     `Features: ${JSON.stringify(venue.features)}`,
   ];
   if (audit.measurementNotes.length) {
-    lines.push(`Photo caption measurements: ${audit.measurementNotes.join(" | ")}`);
+    lines.push(`Listing measurements: ${audit.measurementNotes.join(" | ")}`);
     lines.push(`Parsed: door clear cm ≈ ${audit.doorClearCm ?? "unknown"}, turning cm ≈ ${audit.turningSpaceCm ?? "unknown"}`);
   } else {
     lines.push("Photo caption measurements: none parsed.");
