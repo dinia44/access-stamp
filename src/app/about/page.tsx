@@ -1,79 +1,79 @@
-import type { Metadata } from "next";
-import { AboutHero } from "@/components/about/about-hero";
+import Link from "next/link";
+import { Container } from "@/components/container";
 import { AboutJsonLd } from "@/components/about/about-jsonld";
-import { ABOUT_PAGE } from "@/components/about/about-theme";
-import { AccessibilityPromise } from "@/components/about/accessibility-promise";
-import { AIExplainerSection } from "@/components/about/ai-explainer-section";
-import { AudienceSplitSection } from "@/components/about/audience-split-section";
-import { FinalCTA } from "@/components/about/final-cta";
-import { FounderStory } from "@/components/about/founder-story";
-import { NewsletterSignup } from "@/components/about/newsletter-signup";
-import { PlatformFeatureGrid } from "@/components/about/platform-feature-grid";
-import { ProblemComparison } from "@/components/about/problem-comparison";
-import { PurplePoundStats } from "@/components/about/purple-pound-stats";
-import { SmallChangesChecklist } from "@/components/about/small-changes-checklist";
-import { VerificationLabels } from "@/components/about/verification-labels";
 import { staticPageMetadata } from "@/lib/seo/static-pages";
-
-export const metadata: Metadata = staticPageMetadata("about");
-
-const DISABLED_USER_BULLETS = [
-  "Check whether a venue gives enough access detail",
-  "Find practical guides before a problem escalates",
-  "Prepare questions before calling a venue",
-  "Understand wheelchair-related basics such as cushions, pressure areas, transfer planning, and seating needs",
-  "Learn what to ask about work, education, fire evacuation, and reasonable adjustments",
-  "Use AI tools to turn confusion into a clear checklist",
-] as const;
-
-const VENUE_BULLETS = [
-  "Create clearer accessibility listings",
-  "Identify missing access information",
-  "Understand what disabled customers need to know before visiting",
-  "Improve staff confidence around access questions",
-  "Show small practical improvements that can make a real difference",
-  "Build trust with disabled customers and families",
-] as const;
-
+export const metadata = staticPageMetadata("about");
 export default function AboutPage() {
   return (
-    <div className={ABOUT_PAGE}>
+    <Container className="max-w-3xl space-y-10 py-12">
       <AboutJsonLd />
-      <AboutHero />
-      <ProblemComparison />
-      <FounderStory />
-      <PlatformFeatureGrid />
-      <PurplePoundStats />
-      <SmallChangesChecklist />
-      <AudienceSplitSection
-        id="for-users"
-        tone="alt"
-        title="For disabled people, carers, and families"
-        body={[
-          "Access Stamp is designed to reduce the guesswork. Whether you are planning a meal out, preparing for work, starting university, arranging travel, or trying to understand equipment and support needs, the platform gives you clearer information and practical next steps.",
-        ]}
-        bulletsTitle="You can use Access Stamp to…"
-        bullets={DISABLED_USER_BULLETS}
-        cta="Start with the practical guides"
-        href="/advice"
-      />
-      <AudienceSplitSection
-        id="for-venues"
-        title="For venues, businesses, and organisations"
-        body={[
-          "Access Stamp helps venues move beyond vague claims like “disabled access available.” The goal is to help you explain access in a way disabled people can actually use when deciding whether to visit.",
-          "Clear access information improves trust, reduces repeated phone calls, helps staff answer questions consistently, and makes your venue easier to choose.",
-        ]}
-        bulletsTitle="Access Stamp can help venues…"
-        bullets={VENUE_BULLETS}
-        cta="List or improve your venue"
-        href="/for-venues"
-      />
-      <VerificationLabels />
-      <AIExplainerSection />
-      <AccessibilityPromise />
-      <NewsletterSignup />
-      <FinalCTA />
-    </div>
+      <header>
+        <h1 className="text-4xl font-bold">About Access Stamp</h1>
+        <p className="mt-5 text-lg text-muted">
+          Practical venue access information and disability guidance, built to
+          help you decide what to do next.
+        </p>
+      </header>
+      <section>
+        <h2 className="text-2xl font-semibold">Why it exists</h2>
+        <p className="mt-3">
+          A ramp symbol cannot tell you whether your chair fits through a door,
+          whether you can transfer in the toilet, or what help is available.
+          Access Stamp brings those details together and makes the gaps visible.
+        </p>
+      </section>
+      <section id="founder">
+        <h2 className="text-2xl font-semibold">Allister Diniz — founder</h2>
+        <p className="mt-3">
+          Allister is a wheelchair user who created Access Stamp around the
+          details that matter when planning a visit: doorway widths, routes,
+          toilet layout, seating and support. The aim is to make those details
+          easier to find before leaving home.
+        </p>
+      </section>
+      <section>
+        <h2 className="text-2xl font-semibold">
+          How our approach is different
+        </h2>
+        <ul className="mt-3 list-disc space-y-2 pl-5">
+          <li>
+            Measurements and photographs, with their source clearly labelled.
+          </li>
+          <li>
+            Visible unknowns, so missing evidence never becomes a promise.
+          </li>
+          <li>Personal comparisons against your needs.</li>
+          <li>Disability-led development shaped by practical decisions.</li>
+        </ul>
+      </section>
+      <section>
+        <h2 className="text-2xl font-semibold">What we’re building</h2>
+        <p className="mt-3">
+          A venue finder supported by clear guides and tools. Current
+          demonstration listings show how the reports work while real venue
+          coverage develops.
+        </p>
+      </section>
+      <nav aria-label="Learn more">
+        <h2 className="text-2xl font-semibold">Learn more</h2>
+        <ul>
+          {[
+            ["Methodology", "/methodology"],
+            ["Accessibility", "/accessibility"],
+            ["Venue reviews", "/for-venues"],
+            ["Contact", "/contact"],
+          ].map(([label, href]) => (
+            <li key={href}>
+              <Link
+                className="inline-flex min-h-11 items-center underline"
+                href={href}
+              >
+                {label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </Container>
   );
 }

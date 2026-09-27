@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FadeIn } from "@/components/fade-in";
-import { SensitiveDataNotice, useSensitiveDataGate } from "@/components/ai/SensitiveDataNotice";
 import { Badge, Button, Card } from "@/components/ui";
 import { ToolkitDisclaimer } from "@/components/ai-toolkit/toolkit-disclaimer";
 import { ToolkitTrustPanel } from "@/components/ai-toolkit/toolkit-trust-panel";
@@ -23,16 +22,13 @@ export function ToolkitToolShell({
   resultsRef?: React.RefObject<HTMLDivElement | null>;
   onPrint?: () => void;
 }) {
-  const requireAck = Boolean(meta.sensitiveDataAck);
-  const { acknowledged, setAcknowledged, blocked } = useSensitiveDataGate(requireAck);
-
   return (
     <div className="premium-section-hero min-h-screen">
       <div className="mx-auto max-w-3xl px-4 py-12 md:py-16 lg:px-8">
         <Breadcrumbs
           items={[
             { label: "Home", href: "/" },
-            { label: "AI Toolkit", href: "/ai-toolkit" },
+            { label: "Tools", href: "/ai-toolkit" },
             { label: meta.shortTitle },
           ]}
         />
@@ -47,27 +43,28 @@ export function ToolkitToolShell({
           </div>
         </FadeIn>
 
-        {requireAck ? (
-          <FadeIn delayMs={60}>
-            <div className="mt-6">
-              <SensitiveDataNotice requireAcknowledgement onAcknowledgedChange={setAcknowledged} />
-            </div>
-          </FadeIn>
-        ) : null}
+        <p className="mt-6 text-sm text-muted">
+          Avoid sharing information we don’t need to know.{" "}
+          <Link href="/legal/privacy" className="underline">
+            Read our Privacy Policy
+          </Link>
+          .
+        </p>
 
         <FadeIn delayMs={80}>
-          <Card
-            className={`mt-8 p-5 md:p-6 ${blocked ? "pointer-events-none opacity-60" : ""}`}
-            aria-disabled={blocked || undefined}
-          >
-            {children}
-          </Card>
+          <Card className="mt-8 p-5 md:p-6">{children}</Card>
         </FadeIn>
 
         {results ? (
-          <div ref={resultsRef} className="toolkit-results-print mt-10 space-y-5" aria-live="polite">
+          <div
+            ref={resultsRef}
+            className="toolkit-results-print mt-10 space-y-5"
+            aria-live="polite"
+          >
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-2xl font-bold tracking-[-0.02em] text-heading">Your results</h2>
+              <h2 className="text-2xl font-bold tracking-[-0.02em] text-heading">
+                Your results
+              </h2>
               <div className="flex flex-wrap gap-2 print:hidden">
                 {onPrint ? (
                   <Button variant="ghost" type="button" onClick={onPrint}>
@@ -99,7 +96,8 @@ export function ToolkitToolShell({
 export function ToolkitEmptyResults() {
   return (
     <Card className="p-5 text-sm text-muted">
-      Complete the form above and select <strong className="text-heading">Generate</strong> to see your structured
+      Complete the form above and select{" "}
+      <strong className="text-heading">Generate</strong> to see your structured
       plan here.
     </Card>
   );
@@ -108,7 +106,9 @@ export function ToolkitEmptyResults() {
 export function ToolkitError({ message }: { message: string }) {
   return (
     <div role="alert">
-      <Card className="border-amber bg-amber-pale p-4 text-sm text-heading">{message}</Card>
+      <Card className="border-amber bg-amber-pale p-4 text-sm text-heading">
+        {message}
+      </Card>
     </div>
   );
 }
@@ -118,13 +118,15 @@ export function ToolkitSourceNote({ source }: { source: ToolkitResultSource }) {
   if (source === "fallback") {
     return (
       <p className="text-xs text-muted print:hidden" role="status">
-        We used a structured template because the AI request did not complete. Try generating again in a moment.
+        We used a structured template because the AI request did not complete.
+        Try generating again in a moment.
       </p>
     );
   }
   return (
     <p className="text-xs text-muted print:hidden" role="status">
-      Showing a structured template while personalised results are unavailable. Try generating again in a moment.
+      Showing a structured template while personalised results are unavailable.
+      Try generating again in a moment.
     </p>
   );
 }

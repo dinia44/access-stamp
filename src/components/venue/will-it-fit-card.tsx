@@ -3,6 +3,10 @@
 import { useMemo, useState } from "react";
 import type { Venue } from "@/lib/mock-data";
 import { assessChairAgainstVenue, DOOR_CLEARANCE_CM } from "@/lib/venue-fit";
+import {
+  getMeasurementLabel,
+  toVerificationType,
+} from "@/lib/venue-verification";
 import { Card } from "@/components/ui";
 
 function InlineBold({ text }: { text: string }) {
@@ -29,22 +33,37 @@ export function WillItFitCard({ venue }: { venue: Venue }) {
 
   const widthNum = parseFloat(widthCm.replace(",", "."));
   const assessment = useMemo(() => {
-    if (!Number.isFinite(widthNum) || widthNum <= 0 || widthNum > 200) return null;
+    if (!Number.isFinite(widthNum) || widthNum < 40 || widthNum > 130)
+      return null;
     return assessChairAgainstVenue({ overallWidthCm: widthNum }, venue);
   }, [widthNum, venue]);
 
   return (
     <Card className="p-5 sm:p-6">
-      <h2 className="text-xl font-bold tracking-[-0.02em] text-heading">Will it fit?</h2>
+      <h3 className="text-lg font-semibold text-heading">
+        Chair width and doorway clearance
+      </h3>
       <p className="mt-2 text-sm text-muted">
-        Your chair&apos;s <strong className="text-heading">widest outer width</strong> (cm), compared to{" "}
-        <strong className="text-heading">audited measurements</strong> on this listing where we have them — not a guarantee on the day
+        Your chair&apos;s{" "}
+        <strong className="text-heading">widest outer width</strong> (cm),
+        compared to{" "}
+        <strong className="text-heading">
+          {getMeasurementLabel(
+            toVerificationType(venue.verificationType ?? venue.verification),
+          )}
+        </strong>{" "}
+        on this listing where we have them — not a guarantee on the day
         (approach angle, temporary clutter, alternative entrances).
       </p>
       <p className="mt-2 text-xs text-muted">
-        Built-in clearance margin: <strong className="text-heading">{DOOR_CLEARANCE_CM} cm</strong> for hinges and safe passage.
+        Built-in clearance margin:{" "}
+        <strong className="text-heading">{DOOR_CLEARANCE_CM} cm</strong> as a
+        planning allowance, not a guarantee of safe passage.
       </p>
-      <label className="mt-4 block text-sm font-semibold text-heading" htmlFor={`chair-width-${venue.slug}`}>
+      <label
+        className="mt-4 block text-sm font-semibold text-heading"
+        htmlFor={`chair-width-${venue.slug}`}
+      >
         Overall chair width (cm)
       </label>
       <input
@@ -61,20 +80,28 @@ export function WillItFitCard({ venue }: { venue: Venue }) {
       />
 
       {assessment ? (
-        <div className="mt-4 space-y-3 text-sm leading-6 text-text">
+        <div
+          role="status"
+          aria-live="polite"
+          className="mt-4 space-y-3 text-sm leading-6 text-text"
+        >
           <p>
             <InlineBold text={assessment.summary} />
           </p>
           {assessment.detailLines.length ? (
             <ul className="list-disc space-y-1 pl-5 text-muted">
               {assessment.detailLines.map((line) => (
-                <li key={line}>{line}</li>
+                <li key={line}>
+                  <InlineBold text={line} />
+                </li>
               ))}
             </ul>
           ) : null}
         </div>
       ) : widthCm.trim() ? (
-        <p className="mt-4 text-sm text-muted">Enter a width between 40 and 130 cm.</p>
+        <p className="mt-4 text-sm text-muted">
+          Enter a width between 40 and 130 cm.
+        </p>
       ) : null}
     </Card>
   );

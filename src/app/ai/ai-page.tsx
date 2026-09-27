@@ -6,36 +6,10 @@ import { Badge, Card } from "@/components/ui";
 import { useChat } from "@/components/chat/provider";
 
 const CAPABILITIES = [
-  {
-    icon: "\uD83C\uDFE8",
-    title: "Venue matching",
-    desc: "Tell us your chair width, transfer ability, and sensory needs \u2014 we match against audited venue data ChatGPT can\u2019t access.",
-  },
-  {
-    icon: "\uD83D\uDCCF",
-    title: "\u2018Will it fit?\u2019 checks",
-    desc: "Enter your wheelchair dimensions and we compare them against verified doorway and turning-circle measurements.",
-  },
-  {
-    icon: "\uD83E\uDDBD",
-    title: "Equipment funding advisor",
-    desc: "Guided flow through Disabled Facilities Grants, Motability, NHS wheelchair services, charity grants, and VAT relief.",
-  },
-  {
-    icon: "\u2696\uFE0F",
-    title: "Rights advisor",
-    desc: "Grounded in the Equality Act 2010 and European Accessibility Act, with anonymised examples from real audits.",
-  },
-  {
-    icon: "\uD83C\uDF99\uFE0F",
-    title: "Voice-first interaction",
-    desc: "Full hands-free mode with live captions. Designed for users with limited dexterity \u2014 a UX moat over generic chat.",
-  },
-  {
-    icon: "\uD83D\uDCDA",
-    title: "UK-specific knowledge",
-    desc: "PIP, Blue Badge, Access to Work, social care assessments, DSA \u2014 real eligibility logic, not generic summaries.",
-  },
+  { icon: "📍", title: "Venue questions", desc: "Turn your access needs into questions to ask a venue. Current demonstration listings are not verified travel information." },
+  { icon: "📏", title: "Doorway comparisons", desc: "Compare chair width with each listed opening and a planning allowance. Missing measurements remain unknown; a width comparison cannot prove overall access." },
+  { icon: "📝", title: "Drafting support", desc: "Prepare an access request, letter or checklist, then review the details before using it." },
+  { icon: "📚", title: "UK guidance", desc: "Explore practical guides and source links. Check current requirements with the relevant organisation before making decisions." },
 ] as const;
 
 export default function AiPage() {
@@ -51,9 +25,8 @@ export default function AiPage() {
               Access Stamp AI
             </h1>
             <p className="max-w-[85ch] text-base text-muted">
-              Not another generic chatbot. Our AI is grounded in verified venue audits, UK disability
-              law, real funding routes, and practical lived-experience knowledge that general AI
-              doesn&rsquo;t have.
+              Ask questions, prepare wording and organise your next steps. The assistant can make mistakes.
+              Venue coverage currently includes demonstration listings, which must not be treated as verified access evidence.
             </p>
           </div>
 
@@ -67,31 +40,10 @@ export default function AiPage() {
             ))}
           </div>
 
-          <Card className="space-y-4 bg-gradient-to-br from-blue-pale to-background p-6">
-            <h2 className="text-lg font-semibold text-heading">
-              Why this beats general AI for accessibility
-            </h2>
-            <ul className="space-y-2 text-sm text-text">
-              <li>
-                <strong className="font-semibold text-heading">We have data ChatGPT doesn&rsquo;t.</strong>{" "}
-                Audited door widths, turning circles, toilet layouts, and photo evidence for real UK venues.
-              </li>
-              <li>
-                <strong className="font-semibold text-heading">We ask questions ChatGPT doesn&rsquo;t know to ask.</strong>{" "}
-                Chair width, transfer method, sensory sensitivities, carer presence \u2014 the details that determine
-                whether a visit actually works.
-              </li>
-              <li>
-                <strong className="font-semibold text-heading">UK funding logic is built in.</strong>{" "}
-                Not a generic summary of &ldquo;disability grants&rdquo; but current eligibility paths for DFG,
-                Motability, NHS wheelchair services, Access to Work, and charity routes.
-              </li>
-              <li>
-                <strong className="font-semibold text-heading">Voice-first, not voice-bolted-on.</strong>{" "}
-                Hands-free mode with auto-listen, live captions, and interrupt support \u2014 built for people
-                who find typing difficult.
-              </li>
-            </ul>
+          <Card className="space-y-4 p-6">
+            <h2 className="text-lg font-semibold text-heading">Check the evidence before acting</h2>
+            <p className="text-sm text-text">AI does not verify a venue or establish eligibility for support. Review the listing’s evidence status, check source dates, and confirm important details directly. Demonstration measurements are examples only.</p>
+            <Link href="/methodology" className="inline-flex min-h-11 items-center font-semibold text-blue underline">How our evidence labels work</Link>
           </Card>
 
           <Card className="space-y-3 border-blue/20 bg-blue-pale/40 p-5">

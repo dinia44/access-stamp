@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getHeroSampleVenue, getScoreBand } from "@/data/venues";
+import { getHeroSampleVenue } from "@/data/venues";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 import { heroCollageImageUrl } from "@/lib/cloudinary-url";
 
@@ -22,22 +22,6 @@ const FEATURE_LABELS: Record<string, string> = {
   quiet_space: "Quiet space",
   assistance: "Staff assistance",
 };
-
-function ScoreRing({ score }: { score: number }) {
-  return (
-    <div className="flex shrink-0 flex-col items-center">
-      <div
-        className="relative flex h-[76px] w-[76px] items-center justify-center rounded-full border-4 border-[#5F7444] xl:h-[84px] xl:w-[84px]"
-        aria-hidden
-      >
-        <span className="text-xl font-bold tracking-tight text-[#13201F] xl:text-2xl">{score}%</span>
-      </div>
-      <span className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#76808F]">
-        Access score
-      </span>
-    </div>
-  );
-}
 
 function CollagePhoto({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return (
@@ -88,7 +72,6 @@ function HeroPhotoCollage({ venueName }: { venueName: string }) {
 
 export function PlatformHeroGraphic() {
   const venue = getHeroSampleVenue();
-  const band = getScoreBand(venue.accessScore);
   const reportFeatures = venue.features.slice(0, 5).map((key) => ({
     label: FEATURE_LABELS[key] ?? key,
     value: "Yes",
@@ -105,11 +88,6 @@ export function PlatformHeroGraphic() {
               aria-label={`Sample access report for ${venue.name}`}
             >
               <div className="flex items-start gap-4 sm:gap-5">
-                <div className="sr-only">
-                  {venue.accessScore}/100 · {band}
-                </div>
-                <ScoreRing score={venue.accessScore} />
-
                 <div className="min-w-0 flex-1 pt-1">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C8430F]">
                     Access report
@@ -142,7 +120,7 @@ export function PlatformHeroGraphic() {
               </ul>
 
               <p className="mt-4 text-xs text-[#76808F]">
-                {venue.verification} · {venue.confidence} confidence
+                Example report — demonstration data
               </p>
 
               <Link

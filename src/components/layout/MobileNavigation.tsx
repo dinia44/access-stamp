@@ -29,7 +29,11 @@ export function MobileNavigation({ onNavigate }: Props) {
   const [resourcesOpen, setResourcesOpen] = useState(resourcesNavActive(path));
 
   return (
-    <nav id="site-mobile-nav" className="border-t border-[#EFE5DA] px-4 pb-5 pt-4 lg:hidden" aria-label="Mobile navigation">
+    <nav
+      id="site-mobile-nav"
+      className="max-h-[calc(100dvh-5rem)] overflow-y-auto border-t border-[#EFE5DA] px-4 pb-5 pt-4 lg:hidden"
+      aria-label="Mobile navigation"
+    >
       <div className="grid gap-1">
         <button
           type="button"
@@ -54,7 +58,10 @@ export function MobileNavigation({ onNavigate }: Props) {
           </span>
         </button>
         {resourcesOpen ? (
-          <div id={resourcesId} className="mb-2 ml-2 border-l border-[#EFE5DA] pl-3">
+          <div
+            id={resourcesId}
+            className="mb-2 ml-2 border-l border-[#EFE5DA] pl-3"
+          >
             {RESOURCE_NAV_GROUPS.map((group) => (
               <div key={group.label} className="py-1">
                 <p className="px-4 pt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-brand)]">
@@ -76,7 +83,9 @@ export function MobileNavigation({ onNavigate }: Props) {
                           onClick={() => {
                             track("homepage_resource_selected", {
                               source: "mobile",
-                              category: item.label.toLowerCase().replace(/\s+/g, "_"),
+                              category: item.label
+                                .toLowerCase()
+                                .replace(/\s+/g, "_"),
                             });
                             onNavigate();
                           }}
@@ -110,7 +119,11 @@ export function MobileNavigation({ onNavigate }: Props) {
             </Link>
           );
         })}
-        <ButtonLink href={PRIMARY_NAV_CTA.href} className="mt-4 w-full rounded-full py-3.5" onClick={onNavigate}>
+        <ButtonLink
+          href={PRIMARY_NAV_CTA.href}
+          className="mt-4 w-full rounded-full py-3.5"
+          onClick={onNavigate}
+        >
           {PRIMARY_NAV_CTA.label}
         </ButtonLink>
       </div>

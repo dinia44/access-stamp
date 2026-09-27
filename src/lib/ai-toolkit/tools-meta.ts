@@ -18,8 +18,8 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
   {
     id: "access-needs-profiler",
     href: "/ai-toolkit/access-needs-profiler",
-    title: "Access Needs Profiler",
-    shortTitle: "Access Needs Profiler",
+    title: "Build my access profile",
+    shortTitle: "Build my access profile",
     description:
       "Answer a few simple questions and get a personalised action plan with next steps, evidence to gather, useful wording, and related Access Stamp guides.",
     badge: "Action plan",
@@ -28,8 +28,8 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
   {
     id: "letter-builder",
     href: "/ai-toolkit/letter-builder",
-    title: "Letter Builder",
-    shortTitle: "Letter Builder",
+    title: "Draft a letter",
+    shortTitle: "Draft a letter",
     description:
       "Create a clear draft letter or email for PIP, Access to Work, reasonable adjustments, school support, train assistance, care assessments, Blue Badge, or home adaptations.",
     badge: "Letters",
@@ -38,8 +38,8 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
   {
     id: "evidence-checklist",
     href: "/ai-toolkit/evidence-checklist",
-    title: "Evidence Checklist Generator",
-    shortTitle: "Evidence Checklist",
+    title: "Build my evidence checklist",
+    shortTitle: "Build my evidence checklist",
     description:
       "Generate a tailored checklist of documents, examples, notes, and supporting evidence to prepare before making a request or challenge.",
     badge: "Checklists",
@@ -48,8 +48,8 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
   {
     id: "article-companion",
     href: "/ai-toolkit/article-companion",
-    title: "AI Article Companion",
-    shortTitle: "Article Companion",
+    title: "Make this guide personal",
+    shortTitle: "Make this guide personal",
     description:
       "Turn any Access Stamp guide into a personalised checklist, next-step plan, or draft wording based on your situation.",
     badge: "Guides",
@@ -57,8 +57,8 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
   {
     id: "venue-questions",
     href: "/ai-toolkit/venue-questions",
-    title: "Venue Access Question Generator",
-    shortTitle: "Venue Questions",
+    title: "Questions to ask a venue",
+    shortTitle: "Questions to ask a venue",
     description:
       "Create practical questions to ask a venue before visiting, based on mobility, sensory, toilet, parking, seating, or assistance needs.",
     badge: "Venues",
@@ -66,8 +66,8 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
   {
     id: "venue-fit-planner",
     href: "/ai-toolkit/venue-fit-planner",
-    title: "Venue Fit Planner",
-    shortTitle: "Venue Fit Planner",
+    title: "Check a venue against my needs",
+    shortTitle: "Check a venue against my needs",
     description:
       "For a specific venue, generate a practical fit summary, red flags, and a short call script based on your access needs and known listing details.",
     badge: "Venue fit",
@@ -85,7 +85,9 @@ export const AI_TOOLKIT_TOOLS: ToolkitToolMeta[] = [
   },
 ];
 
-export const PUBLIC_AI_TOOLKIT_TOOLS = AI_TOOLKIT_TOOLS.filter((tool) => !tool.experimental);
+export const PUBLIC_AI_TOOLKIT_TOOLS = AI_TOOLKIT_TOOLS.filter(
+  (tool) => !tool.experimental,
+);
 
 export function getToolkitToolMeta(id: string): ToolkitToolMeta | undefined {
   return AI_TOOLKIT_TOOLS.find((t) => t.id === id);

@@ -7,18 +7,31 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const baseUrl = (process.argv[2] ?? process.env.SMOKE_BASE_URL ?? "http://127.0.0.1:3000").replace(/\/$/, "");
-const routesPath = join(dirname(fileURLToPath(import.meta.url)), "../tests/routes.ts");
+const baseUrl = (
+  process.argv[2] ??
+  process.env.SMOKE_BASE_URL ??
+  "http://127.0.0.1:3000"
+).replace(/\/$/, "");
+const routesPath = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "../tests/routes.ts",
+);
 const routesSource = readFileSync(routesPath, "utf8");
-const routeMatch = routesSource.match(/export const SMOKE_ROUTES = \[([\s\S]*?)\] as const/);
-const linkMatch = routesSource.match(/export const LINK_CRAWL_ROUTES = SMOKE_ROUTES\.filter\([^)]+\)/);
+const routeMatch = routesSource.match(
+  /export const SMOKE_ROUTES = \[([\s\S]*?)\] as const/,
+);
+const linkMatch = routesSource.match(
+  /export const LINK_CRAWL_ROUTES = SMOKE_ROUTES\.filter\([^)]+\)/,
+);
 
 if (!routeMatch) {
   console.error("Could not read SMOKE_ROUTES from tests/routes.ts");
   process.exit(1);
 }
 
-const routes = [...routeMatch[1].matchAll(/"([^"]+)"/g)].map((match) => match[1]);
+const routes = [...routeMatch[1].matchAll(/"([^"]+)"/g)].map(
+  (match) => match[1],
+);
 const linkCrawlRoutes = linkMatch
   ? routes.filter((route) => !route.includes("/venue/"))
   : routes;
@@ -42,40 +55,56 @@ for (const route of routes) {
       failures.push(`${route} → missing h1`);
     }
   } catch (error) {
-    failures.push(`${route} → ${error instanceof Error ? error.message : String(error)}`);
+    failures.push(
+      `${route} → ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
 try {
   const home = await fetchHtml("/");
-  if (!/search venues/i.test(home)) failures.push("/ → missing primary search CTA copy");
-  if (!/check a venue/i.test(home)) failures.push("/ → missing primary nav CTA copy");
-  if (!/explore access stamp resources/i.test(home)) failures.push("/ → missing resources route copy");
+  if (!/search venues/i.test(home))
+    failures.push("/ → missing primary search CTA copy");
+  if (!/find a venue/i.test(home))
+    failures.push("/ → missing primary nav CTA copy");
+  if (!/ask access stamp/i.test(home))
+    failures.push("/ → missing Ask Access Stamp route copy");
 } catch (error) {
-  failures.push(`/ content check → ${error instanceof Error ? error.message : String(error)}`);
+  failures.push(
+    `/ content check → ${error instanceof Error ? error.message : String(error)}`,
+  );
 }
 
 try {
   const venue = await fetchHtml("/venue/harbour-kitchen-liverpool");
-  if (!/demo listing/i.test(venue)) failures.push("venue demo page → missing demo listing banner");
+  if (!/demonstration listing/i.test(venue) || !/must not be/.test(venue))
+    failures.push("venue demo page → missing demo listing banner");
 } catch (error) {
-  failures.push(`venue demo check → ${error instanceof Error ? error.message : String(error)}`);
+  failures.push(
+    `venue demo check → ${error instanceof Error ? error.message : String(error)}`,
+  );
 }
 
 for (const route of linkCrawlRoutes) {
   try {
     const html = await fetchHtml(route);
-    const hrefs = [...html.matchAll(/href="(\/[^"#?]*)/g)].map((match) => match[1]);
+    const hrefs = [...html.matchAll(/href="(\/[^"#?]*)/g)].map(
+      (match) => match[1],
+    );
     for (const href of hrefs) {
       if (checkedLinks.has(href)) continue;
       checkedLinks.add(href);
       const response = await fetch(`${baseUrl}${href}`, { redirect: "follow" });
       if (response.status >= 400) {
-        failures.push(`broken link ${href} (found on ${route}) → HTTP ${response.status}`);
+        failures.push(
+          `broken link ${href} (found on ${route}) → HTTP ${response.status}`,
+        );
       }
     }
   } catch (error) {
-    failures.push(`${route} link crawl → ${error instanceof Error ? error.message : String(error)}`);
+    failures.push(
+      `${route} link crawl → ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
@@ -85,4 +114,6 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`Launch gate OK: ${routes.length} routes, ${checkedLinks.size} internal links at ${baseUrl}`);
+console.log(
+  `Launch gate OK: ${routes.length} routes, ${checkedLinks.size} internal links at ${baseUrl}`,
+);

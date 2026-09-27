@@ -11,7 +11,7 @@
     "analyze": "ANALYZE=true next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "test:unit": "npx esbuild scripts/venue-search-intent.test.ts --bundle --platform=node --format=esm --outfile=scripts/.venue-search-intent.test.mjs --packages=external --alias:@=./src && node --test scripts/.venue-search-intent.test.mjs && npx tsx --test src/lib/help-cards/download-document.test.ts src/lib/venue-next-steps.test.ts src/lib/navigation.test.ts",
+    "test:unit": "npx esbuild scripts/venue-search-intent.test.ts --bundle --platform=node --format=esm --outfile=scripts/.venue-search-intent.test.mjs --packages=external --alias:@=./src && node --test scripts/.venue-search-intent.test.mjs && node --import tsx --test src/lib/help-cards/download-document.test.ts src/lib/venue-next-steps.test.ts src/lib/navigation.test.ts src/lib/venue-trust.test.ts src/lib/ask.test.ts",
     "test:e2e": "playwright test",
     "test:smoke": "playwright test tests/smoke-routes.spec.ts",
     "test:a11y": "playwright test tests/accessibility.spec.ts tests/keyboard.spec.ts tests/accessibility-panel.spec.ts",
@@ -22,7 +22,8 @@
     "test:launch-gate": "node scripts/smoke-routes.mjs",
     "studio": "sanity dev",
     "seed:cms": "tsx scripts/seed-sanity.ts",
-    "generate:guide-docx": "node scripts/generate-guide-docx.mjs"
+    "generate:guide-docx": "node scripts/generate-guide-docx.mjs",
+    "test:audit": "node --import tsx --test scripts/accessibility-audit.test.ts scripts/venue-search-intent.test.ts"
   },
   "dependencies": {
     "@sanity/client": "^7.22.1",

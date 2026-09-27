@@ -19,7 +19,7 @@ test("desktop navigation groups resources instead of listing every tool", async 
   await expect(nav.getByRole("button", { name: /^resources$/i })).toBeVisible();
   await expect(nav.getByRole("link", { name: /for venues/i })).toBeVisible();
   await expect(nav.getByRole("link", { name: /^about$/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /check a venue/i }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /find a venue/i }).first()).toBeVisible();
   await expect(nav.getByRole("link", { name: /venue finder/i })).toHaveCount(0);
 
   await nav.getByRole("button", { name: /^resources$/i }).click();
@@ -27,7 +27,7 @@ test("desktop navigation groups resources instead of listing every tool", async 
   const panel = page.getByRole("region", { name: /^resources$/i });
   await expect(panel.getByRole("link", { name: /^guides$/i })).toBeVisible();
   await expect(panel.getByRole("link", { name: /^help cards$/i })).toBeVisible();
-  await expect(panel.getByRole("link", { name: /^planning tools$/i })).toBeVisible();
+  await expect(panel.getByRole("link", { name: /^tools$/i })).toBeVisible();
   await expect(panel.getByRole("link", { name: /^letters$/i })).toBeVisible();
   await expect(panel.getByRole("link", { name: /^directory$/i })).toBeVisible();
   await expect(panel.getByRole("link", { name: /^glossary$/i })).toBeVisible();
@@ -50,7 +50,7 @@ test("desktop resources menu marks only the current destination", async ({ page 
   await page.goto("/ai-toolkit/letter-builder");
   await nav.getByRole("button", { name: /^resources$/i }).click();
   await expect(panel.getByRole("link", { name: /^letters$/i })).toHaveAttribute("aria-current", "page");
-  await expect(panel.getByRole("link", { name: /^planning tools$/i })).not.toHaveAttribute("aria-current");
+  await expect(panel.getByRole("link", { name: /^tools$/i })).not.toHaveAttribute("aria-current");
 });
 
 test("mobile navigation presents resources as an expandable group", async ({ page }) => {
@@ -61,7 +61,7 @@ test("mobile navigation presents resources as an expandable group", async ({ pag
   await menuButton.click();
   const mobile = page.getByRole("navigation", { name: /mobile navigation/i });
   await expect(mobile.getByRole("button", { name: /^resources$/i })).toBeVisible();
-  await expect(mobile.getByRole("link", { name: /check a venue/i })).toBeVisible();
+  await expect(mobile.getByRole("link", { name: /find a venue/i })).toBeVisible();
 
   await mobile.getByRole("button", { name: /^resources$/i }).click();
   await expect(mobile.getByRole("link", { name: /^guides$/i })).toBeVisible();
@@ -79,9 +79,9 @@ test("homepage search is venue-first without a competing advice tab", async ({ p
   await expect(page.getByLabel(/venue name or category/i)).toBeVisible();
   await expect(page.getByLabel(/town or postcode/i)).toBeVisible();
   await expect(page.getByRole("button", { name: /search venues/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /explore access stamp resources/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /would your chair fit at /i })).toBeVisible();
-  await expect(page.getByText(/doorway width alone does not prove/i)).toBeVisible();
+  await expect(page.getByRole("link", { name: /^ask access stamp.*→$/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /example access stamp venue report/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /check this example against my needs/i })).toHaveAttribute("href", /#venue-fit$/);
 
   await page.getByLabel(/venue name or category/i).fill("Harbour Kitchen");
   await page.getByRole("button", { name: /search venues/i }).click();
@@ -113,11 +113,13 @@ test("supporting resource routes remain reachable from the homepage", async ({ p
   await expect(page).toHaveURL(/\/advice/);
 
   await page.goto("/");
-  await page.getByRole("link", { name: /open help cards/i }).click();
+  await page.getByRole("navigation", { name: /primary navigation/i }).getByRole("button", { name: /^resources$/i }).click();
+  await page.getByRole("region", { name: /^resources$/i }).getByRole("link", { name: /^help cards$/i }).click();
   await expect(page).toHaveURL(/\/help-cards/);
 
   await page.goto("/");
-  await page.getByRole("link", { name: /open planning tools/i }).click();
+  await page.getByRole("navigation", { name: /primary navigation/i }).getByRole("button", { name: /^resources$/i }).click();
+  await page.getByRole("region", { name: /^resources$/i }).getByRole("link", { name: /^tools$/i }).click();
   await expect(page).toHaveURL(/\/ai-toolkit/);
 
   await page.goto("/");

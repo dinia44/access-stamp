@@ -1,5 +1,5 @@
+import Link from "next/link";
 import type { Metadata } from "next";
-import { ToolkitHubHero } from "@/components/ai-toolkit/toolkit-hub-hero";
 import { ToolkitTrustStrip } from "@/components/ai-toolkit/toolkit-trust-strip";
 import { ToolCard } from "@/components/design-system/tool-card";
 import { PageContainer } from "@/components/layout/PageContainer";
@@ -56,10 +56,23 @@ const TOOL_CTA: Record<string, string> = {
 export default function AiToolkitPage() {
   return (
     <div className="min-h-screen bg-[#FDFBF8] text-[#20242E]">
-      <ToolkitHubHero />
+      <div className="mx-auto max-w-5xl px-4 pt-12">
+        <h1 className="text-4xl font-bold">Tools</h1>
+        <p className="mt-4">
+          Not sure which tool you need?{" "}
+          <Link href="/ask" className="font-semibold underline">
+            Ask Access Stamp
+          </Link>{" "}
+          to start with your situation.
+        </p>
+        <h2 className="mt-10 text-2xl font-semibold">More tools</h2>
+      </div>
       <ToolkitTrustStrip />
 
-      <section className="px-4 py-12 sm:px-6 sm:py-16" aria-label="Access Stamp tools">
+      <section
+        className="px-4 py-12 sm:px-6 sm:py-16"
+        aria-label="Access Stamp tools"
+      >
         <PageContainer>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {PUBLIC_AI_TOOLKIT_TOOLS.map((tool, index) => (

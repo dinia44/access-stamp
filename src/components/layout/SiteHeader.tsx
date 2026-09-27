@@ -64,30 +64,54 @@ export function SiteHeader() {
           aria-label="Access Stamp — home"
           onClick={closeMobileMenu}
         >
-          <SiteLogo priority className="h-auto w-[4.25rem] object-contain sm:w-[4.75rem] lg:w-[5.25rem]" />
+          <SiteLogo
+            priority
+            className="h-auto w-[4.25rem] object-contain sm:w-[4.75rem] lg:w-[5.25rem]"
+          />
         </Link>
 
         <MainNavigation onNavigate={closeMobileMenu} />
 
         <div className="hidden shrink-0 lg:block">
-          <ButtonLink href={PRIMARY_NAV_CTA.href} className="rounded-full px-4 text-sm" onClick={closeMobileMenu}>
+          <ButtonLink
+            href={PRIMARY_NAV_CTA.href}
+            className="rounded-full px-4 text-sm"
+            onClick={closeMobileMenu}
+          >
             {PRIMARY_NAV_CTA.label}
           </ButtonLink>
         </div>
 
+        <Link
+          href="/venue-finder"
+          className="ml-auto inline-flex min-h-11 items-center rounded-full border border-border px-3 text-sm font-semibold lg:hidden"
+        >
+          Find a venue
+        </Link>
         <Button
           ref={menuButtonRef}
           type="button"
           variant="secondary"
           size="icon"
-          className="ml-auto lg:hidden"
+          className="lg:hidden"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
           aria-controls="site-mobile-nav"
           onClick={() => (mobileOpen ? closeMobileMenu() : setMobileOpen(true))}
         >
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-            {mobileOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+          <svg
+            viewBox="0 0 24 24"
+            className="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden
+          >
+            {mobileOpen ? (
+              <path d="M6 6l12 12M18 6L6 18" />
+            ) : (
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            )}
           </svg>
         </Button>
       </div>

@@ -43,7 +43,7 @@ test.describe("Venue Finder search intent", () => {
 
   test("malformed params and empty query remain usable", async ({ page }) => {
     await page.goto("/venue-finder?q=&location=&filters=");
-    await expect(page.getByRole("heading", { name: "Venues to explore" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Explore venue reports" })).toBeVisible();
 
     await page.goto("/venue-finder?filters=__not_a_real_filter");
     await expect(page.locator("#venue-results")).toBeVisible();

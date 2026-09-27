@@ -13,7 +13,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: npm
 
       - name: Install dependencies
@@ -21,6 +21,12 @@ jobs:
 
       - name: Validate venue data and production copy
         run: npm run validate:venues
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Audit regression tests
+        run: npm run test:audit
 
       - name: Build
         run: npm run build

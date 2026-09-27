@@ -11,38 +11,42 @@ export type DirectoryEntry = {
 export const DIRECTORY_ENTRIES: DirectoryEntry[] = [
   {
     name: "Citizens Advice",
-    category: "Advice & rights",
+    category: "Rights & benefits",
     area: "UK",
     phone: "0800 144 8848 (England)",
     website: "https://www.citizensadvice.org.uk/",
-    notes: "Free, confidential advice on benefits, housing, debt, employment, and discrimination.",
+    notes:
+      "Free, confidential advice on benefits, housing, debt, employment, and discrimination.",
   },
   {
     name: "Scope",
-    category: "Advice & rights",
+    category: "Rights & benefits",
     area: "UK",
     phone: "0808 800 3333",
     website: "https://www.scope.org.uk/",
-    notes: "Disability information and support line. Mon–Fri, 9am–6pm (check site for current hours).",
+    notes:
+      "Disability information and support line. Mon–Fri, 9am–6pm (check site for current hours).",
   },
   {
     name: "Disability Rights UK",
-    category: "Advice & rights",
+    category: "Rights & benefits",
     area: "UK",
     website: "https://www.disabilityrightsuk.org/",
-    notes: "Rights, benefits guides, and resources including the National Key Scheme (Radar key).",
+    notes:
+      "Rights, benefits guides, and resources including the National Key Scheme (Radar key).",
   },
   {
     name: "Samaritans",
-    category: "Crisis support",
+    category: "Urgent help",
     area: "UK",
     phone: "116 123 (free, 24/7)",
     website: "https://www.samaritans.org/",
-    notes: "Emotional support for anyone in distress. Not only for suicide crisis.",
+    notes:
+      "Emotional support for anyone in distress. Not only for suicide crisis.",
   },
   {
     name: "Shout (text crisis line)",
-    category: "Crisis support",
+    category: "Urgent help",
     area: "UK",
     phone: "Text SHOUT to 85258",
     website: "https://giveusashout.org/",
@@ -50,37 +54,41 @@ export const DIRECTORY_ENTRIES: DirectoryEntry[] = [
   },
   {
     name: "NHS 111",
-    category: "Health",
+    category: "Care & support",
     area: "UK",
     phone: "111",
-    website: "https://www.nhs.uk/nhs-services/urgent-and-emergency-care-services/when-to-use-111/",
+    website:
+      "https://www.nhs.uk/nhs-services/urgent-and-emergency-care-services/when-to-use-111/",
     notes: "Urgent medical advice when it is not a 999 emergency.",
   },
   {
     name: "NHS Wheelchair Services",
-    category: "Wheelchair services",
+    category: "Mobility & equipment",
     area: "UK (local)",
-    website: "https://www.nhs.uk/service-search/other-health-services/wheelchair-services/",
-    notes: "Find your local wheelchair service via NHS service search — provision varies by area.",
+    website:
+      "https://www.nhs.uk/service-search/other-health-services/wheelchair-services/",
+    notes:
+      "Find your local wheelchair service via NHS service search — provision varies by area.",
   },
   {
     name: "Motability Scheme",
-    category: "Transport & mobility",
+    category: "Transport",
     area: "UK",
     phone: "0300 456 4566",
     website: "https://www.motability.co.uk/",
-    notes: "Lease a car, scooter, or powered wheelchair using qualifying mobility benefits.",
+    notes:
+      "Lease a car, scooter, or powered wheelchair using qualifying mobility benefits.",
   },
   {
     name: "Blue Badge (GOV.UK)",
-    category: "Transport & mobility",
+    category: "Transport",
     area: "UK",
     website: "https://www.gov.uk/apply-blue-badge",
     notes: "Apply for a disabled parking badge through your local council.",
   },
   {
     name: "Access to Work",
-    category: "Workplace",
+    category: "Employment & education",
     area: "UK",
     phone: "0800 121 7479",
     website: "https://www.gov.uk/access-to-work",
@@ -91,7 +99,8 @@ export const DIRECTORY_ENTRIES: DirectoryEntry[] = [
     category: "Home adaptations",
     area: "England",
     website: "https://www.gov.uk/disabled-facilities-grants",
-    notes: "Council grants for home adaptations. Rules differ in Scotland, Wales, and Northern Ireland.",
+    notes:
+      "Council grants for home adaptations. Rules differ in Scotland, Wales, and Northern Ireland.",
   },
   {
     name: "Changing Places toilet map",

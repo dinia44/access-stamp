@@ -69,26 +69,17 @@ export function ToolCard({
       </h2>
 
       <dl className="mt-4 space-y-2.5 text-sm">
-        <div className="flex items-start gap-2.5">
-          <DocumentIcon />
-          <div className="min-w-0">
-            <dt className="text-[13px] font-medium uppercase tracking-[0.06em] text-[#76808F]">Creates</dt>
-            <dd className="mt-0.5 text-[#4A5263]">{creates}</dd>
-          </div>
+        <div>
+          <dt className="flex items-center gap-2.5 text-[13px] font-medium uppercase tracking-[0.06em] text-[#76808F]"><DocumentIcon />Creates</dt>
+          <dd className="mt-0.5 pl-[26px] text-[#4A5263]">{creates}</dd>
         </div>
-        <div className="flex items-start gap-2.5">
-          <TargetIcon />
-          <div className="min-w-0">
-            <dt className="text-[13px] font-medium uppercase tracking-[0.06em] text-[#76808F]">Best for</dt>
-            <dd className="mt-0.5 text-[#4A5263]">{bestFor}</dd>
-          </div>
+        <div>
+          <dt className="flex items-center gap-2.5 text-[13px] font-medium uppercase tracking-[0.06em] text-[#76808F]"><TargetIcon />Best for</dt>
+          <dd className="mt-0.5 pl-[26px] text-[#4A5263]">{bestFor}</dd>
         </div>
-        <div className="flex items-start gap-2.5">
-          <ClockIcon />
-          <div className="min-w-0">
-            <dt className="text-[13px] font-medium uppercase tracking-[0.06em] text-[#76808F]">Time</dt>
-            <dd className="mt-0.5 text-[#4A5263]">{time}</dd>
-          </div>
+        <div>
+          <dt className="flex items-center gap-2.5 text-[13px] font-medium uppercase tracking-[0.06em] text-[#76808F]"><ClockIcon />Time</dt>
+          <dd className="mt-0.5 pl-[26px] text-[#4A5263]">{time}</dd>
         </div>
       </dl>
 

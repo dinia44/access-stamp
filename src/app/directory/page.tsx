@@ -1,12 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { Container } from "@/components/container";
 import { Badge, Card } from "@/components/ui";
 import { SetChatContext } from "@/components/chat/set-context";
 import { DIRECTORY_ENTRIES } from "@/lib/directory-entries";
-import { suggestVenueMailto } from "@/lib/venue-submission";
+import { CONTACT_EMAIL } from "@/lib/venue-submission";
 
 export default function DirectoryPage() {
   const [q, setQ] = useState("");
@@ -43,21 +42,19 @@ export default function DirectoryPage() {
               Useful contacts
             </h1>
             <p className="max-w-[65ch] text-base leading-7 text-muted">
-              UK-wide helplines and services we often point people to. Always check their sites for the latest hours and
-              eligibility.
+              UK-wide helplines and services we often point people to. Always
+              check their sites for the latest hours and eligibility.
             </p>
           </div>
 
           <Card className="border-blue-pale bg-blue-pale/30 p-4 text-sm text-text">
-            Missing a service?{" "}
-            <a href={suggestVenueMailto()} className="font-semibold text-blue underline-offset-2 hover:underline">
-              Email us to suggest a venue
-            </a>{" "}
-            for access listings, or ask the{" "}
-            <Link href="/ai" className="font-semibold text-blue underline-offset-2 hover:underline">
-              AI assistant
-            </Link>{" "}
-            for advice links.
+            Missing a service or organisation?{" "}
+            <a
+              href={`mailto:${CONTACT_EMAIL}?subject=Directory%20suggestion`}
+              className="font-semibold underline"
+            >
+              Suggest it to Access Stamp.
+            </a>
           </Card>
 
           <Card className="p-5">
@@ -91,24 +88,43 @@ export default function DirectoryPage() {
               <Card key={e.name} className="p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="text-sm font-semibold text-heading">{e.name}</div>
+                    <div className="text-sm font-semibold text-heading">
+                      {e.name}
+                    </div>
                     <div className="mt-1 text-xs font-semibold text-muted">
                       {e.category} · {e.area}
                     </div>
                   </div>
                   <Badge tone="blue">{e.category}</Badge>
                 </div>
-                {e.notes ? <p className="mt-3 text-sm text-muted">{e.notes}</p> : null}
+                {e.notes ? (
+                  <p className="mt-3 text-sm text-muted">{e.notes}</p>
+                ) : null}
                 <dl className="mt-3 space-y-1 text-sm text-muted">
                   {e.phone ? (
                     <div>
-                      <dt className="inline font-semibold text-heading">Phone: </dt>
-                      <dd className="inline">{e.phone}</dd>
+                      <dt className="inline font-semibold text-heading">
+                        Phone:{" "}
+                      </dt>
+                      <dd className="inline">
+                        <a
+                          className="inline-flex min-h-11 items-center underline"
+                          href={
+                            e.phone.startsWith("Text")
+                              ? "sms:85258"
+                              : `tel:${e.phone.split("(")[0].replace(/[^+0-9]/g, "")}`
+                          }
+                        >
+                          {e.phone}
+                        </a>
+                      </dd>
                     </div>
                   ) : null}
                   {e.website ? (
                     <div>
-                      <dt className="inline font-semibold text-heading">Website: </dt>
+                      <dt className="inline font-semibold text-heading">
+                        Website:{" "}
+                      </dt>
                       <dd className="inline">
                         <a
                           href={e.website}
@@ -127,7 +143,9 @@ export default function DirectoryPage() {
           </div>
 
           {filtered.length === 0 ? (
-            <p className="text-sm text-muted">No matches. Try a different search or category.</p>
+            <p className="text-sm text-muted">
+              No matches. Try a different search or category.
+            </p>
           ) : null}
         </div>
       </Container>

@@ -174,7 +174,7 @@ export function FooterNewsletterSignup() {
         </button>
       </form>
 
-      <p id="footer-newsletter-helper" className="mt-4 text-xs leading-5 text-[#76808F]">
+      <p id="footer-newsletter-helper" className="mt-4 text-xs leading-5 text-[#596474]">
         We only use this to send the newsletter. See our{" "}
         <Link href="/legal/privacy" className="underline underline-offset-2 hover:text-[#4A5263]">
           Privacy Policy

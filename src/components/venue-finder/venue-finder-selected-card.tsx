@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { VenueReportLink } from "./venue-search-context";
 import type { Venue } from "@/lib/mock-data";
 import { ScoreDisplay } from "@/components/venue/score-display";
 import { computeAccessScore, getVenueDistanceLabel, getVenuePhoto } from "@/lib/venue-access-score";
@@ -45,9 +45,9 @@ export function VenueFinderSelectedCard({ venue, userCenter, onClose }: Props) {
           <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted">{venue.summary}</p>
           <div className="mt-2 flex items-center justify-between gap-2">
             <ScoreDisplay score={score} />
-            <Link href={`/venue/${venue.slug}`} className={`${VF_BTN_PRIMARY} !min-h-9 !px-3 !py-2 !text-xs`}>
+            <VenueReportLink slug={venue.slug} aria-label={`View report for ${venue.name}`} className={`${VF_BTN_PRIMARY} !min-h-9 !px-3 !py-2 !text-xs`}>
               View report
-            </Link>
+            </VenueReportLink>
           </div>
         </div>
       </div>
