@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { AdviceArticle } from "@/lib/content/types";
 import { GuideReadAloud } from "@/components/guide/guide-read-aloud";
+import { GuideCoverImage } from "@/components/advice/guide-cover-image";
 import { adviceTopicLabel } from "@/lib/advice-topics";
+import { getAdviceArticleCardImage } from "@/lib/advice-card-images";
 
 type GuideOverviewProps = {
   article: AdviceArticle;
@@ -45,6 +47,7 @@ export function GuideOverview({
   readText,
 }: GuideOverviewProps) {
   const categoryLabel = adviceTopicLabel(article.categorySlug);
+  const image = article.heroImage ?? getAdviceArticleCardImage(article);
 
   return (
     <>
@@ -83,6 +86,22 @@ export function GuideOverview({
           </div>
         </div>
 
+        <figure className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-soft)]">
+          <div className="relative aspect-[16/8.5] min-h-[220px] w-full bg-[var(--color-surface-subtle)] sm:min-h-[300px]">
+            <GuideCoverImage
+              src={image.src}
+              alt={image.alt}
+              className="object-cover"
+              sizes="(min-width: 768px) 768px, 100vw"
+              priority
+            />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/35 to-transparent" aria-hidden="true" />
+            <div className="absolute bottom-4 left-4 rounded-full bg-[var(--color-canvas)]/95 px-3 py-1.5 text-xs font-semibold text-[var(--color-ink)] shadow-sm backdrop-blur">
+              {categoryLabel}
+            </div>
+          </div>
+        </figure>
+
         <dl className="grid overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] sm:grid-cols-3">
           <div className="p-4 sm:border-r sm:border-[var(--color-border)]">
             <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Applies to</dt>
@@ -117,11 +136,14 @@ export function GuideOverview({
       ) : null}
 
       {actions.length ? (
-        <section className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] p-5 sm:p-6" aria-labelledby={`do-now-${article.slug}`}>
-          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-brand)]">Next steps</p>
-          <h2 id={`do-now-${article.slug}`} className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">
-            Do this now
+        <section id="guide-start-here" className="scroll-mt-44 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] p-5 sm:p-6" aria-labelledby={`start-here-${article.slug}`}>
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-brand)]">Start here</p>
+          <h2 id={`start-here-${article.slug}`} className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">
+            The first three things to do
           </h2>
+          <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
+            You do not need to read the whole guide before taking action. Start with these, then use the detailed sections if you need them.
+          </p>
           <ol className="mt-4 space-y-3">
             {actions.slice(0, 3).map((item, index) => (
               <li key={item} className="flex gap-3 text-base leading-7 text-[var(--color-ink)]">
