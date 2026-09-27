@@ -37,6 +37,20 @@ export function VenueFinderFilterDrawer({ open, onOpenChange, selectedFilters, o
       aria-describedby="vf-filter-drawer-description"
       onCancel={(event) => { event.preventDefault(); onOpenChange(false); }}
       onClick={(event) => { if (event.target === event.currentTarget) onOpenChange(false); }}
+      onKeyDown={(event) => {
+        if (event.key !== "Tab") return;
+        const buttons = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>("button:not([disabled])"));
+        const first = buttons[0];
+        const last = buttons[buttons.length - 1];
+        if (!first || !last) return;
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }}
       className="fixed inset-0 m-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-3xl border border-border bg-card p-0 text-heading shadow-2xl backdrop:bg-black/40"
     >
       <div className="p-6">
