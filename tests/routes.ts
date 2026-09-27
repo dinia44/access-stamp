@@ -2,6 +2,9 @@
 export const SMOKE_ROUTES = [
   "/",
   "/venue-finder",
+  "/ask",
+  "/resources",
+  "/directory",
   "/advice",
   "/advice/pip-in-plain-english",
   "/help-cards",
@@ -22,7 +25,9 @@ export const SMOKE_ROUTES = [
   "/venue/harbour-kitchen-liverpool",
 ] as const;
 
-export const LINK_CRAWL_ROUTES = SMOKE_ROUTES.filter((route) => !route.includes("/venue/"));
+export const LINK_CRAWL_ROUTES = SMOKE_ROUTES.filter(
+  (route) => !route.includes("/venue/"),
+);
 
 export const AXE_ROUTES = SMOKE_ROUTES.filter(
   (route) => !route.includes("tribunal") && route !== "/submit-venue",

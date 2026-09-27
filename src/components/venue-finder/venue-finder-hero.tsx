@@ -22,22 +22,34 @@ export function VenueFinderHero() {
             id="venue-finder-heading"
             className="max-w-3xl text-3xl font-semibold leading-[1.08] tracking-[-0.04em] text-heading sm:text-4xl lg:text-5xl"
           >
-            Find access information before you travel
+            Explore the Access Stamp venue experience
           </h1>
 
           <p className="mt-4 max-w-xl text-base leading-7 text-muted">
-            Search practical venue details, evidence labels, and known unknowns — then confirm changeable information
-            before you go.
+            Explore demonstration listings to see how measurements, evidence
+            labels and unknowns help you compare a venue with your needs.
           </p>
 
-          <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2" aria-label="Evidence principles">
+          <ul
+            className="mt-5 flex flex-wrap gap-x-5 gap-y-2"
+            aria-label="Evidence principles"
+          >
             {TRUST_POINTS.map((point) => (
-              <li key={point} className="flex items-center gap-2 text-sm font-medium text-heading">
+              <li
+                key={point}
+                className="flex items-center gap-2 text-sm font-medium text-heading"
+              >
                 <span
                   className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-trust-soft)] text-[var(--color-trust)]"
                   aria-hidden="true"
                 >
-                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-3.5 w-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
                     <path d="M5 12l4 4L19 6" />
                   </svg>
                 </span>

@@ -7,10 +7,15 @@ import {
 } from "@/lib/venue-finder-params";
 import { VenueFinderActiveFiltersSummary } from "./venue-finder-active-filters";
 
-const SORT_OPTIONS: VenueFinderSort[] = ["Best match", "Evidence confidence", "Distance"];
+const SORT_OPTIONS: VenueFinderSort[] = [
+  "Best match",
+  "Evidence confidence",
+  "Distance",
+];
 
 type Props = {
   resultCount: number;
+  demoCount: number;
   locating: boolean;
   geocoding?: boolean;
   location?: string;
@@ -22,12 +27,13 @@ type Props = {
   onRemoveFilter?: (key: string) => void;
   onChangeLocation?: () => void;
   onClearAll?: () => void;
-  viewMode: "grid" | "list";
-  onViewModeChange: (mode: "grid" | "list") => void;
+  viewMode: "grid" | "list" | "map";
+  onViewModeChange: (mode: "grid" | "list" | "map") => void;
 };
 
 export function VenueResultsHeader({
   resultCount,
+  demoCount,
   locating,
   geocoding = false,
   location,
@@ -68,10 +74,11 @@ export function VenueResultsHeader({
           >
             {hasSearchContext ? (
               <>
-                <span className="tabular-nums">{resultCount}</span> {venueLabel} found
+                <span className="tabular-nums">{resultCount}</span> {venueLabel}{" "}
+                found
               </>
             ) : (
-              "Venues to explore"
+              "Explore venue reports"
             )}
           </h2>
           <p
@@ -88,7 +95,8 @@ export function VenueResultsHeader({
                 {trimmedQuery ? (
                   <span className="sr-only">
                     {" "}
-                    Searching for {trimmedQuery}. {resultCount} {venueLabel} found.
+                    Searching for {trimmedQuery}. {resultCount} {venueLabel}{" "}
+                    found.
                   </span>
                 ) : (
                   <span className="sr-only">
@@ -111,7 +119,15 @@ export function VenueResultsHeader({
               </>
             )}
           </p>
-          <VenueFinderActiveFiltersSummary selectedFilters={selectedFilters} onRemove={onRemoveFilter} />
+          <p className="mt-2 text-sm text-muted">
+            {demoCount === resultCount
+              ? `${demoCount} demonstration listings showing how venue access information works.`
+              : `${resultCount - demoCount} reviewed or submitted venues · ${demoCount} product examples.`}
+          </p>
+          <VenueFinderActiveFiltersSummary
+            selectedFilters={selectedFilters}
+            onRemove={onRemoveFilter}
+          />
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -119,7 +135,9 @@ export function VenueResultsHeader({
             <span className="sr-only">Sort venues</span>
             <select
               value={sortBy}
-              onChange={(event) => onSortChange(event.target.value as VenueFinderSort)}
+              onChange={(event) =>
+                onSortChange(event.target.value as VenueFinderSort)
+              }
               className="bg-transparent text-sm font-semibold text-[var(--color-secondary)] focus:outline-none"
             >
               {SORT_OPTIONS.map((option) => (
@@ -130,10 +148,14 @@ export function VenueResultsHeader({
             </select>
           </label>
 
-          <div className="inline-flex rounded-2xl border border-border bg-card p-1 shadow-sm" role="group" aria-label="View mode">
+          <div
+            className="inline-flex rounded-2xl border border-border bg-card p-1 shadow-sm"
+            role="group"
+            aria-label="View mode"
+          >
             <button
               type="button"
-              className={`min-h-[40px] rounded-xl px-3 text-sm font-semibold ${viewMode === "grid" ? "bg-background-2 text-heading" : "text-muted"} ${SITE_FOCUS}`}
+              className={`min-h-[44px] rounded-xl px-3 text-sm font-semibold ${viewMode === "grid" ? "bg-background-2 text-heading" : "text-muted"} ${SITE_FOCUS}`}
               aria-pressed={viewMode === "grid"}
               onClick={() => onViewModeChange("grid")}
             >
@@ -141,11 +163,19 @@ export function VenueResultsHeader({
             </button>
             <button
               type="button"
-              className={`min-h-[40px] rounded-xl px-3 text-sm font-semibold ${viewMode === "list" ? "bg-background-2 text-heading" : "text-muted"} ${SITE_FOCUS}`}
+              className={`min-h-[44px] rounded-xl px-3 text-sm font-semibold ${viewMode === "list" ? "bg-background-2 text-heading" : "text-muted"} ${SITE_FOCUS}`}
               aria-pressed={viewMode === "list"}
               onClick={() => onViewModeChange("list")}
             >
               List
+            </button>
+            <button
+              type="button"
+              className={`min-h-[44px] rounded-xl px-3 text-sm font-semibold ${viewMode === "map" ? "bg-background-2 text-heading" : "text-muted"} ${SITE_FOCUS}`}
+              aria-pressed={viewMode === "map"}
+              onClick={() => onViewModeChange("map")}
+            >
+              Map
             </button>
           </div>
         </div>

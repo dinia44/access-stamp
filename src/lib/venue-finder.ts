@@ -9,7 +9,7 @@ export const QUICK_FILTERS = [
   "Blue Badge parking",
   "Powerchair suitable",
   "Changing Places",
-  "Desk reviewed or audited",
+  "Reviewed remotely",
 ] as const;
 
 export type FilterGroup = {
@@ -19,23 +19,19 @@ export type FilterGroup = {
 
 export const FILTER_GROUPS: FilterGroup[] = [
   {
-    title: "Access needs",
+    title: "Getting in",
     filters: [
       { label: "Step-free entrance", key: "Step-free entrance" },
-      { label: "Accessible toilet", key: "Accessible toilet" },
-      { label: "Manual wheelchair suitable", key: "Turning space (150cm+)" },
-      { label: "Powerchair suitable", key: "Powered wheelchair suitable" },
-      { label: "Level access inside", key: "Step-free entrance" },
-      { label: "Lift available", key: "Lift access" },
+      { label: "Doorways 80 cm or wider", key: "Wide doorways (80cm+)" },
+      { label: "Ramp access", key: "Ramp access" },
+      { label: "Automatic doors", key: "Automatic doors" },
     ],
   },
   {
-    title: "Parking & arrival",
+    title: "Moving around",
     filters: [
-      { label: "Blue Badge parking", key: "Nearby Blue Badge parking" },
-      { label: "Drop-off nearby", key: "Drop-off nearby" },
-      { label: "Public transport nearby", key: "Public transport nearby" },
-      { label: "Parking within 50m", key: "Parking within 50m" },
+      { label: "Lift access", key: "Lift access" },
+      { label: "Turning space 150 cm or more", key: "Turning space (150cm+)" },
     ],
   },
   {
@@ -45,20 +41,43 @@ export const FILTER_GROUPS: FilterGroup[] = [
       { label: "Changing Places", key: "Changing Places toilet" },
       { label: "Left-side transfer", key: "Left-side transfer" },
       { label: "Right-side transfer", key: "Right-side transfer" },
-      { label: "Grab rails", key: "Grab rails" },
-      { label: "Radar key", key: "Radar key" },
     ],
   },
   {
-    title: "Confidence",
+    title: "Arrival",
+    filters: [
+      { label: "Blue Badge parking", key: "Nearby Blue Badge parking" },
+      { label: "Drop-off nearby", key: "Drop-off nearby" },
+      { label: "Parking within 50 m", key: "Parking within 50m" },
+    ],
+  },
+  {
+    title: "Sensory",
+    filters: [{ label: "Quiet environment", key: "Quiet environment" }],
+  },
+  {
+    title: "Communication",
+    filters: [
+      { label: "Hearing loop", key: "Hearing loop" },
+      { label: "Clear signage", key: "Clear signage" },
+    ],
+  },
+  {
+    title: "Assistance",
+    filters: [
+      {
+        label: "Staff disability awareness",
+        key: "Staff disability awareness",
+      },
+      { label: "Assistance dog information", key: "Assistance dogs welcome" },
+    ],
+  },
+  {
+    title: "Evidence",
     filters: [
       { label: "On-site verified", key: "__verified_onsite" },
       { label: "Reviewed remotely", key: "__verified_desk" },
-      { label: "Community reported", key: "__verified_community" },
       { label: "Demo", key: "__demo_listing" },
-      { label: "Recently updated", key: "__recently_updated" },
-      { label: "High confidence only", key: "__high_confidence" },
-      { label: "Has known unknowns", key: "__has_unknowns" },
     ],
   },
 ];
@@ -72,6 +91,7 @@ export const QUICK_FILTER_KEYS: Record<string, string> = {
   "Changing Places": "Changing Places toilet",
   "Quiet / sensory-friendly": "Quiet environment",
   "Verified by Access Stamp": "__verified_onsite",
+  "Reviewed remotely": "__verified_desk",
   "Desk reviewed or audited": "__verified_desk",
 };
 
@@ -88,16 +108,19 @@ const SUMMARY_FEATURES = [
 const FEATURE_DISPLAY: Record<string, string> = {
   "Step-free entrance": "Step-free entrance",
   "Accessible toilet": "Accessible toilet",
-  "Nearby Blue Badge parking": "Blue Badge parking 30m from entrance",
-  "Lift access": "Lift available to all public floors",
+  "Nearby Blue Badge parking": "Nearby Blue Badge parking",
+  "Lift access": "Lift access",
   "Changing Places toilet": "Changing Places toilet",
   "Powered wheelchair suitable": "Powerchair suitable",
   "Quiet environment": "Quiet / sensory-friendly area",
-  "Wide doorways (80cm+)": "Door width 86cm+",
+  "Wide doorways (80cm+)": "Doorways 80 cm or wider",
 };
 
 export function normalize(text: string) {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
 }
 
 export function tokenize(input: string) {
@@ -125,7 +148,8 @@ export function credibilityScore(verification: string, confidence: string) {
             : type === "demo"
               ? 0
               : 1;
-  const confidenceScore = confidence === "High" ? 3 : confidence === "Medium" ? 2 : 1;
+  const confidenceScore =
+    confidence === "High" ? 3 : confidence === "Medium" ? 2 : 1;
   return verificationScore + confidenceScore;
 }
 
@@ -157,10 +181,25 @@ function matchesFeatureFilter(venue: Venue, key: string): boolean {
   return venue.features[key] === "yes";
 }
 
-const QUERY_STOPWORDS = new Set(["a", "an", "and", "at", "for", "in", "of", "on", "or", "the", "to", "no"]);
+const QUERY_STOPWORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "at",
+  "for",
+  "in",
+  "of",
+  "on",
+  "or",
+  "the",
+  "to",
+  "no",
+]);
 
 export function significantQueryTokens(input: string): string[] {
-  return tokenize(input).filter((term) => term.length >= 3 && !QUERY_STOPWORDS.has(term));
+  return tokenize(input).filter(
+    (term) => term.length >= 3 && !QUERY_STOPWORDS.has(term),
+  );
 }
 
 export function scoreVenueQueryMatch(venue: Venue, query: string): number {
@@ -173,7 +212,10 @@ export function scoreVenueQueryMatch(venue: Venue, query: string): number {
 
   // Exact and near-exact venue names always win ranking.
   if (normalizedName === normalizedQuery) return 10_000;
-  if (normalizedName.startsWith(normalizedQuery) || normalizedQuery.startsWith(normalizedName)) {
+  if (
+    normalizedName.startsWith(normalizedQuery) ||
+    normalizedQuery.startsWith(normalizedName)
+  ) {
     return 5_000;
   }
   if (normalizedName.includes(normalizedQuery)) return 2_500;
@@ -181,7 +223,10 @@ export function scoreVenueQueryMatch(venue: Venue, query: string): number {
   const terms = significantQueryTokens(q);
   if (!terms.length) return 0;
 
-  const expandedTerms = terms.flatMap((term) => [term, ...(QUERY_SYNONYMS[term] ?? []).flatMap((s) => tokenize(s))]);
+  const expandedTerms = terms.flatMap((term) => [
+    term,
+    ...(QUERY_SYNONYMS[term] ?? []).flatMap((s) => tokenize(s)),
+  ]);
   const featureKeys = Object.entries(venue.features)
     .filter(([, value]) => value === "yes")
     .map(([key]) => key.toLowerCase());
@@ -195,7 +240,9 @@ export function scoreVenueQueryMatch(venue: Venue, query: string): number {
   ];
 
   // Every significant token must match somewhere — prevents silent unrelated hits.
-  const allTermsMatch = terms.every((term) => haystack.some((field) => field.includes(term)));
+  const allTermsMatch = terms.every((term) =>
+    haystack.some((field) => field.includes(term)),
+  );
   if (!allTermsMatch) return 0;
 
   return expandedTerms.reduce((acc, term) => {
@@ -232,7 +279,9 @@ export function filterVenues(
   }
 
   if (selectedFilters.length) {
-    items = items.filter((v) => selectedFilters.every((f) => matchesFeatureFilter(v, f)));
+    items = items.filter((v) =>
+      selectedFilters.every((f) => matchesFeatureFilter(v, f)),
+    );
   }
 
   if (verifiedOnly) {
@@ -245,14 +294,16 @@ export function filterVenues(
   if (sortBy === "Evidence confidence") {
     items.sort(
       (a, b) =>
-        credibilityScore(b.verificationType ?? b.verification, b.confidence) - credibilityScore(a.verificationType ?? a.verification, a.confidence),
+        credibilityScore(b.verificationType ?? b.verification, b.confidence) -
+        credibilityScore(a.verificationType ?? a.verification, a.confidence),
     );
   } else if (sortBy === "Distance") {
     items.sort((a, b) => a.location.localeCompare(b.location));
   } else if (sortBy === "Credibility") {
     items.sort(
       (a, b) =>
-        credibilityScore(b.verificationType ?? b.verification, b.confidence) - credibilityScore(a.verificationType ?? a.verification, a.confidence),
+        credibilityScore(b.verificationType ?? b.verification, b.confidence) -
+        credibilityScore(a.verificationType ?? a.verification, a.confidence),
     );
   } else {
     items.sort((a, b) => b.confidence.localeCompare(a.confidence));
@@ -271,12 +322,18 @@ export function buildAccessSummary(venue: Venue): string {
 
 export function buildBestFor(venue: Venue): string {
   const audiences: string[] = [];
-  if (venue.features["Step-free entrance"] === "yes") audiences.push("people who need step-free access");
-  if (venue.features["Turning space (150cm+)"] === "yes") audiences.push("manual wheelchair users");
-  if (venue.features["Powered wheelchair suitable"] === "yes") audiences.push("powerchair users");
-  if (venue.features["Quiet environment"] === "yes") audiences.push("people who need quieter spaces");
-  if (venue.features["Changing Places toilet"] === "yes") audiences.push("people who need Changing Places");
-  if (!audiences.length) return "Check the full access report for who this venue suits best.";
+  if (venue.features["Step-free entrance"] === "yes")
+    audiences.push("people who need step-free access");
+  if (venue.features["Turning space (150cm+)"] === "yes")
+    audiences.push("manual wheelchair users");
+  if (venue.features["Powered wheelchair suitable"] === "yes")
+    audiences.push("powerchair users");
+  if (venue.features["Quiet environment"] === "yes")
+    audiences.push("people who need quieter spaces");
+  if (venue.features["Changing Places toilet"] === "yes")
+    audiences.push("people who need Changing Places");
+  if (!audiences.length)
+    return "Check the full access report for who this venue suits best.";
   const unique = [...new Set(audiences)];
   return unique.map((a) => a.charAt(0).toUpperCase() + a.slice(1)).join(", ");
 }
@@ -294,7 +351,8 @@ export function buildWarning(venue: Venue): string | null {
   }
   const unknownToilet = venue.features["Accessible toilet"] === "unknown";
   const noTransfer =
-    venue.features["Left-side transfer"] !== "yes" && venue.features["Right-side transfer"] !== "yes";
+    venue.features["Left-side transfer"] !== "yes" &&
+    venue.features["Right-side transfer"] !== "yes";
   if (unknownToilet) {
     return "Check before visiting: accessible toilet not confirmed.";
   }
@@ -326,7 +384,8 @@ export function mapIncomingFilters(input: string): string[] {
 
   return [...new Set(allKeys)].filter((key) => {
     const label =
-      FILTER_GROUPS.flatMap((g) => g.filters).find((f) => f.key === key)?.label ??
+      FILTER_GROUPS.flatMap((g) => g.filters).find((f) => f.key === key)
+        ?.label ??
       Object.entries(QUICK_FILTER_KEYS).find(([, v]) => v === key)?.[0] ??
       key;
     const n = normalize(label);

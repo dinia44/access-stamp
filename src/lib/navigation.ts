@@ -14,6 +14,7 @@ export type ResourceNavGroup = {
 
 /** Peer-level header links. Venue Finder is the primary CTA, not a duplicate text link. */
 export const MAIN_NAV_LINKS: NavLink[] = [
+  { label: "Ask Access Stamp", href: "/ask" },
   { label: "For venues", href: "/for-venues" },
   { label: "About", href: "/about" },
 ];
@@ -21,35 +22,63 @@ export const MAIN_NAV_LINKS: NavLink[] = [
 export const RESOURCE_NAV_GROUPS: ResourceNavGroup[] = [
   {
     label: "Guidance and planning",
-    description: "Support after you have checked a venue.",
+    description: "Practical guidance for your situation.",
     items: [
-      { label: "Guides", href: "/advice", description: "Understand rights, access, and available support" },
-      { label: "Help cards", href: "/help-cards", description: "Prepare wording and checklists for conversations" },
-      { label: "Planning tools", href: "/ai-toolkit", description: "Work through a practical access situation" },
-      { label: "Letters", href: "/ai-toolkit/letter-builder", description: "Draft a clear access request" },
+      {
+        label: "Guides",
+        href: "/advice",
+        description: "Understand rights, access, and available support",
+      },
+      {
+        label: "Help Cards",
+        href: "/help-cards",
+        description: "Prepare wording and checklists for conversations",
+      },
+      {
+        label: "Tools",
+        href: "/ai-toolkit",
+        description: "Work through a practical access situation",
+      },
+      {
+        label: "Letters",
+        href: "/ai-toolkit/letter-builder",
+        description: "Draft a clear access request",
+      },
     ],
   },
   {
     label: "Reference",
     items: [
-      { label: "Directory", href: "/directory", description: "Find organisations and services that can help" },
-      { label: "Glossary", href: "/glossary", description: "Disability and access terms in plain English" },
+      { label: "All resources", href: "/resources" },
+      {
+        label: "Directory",
+        href: "/directory",
+        description: "Find organisations and services that can help",
+      },
+      {
+        label: "Glossary",
+        href: "/glossary",
+        description: "Disability and access terms in plain English",
+      },
     ],
   },
 ];
 
-export const RESOURCE_NAV_ITEMS: NavLink[] = RESOURCE_NAV_GROUPS.flatMap((group) => group.items);
+export const RESOURCE_NAV_ITEMS: NavLink[] = RESOURCE_NAV_GROUPS.flatMap(
+  (group) => group.items,
+);
 
 export const PRIMARY_NAV_CTA = {
-  label: "Check a venue",
+  label: "Find a venue",
   href: "/venue-finder",
 } as const;
 
 export const FOOTER_EXPLORE_LINKS: NavLink[] = [
+  { label: "Ask Access Stamp", href: "/ask" },
   { label: "Venue Finder", href: "/venue-finder" },
   { label: "Guides", href: "/advice" },
-  { label: "Help cards", href: "/help-cards" },
-  { label: "Planning tools", href: "/ai-toolkit" },
+  { label: "Help Cards", href: "/help-cards" },
+  { label: "Tools", href: "/ai-toolkit" },
 ];
 
 export const FOOTER_ACCESS_STAMP_LINKS: NavLink[] = [
@@ -94,7 +123,10 @@ export function resourcesNavActive(path: string): boolean {
 export function resourceNavItemActive(path: string, href: string): boolean {
   if (!navLinkActive(path, href)) return false;
   return !RESOURCE_NAV_ITEMS.some(
-    (item) => item.href !== href && item.href.length > href.length && navLinkActive(path, item.href),
+    (item) =>
+      item.href !== href &&
+      item.href.length > href.length &&
+      navLinkActive(path, item.href),
   );
 }
 

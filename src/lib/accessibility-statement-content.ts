@@ -29,19 +29,23 @@ export const ACCESSIBILITY_TESTING = {
   manual: {
     keyboard: {
       date: "18 June 2026",
-      scope: "Global header, mobile menu, homepage CTAs, venue finder filters, contact form, help card actions",
+      scope:
+        "Global header, mobile menu, homepage CTAs, venue finder filters, contact form, help card actions",
     },
     screenReader: {
       date: "18 June 2026",
-      tools: ["VoiceOver on macOS Safari", "Spot checks on Chrome with NVDA guidance"],
-      scope: "Landmarks, form labels, results announcements, demo listing banners",
+      tools: [
+        "VoiceOver on macOS Safari",
+        "Spot checks on Chrome with NVDA guidance",
+      ],
+      scope:
+        "Landmarks, form labels, results announcements, demo listing banners",
     },
   },
 } as const;
 
 export const ACCESSIBILITY_LIMITATIONS = [
   "All current venue listings are demo examples — confidence labels and unknowns are shown, but they must not be treated as live audited data.",
-  "Save venue controls are not available — listings are for planning and exploration only.",
   "Third-party map tiles on the venue finder may not meet the same contrast and keyboard standards as the rest of the site.",
   "Some AI toolkit tools send text to OpenAI for drafting — avoid entering unnecessary personal information.",
   "We are still expanding measured venue data — not every future listing will have full doorway measurements at launch.",

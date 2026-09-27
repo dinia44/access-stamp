@@ -26,8 +26,9 @@ async function notifyWebhook(payload: VenueSubmissionPayload) {
   const url = process.env.SUBMISSION_WEBHOOK_URL?.trim();
   if (!url) return;
 
-  await fetch(url, {
+  const response = await fetch(url, {
     method: "POST",
+    signal: AbortSignal.timeout(15000),
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       ...payload,
@@ -35,6 +36,7 @@ async function notifyWebhook(payload: VenueSubmissionPayload) {
       receivedAt: new Date().toISOString(),
     }),
   });
+  if (!response.ok) throw new Error("Submission delivery failed");
 }
 
 export async function POST(req: Request) {
@@ -56,7 +58,8 @@ export async function POST(req: Request) {
     name: body.name.trim(),
     location: body.location.trim(),
     type: body.type.trim(),
-    features: typeof body.features === "string" ? body.features.trim() : undefined,
+    features:
+      typeof body.features === "string" ? body.features.trim() : undefined,
     notes: typeof body.notes === "string" ? body.notes.trim() : undefined,
     contactEmail:
       typeof body.contactEmail === "string" && body.contactEmail.includes("@")
@@ -64,14 +67,24 @@ export async function POST(req: Request) {
         : undefined,
   };
 
-  console.info("[venue-submission]", JSON.stringify(payload));
+  if (!process.env.SUBMISSION_WEBHOOK_URL?.trim()) {
+    return NextResponse.json(
+      {
+        error:
+          "Online delivery is unavailable. Please email hello@accessstamp.co.uk. Your details remain in the form.",
+      },
+      { status: 503 },
+    );
+  }
 
   try {
     await notifyWebhook(payload);
   } catch (err) {
     console.error("[venue-submission] webhook failed", err);
     return NextResponse.json(
-      { error: "We could not deliver your submission. Please try again later." },
+      {
+        error: "We could not deliver your submission. Please try again later.",
+      },
       { status: 502 },
     );
   }

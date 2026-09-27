@@ -21,7 +21,9 @@ export function GuideDownloadCard({
     <>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-heading">{title}</p>
-        {description ? <p className="mt-1 text-xs leading-5 text-muted">{description}</p> : null}
+        {description ? (
+          <p className="mt-1 text-xs leading-5 text-muted">{description}</p>
+        ) : null}
         <span className="mt-2 inline-flex rounded-md bg-[#FFF3E8] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted">
           {format}
         </span>
@@ -53,16 +55,5 @@ export function GuideDownloadCard({
     );
   }
 
-  return (
-    <button
-      type="button"
-      className={cn(
-        baseClass,
-        "w-full text-left focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[#F04A16] focus-visible:outline-offset-2",
-      )}
-      aria-label={`${buttonLabel}: ${title} (${format})`}
-    >
-      {inner}
-    </button>
-  );
+  return null;
 }

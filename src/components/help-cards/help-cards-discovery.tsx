@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useCallback, useEffect, useId, useMemo, useState, type FormEvent } from "react";
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+  type FormEvent,
+} from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { HelpCardHubPreview } from "@/components/help-cards/help-card-hub-preview";
 import { getPublishedHelpCards } from "@/data/helpCards";
@@ -16,7 +24,10 @@ import { cn } from "@/lib/utils";
 
 const CARDS = getPublishedHelpCards();
 
-const REGIONS = ["All regions", ...Array.from(new Set(CARDS.map((card) => card.region)))];
+const REGIONS = [
+  "All regions",
+  ...Array.from(new Set(CARDS.map((card) => card.region))),
+];
 
 function chipClass(active: boolean) {
   return active
@@ -31,7 +42,11 @@ function haystack(card: HelpCard): string {
     card.category,
     card.region,
     ...card.variants.flatMap((variant) =>
-      variant.rules.flatMap((rule) => [rule.headline, rule.plainEnglish, rule.applicability]),
+      variant.rules.flatMap((rule) => [
+        rule.headline,
+        rule.plainEnglish,
+        rule.applicability,
+      ]),
     ),
   ]
     .join(" ")
@@ -57,7 +72,11 @@ function HelpCardsDiscoveryInner() {
   });
 
   const syncUrl = useCallback(
-    (next: { q?: string; category?: HelpCardTaskCategoryId; region?: string }) => {
+    (next: {
+      q?: string;
+      category?: HelpCardTaskCategoryId;
+      region?: string;
+    }) => {
       const params = new URLSearchParams(searchParams.toString());
       const nextQuery = next.q ?? query;
       const nextCategory = next.category ?? category;
@@ -65,9 +84,11 @@ function HelpCardsDiscoveryInner() {
 
       if (nextQuery.trim()) params.set("q", nextQuery.trim());
       else params.delete("q");
-      if (nextCategory && nextCategory !== "all") params.set("category", nextCategory);
+      if (nextCategory && nextCategory !== "all")
+        params.set("category", nextCategory);
       else params.delete("category");
-      if (nextRegion && nextRegion !== "All regions") params.set("region", nextRegion);
+      if (nextRegion && nextRegion !== "All regions")
+        params.set("region", nextRegion);
       else params.delete("region");
 
       const qs = params.toString();
@@ -77,6 +98,8 @@ function HelpCardsDiscoveryInner() {
   );
 
   useEffect(() => {
+    // The URL is the external source of truth after browser back/forward navigation.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuery(searchParams.get("q") ?? "");
     const cat = searchParams.get("category");
     setCategory(isHelpCardTaskCategoryId(cat) ? cat : "all");
@@ -94,7 +117,9 @@ function HelpCardsDiscoveryInner() {
     });
   }, [category, query, region]);
 
-  const filtersActive = Boolean(query.trim() || category !== "all" || region !== "All regions");
+  const filtersActive = Boolean(
+    query.trim() || category !== "all" || region !== "All regions",
+  );
 
   function onSubmit(event: FormEvent) {
     event.preventDefault();
@@ -112,7 +137,10 @@ function HelpCardsDiscoveryInner() {
     <div className="space-y-8">
       <section aria-labelledby="find-help-card-heading" className="space-y-5">
         <div>
-          <h2 id="find-help-card-heading" className="text-xl font-semibold text-[var(--color-ink)]">
+          <h2
+            id="find-help-card-heading"
+            className="text-xl font-semibold text-[var(--color-ink)]"
+          >
             What do you need to know about?
           </h2>
           <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
@@ -122,7 +150,10 @@ function HelpCardsDiscoveryInner() {
 
         <form onSubmit={onSubmit} className="space-y-4" role="search">
           <div>
-            <label htmlFor="help-card-search" className="block text-sm font-semibold text-[var(--color-ink)]">
+            <label
+              htmlFor="help-card-search"
+              className="block text-sm font-semibold text-[var(--color-ink)]"
+            >
               Search situations
             </label>
             <div className="mt-2 flex flex-col gap-2 sm:flex-row">
@@ -146,10 +177,17 @@ function HelpCardsDiscoveryInner() {
           </div>
 
           <fieldset>
-            <legend id={categoryGroupId} className="text-sm font-semibold text-[var(--color-ink)]">
+            <legend
+              id={categoryGroupId}
+              className="text-sm font-semibold text-[var(--color-ink)]"
+            >
               Category
             </legend>
-            <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-labelledby={categoryGroupId}>
+            <div
+              className="mt-3 flex flex-wrap gap-2"
+              role="radiogroup"
+              aria-labelledby={categoryGroupId}
+            >
               {HELP_CARD_TASK_CATEGORIES.map((option) => {
                 const active = category === option.id;
                 return (
@@ -175,7 +213,11 @@ function HelpCardsDiscoveryInner() {
           </fieldset>
 
           <div>
-            <label id={regionLabelId} htmlFor="help-card-region" className="block text-sm font-semibold text-[var(--color-ink)]">
+            <label
+              id={regionLabelId}
+              htmlFor="help-card-region"
+              className="block text-sm font-semibold text-[var(--color-ink)]"
+            >
               Region
             </label>
             <select
@@ -197,9 +239,15 @@ function HelpCardsDiscoveryInner() {
         </form>
 
         <div className="flex flex-wrap items-center gap-3">
-          <p id={statusId} className="text-sm text-[var(--color-text-muted)]" aria-live="polite">
+          <p
+            id={statusId}
+            className="text-sm text-[var(--color-text-muted)]"
+            aria-live="polite"
+          >
             Showing {results.length} card{results.length === 1 ? "" : "s"}
-            {category !== "all" ? ` in ${helpCardTaskCategoryLabel(category)}` : ""}
+            {category !== "all"
+              ? ` in ${helpCardTaskCategoryLabel(category)}`
+              : ""}
             {region !== "All regions" ? ` for ${region}` : ""}
             {query.trim() ? ` matching “${query.trim()}”` : ""}.
           </p>
@@ -217,9 +265,12 @@ function HelpCardsDiscoveryInner() {
 
       {results.length === 0 ? (
         <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <h2 className="text-lg font-semibold text-[var(--color-ink)]">No matching help cards</h2>
+          <h2 className="text-lg font-semibold text-[var(--color-ink)]">
+            No matching help cards
+          </h2>
           <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
-            Try another search, clear filters, or browse guides and official sources for more detail.
+            Try another search, clear filters, or browse guides and official
+            sources for more detail.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <button
@@ -260,7 +311,20 @@ export function HelpCardsDiscovery() {
     <Suspense
       fallback={
         <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 text-sm text-[var(--color-text-muted)]">
-          Loading help card search…
+          <h2 className="text-xl font-semibold">Browse Help Cards</h2>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {CARDS.map((card) => (
+              <li key={card.slug}>
+                <Link
+                  className="inline-flex min-h-11 items-center underline"
+                  href={`/help-cards/${card.slug}`}
+                >
+                  {card.title}
+                </Link>
+                <p>{card.summary}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       }
     >

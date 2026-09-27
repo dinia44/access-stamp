@@ -9,6 +9,7 @@ export async function callOpenAiJson<T>(options: {
   system: string;
   user: string;
   temperature?: number;
+  maxTokens?: number;
 }): Promise<T | null> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return null;
@@ -18,12 +19,14 @@ export async function callOpenAiJson<T>(options: {
   try {
     const res = await fetch(OPENAI_URL, {
       method: "POST",
+      signal: AbortSignal.timeout(30000),
       headers: {
         "content-type": "application/json",
         authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model,
+        ...(options.maxTokens ? { max_tokens: options.maxTokens } : {}),
         temperature: options.temperature ?? 0.35,
         response_format: { type: "json_object" },
         messages: [

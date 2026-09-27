@@ -9,11 +9,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getSiteUrl();
   const now = new Date();
 
-  const [articles, posts] = await Promise.all([getAdviceArticles(), getBlogPosts()]);
+  const [articles, posts] = await Promise.all([
+    getAdviceArticles(),
+    getBlogPosts(),
+  ]);
 
   const staticRoutes = [
     "",
     "/venue-finder",
+    "/ask",
+    "/resources",
     "/submit-venue",
     "/for-venues",
     "/accessibility",
@@ -72,5 +77,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: now,
   }));
 
-  return [...staticRoutes, ...blogRoutes, ...adviceRoutes, ...venueRoutes, ...helpCardRoutes];
+  return [
+    ...staticRoutes,
+    ...blogRoutes,
+    ...adviceRoutes,
+    ...venueRoutes,
+    ...helpCardRoutes,
+  ];
 }
