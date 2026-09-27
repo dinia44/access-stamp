@@ -17,16 +17,6 @@ export function PracticalGuideExperience({
   resources?: GuideResourcePack | null;
 }) {
   const title = workflow.displayTitle ?? article.title;
-  const sections = [
-    ["guide-steps", "Step-by-step"],
-    ...(workflow.evidenceChecklist?.length ? [["guide-evidence", "What to prepare"]] : []),
-    ...(workflow.copyableTemplates?.length || workflow.templates.some((template) => template.href || template.body) || resources
-      ? [["guide-templates", "Templates"]]
-      : []),
-    ...(workflow.escalation?.length || workflow.commonMistakes?.length ? [["guide-escalation", "If things go wrong"]] : []),
-    ...(workflow.faqs?.length ? [["guide-faq", "Questions"]] : []),
-    ["guide-sources", "Official sources"],
-  ];
   const readText = [
     title,
     workflow.subtitle,
@@ -49,6 +39,17 @@ export function PracticalGuideExperience({
       ? workflow.firstThreeActions
       : workflow.steps.slice(0, 3).map((step) => step.content.checklist[0] ?? step.title)
   ).slice(0, 3);
+  const sections = [
+    ...(actions.length ? [["guide-start-here", "Start here"]] : []),
+    ["guide-steps", "Step-by-step"],
+    ...(workflow.evidenceChecklist?.length ? [["guide-evidence", "What to prepare"]] : []),
+    ...(workflow.copyableTemplates?.length || workflow.templates.some((template) => template.href || template.body) || resources
+      ? [["guide-templates", "Templates"]]
+      : []),
+    ...(workflow.escalation?.length || workflow.commonMistakes?.length ? [["guide-escalation", "If things go wrong"]] : []),
+    ...(workflow.faqs?.length ? [["guide-faq", "Questions"]] : []),
+    ["guide-sources", "Official sources"],
+  ];
 
   return (
     <article className="mx-auto max-w-3xl space-y-8 px-4 py-8 sm:px-6 sm:py-12">
@@ -141,9 +142,7 @@ export function PracticalGuideExperience({
       {workflow.evidenceChecklist?.length ? (
         <section id="guide-evidence" className="scroll-mt-44 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-trust)]">Preparation</p>
-          <h2 id="evidence-heading" className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">
-            What to prepare
-          </h2>
+          <h2 id="evidence-heading" className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">What to prepare</h2>
           <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">Only gather what genuinely helps with this process; you do not need paperwork for the sake of it.</p>
           <div className="mt-4">
             <InteractiveChecklist items={workflow.evidenceChecklist} labelledBy="evidence-heading" />
@@ -223,10 +222,7 @@ export function PracticalGuideExperience({
           <h2 className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">Make this guide relevant to you</h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--color-text-muted)]">Describe your situation and Access Stamp will pull out the parts that matter, suggested next steps and useful wording.</p>
         </div>
-        <Link
-          className="mt-4 inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand)] px-5 text-sm font-semibold text-white hover:bg-[var(--color-brand-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)] sm:mt-0"
-          href={`/ask?guide=${encodeURIComponent(article.slug)}`}
-        >
+        <Link className="mt-4 inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand)] px-5 text-sm font-semibold text-white hover:bg-[var(--color-brand-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)] sm:mt-0" href={`/ask?guide=${encodeURIComponent(article.slug)}`}>
           Make this relevant to me →
         </Link>
       </section>
