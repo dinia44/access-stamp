@@ -11,7 +11,7 @@ for (const width of [1280, 390]) {
     await expect(dialog.getByRole("button", { name: "Close filters" })).toBeFocused();
     for (let i = 0; i < 16; i++) {
       await page.keyboard.press("Tab");
-      await expect(dialog.locator(":focus")).toHaveCount(1);
+      await expect.poll(() => dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true);
     }
     await page.keyboard.press("Escape");
     await expect(dialog).not.toBeVisible();
