@@ -1,5 +1,5 @@
 import type { Venue } from "@/lib/mock-data";
-import { computeAccessScore } from "@/lib/venue-access-score";
+import { toVerificationLabel, toVerificationType } from "@/lib/venue-verification";
 
 export type VenueCardTheme = {
   id: "primary" | "green" | "purple" | "orange";
@@ -55,23 +55,9 @@ export type VenueFeatureChip = {
 };
 
 export function getVenueBadge(venue: Venue, index: number): { label: string; emoji: string } {
-  const score = computeAccessScore(venue);
-  if (venue.verificationType === "onsite_audited" && venue.confidence === "High") {
-    return { label: "Strong evidence", emoji: "★" };
-  }
-  if (venue.verificationType === "demo" || venue.verification === "Demo listing") {
-    return { label: "Demo listing", emoji: "📋" };
-  }
-  if (index === 0 && score !== null && score >= 88) {
-    return { label: "Top pick", emoji: "🔥" };
-  }
-  if (venue.verification === "Not yet verified") {
-    return { label: "New report", emoji: "📋" };
-  }
-  if (venue.features["Quiet environment"] === "yes" || venue.tags.some((t) => /family|quiet/i.test(t))) {
-    return { label: "Family friendly", emoji: "★" };
-  }
-  return { label: "Access checked", emoji: "✓" };
+  void index;
+  const type = toVerificationType(venue.verificationType ?? venue.verification);
+  return { label: toVerificationLabel(type), emoji: type === "onsite_audited" ? "✓" : "📋" };
 }
 
 export function getVenueFeatureChips(venue: Venue): VenueFeatureChip[] {

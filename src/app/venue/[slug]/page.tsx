@@ -16,11 +16,9 @@ import { VenueDetailActions } from "@/components/venue-detail-actions";
 import { VenuePhotoGallery } from "@/components/venue-photo-gallery";
 import { VenueVisitPlanActions } from "@/components/venue-visit-plan-actions";
 import { FeatureChip, getVenueFeatureChipItems } from "@/components/venue/feature-chip";
-import { ScoreDisplay } from "@/components/venue/score-display";
 import { WillItFitCard } from "@/components/venue/will-it-fit-card";
 import { VenueFitPlannerInline } from "@/components/venue/venue-fit-planner-inline";
 import { VenueDetailSectionNav } from "@/components/venue/venue-detail-section-nav";
-import { computeAccessScore } from "@/lib/venue-access-score";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
 import { buildBreadcrumbJsonLd, buildVenueLocalBusinessJsonLd } from "@/lib/seo/venue-jsonld";
 import { DemoBanner } from "@/components/trust/DemoBanner";
@@ -80,7 +78,7 @@ const VENUE_COPY: Record<
 > = {
   "harbour-kitchen-liverpool": {
     about:
-      "Harbour Kitchen is one of the stronger central Liverpool options for a practical wheelchair-friendly meal stop, especially for mixed groups. The key positives are step-free access, wider internal routes, and a ground-floor accessible toilet.",
+      "This example restaurant report demonstrates how entrance widths, internal routes and toilet information can be presented together.",
     beforeYouGo: [
       "Ask staff to reserve a route-side table if you use a larger powered chair or travel with a PA.",
       "Check where the nearest Blue Badge spaces or drop-off points are before leaving.",
@@ -138,7 +136,7 @@ export async function generateMetadata({
   const title = `${v.name} accessibility guide`;
   return buildPageMetadata({
     title,
-    description: v.summary,
+    description: isDemoVenue(v) ? `Example Access Stamp venue report for ${v.name}. Demonstration data, not a travel recommendation.` : v.summary,
     path: `/venue/${v.slug}`,
     image: leadImage,
     type: "article",
@@ -164,10 +162,12 @@ export default async function VenueDetailPage({
   const unavailableFeatures = Object.entries(v.features)
     .filter(([, value]) => value === "no")
     .map(([feature]) => feature);
-  const custom = VENUE_COPY[v.slug];
   const isDemo = isDemoVenue(v);
+  const custom = isDemo ? undefined : VENUE_COPY[v.slug];
+  const summary = isDemo
+    ? "Example Access Stamp venue report. Measurements and features demonstrate the product and must not be used to plan a visit."
+    : v.summary;
   const canonical = getVenueBySlug(v.slug);
-  const accessScore = computeAccessScore(v);
   const featureChips = getVenueFeatureChipItems(v);
   const hasPhotos = Boolean(v.photos?.length);
   const beforeYouGo = custom?.beforeYouGo ?? [
@@ -228,7 +228,7 @@ export default async function VenueDetailPage({
                       </div>
                     </div>
                   </div>
-                  <p className="max-w-[65ch] text-base leading-7 text-text">{v.summary}</p>
+                  <p className="max-w-[65ch] text-base leading-7 text-text">{summary}</p>
                   {featureChips.length > 0 ? (
                     <ul className="flex flex-wrap gap-2 pt-1" aria-label="Key access features">
                       {featureChips.map((chip) => (
@@ -240,7 +240,6 @@ export default async function VenueDetailPage({
                   ) : null}
                 </div>
                 <div className="flex flex-col items-start gap-4 lg:items-end">
-                  <ScoreDisplay score={accessScore} showRing size="md" />
                   <VenueDetailActions slug={v.slug} venueName={v.name} />
                 </div>
               </div>
@@ -323,7 +322,7 @@ export default async function VenueDetailPage({
             <VenueFitPlannerInline
               venueName={v.name}
               location={v.location}
-              venueSummary={v.summary}
+              venueSummary={summary}
               confirmedFeatures={confirmedFeatures}
               unknownFeatureCount={unknownCount}
             />
@@ -357,7 +356,7 @@ export default async function VenueDetailPage({
                 <VenueVisitPlanActions
                   venueName={v.name}
                   location={v.location}
-                  summary={v.summary}
+                  summary={summary}
                   tags={v.tags}
                   beforeYouGo={beforeYouGo}
                 />
@@ -397,7 +396,7 @@ export default async function VenueDetailPage({
 
           {/* 9. Methodology */}
           <AccessCheckedMethodology
-            verification={v.verification}
+            verification={v.verificationType}
             confidence={v.confidence}
             lastUpdated={v.lastUpdated}
           />

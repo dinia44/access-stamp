@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getHeroSampleVenue, getScoreBand } from "@/data/venues";
-import { ScoreDisplay } from "@/components/venue/score-display";
+import { getHeroSampleVenue } from "@/data/venues";
 import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
 import { heroCollageImageUrl } from "@/lib/cloudinary-url";
 
@@ -26,7 +25,6 @@ function CheckIcon({ className }: { className?: string }) {
 
 export function HomeHeroImageBand() {
   const venue = getHeroSampleVenue();
-  const band = getScoreBand(venue.accessScore);
   const heroImage = venue.photos[0]?.src ?? CLOUDINARY_MEDIA.homepageHeroBackdrop;
   const heroAlt =
     venue.photos[0]?.alt ?? `${venue.name} exterior showing step-free approach`;
@@ -55,7 +53,6 @@ export function HomeHeroImageBand() {
 
           <article className="relative z-10 mx-auto mt-6 w-full max-w-md rounded-[24px] border border-[#EFE5DA] bg-white p-6 shadow-[0_20px_48px_-24px_rgba(122,80,48,0.2)] sm:p-7 lg:absolute lg:-right-4 lg:-top-10 lg:mt-0 lg:w-[min(100%,380px)] xl:-right-8">
             <div className="flex items-start gap-4">
-              <ScoreDisplay score={venue.accessScore} showRing size="sm" />
               <div className="min-w-0 flex-1 pt-1">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C8430F]">
                   Access report
@@ -86,7 +83,7 @@ export function HomeHeroImageBand() {
             </ul>
 
             <p className="mt-4 text-xs text-[#76808F]">
-              {venue.verification} · {venue.confidence} confidence · {band}
+              Example report — demonstration data
             </p>
 
             <Link

@@ -8,7 +8,7 @@ import { buildPageMetadata } from "@/lib/seo/page-metadata";
 export const metadata: Metadata = buildPageMetadata({
   title: "Access Stamp methodology",
   description:
-    "How Access Stamp collects venue access information, applies verification labels, scores features, handles unknowns, and manages corrections and appeals.",
+    "How Access Stamp collects venue access information, applies verification labels, explains evidence, handles unknowns, and manages corrections and appeals.",
   path: "/methodology",
 });
 
@@ -22,7 +22,7 @@ export default function MethodologyPage() {
             Access Stamp methodology
           </h1>
           <p className="text-base leading-7 text-[#4A5263] sm:text-lg">
-            How we record venue access information, label confidence, score features, treat unknowns, and handle
+            How we record venue access information, label sources, show unknowns, and handle
             corrections. Version {METHODOLOGY_VERSION} — reviewed {METHODOLOGY_REVIEWED}.
           </p>
           <nav aria-label="Methodology sections" className="rounded-2xl border border-[#EFE5DA] bg-white p-4 text-sm">

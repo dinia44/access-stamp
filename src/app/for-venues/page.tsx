@@ -258,8 +258,7 @@ export default function ForVenuesPage() {
             Venue review tiers
           </h2>
           <p className="mt-3 max-w-2xl text-base leading-7 text-[#4A5263]">
-            Pilot programme pricing — request details for your venue size and scope. These are access reviews and reports,
-            not formal certification until governance is published.
+            Pilot programme pricing — request details for your venue size and scope. Reviews document access features, measurements and evidence to help visitors make their own decisions.
           </p>
 
           <ul className="mt-10 grid gap-6 lg:grid-cols-3">

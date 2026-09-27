@@ -34,7 +34,6 @@ export const SAMPLE_VENUE_CARDS: SampleVenueCard[] = [
     categoryLabel: "Hotel",
     imageTheme: "hotel",
     verification: "Demo listing",
-    secondaryVerification: "Desk reviewed",
     features: ["Step-free entrance", "Accessible toilet", "Lift access"],
     description: "Step-free entrance and lift to all floors. Accessible bedroom available.",
   },

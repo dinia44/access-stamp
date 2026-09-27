@@ -6,7 +6,7 @@ import { formatDistanceKm, haversineDistanceKm } from "@/lib/venue-geography";
 import { themeFromVenueType } from "@/lib/venue-finder-category";
 import { getThemeFallbackPhoto } from "@/lib/venue-finder-images";
 
-/** Deterministic access score — returns null for demo/unverified listings. */
+/** Legacy score entry point — returns null; suitability is personal. */
 export function computeAccessScore(venue: Venue): number | null {
   return getDisplayAccessScore(venue);
 }

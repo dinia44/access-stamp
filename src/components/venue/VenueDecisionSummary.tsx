@@ -2,7 +2,7 @@ import { ConfidenceBadge, VerificationBadge } from "@/components/verification-ba
 import type { Venue } from "@/lib/mock-data";
 import { getVenueBySlug } from "@/data/venues";
 import { isDemoVenue } from "@/lib/venue-card";
-import { toVerificationType } from "@/lib/venue-verification";
+import { getMeasurementLabel, toVerificationType } from "@/lib/venue-verification";
 
 type Props = {
   venue: Venue;
@@ -86,16 +86,16 @@ export function VenueDecisionSummary({
     >
       <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold ${copy.tone}`}>
         <StatusGlyph outcome={outcome} />
-        <span>{copy.iconLabel}</span>
+        <span>{demo ? "Demo" : copy.iconLabel}</span>
       </div>
 
       <h2 id="decision-summary-heading" className="mt-3 text-xl font-semibold tracking-[-0.02em] text-[var(--color-ink)]">
-        {copy.title}
+        {demo ? "Example venue report" : copy.title}
       </h2>
 
       <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
         {demo
-          ? "This is a demonstration listing. Treat measurements and features as examples while we grow audited coverage."
+          ? "This is a demonstration listing. Treat measurements and features as examples only; they are not verified venue information."
           : "This outcome is based on current evidence only. Access can change — confirm important details before you travel."}
       </p>
 
@@ -107,13 +107,13 @@ export function VenueDecisionSummary({
           </dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Last checked</dt>
+          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">{demo ? "Example updated" : "Last checked"}</dt>
           <dd className="mt-1.5 text-sm font-semibold text-[var(--color-ink)]">{venue.lastUpdated}</dd>
         </div>
         <div>
           <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Confidence</dt>
           <dd className="mt-1.5">
-            <ConfidenceBadge level={venue.confidence} />
+            {demo ? <span className="text-sm">Example data — not assessed</span> : <ConfidenceBadge level={venue.confidence} />}
           </dd>
         </div>
         <div>
@@ -128,7 +128,7 @@ export function VenueDecisionSummary({
         {measurements.length > 0 ? (
           <div className="mt-4 rounded-[var(--radius-md)] border border-dashed border-[var(--color-border-mid)] bg-[var(--color-surface-subtle)] px-3 py-2">
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-brand)]">
-              Critical measurements
+              {getMeasurementLabel(toVerificationType(venue.verificationType ?? venue.verification))}
             </p>
             <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--color-ink)]">
               {measurements.map((m) => (
@@ -138,7 +138,7 @@ export function VenueDecisionSummary({
           </div>
         ) : (
           <p className="mt-4 text-sm text-[var(--color-text-muted)]">
-            No audited doorway or toilet measurements published for this listing yet.
+            No doorway or toilet measurements published for this listing yet.
           </p>
         )}
       </div>

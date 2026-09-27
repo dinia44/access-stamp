@@ -9,13 +9,13 @@ export type MethodologySection = {
 };
 
 export const METHODOLOGY_VERSION = SCORE_METHODOLOGY_VERSION;
-export const METHODOLOGY_REVIEWED = "June 2026";
+export const METHODOLOGY_REVIEWED = "September 2026";
 
 export const METHODOLOGY_SECTIONS: MethodologySection[] = [
   {
     id: "purpose-scope",
     title: "Purpose and scope",
-    body: "Access Stamp records practical venue access information for disabled people, families, carers, and venue teams in the United Kingdom. This methodology explains how information is collected, labelled, scored, reviewed, corrected, and expired.",
+    body: "Access Stamp records practical venue access information for disabled people, families, carers, and venue teams in the United Kingdom. This methodology explains how information is collected, labelled, reviewed, corrected, and expired.",
     bullets: [
       "Physical venue access — entrances, routes, toilets, parking, seating, sensory factors, and staff support.",
       "Confidence and verification — what we know, what we do not know, and how strong the evidence is.",
@@ -41,18 +41,16 @@ export const METHODOLOGY_SECTIONS: MethodologySection[] = [
     title: "Verification levels",
     body: "Every listing carries exactly one public verification label.",
     bullets: [
-      "Demo listing — illustrates how a report could work; not live venue data.",
-      "Not yet verified — early information needing confirmation.",
-      "Community reported — shared by visitors or staff; confirm before travel.",
-      "Venue submitted — provided by the venue and checked against our checklist.",
-      "Desk reviewed — reviewed remotely with submitted or public evidence.",
-      "On-site audited — measured on site with full audit record (see below).",
+      "Demo — example data, not a recommendation or live venue information.",
+      "Submitted / not independently verified — supplied information that still needs independent checking.",
+      "Reviewed remotely — reviewed using available evidence without an on-site visit.",
+      "On-site verified — measured on site with a complete review record (see below).",
     ],
   },
   {
     id: "onsite-audited",
-    title: "On-site audited standard",
-    body: "We only use the on-site audited label when all of the following exist in our audit record:",
+    title: "On-site verified standard",
+    body: "We only use the on-site verified label when all of the following exist in our audit record:",
     bullets: [
       "Audit date and auditor identity",
       "Audit report ID and report version",
@@ -85,28 +83,23 @@ export const METHODOLOGY_SECTIONS: MethodologySection[] = [
   },
   {
     id: "scoring-categories",
-    title: "Scoring categories",
-    body: "Access scores are calculated in application code — not by AI. Scores are hidden for demo listings and where evidence is below the minimum threshold.",
+    title: "No single access score",
+    body: "A universal score cannot tell you whether a venue meets your needs. We show evidence and unknowns so you can compare the details that matter to you.",
     bullets: [
-      "Entrance & approach (25%)",
-      "Inside the venue (25%)",
-      "Toilets (25%)",
-      "Parking & support (25%)",
+      "Evidence completeness — how much useful information is available, including known limitations.",
+      "Verification strength — whether the source is submitted, reviewed remotely, or checked on site.",
+      "Evidence recency — when the information was checked or updated.",
+      "Personal fit — compare the available details with your stated access requirements.",
     ],
     note: `Methodology version ${METHODOLOGY_VERSION}.`,
   },
   {
-    id: "category-weightings",
-    title: "Category weightings",
-    body: "Each category is weighted equally at 25% in the current model. Category scores reflect confirmed features within that group.",
-  },
-  {
     id: "unknown-treatment",
     title: "Unknown-information treatment",
-    body: "Unknown features reduce confidence and may reduce the published score through an unknown penalty. We show unknowns explicitly rather than implying everything is fine.",
+    body: "Unknown means there is not enough evidence; it does not mean a feature is unavailable. We show unknowns explicitly so you know what to check.",
     bullets: [
       "Unknown features are listed as known unknowns on venue pages.",
-      "Demo listings do not display authoritative scores.",
+      "Demo listings use example data and cannot establish personal suitability.",
       "Low evidence coverage reduces confidence labels.",
     ],
   },
@@ -158,8 +151,8 @@ export const METHODOLOGY_SECTIONS: MethodologySection[] = [
   {
     id: "version-history",
     title: "Methodology version history",
-    body: "We publish methodology version changes when scoring or verification rules change materially.",
-    bullets: [`${METHODOLOGY_VERSION} — June 2026: verification labels, deterministic scoring, demo listing rules.`],
+    body: "We publish methodology version changes when evidence or verification rules change materially.",
+    bullets: [`${METHODOLOGY_VERSION} — September 2026: four public verification labels, source-aware measurement wording, and removal of universal access scores.`],
   },
   {
     id: "limitations",

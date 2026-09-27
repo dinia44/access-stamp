@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { Venue } from "@/lib/mock-data";
 import { assessChairAgainstVenue, DOOR_CLEARANCE_CM } from "@/lib/venue-fit";
+import { getMeasurementLabel, toVerificationType } from "@/lib/venue-verification";
 import { Card } from "@/components/ui";
 
 function InlineBold({ text }: { text: string }) {
@@ -29,7 +30,7 @@ export function WillItFitCard({ venue }: { venue: Venue }) {
 
   const widthNum = parseFloat(widthCm.replace(",", "."));
   const assessment = useMemo(() => {
-    if (!Number.isFinite(widthNum) || widthNum <= 0 || widthNum > 200) return null;
+    if (!Number.isFinite(widthNum) || widthNum < 40 || widthNum > 130) return null;
     return assessChairAgainstVenue({ overallWidthCm: widthNum }, venue);
   }, [widthNum, venue]);
 
@@ -38,7 +39,7 @@ export function WillItFitCard({ venue }: { venue: Venue }) {
       <h2 className="text-xl font-bold tracking-[-0.02em] text-heading">Will it fit?</h2>
       <p className="mt-2 text-sm text-muted">
         Your chair&apos;s <strong className="text-heading">widest outer width</strong> (cm), compared to{" "}
-        <strong className="text-heading">audited measurements</strong> on this listing where we have them — not a guarantee on the day
+        <strong className="text-heading">{getMeasurementLabel(toVerificationType(venue.verificationType ?? venue.verification))}</strong> on this listing where we have them — not a guarantee on the day
         (approach angle, temporary clutter, alternative entrances).
       </p>
       <p className="mt-2 text-xs text-muted">

@@ -7,26 +7,42 @@ export type VerificationType =
   | "desk_reviewed"
   | "onsite_audited";
 
-/** Public-facing verification label shown on cards and venue pages. */
+/** Public-facing labels; source provenance remains in VerificationType. */
 export type VerificationLabel =
-  | "Demo listing"
-  | "Not yet verified"
-  | "Community reported"
-  | "Venue submitted"
-  | "Desk reviewed"
-  | "On-site audited";
+  | "Demo"
+  | "Submitted / not independently verified"
+  | "Reviewed remotely"
+  | "On-site verified";
 
 export const VERIFICATION_PUBLIC_LABELS: Record<VerificationType, VerificationLabel> = {
-  demo: "Demo listing",
-  unverified: "Not yet verified",
-  community_reported: "Community reported",
-  venue_submitted: "Venue submitted",
-  desk_reviewed: "Desk reviewed",
-  onsite_audited: "On-site audited",
+  demo: "Demo",
+  unverified: "Submitted / not independently verified",
+  community_reported: "Submitted / not independently verified",
+  venue_submitted: "Submitted / not independently verified",
+  desk_reviewed: "Reviewed remotely",
+  onsite_audited: "On-site verified",
 };
+
+/** Never infer an on-site measurement from the presence of a number alone. */
+export const MEASUREMENT_LABELS: Record<VerificationType, string> = {
+  demo: "Example measurements",
+  unverified: "Unverified measurements",
+  community_reported: "Community-reported measurements",
+  venue_submitted: "Venue-supplied measurements",
+  desk_reviewed: "Reviewed measurements",
+  onsite_audited: "Measured by Access Stamp",
+};
+
+export function getMeasurementLabel(type: VerificationType): string {
+  return MEASUREMENT_LABELS[type];
+}
 
 /** Legacy seed values mapped to the new verification model. */
 const LEGACY_VERIFICATION_MAP: Record<string, VerificationType> = {
+  "Demo": "demo",
+  "Submitted / not independently verified": "unverified",
+  "Reviewed remotely": "desk_reviewed",
+  "On-site verified": "onsite_audited",
   "Access Stamp checked": "demo",
   "Access Stamp audited": "demo",
   "Community reported": "community_reported",
@@ -39,10 +55,10 @@ const LEGACY_VERIFICATION_MAP: Record<string, VerificationType> = {
 
 export function toVerificationType(value: string | undefined): VerificationType {
   if (!value) return "unverified";
-  if (value in VERIFICATION_PUBLIC_LABELS) {
+  if (Object.hasOwn(VERIFICATION_PUBLIC_LABELS, value)) {
     return value as VerificationType;
   }
-  return LEGACY_VERIFICATION_MAP[value] ?? "unverified";
+  return Object.hasOwn(LEGACY_VERIFICATION_MAP, value) ? LEGACY_VERIFICATION_MAP[value] : "unverified";
 }
 
 export function toVerificationLabel(type: VerificationType): VerificationLabel {
@@ -58,7 +74,9 @@ export function claimsOnsiteAudit(type: VerificationType): boolean {
 }
 
 export function shouldShowAccessScore(type: VerificationType): boolean {
-  return type !== "demo" && type !== "unverified";
+  // No universal access score: suitability depends on the individual’s needs.
+  void type;
+  return false;
 }
 
 /** Minimum audit record fields required before claiming on-site audit. */

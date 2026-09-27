@@ -7,12 +7,7 @@ export function countVenueUnknowns(venue: Venue): number {
 }
 
 export function mapVenueVerificationStatus(verification: Venue["verification"]): VenueConfidenceStatus {
-  const label = toVerificationLabel(toVerificationType(verification));
-  if (label === "On-site audited" || label === "Desk reviewed") return label;
-  if (label === "Community reported") return "Community reported";
-  if (label === "Demo listing") return "Demo listing";
-  if (label === "Venue submitted") return "Venue submitted";
-  return "Not yet verified";
+  return toVerificationLabel(toVerificationType(verification));
 }
 
 export function venueNeedsCheckHref(slug: string) {
@@ -20,5 +15,5 @@ export function venueNeedsCheckHref(slug: string) {
 }
 
 export function isDemoVenue(venue: Venue): boolean {
-  return venue.verificationType === "demo" || venue.verification === "Demo listing";
+  return venue.verificationType === "demo" || toVerificationType(venue.verification) === "demo";
 }

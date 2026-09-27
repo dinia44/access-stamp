@@ -1,4 +1,5 @@
 import type { Venue } from "@/lib/mock-data";
+import { getMeasurementLabel, toVerificationType } from "@/lib/venue-verification";
 
 /** Extra clearance (cm) assumed between chair outer width and clear opening — hinges, weather strips, approach angle. */
 export const DOOR_CLEARANCE_CM = 5;
@@ -108,12 +109,25 @@ export function assessChairAgainstVenue(chair: UserChairDims, venue: Venue): Fit
     };
   }
 
+  const type = toVerificationType(venue.verificationType ?? venue.verification);
+  if (type === "demo") {
+    return {
+      summary: "**Example comparison only.** This demonstration cannot tell you whether a real venue will fit your chair.",
+      detailLines: audit.doorClearCm == null
+        ? ["No example doorway width is available in this listing."]
+        : [
+            `Example opening: **${audit.doorClearCm} cm**. Your stated width plus the **${DOOR_CLEARANCE_CM} cm** allowance: **${w + DOOR_CLEARANCE_CM} cm**.`,
+            "Use current measurements from the real venue when planning a visit.",
+          ],
+    };
+  }
+
   const requiredOpening = w + DOOR_CLEARANCE_CM;
 
   if (audit.doorClearCm != null) {
     const ok = requiredOpening <= audit.doorClearCm;
     detailLines.push(
-      `Audited door clear width (from listing photos/captions): **${audit.doorClearCm} cm**.`,
+      `${getMeasurementLabel(type)} — door clear width (from listing photos/captions): **${audit.doorClearCm} cm**.`,
     );
     detailLines.push(
       `Your stated outer width **${w} cm** + allowance **${DOOR_CLEARANCE_CM} cm** → needs about **${requiredOpening} cm** clear opening.`,
@@ -167,6 +181,9 @@ export function formatVenueAuditContextForPrompt(venue: Venue): string {
   const audit = parseVenueAuditMeasurements(venue);
   const lines = [
     `Venue: ${venue.name} (${venue.location})`,
+    toVerificationType(venue.verificationType ?? venue.verification) === "demo"
+      ? "DEMO DATA: explain the example only. Do not recommend this venue or use these measurements for travel decisions."
+      : `Measurement source: ${getMeasurementLabel(toVerificationType(venue.verificationType ?? venue.verification))}`,
     `Verification: ${venue.verification}; confidence: ${venue.confidence}; updated: ${venue.lastUpdated}`,
     `Summary: ${venue.summary}`,
     `Features: ${JSON.stringify(venue.features)}`,

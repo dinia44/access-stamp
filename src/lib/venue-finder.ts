@@ -52,10 +52,10 @@ export const FILTER_GROUPS: FilterGroup[] = [
   {
     title: "Confidence",
     filters: [
-      { label: "On-site audited", key: "__verified_onsite" },
-      { label: "Desk reviewed", key: "__verified_desk" },
+      { label: "On-site verified", key: "__verified_onsite" },
+      { label: "Reviewed remotely", key: "__verified_desk" },
       { label: "Community reported", key: "__verified_community" },
-      { label: "Demo listing", key: "__demo_listing" },
+      { label: "Demo", key: "__demo_listing" },
       { label: "Recently updated", key: "__recently_updated" },
       { label: "High confidence only", key: "__high_confidence" },
       { label: "Has known unknowns", key: "__has_unknowns" },
@@ -245,14 +245,14 @@ export function filterVenues(
   if (sortBy === "Evidence confidence") {
     items.sort(
       (a, b) =>
-        credibilityScore(b.verification, b.confidence) - credibilityScore(a.verification, a.confidence),
+        credibilityScore(b.verificationType ?? b.verification, b.confidence) - credibilityScore(a.verificationType ?? a.verification, a.confidence),
     );
   } else if (sortBy === "Distance") {
     items.sort((a, b) => a.location.localeCompare(b.location));
   } else if (sortBy === "Credibility") {
     items.sort(
       (a, b) =>
-        credibilityScore(b.verification, b.confidence) - credibilityScore(a.verification, a.confidence),
+        credibilityScore(b.verificationType ?? b.verification, b.confidence) - credibilityScore(a.verificationType ?? a.verification, a.confidence),
     );
   } else {
     items.sort((a, b) => b.confidence.localeCompare(a.confidence));

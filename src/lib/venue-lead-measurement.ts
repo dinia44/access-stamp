@@ -1,15 +1,15 @@
 import type { Venue } from "@/data/venues";
-import { toVerificationLabel, toVerificationType, type VerificationLabel } from "@/lib/venue-verification";
+import { toVerificationType } from "@/lib/venue-verification";
 
 export function getVenueLeadMeasurement(venue: Venue): string {
   if (venue.measurements?.entranceWidthCm) {
-    const verification = toVerificationLabel(toVerificationType(venue.verification));
+    const verification = toVerificationType(venue.verification);
     const method =
-      verification === "On-site audited"
+      verification === "onsite_audited"
         ? "measured on site"
-        : verification === "Desk reviewed"
-          ? "verified with the venue"
-          : verification === "Demo listing"
+        : verification === "desk_reviewed"
+          ? "reviewed remotely"
+          : verification === "demo"
             ? "demo measurement"
             : "reported";
     return `Entrance ${venue.measurements.entranceWidthCm} cm · ${method}`;
@@ -28,12 +28,11 @@ export type ConfidenceSealLabel = "Measured" | "Demo example" | "Reported" | "Ne
 
 export function getVenueConfidenceSealLabel(venue: Venue): ConfidenceSealLabel {
   const type = toVerificationType(venue.verification);
-  const label: VerificationLabel = toVerificationLabel(type);
 
   if (type === "onsite_audited") return "Measured";
   if (type === "demo") return "Demo example";
   if (type === "community_reported" || type === "venue_submitted") return "Reported";
   if (type === "desk_reviewed") return "Reported";
-  if (label === "Not yet verified" || type === "unverified") return "Needs check";
+  if (type === "unverified") return "Needs check";
   return "Needs check";
 }

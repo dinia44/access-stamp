@@ -1,3 +1,4 @@
+import { toVerificationType } from "@/lib/venue-verification";
 import type { Venue as CanonicalVenue, VenueCategory, VenueFeatureKey } from "@/data/venues";
 import { absoluteUrl } from "@/lib/seo/site-url";
 
@@ -35,6 +36,7 @@ function amenityFeatures(venue: CanonicalVenue) {
 }
 
 export function buildVenueLocalBusinessJsonLd(venue: CanonicalVenue) {
+  if (toVerificationType(venue.verification) === "demo") return null;
   const url = absoluteUrl(`/venue/${venue.slug}`);
   const image = venue.images[0]?.src ?? venue.photos[0]?.src;
   const schemaType = CATEGORY_SCHEMA[venue.category] ?? "LocalBusiness";

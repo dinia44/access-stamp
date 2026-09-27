@@ -46,10 +46,10 @@ export default async function SubmitVenuePage({
               <Badge tone="blue">For organisations &amp; venues</Badge>
               <Badge tone="amber">Beta</Badge>
             </div>
-            <h1 className="font-[var(--font-heading)] text-4xl text-heading">Submit your own venue</h1>
+            <h1 className="font-[var(--font-heading)] text-4xl text-heading">Submit a venue for Access Stamp review</h1>
             <p className="max-w-[85ch] text-muted">
               Use <strong className="font-semibold text-heading">Quick Feature Scan</strong> to scan areas or upload
-              photos of your venue. We&apos;ll show what already looks accessible, what may need improvement, and small
+              photos of your venue. We&apos;ll help you record visible access features, questions to check, and small
               practical steps you could take — then you submit your listing for review.
             </p>
             <p className="max-w-[85ch] text-sm text-muted">{QUICK_SCAN_BETA_NOTE}</p>
@@ -80,7 +80,7 @@ export default async function SubmitVenuePage({
           <p className="text-sm text-muted">
             Want a verified Access Stamp review instead?{" "}
             <Link href="/for-venues" className="font-semibold text-blue hover:underline">
-              See Access Snapshot and audit options
+              See venue review options
             </Link>
             . Questions?{" "}
             <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-blue hover:underline">
