@@ -118,6 +118,8 @@ const FEATURE_DISPLAY: Record<string, string> = {
 
 export function normalize(text: string) {
   return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
@@ -237,7 +239,7 @@ export function scoreVenueQueryMatch(venue: Venue, query: string): number {
     venue.summary.toLowerCase(),
     ...venue.tags.map((t) => t.toLowerCase()),
     ...featureKeys,
-  ];
+  ].map(normalize);
 
   // Every significant token must match somewhere — prevents silent unrelated hits.
   const allTermsMatch = terms.every((term) =>

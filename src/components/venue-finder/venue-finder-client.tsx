@@ -19,6 +19,7 @@ import {
 import { VF_BTN_SECONDARY, VF_PAGE_BG } from "@/lib/venue-finder-cro";
 import { suggestVenueMailto } from "@/lib/venue-submission";
 import { track } from "@/lib/analytics";
+import { VenueSearchContext } from "./venue-search-context";
 import { BottomVenueCTA } from "./bottom-venue-cta";
 import { QuickFilterRow } from "./quick-filter-row";
 import { VenueFinderFilterDrawer } from "./venue-finder-filter-drawer";
@@ -169,45 +170,14 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   const [locationError, setLocationError] = useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [sortBy, setSortBy] = useState<VenueFinderSort>(
-    initial.center ? "Distance" : "Best match",
+    initial.sortBy ?? (initial.center ? "Distance" : "Best match"),
   );
-  const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "map">(
+    initial.viewMode ?? "grid",
+  );
   const [MapPanel, setMapPanel] = useState<MapPanelComponent | null>(null);
   const [mapPanelLoading, setMapPanelLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const syncFromHistory = useCallback((state: VenueFinderSearchState) => {
-    setQuery(state.query);
-    setLocation(state.location);
-    setSelectedFilters(state.filters);
-    setMapCenter(state.center ?? null);
-  }, []);
-
-  useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      const next = buildVenueFinderQueryString({
-        query,
-        location,
-        filters: selectedFilters,
-        center: mapCenter ?? undefined,
-      });
-      const current =
-        typeof window !== "undefined"
-          ? buildVenueFinderQueryString(
-              parseVenueFinderSearchParams(
-                new URLSearchParams(window.location.search),
-              ),
-            )
-          : "";
-      if (next === current) return;
-      const url = next ? `${pathname}?${next}` : pathname;
-      window.history.replaceState(window.history.state, "", url);
-    }, 200);
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [query, location, selectedFilters, mapCenter, pathname]);
 
   useEffect(() => {
     const parsed = parseCoordinatePair(location);
@@ -263,15 +233,70 @@ function VenueFinderInteractive({ venues, initial }: Props) {
   );
 
   const zeroResultsTracked = useRef(false);
-  const searchEpoch = `${query}|${location}|${selectedFilters.join(",")}|${mapCenter?.lat ?? ""}|${sortBy}|${viewMode}`;
+  const searchEpoch = `${query}|${location}|${selectedFilters.join(",")}|${sortBy}|${viewMode}`;
   const [pageEpoch, setPageEpoch] = useState(searchEpoch);
-  const [pageForEpoch, setPageForEpoch] = useState(1);
+  const [pageForEpoch, setPageForEpoch] = useState(initial.page ?? 1);
   if (pageEpoch !== searchEpoch) {
     setPageEpoch(searchEpoch);
     setPageForEpoch(1);
   }
-  const page = pageForEpoch;
+  const page = Math.min(
+    pageForEpoch,
+    Math.max(1, Math.ceil(filtered.length / VENUES_PER_PAGE)),
+  );
   const setPage = setPageForEpoch;
+
+  const syncFromHistory = useCallback((state: VenueFinderSearchState) => {
+    setQuery(state.query);
+    setLocation(state.location);
+    setSelectedFilters(state.filters);
+    setMapCenter(state.center ?? null);
+    setSortBy(state.sortBy ?? (state.center ? "Distance" : "Best match"));
+    setViewMode(state.viewMode ?? "grid");
+    setPageForEpoch(state.page ?? 1);
+    setPageEpoch(
+      `${state.query}|${state.location}|${state.filters.join(",")}|${state.sortBy ?? (state.center ? "Distance" : "Best match")}|${state.viewMode ?? "grid"}`,
+    );
+  }, []);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const next = buildVenueFinderQueryString({
+        query,
+        location,
+        filters: selectedFilters,
+        center: mapCenter ?? undefined,
+        sortBy,
+        page,
+        viewMode,
+      });
+      const current =
+        typeof window !== "undefined"
+          ? buildVenueFinderQueryString(
+              parseVenueFinderSearchParams(
+                new URLSearchParams(window.location.search),
+              ),
+            )
+          : "";
+      if (next === current) return;
+      const url =
+        (next ? `${pathname}?${next}` : pathname) + window.location.hash;
+      window.history.replaceState(window.history.state, "", url);
+    }, 200);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [
+    query,
+    location,
+    selectedFilters,
+    mapCenter,
+    pathname,
+    sortBy,
+    page,
+    viewMode,
+  ]);
 
   useEffect(() => {
     if (!isExplicitNoResults) {
@@ -419,234 +444,242 @@ function VenueFinderInteractive({ venues, initial }: Props) {
       location,
       filters: selectedFilters,
       center: mapCenter ?? undefined,
+      sortBy,
+      page,
+      viewMode,
     }),
-    [query, location, selectedFilters, mapCenter],
+    [query, location, selectedFilters, mapCenter, sortBy, page, viewMode],
   );
   const hasSearchContext = hasVenueFinderSearchContext(searchState);
 
   return (
-    <div className={`vf-page min-h-screen ${VF_PAGE_BG}`}>
-      <VenueFinderHero />
+    <VenueSearchContext.Provider
+      value={`/venue-finder?${buildVenueFinderQueryString(searchState)}`}
+    >
+      <div className={`vf-page min-h-screen ${VF_PAGE_BG}`}>
+        <VenueFinderHero />
 
-      <div ref={searchPanelRef}>
-        <VenueSearchPanel
-          query={query}
-          location={location}
-          locating={locating}
-          locationError={locationError ?? geocodeError}
-          onQueryChange={setQuery}
-          onLocationChange={(value) => {
-            setLocation(value);
-            const parsed = parseCoordinatePair(value);
-            if (parsed) {
-              setMapCenter(parsed);
-              setGeocodeError(null);
-              setGeocoding(false);
-              return;
-            }
-            if (!value.trim()) {
+        <div ref={searchPanelRef}>
+          <VenueSearchPanel
+            query={query}
+            location={location}
+            locating={locating}
+            locationError={locationError ?? geocodeError}
+            onQueryChange={setQuery}
+            onLocationChange={(value) => {
+              setLocation(value);
+              const parsed = parseCoordinatePair(value);
+              if (parsed) {
+                setMapCenter(parsed);
+                setGeocodeError(null);
+                setGeocoding(false);
+                return;
+              }
               setMapCenter(null);
-              setGeocodeError(null);
-              setGeocoding(false);
-            }
-          }}
-          onSearch={handleSearch}
-          onUseLocation={handleUseLocation}
+              if (!value.trim()) {
+                setMapCenter(null);
+                setGeocodeError(null);
+                setGeocoding(false);
+              }
+            }}
+            onSearch={handleSearch}
+            onUseLocation={handleUseLocation}
+          />
+        </div>
+
+        <QuickFilterRow
+          selectedFilters={selectedFilters}
+          onToggleFilter={toggleFilter}
+          onOpenMoreFilters={() => setFiltersOpen(true)}
         />
-      </div>
 
-      <QuickFilterRow
-        selectedFilters={selectedFilters}
-        onToggleFilter={toggleFilter}
-        onOpenMoreFilters={() => setFiltersOpen(true)}
-      />
+        <p className="mx-auto max-w-7xl px-4 pt-4 text-sm sm:px-6 lg:px-8">
+          <Link href="/ask" className="underline">
+            Not sure which filters matter? Tell Access Stamp what you need →
+          </Link>
+        </p>
 
-      <p className="mx-auto max-w-7xl px-4 pt-4 text-sm sm:px-6 lg:px-8">
-        <Link href="/ask" className="underline">
-          Not sure which filters matter? Tell Access Stamp what you need →
-        </Link>
-      </p>
+        <section
+          ref={resultsRef}
+          className="mx-auto grid max-w-7xl gap-8 px-4 py-12 pb-28 sm:px-6 lg:px-8 lg:pb-12"
+        >
+          <div className="order-2 space-y-6 lg:order-1">
+            <section
+              id="venue-results"
+              aria-labelledby="venue-results-heading"
+              aria-busy={locating || geocoding}
+            >
+              <VenueResultsHeader
+                resultCount={filtered.length}
+                demoCount={filtered.filter(isDemoVenue).length}
+                locating={locating}
+                geocoding={geocoding}
+                location={location}
+                query={query}
+                hasSearchContext={hasSearchContext}
+                selectedFilters={selectedFilters}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+                onRemoveFilter={toggleFilter}
+                onChangeLocation={handleChangeLocation}
+                onClearAll={clearAllSearch}
+                viewMode={viewMode}
+                onViewModeChange={(mode) => {
+                  setViewMode(mode);
+                  if (mode === "map") handleLoadMapPanel();
+                }}
+              />
 
-      <section
-        ref={resultsRef}
-        className="mx-auto grid max-w-7xl gap-8 px-4 py-12 pb-28 sm:px-6 lg:px-8 lg:pb-12"
-      >
-        <div className="order-2 space-y-6 lg:order-1">
-          <section
-            id="venue-results"
-            aria-labelledby="venue-results-heading"
-            aria-busy={locating || geocoding}
-          >
-            <VenueResultsHeader
-              resultCount={filtered.length}
-              demoCount={filtered.filter(isDemoVenue).length}
-              locating={locating}
-              geocoding={geocoding}
-              location={location}
-              query={query}
-              hasSearchContext={hasSearchContext}
-              selectedFilters={selectedFilters}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-              onRemoveFilter={toggleFilter}
-              onChangeLocation={handleChangeLocation}
-              onClearAll={clearAllSearch}
-              viewMode={viewMode}
-              onViewModeChange={(mode) => {
-                setViewMode(mode);
-                if (mode === "map") handleLoadMapPanel();
-              }}
-            />
-
-            {viewMode !== "map" && filtered.length ? (
-              <>
-                <ul
-                  className={
-                    viewMode === "grid"
-                      ? "mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-2"
-                      : "mt-6 flex flex-col gap-4"
-                  }
-                >
-                  {paginated.map((venue, index) =>
-                    viewMode === "grid" ? (
-                      <VenueResultCard
-                        key={venue.slug}
-                        venue={venue}
-                        index={index}
-                        userCenter={mapCenter}
-                        selected={activeSelectedSlug === venue.slug}
-                        onSelect={() => setSelectedSlug(venue.slug)}
-                      />
-                    ) : (
-                      <li key={venue.slug}>
-                        <VenueListRow
+              {viewMode !== "map" && filtered.length ? (
+                <>
+                  <ul
+                    className={
+                      viewMode === "grid"
+                        ? "mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-2"
+                        : "mt-6 flex flex-col gap-4"
+                    }
+                  >
+                    {paginated.map((venue, index) =>
+                      viewMode === "grid" ? (
+                        <VenueResultCard
+                          key={venue.slug}
                           venue={venue}
+                          index={index}
                           userCenter={mapCenter}
                           selected={activeSelectedSlug === venue.slug}
                           onSelect={() => setSelectedSlug(venue.slug)}
                         />
-                      </li>
-                    ),
-                  )}
-                </ul>
+                      ) : (
+                        <li key={venue.slug}>
+                          <VenueListRow
+                            venue={venue}
+                            userCenter={mapCenter}
+                            selected={activeSelectedSlug === venue.slug}
+                            onSelect={() => setSelectedSlug(venue.slug)}
+                          />
+                        </li>
+                      ),
+                    )}
+                  </ul>
 
-                {totalPages > 1 ? (
-                  <nav
-                    className="mt-8 flex flex-wrap items-center justify-between gap-3"
-                    aria-label="Venue results pages"
-                  >
-                    <p className="text-sm text-muted">
-                      Showing {(page - 1) * VENUES_PER_PAGE + 1}–
-                      {Math.min(page * VENUES_PER_PAGE, filtered.length)} of{" "}
-                      {filtered.length}
-                    </p>
-                    <div className="flex gap-2">
+                  {totalPages > 1 ? (
+                    <nav
+                      className="mt-8 flex flex-wrap items-center justify-between gap-3"
+                      aria-label="Venue results pages"
+                    >
+                      <p className="text-sm text-muted">
+                        Showing {(page - 1) * VENUES_PER_PAGE + 1}–
+                        {Math.min(page * VENUES_PER_PAGE, filtered.length)} of{" "}
+                        {filtered.length}
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          className={VF_BTN_SECONDARY}
+                          disabled={page <= 1}
+                          onClick={() =>
+                            setPage((current) => Math.max(1, current - 1))
+                          }
+                        >
+                          Previous
+                        </button>
+                        <button
+                          type="button"
+                          className={VF_BTN_SECONDARY}
+                          disabled={page >= totalPages}
+                          onClick={() =>
+                            setPage((current) =>
+                              Math.min(totalPages, current + 1),
+                            )
+                          }
+                        >
+                          Next
+                        </button>
+                      </div>
+                    </nav>
+                  ) : null}
+                </>
+              ) : viewMode !== "map" ? (
+                <VenueFinderEmptyState
+                  query={isExplicitNoResults ? query : undefined}
+                  hasFilters={selectedFilters.length > 0}
+                  onClearQuery={() => setQuery("")}
+                  onClearFilters={clearFilters}
+                  onBrowseAll={clearAllSearch}
+                />
+              ) : null}
+            </section>
+          </div>
+
+          {viewMode === "map" ? (
+            <aside
+              className="order-3 space-y-6"
+              aria-label="Map and visit planner"
+            >
+              <div ref={mapRef}>
+                {MapPanel ? (
+                  <MapPanel
+                    venues={filtered}
+                    locationLabel={location}
+                    selectedSlug={activeSelectedSlug}
+                    mapCenter={mapCenter}
+                    onSelectVenue={setSelectedSlug}
+                    onUserLocation={handleUserLocation}
+                    onOpenFullMap={handleOpenFullMap}
+                    mapEnabledByDefault
+                  />
+                ) : (
+                  <div className="rounded-[2rem] border border-border bg-background-2 p-5 shadow-sm">
+                    <div className="mb-4">
+                      <h2 className="text-xl font-semibold tracking-[-0.03em] text-heading">
+                        Explore on map
+                      </h2>
+                      <p className="mt-1 text-xs text-muted">
+                        {location.trim() || "UK venues"}
+                      </p>
+                    </div>
+                    <div className="flex min-h-[280px] flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-background-2 to-verified-pale px-6 text-center">
+                      <p className="text-sm font-semibold text-heading">
+                        Interactive map
+                      </p>
+                      <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
+                        Load the map to explore venue markers near your search.
+                      </p>
                       <button
                         type="button"
-                        className={VF_BTN_SECONDARY}
-                        disabled={page <= 1}
-                        onClick={() =>
-                          setPage((current) => Math.max(1, current - 1))
-                        }
+                        className={`${VF_BTN_SECONDARY} mt-5`}
+                        onClick={handleLoadMapPanel}
+                        disabled={mapPanelLoading}
                       >
-                        Previous
-                      </button>
-                      <button
-                        type="button"
-                        className={VF_BTN_SECONDARY}
-                        disabled={page >= totalPages}
-                        onClick={() =>
-                          setPage((current) =>
-                            Math.min(totalPages, current + 1),
-                          )
-                        }
-                      >
-                        Next
+                        {mapPanelLoading ? "Loading map…" : "Load map"}
                       </button>
                     </div>
-                  </nav>
-                ) : null}
-              </>
-            ) : viewMode !== "map" ? (
-              <VenueFinderEmptyState
-                query={isExplicitNoResults ? query : undefined}
-                hasFilters={selectedFilters.length > 0}
-                onClearQuery={() => setQuery("")}
-                onClearFilters={clearFilters}
-                onBrowseAll={clearAllSearch}
-              />
-            ) : null}
-          </section>
-        </div>
-
-        {viewMode === "map" ? (
-          <aside
-            className="order-3 space-y-6"
-            aria-label="Map and visit planner"
-          >
-            <div ref={mapRef}>
-              {MapPanel ? (
-                <MapPanel
-                  venues={filtered}
-                  locationLabel={location}
-                  selectedSlug={activeSelectedSlug}
-                  mapCenter={mapCenter}
-                  onSelectVenue={setSelectedSlug}
-                  onUserLocation={handleUserLocation}
-                  onOpenFullMap={handleOpenFullMap}
-                  mapEnabledByDefault
-                />
-              ) : (
-                <div className="rounded-[2rem] border border-border bg-background-2 p-5 shadow-sm">
-                  <div className="mb-4">
-                    <h2 className="text-xl font-semibold tracking-[-0.03em] text-heading">
-                      Explore on map
-                    </h2>
-                    <p className="mt-1 text-xs text-muted">
-                      {location.trim() || "UK venues"}
-                    </p>
                   </div>
-                  <div className="flex min-h-[280px] flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-background-2 to-verified-pale px-6 text-center">
-                    <p className="text-sm font-semibold text-heading">
-                      Interactive map
-                    </p>
-                    <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
-                      Load the map to explore venue markers near your search.
-                    </p>
-                    <button
-                      type="button"
-                      className={`${VF_BTN_SECONDARY} mt-5`}
-                      onClick={handleLoadMapPanel}
-                      disabled={mapPanelLoading}
-                    >
-                      {mapPanelLoading ? "Loading map…" : "Load map"}
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </aside>
-        ) : null}
-      </section>
+                )}
+              </div>
+            </aside>
+          ) : null}
+        </section>
 
-      <BottomVenueCTA />
+        <BottomVenueCTA />
 
-      <VenueFinderMobileBar
-        onOpenChange={setFiltersOpen}
-        filterCount={selectedFilters.length}
-        onSearch={handleSearch}
-      />
+        <VenueFinderMobileBar
+          onOpenChange={setFiltersOpen}
+          filterCount={selectedFilters.length}
+          onSearch={handleSearch}
+        />
 
-      <VenueFinderFilterDrawer
-        open={filtersOpen}
-        onOpenChange={setFiltersOpen}
-        selectedFilters={selectedFilters}
-        onToggleFilter={toggleFilter}
-        onClearFilters={clearFilters}
-      />
+        <VenueFinderFilterDrawer
+          open={filtersOpen}
+          onOpenChange={setFiltersOpen}
+          selectedFilters={selectedFilters}
+          onToggleFilter={toggleFilter}
+          onClearFilters={clearFilters}
+        />
 
-      <VenueFinderHistorySync onSync={syncFromHistory} />
-    </div>
+        <VenueFinderHistorySync onSync={syncFromHistory} />
+      </div>
+    </VenueSearchContext.Provider>
   );
 }
 

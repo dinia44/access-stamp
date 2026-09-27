@@ -1,7 +1,6 @@
 import { AboutSection } from "@/components/about/about-section";
 import { ABOUT_BODY, ABOUT_PANEL } from "@/components/about/about-theme";
 import { ButtonLink } from "@/components/ui/ButtonLink";
-import { FadeIn } from "@/components/fade-in";
 
 const STATS = [
   { value: "16 million", label: "Disabled people in the UK" },
@@ -37,13 +36,11 @@ export function PurplePoundStats() {
       </div>
 
       <ul className="mt-10 grid gap-5 sm:grid-cols-3">
-        {STATS.map((stat, index) => (
-          <FadeIn key={stat.label} delayMs={index * 50}>
-            <li className={`p-6 text-center sm:p-7 ${ABOUT_PANEL}`}>
-              <p className="text-3xl font-bold tracking-tight text-[#13201F] sm:text-4xl">{stat.value}</p>
-              <p className="mt-2 text-sm leading-6 text-[#5E6A66]">{stat.label}</p>
-            </li>
-          </FadeIn>
+        {STATS.map((stat) => (
+          <li key={stat.label} className={`p-6 text-center sm:p-7 ${ABOUT_PANEL}`}>
+            <p className="text-3xl font-bold tracking-tight text-[#13201F] sm:text-4xl">{stat.value}</p>
+            <p className="mt-2 text-sm leading-6 text-[#5E6A66]">{stat.label}</p>
+          </li>
         ))}
       </ul>
 

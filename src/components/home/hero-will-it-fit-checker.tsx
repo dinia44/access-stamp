@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-const CLEARANCE_CM = 5;
+import { DOOR_CLEARANCE_CM as CLEARANCE_CM } from "@/lib/venue-fit";
 
 type FitState = "fits" | "tight" | "narrow";
 
@@ -22,24 +22,24 @@ function fitMessage(
 ): string {
   const required = chair + CLEARANCE_CM;
   if (state === "fits") {
-    return `At ${chair} cm wide (plus ${CLEARANCE_CM} cm clearance), you are under the measured toilet door (${toilet} cm) and entrance (${entrance} cm) at ${venueName}.`;
+    return `At ${chair} cm wide (plus ${CLEARANCE_CM} cm clearance), you are within the example toilet door (${toilet} cm) and entrance (${entrance} cm) at ${venueName}.`;
   }
   if (state === "tight") {
-    return `At ${chair} cm wide you need about ${required} cm clear opening. That passes the ${entrance} cm entrance but is tight at the ${toilet} cm toilet door — worth checking approach angle on the day.`;
+    return `At ${chair} cm wide you need about ${required} cm clear opening. That passes the ${entrance} cm entrance but exceeds the ${toilet} cm toilet door including the planning allowance. This example does not establish toilet access.`;
   }
-  return `At ${chair} cm wide you need about ${required} cm clear opening. That is wider than the measured ${entrance} cm entrance at ${venueName} — ask about alternative routes or pick a venue with wider doors.`;
+  return `At ${chair} cm wide you need about ${required} cm clear opening. That is wider than the example ${entrance} cm entrance at ${venueName} — ask about alternative routes or pick a venue with wider doors.`;
 }
 
 const STATE_STYLE: Record<FitState, { title: string; panel: string; text: string }> = {
   fits: {
-    title: "Should fit throughout",
+    title: "Within the two listed doorway widths",
     panel: "border-[#5F7444]/30 bg-[#EFF3E7]",
-    text: "text-[#5F7444]",
+    text: "text-[#465832]",
   },
   tight: {
-    title: "One tight spot",
+    title: "Insufficient toilet-door clearance",
     panel: "border-[#C07F1F]/30 bg-[#FBF0DC]",
-    text: "text-[#C07F1F]",
+    text: "text-[#80520E]",
   },
   narrow: {
     title: "Likely too narrow",
@@ -69,7 +69,7 @@ export function HeroWillItFitChecker({
   return (
     <div className="rounded-[24px] border border-[#EFE5DA] bg-white p-5 sm:p-6">
       <p className="text-sm leading-6 text-[#4A5263]">
-        Compare your chair width against measured doorways at{" "}
+        Compare your chair width against example doorway widths at{" "}
         <strong className="font-semibold text-[#20242E]">{venueName}</strong>. This is a planning aid — doorway width
         alone does not prove a venue is accessible. Always confirm changeable details before you travel.
       </p>
@@ -81,7 +81,7 @@ export function HeroWillItFitChecker({
       >
         <div className="relative flex h-24 w-16 items-end justify-center border-x-4 border-t-4 border-[#20242E] bg-[#FDFBF8]">
           <div
-            className="absolute bottom-0 left-0 right-0 bg-[#EF5B25]/25 transition-all duration-200"
+            className="absolute bottom-0 left-0 right-0 bg-[#EF5B25]/25 motion-safe:transition-all motion-safe:duration-200"
             style={{ height: `${Math.min(100, (chairWidth / entranceCm) * 100)}%` }}
             aria-hidden="true"
           />
@@ -91,7 +91,7 @@ export function HeroWillItFitChecker({
         </div>
         <div className="flex flex-col items-center gap-1" aria-hidden="true">
           <div
-            className="rounded-sm bg-[#EF5B25] transition-all duration-200"
+            className="rounded-sm bg-[#EF5B25] motion-safe:transition-all motion-safe:duration-200"
             style={{ width: `${Math.min(72, chairWidth * 0.7)}px`, height: "28px" }}
           />
           <span className="text-xs font-semibold tabular-nums text-[#20242E]">{chairWidth} cm</span>

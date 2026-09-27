@@ -1,8 +1,14 @@
-import { ConfidenceBadge, VerificationBadge } from "@/components/verification-badge";
+import {
+  ConfidenceBadge,
+  VerificationBadge,
+} from "@/components/verification-badge";
 import type { Venue } from "@/lib/mock-data";
 import { getVenueBySlug } from "@/data/venues";
 import { isDemoVenue } from "@/lib/venue-card";
-import { getMeasurementLabel, toVerificationType } from "@/lib/venue-verification";
+import {
+  getMeasurementLabel,
+  toVerificationType,
+} from "@/lib/venue-verification";
 
 type Props = {
   venue: Venue;
@@ -14,14 +20,27 @@ type Props = {
 
 export type DecisionOutcome = "likely" | "needs_confirmation" | "may_not_meet";
 
-export function getDecisionOutcome(venue: Venue, unknownCount: number, unavailableCount: number): DecisionOutcome {
+export function getDecisionOutcome(
+  venue: Venue,
+  unknownCount: number,
+  unavailableCount: number,
+): DecisionOutcome {
   const type = toVerificationType(venue.verification);
   const isDemoOrWeak = type === "demo" || type === "unverified";
-  const yesCount = Object.values(venue.features).filter((x) => x === "yes").length;
+  const yesCount = Object.values(venue.features).filter(
+    (x) => x === "yes",
+  ).length;
 
-  if (unavailableCount >= 3 && yesCount < unavailableCount) return "may_not_meet";
-  if (isDemoOrWeak || unknownCount >= 3 || venue.confidence === "Low") return "needs_confirmation";
-  if (venue.confidence === "High" && unknownCount <= 1 && type === "onsite_audited") return "likely";
+  if (unavailableCount >= 3 && yesCount < unavailableCount)
+    return "may_not_meet";
+  if (isDemoOrWeak || unknownCount >= 3 || venue.confidence === "Low")
+    return "needs_confirmation";
+  if (
+    venue.confidence === "High" &&
+    unknownCount <= 1 &&
+    type === "onsite_audited"
+  )
+    return "likely";
   if (yesCount >= 4 && unknownCount <= 2 && !isDemoOrWeak) return "likely";
   return "needs_confirmation";
 }
@@ -55,21 +74,34 @@ export function VenueDecisionSummary({
   unknownFeatures = [],
   unknownCount,
 }: Props) {
-  const outcome = getDecisionOutcome(venue, unknownCount, unavailableFeatures.length);
+  const outcome = getDecisionOutcome(
+    venue,
+    unknownCount,
+    unavailableFeatures.length,
+  );
   const copy = OUTCOME_COPY[outcome];
   const demo = isDemoVenue(venue);
   const canonical = getVenueBySlug(venue.slug);
   const measurements: string[] = [];
   if (canonical?.measurements?.entranceWidthCm) {
-    measurements.push(`Entrance width ${canonical.measurements.entranceWidthCm} cm`);
+    measurements.push(
+      `Entrance width ${canonical.measurements.entranceWidthCm} cm`,
+    );
   }
   if (canonical?.measurements?.toiletDoorWidthCm) {
-    measurements.push(`Toilet door ${canonical.measurements.toiletDoorWidthCm} cm`);
+    measurements.push(
+      `Toilet door ${canonical.measurements.toiletDoorWidthCm} cm`,
+    );
   }
   if (measurements.length === 0) {
     const measuredPhoto = venue.photos?.find((photo) => photo.measurement);
     if (measuredPhoto?.measurement) {
-      measurements.push(measuredPhoto.measurement.replace(/^Door width measured:\s*/i, measuredPhoto.label + ": "));
+      measurements.push(
+        measuredPhoto.measurement.replace(
+          /^Door width measured:\s*/i,
+          measuredPhoto.label + ": ",
+        ),
+      );
     }
   }
   const unknowns = unknownFeatures.length
@@ -84,12 +116,17 @@ export function VenueDecisionSummary({
       className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-soft)] scroll-mt-24"
       aria-labelledby="decision-summary-heading"
     >
-      <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold ${copy.tone}`}>
+      <div
+        className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold ${copy.tone}`}
+      >
         <StatusGlyph outcome={outcome} />
         <span>{demo ? "Demo" : copy.iconLabel}</span>
       </div>
 
-      <h2 id="decision-summary-heading" className="mt-3 text-xl font-semibold tracking-[-0.02em] text-[var(--color-ink)]">
+      <h2
+        id="decision-summary-heading"
+        className="mt-3 text-xl font-semibold tracking-[-0.02em] text-[var(--color-ink)]"
+      >
         {demo ? "Example venue report" : copy.title}
       </h2>
 
@@ -101,23 +138,37 @@ export function VenueDecisionSummary({
 
       <dl className="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Evidence state</dt>
+          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+            Evidence state
+          </dt>
           <dd className="mt-1.5">
             <VerificationBadge status={venue.verification} />
           </dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">{demo ? "Example updated" : "Last checked"}</dt>
-          <dd className="mt-1.5 text-sm font-semibold text-[var(--color-ink)]">{venue.lastUpdated}</dd>
-        </div>
-        <div>
-          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Confidence</dt>
-          <dd className="mt-1.5">
-            {demo ? <span className="text-sm">Example data — not assessed</span> : <ConfidenceBadge level={venue.confidence} />}
+          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+            Last checked
+          </dt>
+          <dd className="mt-1.5 text-sm font-semibold text-[var(--color-ink)]">
+            {demo ? "Not independently checked" : venue.lastUpdated}
           </dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Important unknowns</dt>
+          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+            Confidence
+          </dt>
+          <dd className="mt-1.5">
+            {demo ? (
+              <span className="text-sm">Example data — not assessed</span>
+            ) : (
+              <ConfidenceBadge level={venue.confidence} />
+            )}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+            Important unknowns
+          </dt>
           <dd className="mt-1.5 text-sm font-semibold text-[var(--color-ink)]">
             {unknownCount === 0 ? "None flagged" : `${unknownCount} to confirm`}
           </dd>
@@ -128,7 +179,11 @@ export function VenueDecisionSummary({
         {measurements.length > 0 ? (
           <div className="mt-4 rounded-[var(--radius-md)] border border-dashed border-[var(--color-border-mid)] bg-[var(--color-surface-subtle)] px-3 py-2">
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-brand)]">
-              {getMeasurementLabel(toVerificationType(venue.verificationType ?? venue.verification))}
+              {getMeasurementLabel(
+                toVerificationType(
+                  venue.verificationType ?? venue.verification,
+                ),
+              )}
             </p>
             <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--color-ink)]">
               {measurements.map((m) => (
@@ -144,9 +199,14 @@ export function VenueDecisionSummary({
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <FeatureList title="Confirmed" items={confirmedFeatures.slice(0, 6)} tone="trust" empty="No confirmed features yet" />
         <FeatureList
-          title="Unavailable"
+          title={demo ? "Illustrative features" : "Reported present"}
+          items={confirmedFeatures.slice(0, 6)}
+          tone="trust"
+          empty="No features documented yet"
+        />
+        <FeatureList
+          title={demo ? "Illustrated as unavailable" : "Reported unavailable"}
           items={unavailableFeatures.slice(0, 6)}
           tone="danger"
           empty="None listed as unavailable"
@@ -163,7 +223,8 @@ export function VenueDecisionSummary({
       </div>
 
       <p className="mt-4 border-t border-[var(--color-border)] pt-3 text-xs leading-5 text-[var(--color-text-muted)]">
-        Always confirm changeable information (temporary works, staffing, equipment) with the venue on the day of travel.
+        Always confirm changeable information (temporary works, staffing,
+        equipment) with the venue on the day of travel.
       </p>
     </aside>
   );
@@ -194,14 +255,21 @@ function FeatureList({
         : "bg-[var(--color-warning)]";
   return (
     <div>
-      <p className={`text-xs font-semibold uppercase tracking-[0.08em] ${color}`}>{title}</p>
+      <p
+        className={`text-xs font-semibold uppercase tracking-[0.08em] ${color}`}
+      >
+        {title}
+      </p>
       {items.length === 0 ? (
         <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">{empty}</p>
       ) : (
         <ul className="mt-1.5 space-y-1 text-sm text-[var(--color-ink)]">
           {items.map((item) => (
             <li key={item} className="flex gap-2">
-              <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${dot}`} aria-hidden />
+              <span
+                className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${dot}`}
+                aria-hidden
+              />
               {item}
             </li>
           ))}
@@ -214,20 +282,41 @@ function FeatureList({
 function StatusGlyph({ outcome }: { outcome: DecisionOutcome }) {
   if (outcome === "likely") {
     return (
-      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <svg
+        viewBox="0 0 20 20"
+        className="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        aria-hidden
+      >
         <path d="M4 10.5 8 14.5 16 5.5" />
       </svg>
     );
   }
   if (outcome === "may_not_meet") {
     return (
-      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <svg
+        viewBox="0 0 20 20"
+        className="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        aria-hidden
+      >
         <path d="M5 5l10 10M15 5 5 15" />
       </svg>
     );
   }
   return (
-    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+    <svg
+      viewBox="0 0 20 20"
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden
+    >
       <circle cx="10" cy="10" r="7" />
       <path d="M10 6v5M10 14h.01" />
     </svg>

@@ -57,8 +57,8 @@ export function WillItFitCard({ venue }: { venue: Venue }) {
       </p>
       <p className="mt-2 text-xs text-muted">
         Built-in clearance margin:{" "}
-        <strong className="text-heading">{DOOR_CLEARANCE_CM} cm</strong> for
-        hinges and safe passage.
+        <strong className="text-heading">{DOOR_CLEARANCE_CM} cm</strong> as a
+        planning allowance, not a guarantee of safe passage.
       </p>
       <label
         className="mt-4 block text-sm font-semibold text-heading"
@@ -80,14 +80,20 @@ export function WillItFitCard({ venue }: { venue: Venue }) {
       />
 
       {assessment ? (
-        <div className="mt-4 space-y-3 text-sm leading-6 text-text">
+        <div
+          role="status"
+          aria-live="polite"
+          className="mt-4 space-y-3 text-sm leading-6 text-text"
+        >
           <p>
             <InlineBold text={assessment.summary} />
           </p>
           {assessment.detailLines.length ? (
             <ul className="list-disc space-y-1 pl-5 text-muted">
               {assessment.detailLines.map((line) => (
-                <li key={line}>{line}</li>
+                <li key={line}>
+                  <InlineBold text={line} />
+                </li>
               ))}
             </ul>
           ) : null}
