@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { AdviceArticle } from "@/lib/content/types";
 import type { GuideResourcePack } from "@/lib/guide-resources";
 import type { PracticalGuideWorkflow } from "@/lib/practical-guide";
-import { GuideReadAloud } from "@/components/guide/guide-read-aloud";
 import { GuideFaqSection } from "@/components/guide/guide-faq-section";
 import { GuideFullGuideCta } from "@/components/guide/guide-full-guide-cta";
+import { GuideOverview } from "@/components/guide/guide-overview";
 import { InteractiveChecklist } from "@/components/guide/interactive-checklist";
 
 export function PracticalGuideExperience({
@@ -18,87 +18,67 @@ export function PracticalGuideExperience({
 }) {
   const title = workflow.displayTitle ?? article.title;
   const sections = [
-    ["guide-start-here", "Start here"],
-    ["guide-steps", "Step-by-step guide"],
-    ...(workflow.evidenceChecklist?.length
-      ? [["guide-evidence", "Evidence / what helps"]]
-      : []),
-    ...(workflow.copyableTemplates?.length ||
-    workflow.templates.some((t) => t.href || t.body) ||
-    resources
+    ["guide-steps", "Step-by-step"],
+    ...(workflow.evidenceChecklist?.length ? [["guide-evidence", "What to prepare"]] : []),
+    ...(workflow.copyableTemplates?.length || workflow.templates.some((template) => template.href || template.body) || resources
       ? [["guide-templates", "Templates"]]
       : []),
-    ...(workflow.escalation?.length || workflow.commonMistakes?.length
-      ? [["guide-escalation", "If things go wrong"]]
-      : []),
+    ...(workflow.escalation?.length || workflow.commonMistakes?.length ? [["guide-escalation", "If things go wrong"]] : []),
+    ...(workflow.faqs?.length ? [["guide-faq", "Questions"]] : []),
     ["guide-sources", "Official sources"],
-    ["guide-personal", "Make this guide personal"],
   ];
   const readText = [
     title,
     workflow.subtitle,
     ...workflow.summary,
     ...(workflow.firstThreeActions ?? []),
-    ...workflow.steps.flatMap((s) => [
-      s.title,
-      s.content.intro,
-      ...(s.content.introExtra ?? []),
-      ...s.content.whatThisMeans,
-      ...s.content.checklist,
-      s.content.example,
+    ...workflow.steps.flatMap((step) => [
+      step.title,
+      step.content.intro,
+      ...(step.content.introExtra ?? []),
+      ...step.content.whatThisMeans,
+      ...step.content.checklist,
+      step.content.example,
     ]),
     ...(workflow.evidenceChecklist ?? []),
     ...(workflow.escalation ?? []),
   ].join(". ");
-  const summary = (
-    workflow.atAGlance.length ? workflow.atAGlance : workflow.summary
-  ).slice(0, 5);
+  const summary = (workflow.atAGlance.length ? workflow.atAGlance : workflow.summary).slice(0, 5);
+  const actions = (
+    workflow.firstThreeActions?.length
+      ? workflow.firstThreeActions
+      : workflow.steps.slice(0, 3).map((step) => step.content.checklist[0] ?? step.title)
+  ).slice(0, 3);
+
   return (
-    <article className="mx-auto max-w-3xl space-y-8 px-4 py-10 sm:px-6">
-      <Link
-        href="/advice"
-        className="inline-flex min-h-11 items-center underline"
-      >
-        All guides
-      </Link>
-      <header className="space-y-4">
-        <h1 className="text-3xl font-bold sm:text-4xl">{title}</h1>
-        <p className="text-lg text-muted">{workflow.subtitle}</p>
-        <p className="text-sm text-muted">
-          Reviewed / updated {article.lastReviewed ?? article.updated} ·{" "}
-          {Array.isArray(article.nations)
-            ? article.nations.join(", ")
-            : (article.nations ?? "Check jurisdiction in sources")}{" "}
-          ·{" "}
-          {article.readTimeMinutes ??
-            Math.max(1, Math.ceil(readText.split(/\s+/).length / 200))}{" "}
-          min read
-        </p>
-        <GuideReadAloud text={readText} compact />
-      </header>
-      <section>
-        <h2 className="text-xl font-semibold">At a glance</h2>
-        <ul className="mt-3 list-disc space-y-2 pl-5">
-          {summary.map((s) => (
-            <li key={s}>{s}</li>
-          ))}
-        </ul>
-      </section>
+    <article className="mx-auto max-w-3xl space-y-8 px-4 py-8 sm:px-6 sm:py-12">
+      <GuideOverview
+        article={article}
+        title={title}
+        subtitle={workflow.subtitle}
+        summary={summary}
+        actions={actions}
+        readText={readText}
+      />
+
+      {workflow.warningBox ? (
+        <aside className="rounded-[var(--radius-lg)] border border-[var(--color-warning)]/30 bg-[var(--color-warning-soft)] p-5" role="note">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-warning)]">Important</p>
+          <h2 className="mt-2 text-lg font-semibold text-[var(--color-ink)]">{workflow.warningBox.title}</h2>
+          <p className="mt-2 leading-7 text-[var(--color-text)]">{workflow.warningBox.text}</p>
+        </aside>
+      ) : null}
+
       <nav
         aria-label="On this page"
-        className="sticky top-20 z-20 rounded-xl border border-border bg-background p-3 lg:top-24"
+        className="sticky top-20 z-20 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]/95 p-3 shadow-[var(--shadow-soft)] backdrop-blur lg:top-24"
       >
         <details>
-          <summary className="min-h-11 cursor-pointer py-2 font-semibold">
-            On this page
-          </summary>
-          <ul>
+          <summary className="min-h-11 cursor-pointer py-2 font-semibold text-[var(--color-ink)]">On this page</summary>
+          <ul className="border-t border-[var(--color-border)] pt-2">
             {sections.map(([id, label]) => (
               <li key={id}>
-                <a
-                  className="inline-flex min-h-11 items-center underline"
-                  href={`#${id}`}
-                >
+                <a className="inline-flex min-h-11 items-center text-sm font-semibold text-[var(--color-brand)] hover:underline" href={`#${id}`}>
                   {label}
                 </a>
               </li>
@@ -106,106 +86,96 @@ export function PracticalGuideExperience({
           </ul>
         </details>
       </nav>
-      {workflow.warningBox ? (
-        <aside className="border-l-4 border-amber-600 pl-4 text-sm">
-          <strong>{workflow.warningBox.title}</strong>
-          <p>{workflow.warningBox.text}</p>
-        </aside>
-      ) : null}
-      <section id="guide-start-here" className="scroll-mt-44">
-        <h2 className="text-xl font-semibold">Start here</h2>
-        <ol className="mt-3 list-decimal space-y-3 pl-5">
-          {(workflow.firstThreeActions?.length
-            ? workflow.firstThreeActions
-            : workflow.steps
-                .slice(0, 3)
-                .map((s) => s.content.checklist[0] ?? s.title)
-          )
-            .slice(0, 3)
-            .map((s) => (
-              <li key={s}>{s}</li>
-            ))}
-        </ol>
-      </section>
-      <section id="guide-steps" className="scroll-mt-44 space-y-7">
-        <h2 className="text-2xl font-semibold">Step-by-step guide</h2>
+
+      <section id="guide-steps" className="scroll-mt-44 space-y-8">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-brand)]">Full guide</p>
+          <h2 className="mt-2 font-[family-name:var(--font-heading)] text-3xl font-medium tracking-[-0.025em] text-[var(--color-ink)]">Step-by-step</h2>
+        </div>
         {workflow.steps.map((step) => (
-          <section
-            key={step.id}
-            className="space-y-3 border-b border-border pb-6"
-          >
-            <h3 id={`step-${step.id}`} className="text-xl font-semibold">
-              {step.number}. {step.title}
-            </h3>
-            <p>{step.content.intro}</p>
-            {step.content.introExtra?.map((p) => (
-              <p key={p}>{p}</p>
+          <section key={step.id} className="space-y-4 border-b border-[var(--color-border)] pb-8 last:border-b-0">
+            <div className="flex gap-4">
+              <span className="inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-[var(--color-brand-soft)] text-sm font-bold text-[var(--color-brand)]">
+                {step.number}
+              </span>
+              <h3 id={`step-${step.id}`} className="font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">
+                {step.title}
+              </h3>
+            </div>
+            <p className="leading-8 text-[var(--color-text)]">{step.content.intro}</p>
+            {step.content.introExtra?.map((paragraph) => (
+              <p key={paragraph} className="leading-8 text-[var(--color-text)]">{paragraph}</p>
             ))}
-            <ul className="list-disc space-y-2 pl-5">
-              {step.content.whatThisMeans.map((p) => (
-                <li key={p}>{p}</li>
-              ))}
-            </ul>
-            <InteractiveChecklist
-              items={step.content.checklist}
-              labelledBy={`step-${step.id}`}
-            />
-            {step.content.extraSections?.map((s) => (
-              <div key={s.title}>
-                <h4 className="font-semibold">{s.title}</h4>
-                <ul className="list-disc pl-5">
-                  {s.items.map((i) => (
-                    <li key={i}>{i}</li>
+            {step.content.whatThisMeans.length ? (
+              <ul className="list-disc space-y-2 pl-5 leading-7 text-[var(--color-text)] marker:text-[var(--color-brand)]">
+                {step.content.whatThisMeans.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            ) : null}
+            {step.content.checklist.length ? (
+              <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] p-5">
+                <p className="mb-3 text-sm font-semibold text-[var(--color-ink)]">What to do</p>
+                <InteractiveChecklist items={step.content.checklist} labelledBy={`step-${step.id}`} />
+              </div>
+            ) : null}
+            {step.content.extraSections?.map((extra) => (
+              <div key={extra.title}>
+                <h4 className="font-semibold text-[var(--color-ink)]">{extra.title}</h4>
+                <ul className="mt-2 list-disc space-y-2 pl-5 leading-7 marker:text-[var(--color-brand)]">
+                  {extra.items.map((item) => (
+                    <li key={item}>{item}</li>
                   ))}
                 </ul>
               </div>
             ))}
             {step.content.example ? (
-              <blockquote className="whitespace-pre-wrap border-l-2 border-border pl-4 text-sm">
+              <blockquote className="rounded-r-[var(--radius-lg)] border-l-4 border-[var(--color-trust)] bg-[var(--color-trust-soft)] px-5 py-4 text-sm leading-7 text-[var(--color-text)]">
                 {step.content.example}
               </blockquote>
             ) : null}
           </section>
         ))}
       </section>
+
       {workflow.evidenceChecklist?.length ? (
-        <section id="guide-evidence" className="scroll-mt-44 space-y-3">
-          <h2 id="evidence-heading" className="text-xl font-semibold">
-            Evidence / what helps
+        <section id="guide-evidence" className="scroll-mt-44 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-trust)]">Preparation</p>
+          <h2 id="evidence-heading" className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">
+            What to prepare
           </h2>
-          <InteractiveChecklist
-            items={workflow.evidenceChecklist}
-            labelledBy="evidence-heading"
-          />
+          <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">Only gather what genuinely helps with this process; you do not need paperwork for the sake of it.</p>
+          <div className="mt-4">
+            <InteractiveChecklist items={workflow.evidenceChecklist} labelledBy="evidence-heading" />
+          </div>
         </section>
       ) : null}
-      {sections.some((s) => s[0] === "guide-templates") ? (
-        <section id="guide-templates" className="scroll-mt-44 space-y-4">
-          <h2 className="text-xl font-semibold">Templates</h2>
-          {workflow.copyableTemplates?.map((t) => (
-            <div key={t.title}>
-              <h3 className="font-semibold">{t.title}</h3>
-              <p className="text-sm text-muted">{t.useWhen}</p>
-              <pre className="mt-2 whitespace-pre-wrap break-words rounded-xl bg-background-2 p-4 font-sans text-sm">
-                {t.body}
-              </pre>
+
+      {sections.some((section) => section[0] === "guide-templates") ? (
+        <section id="guide-templates" className="scroll-mt-44 space-y-5">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-brand)]">Ready-to-use wording</p>
+            <h2 className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">Templates</h2>
+          </div>
+          {workflow.copyableTemplates?.map((template) => (
+            <div key={template.title} className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+              <h3 className="font-semibold text-[var(--color-ink)]">{template.title}</h3>
+              <p className="mt-1 text-sm text-[var(--color-text-muted)]">{template.useWhen}</p>
+              <pre className="mt-3 whitespace-pre-wrap break-words rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] p-4 font-sans text-sm leading-7">{template.body}</pre>
             </div>
           ))}
           {workflow.templates
-            .filter((t) => t.href || t.body)
-            .map((t) => (
-              <div key={t.title}>
-                {t.href ? (
-                  <a
-                    href={t.href}
-                    className="inline-flex min-h-11 items-center underline"
-                  >
-                    {t.title} ({t.format})
+            .filter((template) => template.href || template.body)
+            .map((template) => (
+              <div key={template.title} className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+                {template.href ? (
+                  <a href={template.href} className="inline-flex min-h-11 items-center font-semibold text-[var(--color-brand)] hover:underline">
+                    {template.title} ({template.format}) →
                   </a>
                 ) : (
                   <>
-                    <h3 className="font-semibold">{t.title}</h3>
-                    <p className="whitespace-pre-wrap">{t.body}</p>
+                    <h3 className="font-semibold text-[var(--color-ink)]">{template.title}</h3>
+                    <p className="mt-3 whitespace-pre-wrap leading-7 text-[var(--color-text)]">{template.body}</p>
                   </>
                 )}
               </div>
@@ -213,70 +183,63 @@ export function PracticalGuideExperience({
           {resources ? <GuideFullGuideCta resources={resources} /> : null}
         </section>
       ) : null}
-      {sections.some((s) => s[0] === "guide-escalation") ? (
-        <section id="guide-escalation" className="scroll-mt-44">
-          <h2 className="text-xl font-semibold">If things go wrong</h2>
-          <ul className="mt-3 list-disc space-y-2 pl-5">
-            {[
-              ...(workflow.escalation ?? []),
-              ...(workflow.commonMistakes ?? []),
-            ].map((s) => (
-              <li key={s}>{s}</li>
+
+      {sections.some((section) => section[0] === "guide-escalation") ? (
+        <section id="guide-escalation" className="scroll-mt-44 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] p-5 sm:p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-danger)]">Problems and refusals</p>
+          <h2 className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">If things go wrong</h2>
+          <ul className="mt-4 list-disc space-y-2 pl-5 leading-7 text-[var(--color-text)] marker:text-[var(--color-danger)]">
+            {[...(workflow.escalation ?? []), ...(workflow.commonMistakes ?? [])].map((item) => (
+              <li key={item}>{item}</li>
             ))}
           </ul>
         </section>
       ) : null}
+
       {workflow.faqs?.length ? (
-        <GuideFaqSection
-          faqs={workflow.faqs}
-          headingId={`guide-faq-${article.slug}`}
-        />
+        <div id="guide-faq" className="scroll-mt-44">
+          <GuideFaqSection faqs={workflow.faqs} headingId={`guide-faq-${article.slug}`} />
+        </div>
       ) : null}
-      <section id="guide-sources" className="scroll-mt-44">
-        <h2 className="text-xl font-semibold">Official sources</h2>
-        <ul>
-          {(
-            workflow.officialLinks ??
-            article.sections.flatMap((s) => (s.type === "links" ? s.items : []))
-          ).map((s) => (
-            <li key={s.href}>
-              <a
-                href={s.href}
-                className="inline-flex min-h-11 items-center underline"
-              >
-                {s.label}
+
+      <section id="guide-sources" className="scroll-mt-44 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-trust)]">Trust and checking</p>
+        <h2 className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">Official sources</h2>
+        <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">Use these to check the underlying rule or process, especially if your circumstances are unusual.</p>
+        <ul className="mt-3 space-y-1">
+          {(workflow.officialLinks ?? article.sections.flatMap((section) => (section.type === "links" ? section.items : []))).map((source) => (
+            <li key={source.href}>
+              <a href={source.href} className="inline-flex min-h-11 items-center font-semibold text-[var(--color-brand)] hover:underline">
+                {source.label} →
               </a>
             </li>
           ))}
         </ul>
       </section>
-      <section
-        id="guide-personal"
-        className="scroll-mt-44 border-y border-border py-6"
-      >
-        <h2 className="text-xl font-semibold">Make this guide personal</h2>
-        <p className="my-3">
-          Tell Access Stamp what is happening and we’ll turn this guide into a
-          practical plan for your situation.
-        </p>
+
+      <section id="guide-personal" className="scroll-mt-44 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-brand-soft)] p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-brand)]">Personal support</p>
+          <h2 className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">Make this guide relevant to you</h2>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--color-text-muted)]">Describe your situation and Access Stamp will pull out the parts that matter, suggested next steps and useful wording.</p>
+        </div>
         <Link
-          className="inline-flex min-h-11 items-center font-semibold underline"
+          className="mt-4 inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand)] px-5 text-sm font-semibold text-white hover:bg-[var(--color-brand-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)] sm:mt-0"
           href={`/ask?guide=${encodeURIComponent(article.slug)}`}
         >
-          Personalise this guide →
+          Make this relevant to me →
         </Link>
       </section>
+
       {workflow.relatedGuides?.length ? (
         <section>
-          <h2 className="text-xl font-semibold">Related guides</h2>
-          <ul>
-            {workflow.relatedGuides.map((g) => (
-              <li key={g.href}>
-                <Link
-                  href={g.href}
-                  className="inline-flex min-h-11 items-center underline"
-                >
-                  {g.label}
+          <h2 className="font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">Related guides</h2>
+          <ul className="mt-3 divide-y divide-[var(--color-border)] rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-5">
+            {workflow.relatedGuides.slice(0, 3).map((guide) => (
+              <li key={guide.href}>
+                <Link href={guide.href} className="flex min-h-14 items-center justify-between gap-4 font-semibold text-[var(--color-ink)] hover:text-[var(--color-brand)]">
+                  <span>{guide.label}</span>
+                  <span aria-hidden="true">→</span>
                 </Link>
               </li>
             ))}
