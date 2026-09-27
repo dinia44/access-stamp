@@ -1,7 +1,6 @@
 import { AboutSection, AboutSectionHeader } from "@/components/about/about-section";
 import { ABOUT_PANEL } from "@/components/about/about-theme";
 import { VerificationBadge } from "@/components/verification-badge";
-import { FadeIn } from "@/components/fade-in";
 
 const LABELS = [
   {
@@ -46,14 +45,12 @@ export function VerificationLabels() {
       />
 
       <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {LABELS.map((label, index) => (
-          <FadeIn key={label.title} delayMs={index * 50}>
-            <li className={`h-full rounded-[20px] border p-6 ${label.panel}`}>
-              <VerificationBadge status={label.status} />
-              <h3 className="mt-4 text-base font-bold text-[#13201F]">{label.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-[#5E6A66]">{label.body}</p>
-            </li>
-          </FadeIn>
+        {LABELS.map((label) => (
+          <li key={label.title} className={`h-full rounded-[20px] border p-6 ${label.panel}`}>
+            <VerificationBadge status={label.status} />
+            <h3 className="mt-4 text-base font-bold text-[#13201F]">{label.title}</h3>
+            <p className="mt-2 text-sm leading-6 text-[#5E6A66]">{label.body}</p>
+          </li>
         ))}
       </ul>
 
