@@ -33,6 +33,7 @@ export type AnalyticsProps = {
   filter_key?: string;
   tool?: string;
   source?: string;
+  mode?: string;
   has_query?: boolean;
   has_filters?: boolean;
 };
@@ -56,6 +57,9 @@ function sanitize(props?: AnalyticsProps): AnalyticsProps | undefined {
   }
   if (typeof props.source === "string" && /^[a-z0-9_-]{1,48}$/i.test(props.source)) {
     out.source = props.source;
+  }
+  if (typeof props.mode === "string" && /^[a-z0-9_-]{1,48}$/i.test(props.mode)) {
+    out.mode = props.mode;
   }
   if (typeof props.has_query === "boolean") out.has_query = props.has_query;
   if (typeof props.has_filters === "boolean") out.has_filters = props.has_filters;

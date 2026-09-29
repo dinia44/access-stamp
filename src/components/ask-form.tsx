@@ -4,12 +4,43 @@ import Link from "next/link";
 import { ASK_NATIONS, type AskResult } from "@/lib/ask";
 import { track } from "@/lib/analytics";
 
+type AskMode = "personalise" | "explain" | "draft" | "checklist";
+
+const MODE_FIELDS: Record<AskMode, { label: string; placeholder: string; button: string; loading: string }> = {
+  personalise: {
+    label: "Tell us what’s happening",
+    placeholder: "For example: I asked my employer for changes to my desk, but nothing has happened yet.",
+    button: "Build my plan",
+    loading: "Building your plan…",
+  },
+  explain: {
+    label: "What would you like explained?",
+    placeholder: "For example: I don’t understand what counts as a reasonable adjustment or what my employer has to consider.",
+    button: "Explain this simply",
+    loading: "Preparing a clear explanation…",
+  },
+  draft: {
+    label: "What do you need to write, and who is it for?",
+    placeholder: "For example: I need a short email to my manager asking for an ergonomic mouse and workstation assessment.",
+    button: "Draft this for me",
+    loading: "Preparing your wording…",
+  },
+  checklist: {
+    label: "Where are you in the process?",
+    placeholder: "For example: I have spoken to my manager but have not made a written request or collected any evidence yet.",
+    button: "Build my checklist",
+    loading: "Building your checklist…",
+  },
+};
+
 export function AskForm({
   guideSlug,
   guideTitle,
+  mode = "personalise",
 }: {
   guideSlug?: string;
   guideTitle?: string;
+  mode?: AskMode;
 }) {
   const [situation, setSituation] = useState("");
   const [nation, setNation] = useState("England");
@@ -18,6 +49,8 @@ export function AskForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const heading = useRef<HTMLHeadingElement>(null);
+  const copy = MODE_FIELDS[mode];
+
   async function submit(e: React.FormEvent, follow = false) {
     e.preventDefault();
     const combined = follow
@@ -31,12 +64,12 @@ export function AskForm({
     }
     setLoading(true);
     setError("");
-    track("ai_tool_started", { tool: "ask" });
+    track("ai_tool_started", { tool: "ask", mode });
     try {
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ situation: combined, nation, guideSlug }),
+        body: JSON.stringify({ situation: combined, nation, guideSlug, mode }),
         signal: AbortSignal.timeout(45000),
       });
       const data = await response.json();
@@ -46,6 +79,7 @@ export function AskForm({
       setFollowUp("");
       track("ai_tool_completed", {
         tool: "ask",
+        mode,
         source: data.mode,
         result_count: data.sources.length,
       });
@@ -56,7 +90,7 @@ export function AskForm({
           ? err.message
           : "The request timed out. Try again or browse our guides.",
       );
-      track("ai_tool_failed", { tool: "ask" });
+      track("ai_tool_failed", { tool: "ask", mode });
     } finally {
       setLoading(false);
     }
@@ -67,10 +101,13 @@ export function AskForm({
     <div className="space-y-8">
       <form onSubmit={submit} className="space-y-5">
         {guideTitle ? (
-          <p className="text-sm text-muted">Using: {guideTitle}</p>
+          <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Using this guide</p>
+            <p className="mt-1 font-semibold text-[var(--color-ink)]">{guideTitle}</p>
+          </div>
         ) : null}
         <label className="block font-semibold" htmlFor="ask-situation">
-          Tell us what’s happening
+          {copy.label}
           <textarea
             id="ask-situation"
             className={field}
@@ -80,7 +117,7 @@ export function AskForm({
             maxLength={4000}
             value={situation}
             onChange={(e) => setSituation(e.target.value)}
-            placeholder="For example: I need changes to my desk at work, but I’m not sure what to ask for."
+            placeholder={copy.placeholder}
           />
         </label>
         <label className="block font-semibold" htmlFor="ask-nation">
@@ -98,7 +135,7 @@ export function AskForm({
         </label>
         <p className="text-sm text-muted">
           Avoid sharing information we don’t need to know. Your text may be sent
-          to OpenAI to prepare your guide.{" "}
+          to OpenAI to prepare your result.{" "}
           <Link className="underline" href="/legal/privacy">
             Read our Privacy Policy
           </Link>
@@ -108,14 +145,14 @@ export function AskForm({
           disabled={loading}
           className="min-h-12 rounded-full bg-[#C8430F] px-6 py-3 font-semibold text-white disabled:opacity-60"
         >
-          {loading ? "Preparing your guide…" : "Build my guide"}
+          {loading ? copy.loading : copy.button}
         </button>
       </form>
       <p role="status" aria-live="polite" className="text-sm">
         {loading
-          ? "Finding relevant guides and preparing your next steps…"
+          ? copy.loading
           : result
-            ? "Your guide is ready."
+            ? "Your result is ready."
             : ""}
       </p>
       {error ? (
@@ -132,12 +169,18 @@ export function AskForm({
           className="space-y-6 border-t border-border pt-6"
         >
           <h2 ref={heading} tabIndex={-1} className="text-2xl font-bold">
-            Your practical guide
+            {mode === "explain"
+              ? "Plain-English explanation"
+              : mode === "draft"
+                ? "Draft wording"
+                : mode === "checklist"
+                  ? "Your checklist"
+                  : "Your practical plan"}
           </h2>
           {result.mode === "guide-extracts" ? (
             <p className="text-sm text-muted">
               Personalised generation is unavailable. Showing matching guide
-              extracts, not an AI-generated plan.
+              extracts, not an AI-generated result.
             </p>
           ) : (
             <p className="text-sm text-muted">
@@ -220,7 +263,7 @@ export function AskForm({
               disabled={loading}
               className="min-h-11 rounded-full border border-border px-5 py-2 font-semibold"
             >
-              Update my guide
+              Update my result
             </button>
           </form>
         </section>
