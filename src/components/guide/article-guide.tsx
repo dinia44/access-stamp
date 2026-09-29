@@ -22,6 +22,8 @@ export function ArticleGuide({ article }: { article: AdviceArticle }) {
     : article.excerpt
       ? [article.excerpt]
       : [];
+  const guideAnchor = headings[0]?.id ?? "guide-content";
+  const aiHref = (mode: string) => `/ask?guide=${encodeURIComponent(article.slug)}&mode=${mode}`;
 
   return (
     <article className="mx-auto max-w-3xl space-y-8 px-4 py-8 sm:px-6 sm:py-12">
@@ -32,6 +34,7 @@ export function ArticleGuide({ article }: { article: AdviceArticle }) {
         summary={summary}
         actions={article.firstThreeActions ?? []}
         readText={`${article.title}. ${spoken}`}
+        guideAnchor={guideAnchor}
       />
 
       {headings.length ? (
@@ -44,6 +47,11 @@ export function ArticleGuide({ article }: { article: AdviceArticle }) {
               On this page
             </summary>
             <ul className="border-t border-[var(--color-border)] pt-2">
+              <li>
+                <a className="inline-flex min-h-11 items-center text-sm font-semibold text-[var(--color-brand)] hover:underline" href="#guide-start-here">
+                  Start here
+                </a>
+              </li>
               {headings.map((heading) => (
                 <li key={heading.id}>
                   <a
@@ -59,7 +67,7 @@ export function ArticleGuide({ article }: { article: AdviceArticle }) {
         </nav>
       ) : null}
 
-      <div className="space-y-7 text-[var(--color-ink)]">
+      <div id="guide-content" className="space-y-7 text-[var(--color-ink)]">
         {article.sections.map((section, index) => {
           if (section.type === "h2") {
             return (
@@ -129,22 +137,30 @@ export function ArticleGuide({ article }: { article: AdviceArticle }) {
         })}
       </div>
 
-      <section className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-brand-soft)] p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-brand)]">Personal support</p>
-          <h2 className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">
-            Make this guide relevant to you
-          </h2>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--color-text-muted)]">
-            Tell Access Stamp what is happening and get the relevant next steps without rereading the whole guide.
-          </p>
+      <section className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]" aria-labelledby={`guide-ai-${article.slug}`}>
+        <div className="p-5 sm:p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-trust)]">Access Stamp AI</p>
+          <h2 id={`guide-ai-${article.slug}`} className="mt-2 font-[family-name:var(--font-heading)] text-2xl font-medium tracking-[-0.02em] text-[var(--color-ink)]">Use this guide, don’t just read it</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-muted)]">Choose what you need help doing next. Access Stamp will use this guide as context rather than starting from scratch.</p>
         </div>
-        <Link
-          href={`/ask?guide=${encodeURIComponent(article.slug)}`}
-          className="mt-4 inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand)] px-5 text-sm font-semibold text-white hover:bg-[var(--color-brand-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)] sm:mt-0"
-        >
-          Make this relevant to me →
-        </Link>
+        <div className="grid border-t border-[var(--color-border)] sm:grid-cols-2">
+          <Link href={aiHref("personalise")} className="min-h-32 p-5 hover:bg-[var(--color-trust-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-focus-ring)] sm:border-r sm:border-[var(--color-border)]">
+            <span className="text-sm font-semibold text-[var(--color-ink)]">Make this relevant to me</span>
+            <span className="mt-1 block text-sm leading-6 text-[var(--color-text-muted)]">Get a sourced plan based on what is happening to you.</span>
+          </Link>
+          <Link href={aiHref("explain")} className="min-h-32 border-t border-[var(--color-border)] p-5 hover:bg-[var(--color-information-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-focus-ring)] sm:border-t-0">
+            <span className="text-sm font-semibold text-[var(--color-ink)]">Explain this simply</span>
+            <span className="mt-1 block text-sm leading-6 text-[var(--color-text-muted)]">Tell us which part is confusing and get a plain-English explanation.</span>
+          </Link>
+          <Link href={aiHref("draft")} className="min-h-32 border-t border-[var(--color-border)] p-5 hover:bg-[var(--color-brand-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-focus-ring)] sm:border-r">
+            <span className="text-sm font-semibold text-[var(--color-ink)]">Draft this for me</span>
+            <span className="mt-1 block text-sm leading-6 text-[var(--color-text-muted)]">Turn the guide into wording for an email, request or complaint.</span>
+          </Link>
+          <Link href={aiHref("checklist")} className="min-h-32 border-t border-[var(--color-border)] p-5 hover:bg-[var(--color-surface-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-focus-ring)]">
+            <span className="text-sm font-semibold text-[var(--color-ink)]">Build my checklist</span>
+            <span className="mt-1 block text-sm leading-6 text-[var(--color-text-muted)]">Reduce the guide to the actions and evidence you need to track.</span>
+          </Link>
+        </div>
       </section>
     </article>
   );
