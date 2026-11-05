@@ -26,9 +26,9 @@ export function HomePopularVenues() {
               Example Access Stamp venue report
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--color-text-muted)]">
-              Demonstration listings while we grow venue coverage. Check the
-              evidence label and confirm important details with the venue before
-              travelling.
+              See what a venue listing could look like. The stock photos and
+              sample access details are illustrative and do not describe the
+              named venue.
             </p>
           </div>
           <Link

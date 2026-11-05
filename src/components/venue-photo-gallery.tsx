@@ -12,13 +12,20 @@ type VenuePhoto = {
   measurement?: string;
 };
 
-export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
+export function VenuePhotoGallery({
+  photos,
+  isExample = false,
+}: {
+  photos: VenuePhoto[];
+  isExample?: boolean;
+}) {
   const [active, setActive] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [broken, setBroken] = useState<Record<number, boolean>>({});
   const expandTriggerRef = useRef<HTMLButtonElement | null>(null);
   const trapRef = useFocusTrap<HTMLDivElement>(expanded);
   const current = photos[active];
+  const photoLabel = isExample ? `Example photo · ${current.label}` : current.label;
 
   function cloudinary(src: string, transform: string) {
     return src.includes("/upload/") ? src.replace("/upload/", `/upload/${transform}/`) : src;
@@ -80,7 +87,7 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
           type="button"
           onClick={() => setExpanded(true)}
           className="group relative block w-full cursor-pointer overflow-hidden rounded-[var(--radius-card)] border border-border bg-background-2 text-left transition-shadow hover:shadow-[var(--shadow-soft)]"
-          aria-label={`Expand photo: ${current.label}`}
+          aria-label={isExample ? `Expand ${photoLabel}` : `Expand photo: ${current.label}`}
         >
           <div className="relative h-[280px] sm:h-[360px]">
             {broken[active] ? (
@@ -103,9 +110,9 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
             Expand
           </div>
           <div className="absolute left-3 top-3 rounded-full bg-card/95 px-3 py-1 text-xs font-semibold text-heading shadow-[var(--shadow-soft)]">
-            {current.label}
+            {photoLabel}
           </div>
-          {current.measurement ? (
+          {current.measurement && !isExample ? (
             <div className="absolute bottom-3 left-3 rounded-full bg-blue px-3 py-1 text-xs font-semibold text-white">
               {current.measurement}
             </div>
@@ -157,7 +164,7 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
           className="fixed inset-0 z-[120] bg-black/85 p-4 sm:p-8"
           role="dialog"
           aria-modal="true"
-          aria-label={`Photo gallery: ${current.label}`}
+          aria-label={`Photo gallery: ${photoLabel}`}
         >
           <button
             type="button"
@@ -196,9 +203,9 @@ export function VenuePhotoGallery({ photos }: { photos: VenuePhoto[] }) {
                 )}
               </div>
               <div className="absolute left-3 top-3 rounded-full bg-black/55 px-3 py-1 text-xs font-semibold text-white">
-                {current.label}
+                {photoLabel}
               </div>
-              {current.measurement ? (
+              {current.measurement && !isExample ? (
                 <div className="absolute bottom-3 left-3 rounded-full bg-blue px-3 py-1 text-xs font-semibold text-white">
                   {current.measurement}
                 </div>

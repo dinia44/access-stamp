@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ACCESS_AREAS } from "@/lib/venue-access-features";
 import { VenueBackLink } from "@/components/venue/venue-back-link";
@@ -285,13 +286,19 @@ export default async function VenueDetailPage({
                 id="venue-photos-heading"
                 className="text-lg font-semibold text-heading"
               >
-                Photo guide with measurements
+                {isDemo ? "Example access photos" : "Photo guide with measurements"}
               </h2>
               <p className="text-sm text-muted">
-                Click through images of the venue, entrance, doorway width,
-                bathroom, and internal layout.
+                {isDemo
+                  ? "These stock photos show the kinds of images a listing can include. They show other locations and do not verify this venue or the example measurements."
+                  : "Click through images of the venue, entrance, doorway width, bathroom, and internal layout."}
               </p>
-              <VenuePhotoGallery photos={v.photos!} />
+              <VenuePhotoGallery photos={v.photos!} isExample={isDemo} />
+              {isDemo ? (
+                <Link href="/for-venues/photo-guide" className="inline-flex min-h-11 items-center text-sm font-semibold underline">
+                  See how to take venue access photos
+                </Link>
+              ) : null}
             </section>
           ) : null}
 
@@ -408,20 +415,24 @@ export default async function VenueDetailPage({
                       sizes="(max-width: 1024px) 100vw, 400px"
                     />
                   </div>
+                ) : isDemo ? (
+                  <p className="text-sm text-muted">The location in this report is illustrative.</p>
                 ) : (
                   <div className="grid h-44 place-items-center rounded-[var(--radius-card)] border border-border bg-background px-4 text-center text-sm font-semibold text-muted">
                     Use the address area below with your route planner. A map
                     view is available from the venue finder list.
                   </div>
                 )}
-                <p className="text-xs text-muted">
-                  Address area:{" "}
-                  <span className="font-semibold text-heading">
-                    {v.location}
-                  </span>
-                  . Use this with your route planner and check Blue Badge
-                  options or drop-off points before leaving.
-                </p>
+                {!isDemo ? (
+                  <p className="text-xs text-muted">
+                    Address area:{" "}
+                    <span className="font-semibold text-heading">
+                      {v.location}
+                    </span>
+                    . Use this with your route planner and check Blue Badge
+                    options or drop-off points before leaving.
+                  </p>
+                ) : null}
               </div>
             </div>
 

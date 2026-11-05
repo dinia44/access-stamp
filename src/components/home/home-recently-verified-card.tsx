@@ -47,6 +47,11 @@ export function HomeRecentlyVerifiedCard({ venue, distance }: Props) {
             className="object-cover motion-safe:transition motion-safe:duration-300 motion-safe:group-hover:scale-[1.02]"
           />
           <HeroConfidenceSeal label={sealLabel} className="right-3 top-3" />
+          {venue.verification === "demo" ? (
+            <span className="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1 text-xs font-semibold text-heading">
+              Example photo
+            </span>
+          ) : null}
         </div>
 
         <div className="relative flex flex-1 flex-col p-5">

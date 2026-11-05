@@ -1,4 +1,5 @@
-import { CLOUDINARY_MEDIA } from "@/lib/cloudinary-media";
+import Image from "next/image";
+import { EXAMPLE_VENUE_PHOTOS } from "@/lib/venue-photo-examples";
 
 const TRUST_POINTS = [
   "Real access detail",
@@ -59,14 +60,20 @@ export function VenueFinderHero() {
           </ul>
         </div>
 
-        <div className="aspect-[16/10] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={CLOUDINARY_MEDIA.homepageVenueInterior}
-            alt="Warm café interior with accessible layout and spacious seating"
-            className="h-full w-full object-cover"
-          />
-        </div>
+        <figure className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)]">
+          <div className="relative aspect-[16/10]">
+            <Image
+              src={EXAMPLE_VENUE_PHOTOS.seating.src}
+              alt={EXAMPLE_VENUE_PHOTOS.seating.alt}
+              fill
+              sizes="(max-width: 1023px) 100vw, 560px"
+              className="object-cover"
+            />
+          </div>
+          <figcaption className="px-4 py-2 text-sm text-muted">
+            Example photo from Unsplash
+          </figcaption>
+        </figure>
       </div>
     </section>
   );
