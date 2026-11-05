@@ -36,6 +36,26 @@ export default function ForVenuesPage() {
           Enquire about a review
         </a>
       </header>
+      <section className="rounded-[var(--radius-card)] border border-border bg-[var(--color-surface-subtle)] p-5 sm:p-7">
+        <h2 className="text-2xl font-semibold">Free listings for our Uckfield pilot</h2>
+        <p className="mt-3 max-w-3xl">
+          Tell us how visitors arrive, get inside and use the venue. Your team can
+          take photos on a phone using our step-by-step guide. We’ll put together
+          a free listing and send you a draft to check before it goes live.
+        </p>
+        <p className="mt-3 max-w-3xl">
+          If you’d like us to take the photos, we can visit venues around
+          Uckfield for a small fee, agreed before booking.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-x-5">
+          <Link href="/for-venues/photo-guide" className="inline-flex min-h-11 items-center font-semibold underline">
+            View the visual photo guide
+          </Link>
+          <Link href="/venue/harbour-kitchen-liverpool#venue-photos" className="inline-flex min-h-11 items-center font-semibold underline">
+            See the example listing
+          </Link>
+        </div>
+      </section>
       <section>
         <h2 className="text-2xl font-semibold">What will my venue get?</h2>
         <p className="mt-3 max-w-3xl">
@@ -60,7 +80,7 @@ export default function ForVenuesPage() {
         </Link>
       </section>
       <section id="pilot-programme">
-        <h2 className="text-2xl font-semibold">Which review do I need?</h2>
+        <h2 className="text-2xl font-semibold">Optional on-site reviews</h2>
         <p className="my-3 text-muted">
           Pilot pricing is available on enquiry. We’ll confirm scope and costs
           before booking.

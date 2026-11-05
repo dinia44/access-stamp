@@ -77,7 +77,7 @@ export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) 
 
         {isDemo ? (
           <span className="absolute left-3 top-3 rounded-full bg-[var(--color-information-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--color-information)]">
-            Demo example
+            Example photo
           </span>
         ) : null}
       </div>
@@ -102,7 +102,6 @@ export function VenueGridCard({ venue, userCenter, selected, onSelect }: Props) 
         </p>
 
         <div className="mt-3">
-          {/* Avoid repeating demo explanation when the photo already shows Demo example */}
           <VenueConfidenceBadge status={confidenceStatus} showHint={false} />
         </div>
 

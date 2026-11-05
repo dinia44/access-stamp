@@ -1,4 +1,5 @@
 import type { VenueImageTheme } from "@/lib/venue-finder-category";
+import { EXAMPLE_VENUE_PHOTOS } from "@/lib/venue-photo-examples";
 
 export type VenueFinderPhoto = {
   src: string;
@@ -45,10 +46,7 @@ export const HERO_FLOAT_CARDS = [
 
 /** Default sample listing photos — warm interior, hotel dusk, accessible toilet */
 export const SAMPLE_VENUE_PHOTOS: Record<string, VenueFinderPhoto> = {
-  "harbour-kitchen-liverpool": {
-    src: "https://res.cloudinary.com/dnjaoqv42/image/upload/q_auto/f_auto/v1778070383/harbour-overview_xhnawl.png",
-    alt: "Harbour Kitchen front view and step-free approach",
-  },
+  "harbour-kitchen-liverpool": EXAMPLE_VENUE_PHOTOS.exterior,
   "sample-cafe": {
     src: u("photo-1493854034680-05fbe662e774", 720, "center"),
     alt: "Warm café interior with wooden tables and plants",

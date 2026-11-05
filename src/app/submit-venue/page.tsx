@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Container } from "@/components/container";
 import { SubmitVenueForm } from "@/components/submit-venue-form";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
@@ -20,7 +21,9 @@ export default async function SubmitVenuePage({
       <p className="mb-8 text-sm">
         We’ll review the information and contact you if we need more detail.
         Submitting a venue does not make it independently verified or guarantee
-        publication.
+        publication. If you manage the venue, our{" "}
+        <Link href="/for-venues/photo-guide" className="underline">visual photo guide</Link>{" "}
+        shows what to capture.
       </p>
       <SubmitVenueForm defaultVenueName={venue?.name} />
     </Container>
