@@ -17,10 +17,7 @@ const NEEDS = [
 export function VenueNeedsCheck({ venue }: { venue: Venue }) {
   const [needs, setNeeds] = useState<string[]>([]);
   return (
-    <section
-      id="venue-fit"
-      className="scroll-mt-44 space-y-4 border-y border-border py-7"
-    >
+    <section id="venue-fit" className="venue-report-needs space-y-4">
       <h2 className="text-2xl font-semibold">
         Check this venue against my needs
       </h2>

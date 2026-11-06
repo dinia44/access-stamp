@@ -10,7 +10,13 @@ type Props = {
   beforeYouGo: string[];
 };
 
-export function VenueVisitPlanActions({ venueName, location, summary, tags, beforeYouGo }: Props) {
+export function VenueVisitPlanActions({
+  venueName,
+  location,
+  summary,
+  tags,
+  beforeYouGo,
+}: Props) {
   const textPlan = useMemo(
     () =>
       [
@@ -42,19 +48,15 @@ export function VenueVisitPlanActions({ venueName, location, summary, tags, befo
   }
 
   return (
-    <div className="mt-4 flex flex-wrap gap-2">
+    <div className="venue-report-plan-actions">
       <button
         type="button"
-        className="rounded-[var(--radius-ui)] border border-border bg-background px-3 py-2 text-xs font-semibold text-heading hover:bg-background-2"
+        className="text-heading"
         onClick={() => window.print()}
       >
         Print visit plan
       </button>
-      <button
-        type="button"
-        className="rounded-[var(--radius-ui)] border border-border bg-background px-3 py-2 text-xs font-semibold text-heading hover:bg-background-2"
-        onClick={savePlan}
-      >
+      <button type="button" className="text-heading" onClick={savePlan}>
         Save visit plan
       </button>
     </div>

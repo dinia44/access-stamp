@@ -1,43 +1,55 @@
 "use client";
 
-const SECTIONS = [
-  { id: "venue-summary", label: "Summary" },
-  { id: "venue-fit", label: "My needs" },
-  { id: "venue-measurements", label: "Measurements" },
-  { id: "venue-photos", label: "Photos" },
-  { id: "venue-unknowns", label: "Unknowns" },
-  { id: "venue-plan", label: "Plan" },
-] as const;
+import { useEffect, useState } from "react";
 
-/** Compact in-page navigator for mobile venue task hierarchy. */
+const SECTIONS = [
+  { id: "venue-summary", label: "Overview" },
+  { id: "venue-entrance", label: "Entrance" },
+  { id: "venue-inside", label: "Inside" },
+  { id: "venue-toilets", label: "Toilets" },
+  { id: "venue-arrival", label: "Getting here" },
+  { id: "venue-fit", label: "My needs" },
+];
+
 export function VenueDetailSectionNav({
   hasPhotos = true,
 }: {
   hasPhotos?: boolean;
 }) {
-  const items = SECTIONS.filter((s) => hasPhotos || s.id !== "venue-photos");
-
+  const [active, setActive] = useState("venue-summary");
+  useEffect(() => {
+    const targets = SECTIONS.map(({ id }) =>
+      document.getElementById(id),
+    ).filter((el): el is HTMLElement => Boolean(el));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries)
+          if (entry.isIntersecting) setActive(entry.target.id);
+      },
+      { rootMargin: "-15% 0px -65% 0px" },
+    );
+    targets.forEach((target) => observer.observe(target));
+    return () => observer.disconnect();
+  }, []);
   return (
-    <nav
-      aria-label="On this page"
-      className="sticky top-20 z-20 -mx-1 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-1 py-2 backdrop-blur-sm lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none"
-    >
-      <ul className="flex flex-wrap items-center gap-x-1 gap-y-1 text-sm">
-        {items.map((item, index) => (
-          <li key={item.id} className="flex items-center gap-1">
-            {index > 0 ? (
-              <span className="text-[var(--color-text-muted)]" aria-hidden>
-                ·
-              </span>
-            ) : null}
+    <nav aria-label="On this page" className="venue-report-nav">
+      <ul>
+        {SECTIONS.map((item) => (
+          <li key={item.id}>
             <a
               href={`#${item.id}`}
-              className="inline-flex min-h-11 items-center rounded-md px-1.5 py-1 font-semibold text-[var(--color-ink)] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)]"
+              aria-current={active === item.id ? "location" : undefined}
+              onClick={() => setActive(item.id)}
             >
               {item.label}
             </a>
           </li>
         ))}
+        {hasPhotos ? (
+          <li>
+            <a href="#venue-photos">Photos</a>
+          </li>
+        ) : null}
       </ul>
     </nav>
   );
