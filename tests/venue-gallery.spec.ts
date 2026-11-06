@@ -6,9 +6,13 @@ const report = "/venue/harbour-kitchen-liverpool";
 for (const width of [1280, 390]) {
   test(`venue gallery can browse, expand and restore focus at ${width}px`, async ({
     page,
-  }) => {
+  }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(report);
+    await page.screenshot({
+      path: testInfo.outputPath("venue-layout.png"),
+      fullPage: true,
+    });
     const gallery = page.getByRole("region", { name: "Venue photo gallery" });
     await expect(
       gallery.getByRole("button", {

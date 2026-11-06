@@ -205,7 +205,7 @@ export default async function VenueDetailPage({
           <VenueDetailActions slug={v.slug} venueName={v.name} />
           <p className="venue-report-intro">
             {isDemo
-              ? "This demonstration uses example photos and access details. It has not been independently audited and must not be used to plan a real visit."
+              ? "This demonstration listing uses example photos and access details. It has not been independently audited and must not be used to plan a real visit."
               : summary}
           </p>
         </header>
