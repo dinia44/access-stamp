@@ -6,10 +6,7 @@ import { ACCESS_AREAS } from "@/lib/venue-access-features";
 import { VenueBackLink } from "@/components/venue/venue-back-link";
 import { VenueContact } from "@/components/venue/venue-contact";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { FadeIn } from "@/components/fade-in";
 import { Container } from "@/components/container";
-import { PageSectionTitle } from "@/components/page-layout";
-import { Button } from "@/components/ui";
 import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { AccessCheckedMethodology } from "@/components/venue/access-checked-methodology";
 import { SAMPLE_VENUES } from "@/lib/mock-data";
@@ -18,10 +15,6 @@ import { SetChatContext } from "@/components/chat/set-context";
 import { VenueDetailActions } from "@/components/venue-detail-actions";
 import { VenuePhotoGallery } from "@/components/venue-photo-gallery";
 import { VenueVisitPlanActions } from "@/components/venue-visit-plan-actions";
-import {
-  FeatureChip,
-  getVenueFeatureChipItems,
-} from "@/components/venue/feature-chip";
 import { VenueNeedsCheck } from "@/components/venue/venue-needs-check";
 import { VenueDetailSectionNav } from "@/components/venue/venue-detail-section-nav";
 import { buildPageMetadata } from "@/lib/seo/page-metadata";
@@ -29,10 +22,10 @@ import {
   buildBreadcrumbJsonLd,
   buildVenueLocalBusinessJsonLd,
 } from "@/lib/seo/venue-jsonld";
-import { DemoBanner } from "@/components/trust/DemoBanner";
 import { BeforeYouGo } from "@/components/venue/BeforeYouGo";
 import { VenueDecisionSummary } from "@/components/venue/VenueDecisionSummary";
 import { VenueNextSteps } from "@/components/venue/venue-next-steps";
+import "./venue-report.css";
 import { isDemoVenue } from "@/lib/venue-card";
 import { suggestVenueMailto } from "@/lib/venue-submission";
 
@@ -57,19 +50,6 @@ function statusDetails(v: "yes" | "no" | "unknown" | undefined, demo: boolean) {
   if (v === "no")
     return { icon: "×", label: "Not available", cls: "text-error" };
   return { icon: "!", label: "Check before visiting", cls: "text-warning" };
-}
-
-function venueEmoji(type: string) {
-  if (type === "Restaurant" || type === "Café" || type === "Pub & Bar")
-    return "🍽️";
-  if (type === "Hotel") return "🏨";
-  if (type === "Shopping") return "🛍️";
-  if (type === "Arts & Culture") return "🎭";
-  if (type === "Entertainment") return "🎬";
-  if (type === "Sports & Fitness") return "🏋️";
-  if (type === "Outdoor") return "🌳";
-  if (type === "Healthcare") return "🏥";
-  return "📍";
 }
 
 const VENUE_COPY: Record<
@@ -156,7 +136,6 @@ export default async function VenueDetailPage({
   const resolved = await params;
   const v = SAMPLE_VENUES.find((x) => x.slug === resolved.slug);
   if (!v) return notFound();
-  const yesCount = Object.values(v.features).filter((x) => x === "yes").length;
   const unknownFeatures = Object.entries(v.features)
     .filter(([, value]) => value === "unknown")
     .map(([feature]) => feature);
@@ -173,8 +152,15 @@ export default async function VenueDetailPage({
     ? "Example Access Stamp venue report. Measurements and features demonstrate the product and must not be used to plan a visit."
     : v.summary;
   const canonical = getVenueBySlug(v.slug);
-  const featureChips = getVenueFeatureChipItems(v);
   const hasPhotos = Boolean(v.photos?.length);
+  // Use the existing seating photograph as this demo's opening view. Preserve all photos.
+  const initialPhoto = isDemo
+    ? Math.max(
+        0,
+        v.photos?.findIndex((photo) => photo.src.endsWith("/seating.webp")) ??
+          0,
+      )
+    : 0;
   const beforeYouGo = custom?.beforeYouGo ?? [
     "Call ahead to confirm current layout and staff support.",
     "Check Blue Badge parking and nearest drop-off before leaving.",
@@ -189,12 +175,12 @@ export default async function VenueDetailPage({
   ]);
 
   return (
-    <div className="premium-section-hero min-h-screen">
+    <div className="venue-report">
       <SetChatContext page={{ kind: "venue", slug: v.slug, name: v.name }} />
       <JsonLdScript data={schema} />
       <JsonLdScript data={breadcrumbSchema} />
-      <Container className="py-12 md:py-16">
-        <div className="space-y-8 md:space-y-10">
+      <Container className="venue-report-container">
+        <div className="venue-report-breadcrumbs">
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
@@ -202,196 +188,173 @@ export default async function VenueDetailPage({
               { label: v.name },
             ]}
           />
+        </div>
 
-          {/* 1. Demo / evidence warning */}
-          {isDemo ? <DemoBanner /> : null}
-
-          <VenueDetailSectionNav hasPhotos={hasPhotos} />
-
-          <FadeIn>
-            {/* 2. Venue identity / location */}
-            <div className="border-b border-[var(--color-border)] pb-6">
-              <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <span
-                      className="grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] text-xl"
-                      aria-hidden
-                    >
-                      {venueEmoji(v.type)}
-                    </span>
-                    <div>
-                      <p className="page-hero-eyebrow">Access report</p>
-                      <h1 className="mt-1 text-3xl font-bold leading-[1.05] tracking-[-0.03em] text-heading sm:text-4xl">
-                        {v.name}
-                      </h1>
-                      <div className="mt-2 flex flex-wrap items-center gap-2">
-                        <span className="text-sm font-semibold text-muted">
-                          {v.location}
-                        </span>
-                        <span className="rounded-full bg-[var(--color-information-soft)] px-3 py-1 text-xs font-semibold text-[var(--color-information)]">
-                          {v.type}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="max-w-[65ch] text-base leading-7 text-text">
-                    {summary}
-                  </p>
-                  {featureChips.length > 0 ? (
-                    <ul
-                      className="flex flex-wrap gap-2 pt-1"
-                      aria-label="Key access features"
-                    >
-                      {featureChips.map((chip) => (
-                        <li key={chip.label}>
-                          <FeatureChip icon={chip.icon} label={chip.label} />
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </div>
-                <div className="flex flex-col items-start gap-4 lg:items-end">
-                  <VenueDetailActions slug={v.slug} venueName={v.name} />
-                </div>
-              </div>
-            </div>
-          </FadeIn>
-
-          {/* 3–4. Critical measurements + access summary + confirmed/unavailable/unknown */}
-          <VenueDecisionSummary
-            venue={v}
-            confirmedFeatures={confirmedFeatures}
-            unavailableFeatures={unavailableFeatures}
-            unknownFeatures={unknownFeatures}
-            unknownCount={unknownCount}
-          />
-
-          <VenueNextSteps
-            unknownFeatures={unknownFeatures}
-            confirmedFeatures={confirmedFeatures}
-            unavailableFeatures={unavailableFeatures}
-          />
-
-          <VenueNeedsCheck venue={v} />
-
-          {/* 5. Photos */}
-          {hasPhotos ? (
-            <section
-              id="venue-photos"
-              className="scroll-mt-24 space-y-3"
-              aria-labelledby="venue-photos-heading"
-            >
-              <h2
-                id="venue-photos-heading"
-                className="text-lg font-semibold text-heading"
-              >
-                {isDemo ? "Example access photos" : "Photo guide with measurements"}
-              </h2>
-              <p className="text-sm text-muted">
-                {isDemo
-                  ? "These stock photos show the kinds of images a listing can include. They show other locations and do not verify this venue or the example measurements."
-                  : "Click through images of the venue, entrance, doorway width, bathroom, and internal layout."}
-              </p>
-              <VenuePhotoGallery photos={v.photos!} isExample={isDemo} />
+        <header className="venue-report-heading">
+          <div>
+            <h1>{v.name}</h1>
+            <p className="venue-report-meta">
+              <span>{v.type}</span>
+              <span aria-hidden="true">·</span>
+              <span>{v.location}</span>
               {isDemo ? (
-                <Link href="/for-venues/photo-guide" className="inline-flex min-h-11 items-center text-sm font-semibold underline">
-                  See how to take venue access photos
-                </Link>
+                <span className="venue-report-label">Example listing</span>
               ) : null}
-            </section>
-          ) : null}
+            </p>
+          </div>
+          <VenueDetailActions slug={v.slug} venueName={v.name} />
+          <p className="venue-report-intro">
+            {isDemo
+              ? "This demonstration uses example photos and access details. It has not been independently audited and must not be used to plan a real visit."
+              : summary}
+          </p>
+        </header>
 
-          {/* 7. Full accessibility breakdown */}
-          <section className="space-y-6">
-            <PageSectionTitle
-              title="Accessibility breakdown"
-              description="Feature-by-feature status so you can decide quickly whether this place fits your access needs."
+        {hasPhotos ? (
+          <section
+            id="venue-photos"
+            className="venue-report-gallery"
+            aria-labelledby="venue-photos-heading"
+          >
+            <h2 id="venue-photos-heading" className="sr-only">
+              {isDemo ? "Example access photos" : "Venue photos"}
+            </h2>
+            <VenuePhotoGallery
+              key={v.slug}
+              photos={v.photos!}
+              isExample={isDemo}
+              initialIndex={initialPhoto}
             />
-            <div className="grid gap-4 md:grid-cols-2">
-              {ACCESS_AREAS.map((area) => (
-                <div
+            {isDemo ? (
+              <div className="venue-report-photo-note">
+                <p>
+                  Example photos from different locations. They do not show this
+                  venue or verify the sample measurements.
+                </p>
+                <Link href="/for-venues/photo-guide">
+                  How to take access photos
+                </Link>
+              </div>
+            ) : null}
+          </section>
+        ) : null}
+
+        <VenueDetailSectionNav hasPhotos={hasPhotos} />
+
+        <div className="venue-report-layout">
+          <div className="venue-report-content">
+            <VenueDecisionSummary
+              venue={v}
+              confirmedFeatures={confirmedFeatures}
+              unavailableFeatures={unavailableFeatures}
+              unknownFeatures={unknownFeatures}
+              unknownCount={unknownCount}
+            />
+
+            <section
+              className="venue-report-section"
+              aria-labelledby="before-visit-heading"
+            >
+              <h2 id="before-visit-heading">Before you visit</h2>
+              <ul className="venue-report-tips">
+                {beforeYouGo.map((tip) => (
+                  <li key={tip}>{tip}</li>
+                ))}
+              </ul>
+              <Link href="/methodology" className="venue-report-text-link">
+                How we describe access
+              </Link>
+            </section>
+
+            <section
+              className="venue-report-section"
+              aria-labelledby="access-breakdown-heading"
+            >
+              <h2 id="access-breakdown-heading">Access in detail</h2>
+              <p className="venue-report-muted">
+                {isDemo
+                  ? "Illustrative features for this demonstration. These are not verified details about a real venue."
+                  : "Reported features, limitations and information that still needs checking."}
+              </p>
+              {ACCESS_AREAS.map((area, index) => (
+                <section
                   key={area.title}
-                  className="rounded-[var(--radius-card)] border border-border bg-[var(--color-surface)] p-5"
+                  id={
+                    [
+                      "venue-entrance",
+                      "venue-inside",
+                      "venue-toilets",
+                      "venue-arrival",
+                    ][index]
+                  }
+                  className="venue-report-access-area"
+                  aria-labelledby={`access-area-${index}`}
                 >
-                  <div className="text-sm font-semibold text-heading">
-                    {area.title}
-                  </div>
-                  <div className="mt-3 grid gap-2">
+                  <h3 id={`access-area-${index}`}>{area.title}</h3>
+                  <dl className="venue-report-feature-rows">
                     {area.points.map((key) => {
-                      const s = statusDetails(v.features[key], isDemo);
+                      const status = statusDetails(v.features[key], isDemo);
                       return (
-                        <div
-                          key={key}
-                          className="flex flex-wrap items-center justify-between gap-2 rounded-[var(--radius-ui)] border border-border bg-background px-3 py-2"
-                        >
-                          <span className="text-sm text-heading">{key}</span>
-                          <span
-                            className={`text-xs font-semibold ${s.cls}`}
-                            aria-label={s.label}
-                          >
-                            {s.icon} {s.label}
-                          </span>
+                        <div key={key}>
+                          <dt>{key}</dt>
+                          <dd className={status.cls}>
+                            <span aria-hidden="true">{status.icon} </span>
+                            {status.label}
+                          </dd>
                         </div>
                       );
                     })}
-                  </div>
-                </div>
+                  </dl>
+                </section>
               ))}
-            </div>
-          </section>
+            </section>
 
-          {/* 8. Planning / AI */}
-          <section
-            id="venue-plan"
-            className="scroll-mt-24 space-y-6"
-            aria-labelledby="venue-plan-heading"
-          >
-            <h2
-              id="venue-plan-heading"
-              className="text-xl font-bold tracking-[-0.02em] text-heading"
+            <VenueNeedsCheck venue={v} />
+
+            <section
+              id="venue-plan"
+              className="venue-report-section"
+              aria-labelledby="venue-plan-heading"
             >
-              Plan your visit
-            </h2>
-
-            <VenueContact venue={v} />
-            <BeforeYouGo tips={beforeYouGo} demo={isDemo} />
-
-            <div className="grid gap-6 lg:grid-cols-[1.25fr_.75fr]">
-              <div className="space-y-3">
-                <h3 className="text-sm font-semibold text-heading">
-                  What this means for your visit
-                </h3>
-                <p className="text-sm text-muted">
-                  {isDemo
-                    ? "This demonstration illustrates"
-                    : "This listing reports"}{" "}
-                  <span className="font-semibold text-heading">{yesCount}</span>{" "}
-                  access features.{" "}
-                  {isDemo ? "None are independently verified. " : ""}
-                  {unknownCount > 0 ? (
-                    <>
-                      {" "}
-                      <span className="font-semibold text-heading">
-                        {unknownCount}
-                      </span>{" "}
-                      details are still unknown, so it is worth calling ahead
-                      for exact measurements and on-the-day setup.
-                    </>
-                  ) : (
-                    " Key details are mostly documented, but confirming current layout before travel is still sensible."
-                  )}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {v.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-border bg-[var(--color-surface)] px-3 py-1 text-xs font-semibold text-heading"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+              <h2 id="venue-plan-heading">Questions for the venue</h2>
+              <BeforeYouGo demo={isDemo} />
+              <VenueContact venue={v} />
+              {v.locationSnapshot ? (
+                <div className="venue-report-location">
+                  <Image
+                    src={v.locationSnapshot.src}
+                    alt={v.locationSnapshot.alt}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 800px) 100vw, 720px"
+                  />
                 </div>
+              ) : null}
+              {custom && !isDemo ? (
+                <p className="venue-report-muted">{custom.about}</p>
+              ) : null}
+            </section>
+
+            <AccessCheckedMethodology
+              verification={v.verificationType}
+              confidence={v.confidence}
+              lastUpdated={v.lastUpdated}
+            />
+          </div>
+
+          <aside className="venue-report-sidebar" aria-label="Visit planning">
+            <div className="venue-report-planner">
+              <h2>Plan your visit</h2>
+              <p>
+                {isDemo
+                  ? "Try the comparison with example data, then save questions to use with a real venue."
+                  : "Compare the details with your access needs, then save any questions for the venue."}
+              </p>
+              <a href="#venue-fit" className="venue-report-primary">
+                Compare my needs
+              </a>
+              <div className="venue-report-planner-links">
+                <a href="#venue-plan">Prepare questions</a>
                 <VenueVisitPlanActions
                   venueName={v.name}
                   location={v.location}
@@ -400,108 +363,42 @@ export default async function VenueDetailPage({
                   beforeYouGo={beforeYouGo}
                 />
               </div>
-
-              <div className="space-y-3">
-                <h3 className="text-sm font-semibold text-heading">
-                  Location snapshot
-                </h3>
-                {v.locationSnapshot ? (
-                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)] border border-border bg-background">
-                    <Image
-                      src={v.locationSnapshot.src}
-                      alt={v.locationSnapshot.alt}
-                      fill
-                      className="object-cover object-center"
-                      sizes="(max-width: 1024px) 100vw, 400px"
-                    />
-                  </div>
-                ) : isDemo ? (
-                  <p className="text-sm text-muted">The location in this report is illustrative.</p>
-                ) : (
-                  <div className="grid h-44 place-items-center rounded-[var(--radius-card)] border border-border bg-background px-4 text-center text-sm font-semibold text-muted">
-                    Use the address area below with your route planner. A map
-                    view is available from the venue finder list.
-                  </div>
-                )}
-                {!isDemo ? (
-                  <p className="text-xs text-muted">
-                    Address area:{" "}
-                    <span className="font-semibold text-heading">
-                      {v.location}
-                    </span>
-                    . Use this with your route planner and check Blue Badge
-                    options or drop-off points before leaving.
-                  </p>
-                ) : null}
-              </div>
+              <VenueDetailActions
+                slug={v.slug}
+                venueName={v.name}
+                variant="planning"
+              />
             </div>
-
-            {custom && !isDemo ? (
-              <div>
-                <h3 className="text-sm font-semibold text-heading">
-                  About this location
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-muted">
-                  {custom.about}
-                </p>
-              </div>
-            ) : null}
-          </section>
-
-          {/* 9. Methodology */}
-          <AccessCheckedMethodology
-            verification={v.verificationType}
-            confidence={v.confidence}
-            lastUpdated={v.lastUpdated}
-          />
-
-          <div className="grid gap-6 border-t border-border pt-8 lg:grid-cols-2">
-            <div>
-              <h2 className="text-sm font-semibold text-heading">
-                Contact &amp; updates
-              </h2>
-              <p className="mt-2 text-sm text-muted">
+            <div className="venue-report-sidebar-section">
+              <h2>Something missing?</h2>
+              <p>
                 {isDemo
-                  ? "This demonstration does not provide verified venue contact details. Do not use it to plan a real visit."
-                  : "See the venue contact details in Plan your visit above."}
+                  ? "Tell us how this example could be more useful."
+                  : "Share a correction or an access detail that would help the next visitor."}
               </p>
-              <p className="mt-2 text-sm text-muted">
-                Spotted something wrong or missing? Tell us what you found on
-                site — measurements and photos help most.
-              </p>
-              <div className="mt-4">
-                <Button
-                  href={suggestVenueMailto({
-                    venueName: v.name,
-                    subject: `Venue update: ${v.name}`,
-                    body: `Venue: ${v.name}\nArea: ${v.location}\n\nWhat I spotted on site:\n`,
-                  })}
-                  variant="secondary"
-                >
-                  Suggest an update
-                </Button>
-              </div>
+              <Link href={`/corrections?venue=${encodeURIComponent(v.slug)}`}>
+                Suggest a correction
+              </Link>
+              <a
+                href={suggestVenueMailto({
+                  venueName: v.name,
+                  subject: `Venue update: ${v.name}`,
+                  body: `Venue: ${v.name}\nArea: ${v.location}\n\nUpdate or suggestion:\n`,
+                })}
+              >
+                Send an update by email
+              </a>
             </div>
-
-            <div>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h2 className="text-sm font-semibold text-heading">
-                    Community access notes
-                  </h2>
-                  <p className="mt-1 text-sm text-muted">
-                    This listing is labelled{" "}
-                    <span className="font-semibold text-heading">
-                      {v.verification.toLowerCase()}
-                    </span>
-                    . We do not run star ratings or user reviews — practical
-                    feature checks instead.
-                  </p>
-                </div>
-                <VenueBackLink />
-              </div>
-            </div>
-          </div>
+            <VenueNextSteps
+              unknownFeatures={unknownFeatures}
+              confirmedFeatures={confirmedFeatures}
+              unavailableFeatures={unavailableFeatures}
+            />
+          </aside>
+        </div>
+        <div className="venue-report-return">
+          <VenueBackLink />
+          <Link href="/for-venues">List your venue</Link>
         </div>
       </Container>
     </div>

@@ -1,9 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
-import { useFocusTrap } from "@/lib/use-focus-trap";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+} from "react";
+import { EXAMPLE_VENUE_PHOTOS } from "@/lib/venue-photo-examples";
 
 type VenuePhoto = {
   src: string;
@@ -11,218 +16,366 @@ type VenuePhoto = {
   label: string;
   measurement?: string;
 };
-
-export function VenuePhotoGallery({
-  photos,
-  isExample = false,
-}: {
+type Props = {
   photos: VenuePhoto[];
   isExample?: boolean;
-}) {
-  const [active, setActive] = useState(0);
+  initialIndex?: number;
+};
+
+function imageSource(src: string, width: number) {
+  return src.includes("/upload/")
+    ? src.replace("/upload/", `/upload/f_auto,q_auto:good,c_limit,w_${width}/`)
+    : src;
+}
+function Chevron({ previous = false }: { previous?: boolean }) {
+  return (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      aria-hidden="true"
+    >
+      <path d={previous ? "m15 5-7 7 7 7" : "m9 5 7 7-7 7"} />
+    </svg>
+  );
+}
+
+export function VenuePhotoGallery(props: Props) {
+  if (!props.photos.length) return <p>No venue photos are available yet.</p>;
+  return <Gallery {...props} />;
+}
+
+function Gallery({ photos, isExample = false, initialIndex = 0 }: Props) {
+  const [active, setActive] = useState(
+    Math.min(Math.max(initialIndex, 0), photos.length - 1),
+  );
   const [expanded, setExpanded] = useState(false);
   const [broken, setBroken] = useState<Record<number, boolean>>({});
-  const expandTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const trapRef = useFocusTrap<HTMLDivElement>(expanded);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+  const thumbnailsRef = useRef<Array<HTMLButtonElement | null>>([]);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const suppressClick = useRef(false);
   const current = photos[active];
-  const photoLabel = isExample ? `Example photo · ${current.label}` : current.label;
+  const credit = isExample
+    ? Object.values(EXAMPLE_VENUE_PHOTOS).find(
+        (photo) => photo.src === current.src,
+      )
+    : undefined;
+  const multiple = photos.length > 1;
 
-  function cloudinary(src: string, transform: string) {
-    return src.includes("/upload/") ? src.replace("/upload/", `/upload/${transform}/`) : src;
+  function move(direction: number) {
+    setActive((index) => (index + direction + photos.length) % photos.length);
   }
-
   function markBroken(index: number) {
-    setBroken((prev) => ({ ...prev, [index]: true }));
+    setBroken((old) => ({ ...old, [index]: true }));
   }
-
-  function goNext() {
-    setActive((prev) => (prev + 1) % photos.length);
+  function openGallery(trigger: HTMLElement) {
+    openerRef.current = trigger;
+    setExpanded(true);
   }
-
-  function goPrev() {
-    setActive((prev) => (prev - 1 + photos.length) % photos.length);
-  }
-
-  function closeLightbox() {
+  function closeGallery() {
     setExpanded(false);
-    requestAnimationFrame(() => expandTriggerRef.current?.focus());
   }
 
+  // Native modal makes the background inert and contains focus. Restore scroll and focus on close.
   useEffect(() => {
     if (!expanded) return;
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        closeLightbox();
-      }
-      if (e.key === "ArrowRight") {
-        e.preventDefault();
-        goNext();
-      }
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        goPrev();
-      }
-    }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [expanded, photos.length]);
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const previousOverflow = document.body.style.overflow;
+    dialog.showModal();
+    document.body.style.overflow = "hidden";
+    return () => {
+      dialog.close();
+      document.body.style.overflow = previousOverflow;
+      openerRef.current?.focus({ preventScroll: true });
+    };
+  }, [expanded]);
 
-  function onThumbnailKeyDown(e: React.KeyboardEvent, idx: number) {
-    if (e.key === "ArrowRight") {
-      e.preventDefault();
-      setActive((idx + 1) % photos.length);
+  function onPointerDown(event: PointerEvent) {
+    suppressClick.current = false;
+    touchStart.current =
+      event.pointerType === "touch" || event.pointerType === "pen"
+        ? { x: event.clientX, y: event.clientY }
+        : null;
+  }
+  function onPointerUp(event: PointerEvent) {
+    if (!touchStart.current) return;
+    const dx = event.clientX - touchStart.current.x;
+    const dy = event.clientY - touchStart.current.y;
+    touchStart.current = null;
+    if (multiple && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      suppressClick.current = true;
+      move(dx < 0 ? 1 : -1);
     }
-    if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      setActive((idx - 1 + photos.length) % photos.length);
+  }
+  function onGalleryKeyDown(event: KeyboardEvent) {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      move(event.key === "ArrowRight" ? 1 : -1);
     }
+  }
+  function onThumbnailKeyDown(event: KeyboardEvent, index: number) {
+    let target: number;
+    if (event.key === "ArrowRight") target = (index + 1) % photos.length;
+    else if (event.key === "ArrowLeft")
+      target = (index - 1 + photos.length) % photos.length;
+    else if (event.key === "Home") target = 0;
+    else if (event.key === "End") target = photos.length - 1;
+    else return;
+    event.preventDefault();
+    setActive(target);
+    thumbnailsRef.current[target]?.focus({ preventScroll: true });
+    thumbnailsRef.current[target]?.scrollIntoView({
+      block: "nearest",
+      inline: "nearest",
+      behavior: "instant",
+    });
   }
 
   return (
-    <>
-      <div className="space-y-3">
-        <button
-          ref={expandTriggerRef}
-          type="button"
-          onClick={() => setExpanded(true)}
-          className="group relative block w-full cursor-pointer overflow-hidden rounded-[var(--radius-card)] border border-border bg-background-2 text-left transition-shadow hover:shadow-[var(--shadow-soft)]"
-          aria-label={isExample ? `Expand ${photoLabel}` : `Expand photo: ${current.label}`}
-        >
-          <div className="relative h-[280px] sm:h-[360px]">
+    <div
+      className="venue-gallery"
+      role="region"
+      aria-label="Venue photo gallery"
+      aria-roledescription="carousel"
+    >
+      <figure className="venue-gallery-figure">
+        <div className="venue-gallery-stage" onKeyDown={onGalleryKeyDown}>
+          <button
+            type="button"
+            className="venue-gallery-image-button"
+            aria-label={`Expand photo: ${current.label}`}
+            onPointerDown={onPointerDown}
+            onPointerUp={onPointerUp}
+            onPointerCancel={() => {
+              touchStart.current = null;
+            }}
+            onClick={(event) => {
+              if (suppressClick.current) {
+                suppressClick.current = false;
+                return;
+              }
+              openGallery(event.currentTarget);
+            }}
+          >
             {broken[active] ? (
-              <div className="grid h-full place-items-center bg-background text-sm font-semibold text-muted">
-                Image unavailable
-              </div>
+              <span className="venue-gallery-fallback">
+                This photo is unavailable. Try another photo.
+              </span>
             ) : (
               <Image
-                src={cloudinary(current.src, "f_auto,q_auto:good,c_limit,w_1400")}
+                key={current.src}
+                src={imageSource(current.src, 1600)}
                 alt={current.alt}
                 fill
-                className="object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-                sizes="(max-width: 768px) 100vw, 840px"
-                priority
+                className={
+                  isExample && current.src.endsWith("/seating.webp")
+                    ? "object-cover"
+                    : "object-contain"
+                }
+                sizes="(max-width: 1200px) 100vw, 1180px"
+                priority={active === initialIndex}
                 onError={() => markBroken(active)}
               />
             )}
-          </div>
-          <div className="absolute right-3 top-3 rounded-full bg-card/95 px-3 py-1 text-xs font-semibold text-heading shadow-[var(--shadow-soft)]">
-            Expand
-          </div>
-          <div className="absolute left-3 top-3 rounded-full bg-card/95 px-3 py-1 text-xs font-semibold text-heading shadow-[var(--shadow-soft)]">
-            {photoLabel}
-          </div>
-          {current.measurement && !isExample ? (
-            <div className="absolute bottom-3 left-3 rounded-full bg-blue px-3 py-1 text-xs font-semibold text-white">
-              {current.measurement}
-            </div>
+          </button>
+          {isExample ? (
+            <span className="venue-gallery-example">Example photo</span>
           ) : null}
-        </button>
-
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-5" role="tablist" aria-label="Photo thumbnails">
-          {photos.map((photo, idx) => (
+          {multiple ? (
+            <>
+              <button
+                type="button"
+                className="venue-gallery-arrow venue-gallery-previous"
+                aria-label="Previous photo"
+                onClick={() => move(-1)}
+              >
+                <Chevron previous />
+              </button>
+              <button
+                type="button"
+                className="venue-gallery-arrow venue-gallery-next"
+                aria-label="Next photo"
+                onClick={() => move(1)}
+              >
+                <Chevron />
+              </button>
+            </>
+          ) : null}
+          <button
+            type="button"
+            className="venue-gallery-expand"
+            onClick={(event) => openGallery(event.currentTarget)}
+          >
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              aria-hidden="true"
+            >
+              <path d="M14 3h7v7M21 3l-7 7M10 21H3v-7m0 7 7-7" />
+            </svg>
+            View {multiple ? `all ${photos.length} photos` : "photo"}
+          </button>
+        </div>
+        <figcaption className="venue-gallery-caption">
+          <span>
+            {current.label}
+            {!isExample && current.measurement ? (
+              <small> · {current.measurement}</small>
+            ) : null}
+          </span>
+          <span>
+            {active + 1} of {photos.length}
+          </span>
+        </figcaption>
+      </figure>
+      <p
+        className="sr-only"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        Photo {active + 1} of {photos.length}: {current.label}
+        {isExample ? ". Example photo, not this venue." : ""}
+      </p>
+      {multiple ? (
+        <div
+          className="venue-gallery-thumbnails"
+          role="group"
+          aria-label="Choose a venue photo"
+        >
+          {photos.map((photo, index) => (
             <button
               key={`${photo.src}-${photo.label}`}
+              ref={(element) => {
+                thumbnailsRef.current[index] = element;
+              }}
               type="button"
-              role="tab"
-              aria-selected={idx === active}
-              tabIndex={idx === active ? 0 : -1}
-              onClick={() => setActive(idx)}
-              onKeyDown={(e) => onThumbnailKeyDown(e, idx)}
-              className={cn(
-                "group relative cursor-pointer overflow-hidden rounded-[var(--radius-ui)] border bg-background-2 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]",
-                idx === active ? "border-blue ring-2 ring-blue/25" : "border-border",
-              )}
-              aria-label={`Open photo: ${photo.label}`}
+              aria-pressed={active === index}
+              aria-label={`Show photo: ${photo.label}`}
+              onClick={() => setActive(index)}
+              onKeyDown={(event) => onThumbnailKeyDown(event, index)}
             >
-              <div className="relative h-20">
-                {broken[idx] ? (
-                  <div className="grid h-full place-items-center bg-background text-[10px] font-semibold text-muted">
-                    Missing
-                  </div>
+              <span className="venue-gallery-thumbnail-image">
+                {broken[index] ? (
+                  <span className="venue-gallery-fallback">Unavailable</span>
                 ) : (
                   <Image
-                    src={cloudinary(photo.src, "f_auto,q_auto:good,c_fill,w_320,h_220")}
-                    alt={photo.alt}
+                    src={imageSource(photo.src, 320)}
+                    alt=""
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    sizes="140px"
-                    loading="lazy"
-                    onError={() => markBroken(idx)}
+                    className="object-cover"
+                    sizes="(max-width: 600px) 100px, 152px"
+                    onError={() => markBroken(index)}
                   />
                 )}
-              </div>
-              <div className="truncate px-2 py-1 text-[11px] font-semibold text-heading">{photo.label}</div>
+              </span>
+              <span className="venue-gallery-thumbnail-label">
+                {photo.label}
+              </span>
             </button>
           ))}
         </div>
-      </div>
+      ) : null}
+      {credit ? (
+        <p className="venue-gallery-credit">
+          Photo:{" "}
+          <a href={credit.source} target="_blank" rel="noreferrer">
+            {credit.credit} / Unsplash
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
+        </p>
+      ) : null}
 
-      {expanded ? (
-        <div
-          ref={trapRef}
-          className="fixed inset-0 z-[120] bg-black/85 p-4 sm:p-8"
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Photo gallery: ${photoLabel}`}
-        >
-          <button
-            type="button"
-            className="absolute right-4 top-4 cursor-pointer rounded-full bg-white/15 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/25"
-            onClick={closeLightbox}
+      <dialog
+        ref={dialogRef}
+        className="venue-gallery-dialog"
+        aria-label="Venue photo viewer"
+        onCancel={(event) => {
+          event.preventDefault();
+          closeGallery();
+        }}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) closeGallery();
+        }}
+        onKeyDown={onGalleryKeyDown}
+      >
+        <div className="venue-gallery-dialog-inner">
+          <div className="venue-gallery-dialog-toolbar">
+            <span>{isExample ? "Example photos" : "Venue photos"}</span>
+            <button type="button" autoFocus onClick={closeGallery}>
+              Close <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div
+            className="venue-gallery-dialog-stage"
+            onPointerDown={onPointerDown}
+            onPointerUp={onPointerUp}
+            onPointerCancel={() => {
+              touchStart.current = null;
+            }}
           >
-            Close
-          </button>
-
-          <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-center">
+            {expanded && !broken[active] ? (
+              <Image
+                src={imageSource(current.src, 2200)}
+                alt={current.alt}
+                fill
+                className="object-contain"
+                sizes="95vw"
+                onError={() => markBroken(active)}
+              />
+            ) : (
+              <span className="venue-gallery-fallback">
+                This photo could not be loaded.
+              </span>
+            )}
+          </div>
+          <div className="venue-gallery-dialog-controls">
             <button
               type="button"
               aria-label="Previous image"
-              onClick={goPrev}
-              className="mr-3 cursor-pointer rounded-full bg-white/15 p-3 text-2xl font-bold text-white transition-colors hover:bg-white/25"
+              disabled={!multiple}
+              onClick={() => move(-1)}
             >
-              ←
+              <Chevron previous />
             </button>
-
-            <div className="relative flex-1 overflow-hidden rounded-[var(--radius-card)] bg-black">
-              <div className="relative h-[min(82vh,900px)]">
-                {broken[active] ? (
-                  <div className="grid h-full place-items-center text-sm font-semibold text-white/80">
-                    This photo could not be loaded.
-                  </div>
-                ) : (
-                  <Image
-                    src={cloudinary(current.src, "f_auto,q_auto:good,c_limit,w_2200")}
-                    alt={current.alt}
-                    fill
-                    className="object-contain"
-                    sizes="90vw"
-                    priority
-                    onError={() => markBroken(active)}
-                  />
-                )}
-              </div>
-              <div className="absolute left-3 top-3 rounded-full bg-black/55 px-3 py-1 text-xs font-semibold text-white">
-                {photoLabel}
-              </div>
-              {current.measurement && !isExample ? (
-                <div className="absolute bottom-3 left-3 rounded-full bg-blue px-3 py-1 text-xs font-semibold text-white">
-                  {current.measurement}
-                </div>
-              ) : null}
-            </div>
-
+            <p aria-live="polite" aria-atomic="true">
+              <strong>{current.label}</strong>
+              <span>
+                {active + 1} of {photos.length}
+                {isExample ? " · Example photo from another location" : ""}
+              </span>
+            </p>
             <button
               type="button"
               aria-label="Next image"
-              onClick={goNext}
-              className="ml-3 cursor-pointer rounded-full bg-white/15 p-3 text-2xl font-bold text-white transition-colors hover:bg-white/25"
+              disabled={!multiple}
+              onClick={() => move(1)}
             >
-              →
+              <Chevron />
             </button>
           </div>
+          {credit ? (
+            <p className="venue-gallery-dialog-credit">
+              Photo:{" "}
+              <a href={credit.source} target="_blank" rel="noreferrer">
+                {credit.credit} / Unsplash
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </p>
+          ) : null}
         </div>
-      ) : null}
-    </>
+      </dialog>
+    </div>
   );
 }

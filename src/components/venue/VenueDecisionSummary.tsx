@@ -45,28 +45,13 @@ export function getDecisionOutcome(
   return "needs_confirmation";
 }
 
-const OUTCOME_COPY: Record<
-  DecisionOutcome,
-  { title: string; tone: string; iconLabel: string }
-> = {
-  likely: {
-    title: "Likely suitable based on current evidence",
-    tone: "border-[var(--color-trust)] bg-[var(--color-trust-soft)] text-[var(--color-trust)]",
-    iconLabel: "Confirmed",
-  },
-  needs_confirmation: {
-    title: "Needs confirmation before travelling",
-    tone: "border-[var(--color-warning)] bg-[var(--color-warning-soft)] text-[var(--color-warning)]",
-    iconLabel: "Check before visiting",
-  },
-  may_not_meet: {
-    title: "May not meet these needs",
-    tone: "border-[var(--color-danger)] bg-[var(--color-danger-soft)] text-[var(--color-danger)]",
-    iconLabel: "Not available",
-  },
+const OUTCOME_COPY: Record<DecisionOutcome, string> = {
+  likely: "Likely suitable based on current evidence",
+  needs_confirmation: "Needs confirmation before travelling",
+  may_not_meet: "May not meet these needs",
 };
 
-/** Compact evidence-based decision summary for the top of a venue report. */
+/** Data and evidence remain intact; presentation is deliberately quiet and factual. */
 export function VenueDecisionSummary({
   venue,
   confirmedFeatures,
@@ -74,251 +59,138 @@ export function VenueDecisionSummary({
   unknownFeatures = [],
   unknownCount,
 }: Props) {
-  const outcome = getDecisionOutcome(
-    venue,
-    unknownCount,
-    unavailableFeatures.length,
-  );
-  const copy = OUTCOME_COPY[outcome];
   const demo = isDemoVenue(venue);
   const canonical = getVenueBySlug(venue.slug);
-  const measurements: string[] = [];
-  if (canonical?.measurements?.entranceWidthCm) {
-    measurements.push(
-      `Entrance width ${canonical.measurements.entranceWidthCm} cm`,
-    );
+  const measurementLabel = getMeasurementLabel(
+    toVerificationType(venue.verificationType ?? venue.verification),
+  );
+  const measurements = canonical?.measurements;
+  const rows: Array<{ label: string; value: string; note?: string }> = [];
+  if (measurements?.entranceWidthCm)
+    rows.push({
+      label: "Entrance clear opening",
+      value: `${measurements.entranceWidthCm} cm`,
+      note: measurementLabel,
+    });
+  if (measurements?.toiletDoorWidthCm)
+    rows.push({
+      label: "Toilet door opening",
+      value: `${measurements.toiletDoorWidthCm} cm`,
+      note: measurementLabel,
+    });
+  if (!rows.length) {
+    const photo = venue.photos?.find((item) => item.measurement);
+    if (photo?.measurement)
+      rows.push({
+        label: photo.label,
+        value: photo.measurement.replace(/^Door width measured:\s*/i, ""),
+        note: measurementLabel,
+      });
+    else rows.push({ label: "Door measurements", value: "Not recorded" });
   }
-  if (canonical?.measurements?.toiletDoorWidthCm) {
-    measurements.push(
-      `Toilet door ${canonical.measurements.toiletDoorWidthCm} cm`,
-    );
-  }
-  if (measurements.length === 0) {
-    const measuredPhoto = venue.photos?.find((photo) => photo.measurement);
-    if (measuredPhoto?.measurement) {
-      measurements.push(
-        measuredPhoto.measurement.replace(
-          /^Door width measured:\s*/i,
-          measuredPhoto.label + ": ",
-        ),
-      );
-    }
+  for (const feature of ["Step-free entrance", "Accessible toilet"]) {
+    const status = venue.features[feature];
+    rows.push({
+      label: feature,
+      value:
+        status === "yes"
+          ? demo
+            ? "Example: present"
+            : "Reported present"
+          : status === "no"
+            ? demo
+              ? "Example: unavailable"
+              : "Reported unavailable"
+            : "Not confirmed",
+    });
   }
   const unknowns = unknownFeatures.length
     ? unknownFeatures
     : Object.entries(venue.features)
         .filter(([, value]) => value === "unknown")
         .map(([feature]) => feature);
-
+  const outcome = getDecisionOutcome(
+    venue,
+    unknownCount,
+    unavailableFeatures.length,
+  );
   return (
-    <aside
+    <section
       id="venue-summary"
-      className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-soft)] scroll-mt-24"
+      className="venue-report-summary"
       aria-labelledby="decision-summary-heading"
     >
-      <div
-        className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold ${copy.tone}`}
-      >
-        <StatusGlyph outcome={outcome} />
-        <span>{demo ? "Demo" : copy.iconLabel}</span>
-      </div>
-
-      <h2
-        id="decision-summary-heading"
-        className="mt-3 text-xl font-semibold tracking-[-0.02em] text-[var(--color-ink)]"
-      >
-        {demo ? "Example venue report" : copy.title}
-      </h2>
-
-      <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
+      <h2 id="decision-summary-heading">Accessibility overview</h2>
+      <p className="venue-report-muted">
         {demo
-          ? "This is a demonstration listing. Treat measurements and features as examples only; they are not verified venue information."
-          : "This outcome is based on current evidence only. Access can change — confirm important details before you travel."}
+          ? "Example venue report. Measurements and features are illustrative, not verified information."
+          : OUTCOME_COPY[outcome]}
       </p>
-
-      <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div>
-          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-            Evidence state
-          </dt>
-          <dd className="mt-1.5">
-            <VerificationBadge status={venue.verification} />
-          </dd>
-        </div>
-        <div>
-          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-            Last checked
-          </dt>
-          <dd className="mt-1.5 text-sm font-semibold text-[var(--color-ink)]">
-            {demo ? "Not independently checked" : venue.lastUpdated}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-            Confidence
-          </dt>
-          <dd className="mt-1.5">
-            {demo ? (
-              <span className="text-sm">Example data — not assessed</span>
-            ) : (
-              <ConfidenceBadge level={venue.confidence} />
-            )}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-            Important unknowns
-          </dt>
-          <dd className="mt-1.5 text-sm font-semibold text-[var(--color-ink)]">
-            {unknownCount === 0 ? "None flagged" : `${unknownCount} to confirm`}
-          </dd>
-        </div>
+      <dl id="venue-measurements" className="venue-report-measurements">
+        {rows.map((row) => (
+          <div key={row.label}>
+            <dt>{row.label}</dt>
+            <dd>
+              <span>{row.value}</span>
+              {row.note ? <small>{row.note}</small> : null}
+            </dd>
+          </div>
+        ))}
       </dl>
-
-      <div id="venue-measurements" className="scroll-mt-24">
-        {measurements.length > 0 ? (
-          <div className="mt-4 rounded-[var(--radius-md)] border border-dashed border-[var(--color-border-mid)] bg-[var(--color-surface-subtle)] px-3 py-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-brand)]">
-              {getMeasurementLabel(
-                toVerificationType(
-                  venue.verificationType ?? venue.verification,
-                ),
-              )}
-            </p>
-            <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--color-ink)]">
-              {measurements.map((m) => (
-                <li key={m}>{m}</li>
+      <div id="venue-unknowns" className="venue-report-evidence">
+        <p className="venue-report-evidence-count">
+          <span className="venue-report-status-dot" aria-hidden="true" />
+          <strong>
+            {unknownCount === 0
+              ? "No unknowns flagged"
+              : `${unknownCount} to confirm`}
+          </strong>
+          <span>{demo ? "in this example" : "before travelling"}</span>
+        </p>
+        <details>
+          <summary>Evidence and missing information</summary>
+          <dl className="venue-report-evidence-meta">
+            <div>
+              <dt>Evidence state</dt>
+              <dd>
+                <VerificationBadge status={venue.verification} />
+              </dd>
+            </div>
+            <div>
+              <dt>Last checked</dt>
+              <dd>{demo ? "Not independently checked" : venue.lastUpdated}</dd>
+            </div>
+            <div>
+              <dt>Confidence</dt>
+              <dd>
+                {demo ? (
+                  "Example data — not assessed"
+                ) : (
+                  <ConfidenceBadge level={venue.confidence} />
+                )}
+              </dd>
+            </div>
+          </dl>
+          <h3>{demo ? "Illustrative features" : "Reported present"}</h3>
+          <p>{confirmedFeatures.join(" · ") || "No features documented yet"}</p>
+          <h3>
+            {demo ? "Illustrated as unavailable" : "Reported unavailable"}
+          </h3>
+          <p>
+            {unavailableFeatures.join(" · ") || "None listed as unavailable"}
+          </p>
+          <h3>Unknown — confirm before you go</h3>
+          {unknowns.length ? (
+            <ul>
+              {unknowns.map((feature) => (
+                <li key={feature}>{feature}</li>
               ))}
             </ul>
-          </div>
-        ) : (
-          <p className="mt-4 text-sm text-[var(--color-text-muted)]">
-            No doorway or toilet measurements published for this listing yet.
-          </p>
-        )}
+          ) : (
+            <p>No unknowns flagged</p>
+          )}
+        </details>
       </div>
-
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <FeatureList
-          title={demo ? "Illustrative features" : "Reported present"}
-          items={confirmedFeatures.slice(0, 6)}
-          tone="trust"
-          empty="No features documented yet"
-        />
-        <FeatureList
-          title={demo ? "Illustrated as unavailable" : "Reported unavailable"}
-          items={unavailableFeatures.slice(0, 6)}
-          tone="danger"
-          empty="None listed as unavailable"
-        />
-      </div>
-
-      <div id="venue-unknowns" className="mt-4 scroll-mt-24">
-        <FeatureList
-          title="Unknown — confirm before you go"
-          items={unknowns.slice(0, 8)}
-          tone="warning"
-          empty="No unknowns flagged"
-        />
-      </div>
-
-      <p className="mt-4 border-t border-[var(--color-border)] pt-3 text-xs leading-5 text-[var(--color-text-muted)]">
-        Always confirm changeable information (temporary works, staffing,
-        equipment) with the venue on the day of travel.
-      </p>
-    </aside>
-  );
-}
-
-function FeatureList({
-  title,
-  items,
-  tone,
-  empty,
-}: {
-  title: string;
-  items: string[];
-  tone: "trust" | "danger" | "warning";
-  empty: string;
-}) {
-  const color =
-    tone === "trust"
-      ? "text-[var(--color-trust)]"
-      : tone === "danger"
-        ? "text-[var(--color-danger)]"
-        : "text-[var(--color-warning)]";
-  const dot =
-    tone === "trust"
-      ? "bg-[var(--color-trust)]"
-      : tone === "danger"
-        ? "bg-[var(--color-danger)]"
-        : "bg-[var(--color-warning)]";
-  return (
-    <div>
-      <p
-        className={`text-xs font-semibold uppercase tracking-[0.08em] ${color}`}
-      >
-        {title}
-      </p>
-      {items.length === 0 ? (
-        <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">{empty}</p>
-      ) : (
-        <ul className="mt-1.5 space-y-1 text-sm text-[var(--color-ink)]">
-          {items.map((item) => (
-            <li key={item} className="flex gap-2">
-              <span
-                className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${dot}`}
-                aria-hidden
-              />
-              {item}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-function StatusGlyph({ outcome }: { outcome: DecisionOutcome }) {
-  if (outcome === "likely") {
-    return (
-      <svg
-        viewBox="0 0 20 20"
-        className="h-4 w-4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        aria-hidden
-      >
-        <path d="M4 10.5 8 14.5 16 5.5" />
-      </svg>
-    );
-  }
-  if (outcome === "may_not_meet") {
-    return (
-      <svg
-        viewBox="0 0 20 20"
-        className="h-4 w-4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        aria-hidden
-      >
-        <path d="M5 5l10 10M15 5 5 15" />
-      </svg>
-    );
-  }
-  return (
-    <svg
-      viewBox="0 0 20 20"
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      aria-hidden
-    >
-      <circle cx="10" cy="10" r="7" />
-      <path d="M10 6v5M10 14h.01" />
-    </svg>
+    </section>
   );
 }

@@ -7,7 +7,6 @@ import {
   getMeasurementLabel,
   toVerificationType,
 } from "@/lib/venue-verification";
-import { Card } from "@/components/ui";
 
 function InlineBold({ text }: { text: string }) {
   const parts = text.split(/(\*\*.+?\*\*)/g);
@@ -39,7 +38,7 @@ export function WillItFitCard({ venue }: { venue: Venue }) {
   }, [widthNum, venue]);
 
   return (
-    <Card className="p-5 sm:p-6">
+    <div className="venue-report-fit-card">
       <h3 className="text-lg font-semibold text-heading">
         Chair width and doorway clearance
       </h3>
@@ -103,6 +102,6 @@ export function WillItFitCard({ venue }: { venue: Venue }) {
           Enter a width between 40 and 130 cm.
         </p>
       ) : null}
-    </Card>
+    </div>
   );
 }

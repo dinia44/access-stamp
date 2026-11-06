@@ -33,22 +33,22 @@ export function AccessCheckedMethodology({
   };
 
   return (
-    <aside className="rounded-2xl border border-[#EFE5DA] bg-[#FAF4ED] p-4 text-sm leading-7 text-[#4A5263]">
+    <aside className="venue-report-methodology">
       <details className="group">
-        <summary className="cursor-pointer list-none text-base font-semibold text-[#20242E] marker:content-none [&::-webkit-details-marker]:hidden">
+        <summary className="cursor-pointer list-none text-base font-semibold text-heading marker:content-none [&::-webkit-details-marker]:hidden">
           <span className="inline-flex items-center gap-2">
             How to read this listing
-            <span className="text-xs font-medium text-[#596474] group-open:hidden">
+            <span className="text-xs font-medium text-muted group-open:hidden">
               Show
             </span>
-            <span className="hidden text-xs font-medium text-[#596474] group-open:inline">
+            <span className="hidden text-xs font-medium text-muted group-open:inline">
               Hide
             </span>
           </span>
         </summary>
-        <div className="mt-3 border-t border-[#EFE5DA] pt-3">
+        <div className="mt-3 border-t border-border pt-3">
           <p>
-            <span className="font-semibold text-[#20242E]">
+            <span className="font-semibold text-heading">
               {verificationLabel}
             </span>{" "}
             means this listing is based on{" "}
@@ -61,9 +61,7 @@ export function AccessCheckedMethodology({
             ) : (
               <>
                 Confidence is rated{" "}
-                <span className="font-semibold text-[#20242E]">
-                  {confidence}
-                </span>{" "}
+                <span className="font-semibold text-heading">{confidence}</span>{" "}
                 based on how complete and recent the evidence is.{" "}
               </>
             )}
@@ -78,7 +76,7 @@ export function AccessCheckedMethodology({
           <p className="mt-2">
             <Link
               href="/methodology"
-              className="font-semibold text-[#C8430F] underline-offset-2 hover:underline"
+              className="font-semibold text-[var(--color-brand)] underline-offset-2 hover:underline"
             >
               Read our methodology
             </Link>
