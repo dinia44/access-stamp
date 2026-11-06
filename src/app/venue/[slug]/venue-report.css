@@ -1,5 +1,6 @@
 /* Venue reports use the existing Warm Evidence colours and typefaces. */
 .venue-report {
+  --venue-header-height: 80px;
   background: var(--color-canvas);
   color: var(--color-ink);
 }
@@ -8,8 +9,8 @@
   padding-top: 28px;
   padding-bottom: 56px;
 }
-.venue-report :where(section[id], div[id]) {
-  scroll-margin-top: 160px;
+.venue-report :where(section[id], div[id], dl[id]) {
+  scroll-margin-top: calc(var(--venue-header-height) + 80px);
 }
 .venue-report :where(button, a, summary, input):focus-visible {
   outline: 3px solid var(--color-focus-ring);
@@ -129,7 +130,7 @@
 }
 .venue-report-nav {
   position: sticky;
-  top: 80px;
+  top: calc(var(--venue-header-height) + 1px);
   z-index: 20;
   margin: 22px 0 36px;
   background: var(--color-canvas);
@@ -711,7 +712,6 @@
   }
   .venue-report-nav {
     margin: 18px 0 24px;
-    top: 72px;
   }
   .venue-gallery-stage {
     height: 290px;
@@ -784,5 +784,16 @@
   }
   .venue-report-section {
     break-inside: avoid;
+  }
+}
+
+@media (min-width: 640px) {
+  .venue-report {
+    --venue-header-height: 88px;
+  }
+}
+@media (min-width: 1024px) {
+  .venue-report {
+    --venue-header-height: 96px;
   }
 }
