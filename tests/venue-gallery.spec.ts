@@ -9,6 +9,19 @@ for (const width of [1280, 390]) {
   }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(report);
+    const navItems = page.locator(".venue-report-nav li");
+    expect(
+      await navItems.evaluateAll((items) =>
+        items.every((item) => {
+          const link = item.querySelector("a");
+          return (
+            !link ||
+            item.getBoundingClientRect().width >=
+              link.getBoundingClientRect().width
+          );
+        }),
+      ),
+    ).toBe(true);
     await page.screenshot({
       path: testInfo.outputPath("venue-layout.png"),
       fullPage: true,
@@ -67,6 +80,14 @@ for (const width of [1280, 390]) {
     ).toBeVisible();
     for (let i = 0; i < 8; i++) {
       await page.keyboard.press("Tab");
+      await expect
+        .poll(() =>
+          viewer.evaluate((el) => el.contains(document.activeElement)),
+        )
+        .toBe(true);
+    }
+    for (let i = 0; i < 8; i++) {
+      await page.keyboard.press("Shift+Tab");
       await expect
         .poll(() =>
           viewer.evaluate((el) => el.contains(document.activeElement)),

@@ -143,6 +143,9 @@
   padding: 4px 3px 0;
   scrollbar-width: thin;
 }
+.venue-report-nav li {
+  flex: 0 0 auto;
+}
 .venue-report-nav a {
   display: inline-flex;
   align-items: center;

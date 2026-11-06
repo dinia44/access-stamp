@@ -57,6 +57,7 @@ function Gallery({ photos, isExample = false, initialIndex = 0 }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
   const thumbnailsRef = useRef<Array<HTMLButtonElement | null>>([]);
+  const stripRef = useRef<HTMLDivElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const suppressClick = useRef(false);
   const current = photos[active];
@@ -81,7 +82,19 @@ function Gallery({ photos, isExample = false, initialIndex = 0 }: Props) {
     setExpanded(false);
   }
 
-  // Native modal makes the background inert and contains focus. Restore scroll and focus on close.
+  // Reveal the selected thumbnail without moving the page itself.
+  useEffect(() => {
+    const strip = stripRef.current;
+    const button = thumbnailsRef.current[active];
+    if (!strip || !button) return;
+    const bounds = strip.getBoundingClientRect();
+    const item = button.getBoundingClientRect();
+    if (item.left < bounds.left) strip.scrollLeft -= bounds.left - item.left;
+    else if (item.right > bounds.right)
+      strip.scrollLeft += item.right - bounds.right;
+  }, [active]);
+
+  // Native modal makes the background inert. Restore scroll and focus on close.
   useEffect(() => {
     if (!expanded) return;
     const dialog = dialogRef.current;
@@ -113,6 +126,29 @@ function Gallery({ photos, isExample = false, initialIndex = 0 }: Props) {
       move(dx < 0 ? 1 : -1);
     }
   }
+  function onDialogKeyDown(event: KeyboardEvent<HTMLDialogElement>) {
+    if (event.key !== "Tab") {
+      onGalleryKeyDown(event);
+      return;
+    }
+    // Keep Tab within the viewer instead of cycling through browser chrome.
+    const controls = Array.from(
+      event.currentTarget.querySelectorAll<HTMLElement>(
+        'button:not(:disabled), a[href], [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (!first || !last) return;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   function onGalleryKeyDown(event: KeyboardEvent) {
     if (event.altKey || event.ctrlKey || event.metaKey) return;
     if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
@@ -250,6 +286,7 @@ function Gallery({ photos, isExample = false, initialIndex = 0 }: Props) {
       </p>
       {multiple ? (
         <div
+          ref={stripRef}
           className="venue-gallery-thumbnails"
           role="group"
           aria-label="Choose a venue photo"
@@ -308,7 +345,7 @@ function Gallery({ photos, isExample = false, initialIndex = 0 }: Props) {
         onClick={(event) => {
           if (event.target === event.currentTarget) closeGallery();
         }}
-        onKeyDown={onGalleryKeyDown}
+        onKeyDown={onDialogKeyDown}
       >
         <div className="venue-gallery-dialog-inner">
           <div className="venue-gallery-dialog-toolbar">
